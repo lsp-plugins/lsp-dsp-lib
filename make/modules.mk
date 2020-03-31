@@ -4,6 +4,8 @@ CONFIG             := $(CURDIR)/.config.mk
 include $(CONFIG)
 include $(BASEDIR)/project.mk
 
+DEPENDENCIES       += $(TEST_DEPENDENCIES)
+
 # Form list of modules, exclude all modules that have 'system' version
 MODULES             = $(foreach dep, $(DEPENDENCIES), $(if $(findstring system,$($(dep)_VERSION)),,$(dep)))
 

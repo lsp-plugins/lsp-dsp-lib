@@ -11,6 +11,8 @@ include $(BASEDIR)/make/tools.mk
 include $(BASEDIR)/project.mk
 include $(BASEDIR)/dependencies.mk
 
+DEPENDENCIES               += $(TEST_DEPENDENCIES)
+
 ifeq ($(findstring -devel,$(VERSION)),-devel)
   $(foreach dep, $(DEPENDENCIES), \
     $(eval $(dep)_BRANCH=devel) \

@@ -4,7 +4,9 @@ ARTIFACT_VARS               = LSP_DSP_LIB
 VERSION                     = 1.0.0-devel
 
 # List of dependencies
+TEST_DEPENDENCIES = \
+  LSP_TEST_FW
+
 DEPENDENCIES = \
   STDLIB \
-  LSP_COMMON_LIB \
-  LSP_TEST_FW
+  LSP_COMMON_LIB
