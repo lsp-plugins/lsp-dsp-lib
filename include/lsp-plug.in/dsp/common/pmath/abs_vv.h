@@ -133,4 +133,4 @@ namespace lsp
     }
 }
 
-#endif /* INCLUDE_LSP_PLUG_IN_DSP_COMMON_PMATH_ABS_VV_H_ */
+#endif /* LSP_PLUG_IN_DSP_COMMON_PMATH_ABS_VV_H_ */

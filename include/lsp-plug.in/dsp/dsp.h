@@ -32,4 +32,4 @@
 #include <lsp-plug.in/dsp/common/search.h>
 #include <lsp-plug.in/dsp/common/smath.h>
 
-#endif /* INCLUDE_LSP_PLUG_IN_DSP_DSP_H_ */
+#endif /* LSP_PLUG_IN_DSP_DSP_H_ */
