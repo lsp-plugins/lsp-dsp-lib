@@ -13,8 +13,5 @@
 #include <lsp-plug.in/dsp/common/search/iminmax.h>
 #include <lsp-plug.in/dsp/common/search/minmax.h>
 
-namespace lsp
-{
-}
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_SEARCH_H_ */
