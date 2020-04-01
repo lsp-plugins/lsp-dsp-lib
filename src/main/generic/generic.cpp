@@ -5,6 +5,7 @@
  *      Author: sadko
  */
 
+#include <lsp-plug.in/common/bits.h>
 #include <lsp-plug.in/dsp/dsp.h>
 
 #include <stdlib.h>
