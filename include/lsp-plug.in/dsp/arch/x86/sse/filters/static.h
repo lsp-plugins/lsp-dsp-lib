@@ -16,7 +16,7 @@ namespace lsp
 {
     namespace sse
     {
-        void biquad_process_x1(float *dst, const float *src, size_t count, biquad_t *f)
+        void biquad_process_x1(float *dst, const float *src, size_t count, dsp::biquad_t *f)
         {
             IF_ARCH_X86(size_t off);
 
@@ -34,18 +34,18 @@ namespace lsp
                 // Start loop
                 __ASM_EMIT("1:")
                 __ASM_EMIT("movss       (%[src], %[off], 4), %%xmm0")                   // xmm0 = s ? ? ?
-                __ASM_EMIT("movss       " BIQUAD_XN_SOFF " + 0x00(%[f]), %%xmm1")       // xmm1 = a0
-                __ASM_EMIT("movss       " BIQUAD_XN_SOFF " + 0x04(%[f]), %%xmm2")       // xmm2 = a1
+                __ASM_EMIT("movss       " LSP_DSP_BIQUAD_XN_SOFF " + 0x00(%[f]), %%xmm1")       // xmm1 = a0
+                __ASM_EMIT("movss       " LSP_DSP_BIQUAD_XN_SOFF " + 0x04(%[f]), %%xmm2")       // xmm2 = a1
                 __ASM_EMIT("mulss       %%xmm0, %%xmm1")                                // xmm1 = a0*s
-                __ASM_EMIT("movss       " BIQUAD_XN_SOFF " + 0x0c(%[f]), %%xmm3")       // xmm3 = b1
+                __ASM_EMIT("movss       " LSP_DSP_BIQUAD_XN_SOFF " + 0x0c(%[f]), %%xmm3")       // xmm3 = b1
                 __ASM_EMIT("mulss       %%xmm0, %%xmm2")                                // xmm2 = a1*s
                 __ASM_EMIT("addss       %%xmm6, %%xmm1")                                // xmm1 = s' = a0*s + d0
-                __ASM_EMIT("mulss       " BIQUAD_XN_SOFF " + 0x08(%[f]), %%xmm0")       // xmm0 = a2*s
+                __ASM_EMIT("mulss       " LSP_DSP_BIQUAD_XN_SOFF " + 0x08(%[f]), %%xmm0")       // xmm0 = a2*s
                 __ASM_EMIT("movss       %%xmm1, (%[dst], %[off], 4)")                   // *dst = s'
                 __ASM_EMIT("movaps      %%xmm7, %%xmm6")                                // xmm6 = d1
                 __ASM_EMIT("mulss       %%xmm1, %%xmm3")                                // xmm3 = b1*s'
                 __ASM_EMIT("add         $1, %[off]")
-                __ASM_EMIT("mulss       " BIQUAD_XN_SOFF " + 0x10(%[f]), %%xmm1")       // xmm1 = b2*s'
+                __ASM_EMIT("mulss       " LSP_DSP_BIQUAD_XN_SOFF " + 0x10(%[f]), %%xmm1")       // xmm1 = b2*s'
                 __ASM_EMIT("addss       %%xmm3, %%xmm2")                                // xmm2 = a1*s + b1*s'
                 __ASM_EMIT("addss       %%xmm0, %%xmm1")                                // xmm3 = d1' = a2*s + b2*s'
                 __ASM_EMIT("cmp         %[count], %[off]")
@@ -70,7 +70,7 @@ namespace lsp
             );
         }
 
-        void biquad_process_x2(float *dst, const float *src, size_t count, biquad_t *f)
+        void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f)
         {
             ARCH_X86_ASM
             (
@@ -80,17 +80,17 @@ namespace lsp
 
                 // Start loop
                 __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0 = s ? ? ?
-                __ASM_EMIT("movlps      " BIQUAD_XN_SOFF " + 0x00(%[f]), %%xmm1")   // xmm1 = a0
-                __ASM_EMIT("movlps      " BIQUAD_XN_SOFF " + 0x08(%[f]), %%xmm2")   // xmm2 = a1
+                __ASM_EMIT("movlps      " LSP_DSP_BIQUAD_XN_SOFF " + 0x00(%[f]), %%xmm1")   // xmm1 = a0
+                __ASM_EMIT("movlps      " LSP_DSP_BIQUAD_XN_SOFF " + 0x08(%[f]), %%xmm2")   // xmm2 = a1
                 __ASM_EMIT("mulss       %%xmm0, %%xmm1")                            // xmm1 = a0*s
-                __ASM_EMIT("movlps      " BIQUAD_XN_SOFF " + 0x10(%[f]), %%xmm3")   // xmm3 = a2
+                __ASM_EMIT("movlps      " LSP_DSP_BIQUAD_XN_SOFF " + 0x10(%[f]), %%xmm3")   // xmm3 = a2
                 __ASM_EMIT("mulss       %%xmm0, %%xmm2")                            // xmm2 = a1*s
-                __ASM_EMIT("movlps      " BIQUAD_XN_SOFF " + 0x18(%[f]), %%xmm4")   // xmm4 = b1
+                __ASM_EMIT("movlps      " LSP_DSP_BIQUAD_XN_SOFF " + 0x18(%[f]), %%xmm4")   // xmm4 = b1
                 __ASM_EMIT("addss       0x00(%[f]), %%xmm1")                        // xmm1 = s' = a0*s + d0
                 __ASM_EMIT("mulss       %%xmm0, %%xmm3")                            // xmm3 = a2*s
                 __ASM_EMIT("mulss       %%xmm1, %%xmm4")                            // xmm4 = b1*s'
                 __ASM_EMIT("movaps      %%xmm1, %%xmm0")                            // xmm0 = s'
-                __ASM_EMIT("mulss       " BIQUAD_XN_SOFF " + 0x20(%[f]), %%xmm1")   // xmm1 = b2*s'
+                __ASM_EMIT("mulss       " LSP_DSP_BIQUAD_XN_SOFF " + 0x20(%[f]), %%xmm1")   // xmm1 = b2*s'
                 __ASM_EMIT("shufps      $0xb1, %%xmm0, %%xmm0")                     // shift
                 __ASM_EMIT("addss       %%xmm4, %%xmm2")                            // xmm2 = a1*s + b1*s'
                 __ASM_EMIT("addss       %%xmm3, %%xmm1")                            // xmm1 = d1' = a2*s + b2*s'
@@ -106,11 +106,11 @@ namespace lsp
                 __ASM_EMIT(".align      16")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("movss       (%[src]), %%xmm4")                          // xmm4 = s0
-                __ASM_EMIT("movlps      " BIQUAD_XN_SOFF " + 0x00(%[f]), %%xmm1")   // xmm1 = a0 i0
+                __ASM_EMIT("movlps      " LSP_DSP_BIQUAD_XN_SOFF " + 0x00(%[f]), %%xmm1")   // xmm1 = a0 i0
                 __ASM_EMIT("movss       %%xmm4, %%xmm0")                            // xmm0 = s0 s1
-                __ASM_EMIT("movups      " BIQUAD_XN_SOFF " + 0x08(%[f]), %%xmm2")   // xmm2 = a1 i1 a2 i2
+                __ASM_EMIT("movups      " LSP_DSP_BIQUAD_XN_SOFF " + 0x08(%[f]), %%xmm2")   // xmm2 = a1 i1 a2 i2
                 __ASM_EMIT("movlhps     %%xmm0, %%xmm0")                            // xmm0 = s0 s1 s0 s1
-                __ASM_EMIT("movups      " BIQUAD_XN_SOFF " + 0x18(%[f]), %%xmm3")   // xmm3 = b1 j1 b2 j2
+                __ASM_EMIT("movups      " LSP_DSP_BIQUAD_XN_SOFF " + 0x18(%[f]), %%xmm3")   // xmm3 = b1 j1 b2 j2
                 __ASM_EMIT("mulps       %%xmm0, %%xmm2")                            // xmm2 = a1*s0 i1*s1 a2*s0 i2*s1
                 __ASM_EMIT("mulps       %%xmm1, %%xmm0")                            // xmm0 = a0*s0 i0*s1
                 __ASM_EMIT("addps       %%xmm6, %%xmm0")                            // xmm0 = s0' s1' = d0+a0*s0 e0+i0*s1
@@ -129,17 +129,17 @@ namespace lsp
                 // Last step
                 __ASM_EMIT("2:")
                 __ASM_EMIT("shufps      $0xb1, %%xmm0, %%xmm0")                     // shift
-                __ASM_EMIT("movss       " BIQUAD_XN_SOFF " + 0x04(%[f]), %%xmm1")   // xmm1 = a0
-                __ASM_EMIT("movss       " BIQUAD_XN_SOFF " + 0x0c(%[f]), %%xmm2")   // xmm2 = a1
+                __ASM_EMIT("movss       " LSP_DSP_BIQUAD_XN_SOFF " + 0x04(%[f]), %%xmm1")   // xmm1 = a0
+                __ASM_EMIT("movss       " LSP_DSP_BIQUAD_XN_SOFF " + 0x0c(%[f]), %%xmm2")   // xmm2 = a1
                 __ASM_EMIT("mulss       %%xmm0, %%xmm1")                            // xmm1 = a0*s
-                __ASM_EMIT("movss       " BIQUAD_XN_SOFF " + 0x14(%[f]), %%xmm3")   // xmm3 = a2
+                __ASM_EMIT("movss       " LSP_DSP_BIQUAD_XN_SOFF " + 0x14(%[f]), %%xmm3")   // xmm3 = a2
                 __ASM_EMIT("mulss       %%xmm0, %%xmm2")                            // xmm2 = a1*s
-                __ASM_EMIT("movss       " BIQUAD_XN_SOFF " + 0x1c(%[f]), %%xmm4")   // xmm4 = b1
+                __ASM_EMIT("movss       " LSP_DSP_BIQUAD_XN_SOFF " + 0x1c(%[f]), %%xmm4")   // xmm4 = b1
                 __ASM_EMIT("addss       0x04(%[f]), %%xmm1")                        // xmm1 = s' = a0*s + d0
                 __ASM_EMIT("mulss       %%xmm0, %%xmm3")                            // xmm3 = a2*s
                 __ASM_EMIT("mulss       %%xmm1, %%xmm4")                            // xmm4 = b1*s'
                 __ASM_EMIT("movaps      %%xmm1, %%xmm0")                            // xmm0 = s'
-                __ASM_EMIT("mulss      " BIQUAD_XN_SOFF " + 0x24(%[f]), %%xmm1")    // xmm1 = b2*s'
+                __ASM_EMIT("mulss      " LSP_DSP_BIQUAD_XN_SOFF " + 0x24(%[f]), %%xmm1")    // xmm1 = b2*s'
                 __ASM_EMIT("movss       %%xmm0, (%[dst])")
                 __ASM_EMIT("addps       %%xmm4, %%xmm2")                            // xmm2 = a1*s + b1*s'
                 __ASM_EMIT("addps       %%xmm3, %%xmm1")                            // xmm3 = d1' = a2*s + b2*s'
@@ -158,7 +158,14 @@ namespace lsp
             );
         }
 
-        void biquad_process_x4(float *dst, const float *src, size_t count, biquad_t *f)
+        IF_ARCH_X86(
+            static const uint32_t biquad_const[] __lsp_aligned16 =
+            {
+                0xffffffff, 0, 0, 0
+            };
+        );
+
+        void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f)
         {
             IF_ARCH_X86(
                 float   MASK[4] __lsp_aligned16;
@@ -190,14 +197,14 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            // xmm2     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            // xmm3     = s
-                __ASM_EMIT("mulps       0x00 + " BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
-                __ASM_EMIT("mulps       0x10 + " BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
+                __ASM_EMIT("mulps       0x00 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
+                __ASM_EMIT("mulps       0x10 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
                 __ASM_EMIT("addps       %%xmm6, %%xmm1")                            // xmm1     = s*a0+d0 = s2
-                __ASM_EMIT("mulps       0x20 + " BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
+                __ASM_EMIT("mulps       0x20 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm4")                            // xmm4     = s2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm5")                            // xmm5     = s2
-                __ASM_EMIT("mulps       0x30 + " BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
-                __ASM_EMIT("mulps       0x40 + " BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
+                __ASM_EMIT("mulps       0x30 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
+                __ASM_EMIT("mulps       0x40 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
                 __ASM_EMIT("addps       %%xmm4, %%xmm2")                            // xmm2     = s*a1 + s2*b1 = p1
                 __ASM_EMIT("addps       %%xmm5, %%xmm3")                            // xmm3     = s*a2 + s2*b2 = p2
 
@@ -235,14 +242,14 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            // xmm2     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            // xmm3     = s
-                __ASM_EMIT("mulps       0x00 + " BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
-                __ASM_EMIT("mulps       0x10 + " BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
+                __ASM_EMIT("mulps       0x00 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
+                __ASM_EMIT("mulps       0x10 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
                 __ASM_EMIT("addps       %%xmm6, %%xmm1")                            // xmm1     = s*a0+d0 = s2
-                __ASM_EMIT("mulps       0x20 + " BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
+                __ASM_EMIT("mulps       0x20 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm4")                            // xmm4     = s2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm5")                            // xmm5     = s2
-                __ASM_EMIT("mulps       0x30 + " BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
-                __ASM_EMIT("mulps       0x40 + " BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
+                __ASM_EMIT("mulps       0x30 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
+                __ASM_EMIT("mulps       0x40 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
                 __ASM_EMIT("addps       %%xmm4, %%xmm2")                            // xmm2     = s*a1 + s2*b1 = p1
                 __ASM_EMIT("addps       %%xmm5, %%xmm3")                            // xmm3     = s*a2 + s2*b2 = p2
                 __ASM_EMIT("addps       %%xmm7, %%xmm2")                            // xmm2     = p1 + d1
@@ -270,14 +277,14 @@ namespace lsp
                 __ASM_EMIT("5:")
                 __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            // xmm2     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            // xmm3     = s
-                __ASM_EMIT("mulps       0x00 + " BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
-                __ASM_EMIT("mulps       0x10 + " BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
+                __ASM_EMIT("mulps       0x00 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
+                __ASM_EMIT("mulps       0x10 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
                 __ASM_EMIT("addps       %%xmm6, %%xmm1")                            // xmm1     = s*a0+d0 = s2
-                __ASM_EMIT("mulps       0x20 + " BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
+                __ASM_EMIT("mulps       0x20 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm4")                            // xmm4     = s2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm5")                            // xmm5     = s2
-                __ASM_EMIT("mulps       0x30 + " BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
-                __ASM_EMIT("mulps       0x40 + " BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
+                __ASM_EMIT("mulps       0x30 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
+                __ASM_EMIT("mulps       0x40 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
                 __ASM_EMIT("addps       %%xmm4, %%xmm2")                            // xmm2     = s*a1 + s2*b1 = p1
                 __ASM_EMIT("addps       %%xmm5, %%xmm3")                            // xmm3     = s*a2 + s2*b2 = p2
 
@@ -318,7 +325,7 @@ namespace lsp
                 : [dst] "+r" (dst), [src] "+r" (src), [mask] "=&r"(mask), [count] "+r" (count)
                 :
                   [f] "r" (f),
-                  [X_MASK] "m" (X_MASK0001),
+                  [X_MASK] "m" (biquad_const),
                   [MASK] "m" (MASK)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
@@ -326,7 +333,7 @@ namespace lsp
             );
         }
 
-        void biquad_process_x8(float *dst, const float *src, size_t count, biquad_t *f)
+        void biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f)
         {
             IF_ARCH_X86(
                 float   MASK[4] __lsp_aligned16;
@@ -374,14 +381,14 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            // xmm2     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            // xmm3     = s
-                __ASM_EMIT("mulps       0x00 + " BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
-                __ASM_EMIT("mulps       0x20 + " BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
+                __ASM_EMIT("mulps       0x00 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
+                __ASM_EMIT("mulps       0x20 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
                 __ASM_EMIT("addps       %%xmm6, %%xmm1")                            // xmm1     = s*a0+d0 = s2
-                __ASM_EMIT("mulps       0x40 + " BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
+                __ASM_EMIT("mulps       0x40 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm4")                            // xmm4     = s2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm5")                            // xmm5     = s2
-                __ASM_EMIT("mulps       0x60 + " BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
-                __ASM_EMIT("mulps       0x80 + " BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
+                __ASM_EMIT("mulps       0x60 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
+                __ASM_EMIT("mulps       0x80 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
                 __ASM_EMIT("addps       %%xmm4, %%xmm2")                            // xmm2     = s*a1 + s2*b1 = p1
                 __ASM_EMIT("addps       %%xmm5, %%xmm3")                            // xmm3     = s*a2 + s2*b2 = p2
 
@@ -419,14 +426,14 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            // xmm2     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            // xmm3     = s
-                __ASM_EMIT("mulps       0x00 + " BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
-                __ASM_EMIT("mulps       0x20 + " BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
+                __ASM_EMIT("mulps       0x00 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
+                __ASM_EMIT("mulps       0x20 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
                 __ASM_EMIT("addps       %%xmm6, %%xmm1")                            // xmm1     = s*a0+d0 = s2
-                __ASM_EMIT("mulps       0x40 + " BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
+                __ASM_EMIT("mulps       0x40 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm4")                            // xmm4     = s2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm5")                            // xmm5     = s2
-                __ASM_EMIT("mulps       0x60 + " BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
-                __ASM_EMIT("mulps       0x80 + " BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
+                __ASM_EMIT("mulps       0x60 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
+                __ASM_EMIT("mulps       0x80 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
                 __ASM_EMIT("addps       %%xmm4, %%xmm2")                            // xmm2     = s*a1 + s2*b1 = p1
                 __ASM_EMIT("addps       %%xmm5, %%xmm3")                            // xmm3     = s*a2 + s2*b2 = p2
                 __ASM_EMIT("addps       %%xmm7, %%xmm2")                            // xmm2     = p1 + d1
@@ -454,14 +461,14 @@ namespace lsp
                 __ASM_EMIT("5:")
                 __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            // xmm2     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            // xmm3     = s
-                __ASM_EMIT("mulps       0x00 + " BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
-                __ASM_EMIT("mulps       0x20 + " BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
+                __ASM_EMIT("mulps       0x00 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
+                __ASM_EMIT("mulps       0x20 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
                 __ASM_EMIT("addps       %%xmm6, %%xmm1")                            // xmm1     = s*a0+d0 = s2
-                __ASM_EMIT("mulps       0x40 + " BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
+                __ASM_EMIT("mulps       0x40 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm4")                            // xmm4     = s2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm5")                            // xmm5     = s2
-                __ASM_EMIT("mulps       0x60 + " BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
-                __ASM_EMIT("mulps       0x80 + " BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
+                __ASM_EMIT("mulps       0x60 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
+                __ASM_EMIT("mulps       0x80 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
                 __ASM_EMIT("addps       %%xmm4, %%xmm2")                            // xmm2     = s*a1 + s2*b1 = p1
                 __ASM_EMIT("addps       %%xmm5, %%xmm3")                            // xmm3     = s*a2 + s2*b2 = p2
 
@@ -525,14 +532,14 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            // xmm2     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            // xmm3     = s
-                __ASM_EMIT("mulps       0x10 + " BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
-                __ASM_EMIT("mulps       0x30 + " BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
+                __ASM_EMIT("mulps       0x10 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
+                __ASM_EMIT("mulps       0x30 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
                 __ASM_EMIT("addps       %%xmm6, %%xmm1")                            // xmm1     = s*a0+d0 = s2
-                __ASM_EMIT("mulps       0x50 + " BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
+                __ASM_EMIT("mulps       0x50 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm4")                            // xmm4     = s2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm5")                            // xmm5     = s2
-                __ASM_EMIT("mulps       0x70 + " BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
-                __ASM_EMIT("mulps       0x90 + " BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
+                __ASM_EMIT("mulps       0x70 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
+                __ASM_EMIT("mulps       0x90 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
                 __ASM_EMIT("addps       %%xmm4, %%xmm2")                            // xmm2     = s*a1 + s2*b1 = p1
                 __ASM_EMIT("addps       %%xmm5, %%xmm3")                            // xmm3     = s*a2 + s2*b2 = p2
 
@@ -570,14 +577,14 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            // xmm2     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            // xmm3     = s
-                __ASM_EMIT("mulps       0x10 + " BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
-                __ASM_EMIT("mulps       0x30 + " BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
+                __ASM_EMIT("mulps       0x10 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
+                __ASM_EMIT("mulps       0x30 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
                 __ASM_EMIT("addps       %%xmm6, %%xmm1")                            // xmm1     = s*a0+d0 = s2
-                __ASM_EMIT("mulps       0x50 + " BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
+                __ASM_EMIT("mulps       0x50 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm4")                            // xmm4     = s2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm5")                            // xmm5     = s2
-                __ASM_EMIT("mulps       0x70 + " BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
-                __ASM_EMIT("mulps       0x90 + " BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
+                __ASM_EMIT("mulps       0x70 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
+                __ASM_EMIT("mulps       0x90 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
                 __ASM_EMIT("addps       %%xmm4, %%xmm2")                            // xmm2     = s*a1 + s2*b1 = p1
                 __ASM_EMIT("addps       %%xmm5, %%xmm3")                            // xmm3     = s*a2 + s2*b2 = p2
                 __ASM_EMIT("addps       %%xmm7, %%xmm2")                            // xmm2     = p1 + d1
@@ -605,14 +612,14 @@ namespace lsp
                 __ASM_EMIT("5:")
                 __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            // xmm2     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            // xmm3     = s
-                __ASM_EMIT("mulps       0x10 + " BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
-                __ASM_EMIT("mulps       0x30 + " BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
+                __ASM_EMIT("mulps       0x10 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm1")   // xmm1     = s*a0
+                __ASM_EMIT("mulps       0x30 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm2")   // xmm2     = s*a1
                 __ASM_EMIT("addps       %%xmm6, %%xmm1")                            // xmm1     = s*a0+d0 = s2
-                __ASM_EMIT("mulps       0x50 + " BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
+                __ASM_EMIT("mulps       0x50 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm3")   // xmm3     = s*a2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm4")                            // xmm4     = s2
                 __ASM_EMIT("movaps      %%xmm1, %%xmm5")                            // xmm5     = s2
-                __ASM_EMIT("mulps       0x70 + " BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
-                __ASM_EMIT("mulps       0x90 + " BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
+                __ASM_EMIT("mulps       0x70 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm4")   // xmm4     = s2*b1
+                __ASM_EMIT("mulps       0x90 + " LSP_DSP_BIQUAD_XN_SOFF "(%[f]), %%xmm5")   // xmm5     = s2*b2
                 __ASM_EMIT("addps       %%xmm4, %%xmm2")                            // xmm2     = s*a1 + s2*b1 = p1
                 __ASM_EMIT("addps       %%xmm5, %%xmm3")                            // xmm3     = s*a2 + s2*b2 = p2
 
@@ -656,7 +663,7 @@ namespace lsp
                 :
                   [f] "r" (f),
                   [context] "o" (context),
-                  [X_MASK] "m" (X_MASK0001),
+                  [X_MASK] "m" (biquad_const),
                   [MASK] "m" (MASK)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",

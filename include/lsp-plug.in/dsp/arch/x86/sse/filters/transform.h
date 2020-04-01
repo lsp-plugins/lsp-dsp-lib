@@ -127,7 +127,15 @@ namespace lsp
 {
     namespace sse
     {
-        void bilinear_transform_x1(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count)
+        IF_ARCH_X86(
+            static const uint32_t f_transform_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0x3f800000),   // 1.0
+                LSP_DSP_VEC4(0x80000000)    // signbit
+            };
+        );
+
+        void bilinear_transform_x1(dsp::biquad_x1_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count)
         {
             float x1, x2, x3, x4, x5, x6, x7;
             float DATA[12] __lsp_aligned16;
@@ -276,13 +284,13 @@ namespace lsp
                   [count] "+r" (count),
                   [bc] "+r" (bc),
                   [bf] "+r" (bf)
-                : [ONE] "m" (ONE),
+                : [ONE] "m" (f_transform_const),
                   [DATA] "o" (DATA)
                 : "cc", "memory"
             );
         }
 
-        void bilinear_transform_x2(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count)
+        void bilinear_transform_x2(dsp::biquad_x2_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count)
         {
             float x1, x2, x3, x4, x5, x6, x7;
             float N[4] __lsp_aligned16;
@@ -410,13 +418,13 @@ namespace lsp
                   [count] "+r" (count),
                   [bc] "+r" (bc),
                   [bf] "+r" (bf)
-                : [ONE] "m" (ONE),
+                : [ONE] "m" (f_transform_const),
                   [N] "m" (N)
                 : "cc", "memory"
             );
         }
 
-        void bilinear_transform_x4(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count)
+        void bilinear_transform_x4(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count)
         {
             float x1, x2, x3, x4, x5, x6, x7;
             float N[4] __lsp_aligned16;
@@ -485,13 +493,13 @@ namespace lsp
                   [count] "+r" (count),
                   [bc] "+r" (bc),
                   [bf] "+r" (bf)
-                : [ONE] "m" (ONE),
+                : [ONE] "m" (f_transform_const),
                   [N] "m" (N)
                 : "cc", "memory"
             );
         }
 
-        void bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count)
+        void bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count)
         {
             float x1, x2, x3, x4, x5, x6, x7;
             float N[4] __lsp_aligned16;
@@ -577,7 +585,7 @@ namespace lsp
                   [count] "+r" (count),
                   [bc] "+r" (bc),
                   [bf] "+r" (bf)
-                : [ONE] "m" (ONE),
+                : [ONE] "m" (f_transform_const),
                   [N] "o" (N)
                 : "cc", "memory"
             );
@@ -672,11 +680,11 @@ namespace lsp
             }
         }
 
-        void matched_transform_x1(biquad_x1_t *bf, f_cascade_t *bc, float kf, float td, size_t count)
+        void matched_transform_x1(dsp::biquad_x1_t *bf, dsp::f_cascade_t *bc, float kf, float td, size_t count)
         {
             // Find roots for top and bottom polynoms
-            matched_solve(bc->t, kf, td, count, sizeof(f_cascade_t)/sizeof(float));
-            matched_solve(bc->b, kf, td, count, sizeof(f_cascade_t)/sizeof(float));
+            matched_solve(bc->t, kf, td, count, sizeof(dsp::f_cascade_t)/sizeof(float));
+            matched_solve(bc->b, kf, td, count, sizeof(dsp::f_cascade_t)/sizeof(float));
 
             double w        = kf * td * 0.1;
             float cos_w     = cos(w);
@@ -790,7 +798,7 @@ namespace lsp
                 __ASM_EMIT("addps       %[x3], %[x4]")          // x4 = re = b[0]*cos_2w + b[1]*cos_w + b[2]
                 __ASM_EMIT("mulps       %[x2], %[x2]")          // x2 = im*im
                 __ASM_EMIT("mulps       %[x4], %[x4]")          // x4 = re*re
-                __ASM_EMIT("movaps      %[ONE], %[x0]")         // x0 = 1
+                __ASM_EMIT("movaps      0x00 + %[CC], %[x0]")   // x0 = 1
                 __ASM_EMIT("addps       %[x2], %[x4]")          // x4 = re*re + im*im
                 __ASM_EMIT("divps       %[x5], %[x0]")          // x0 = N2 = 1/b[0]
                 __ASM_EMIT("sqrtps      %[x4], %[x1]")          // x1 = ab = sqrt(re*re + im*im)
@@ -824,7 +832,7 @@ namespace lsp
                 __ASM_EMIT("movaps      %[x7], 0x60(%[bf])")
 
                 // Bottom part
-                __ASM_EMIT("xorps       %[ISIGN], %[x0]")       // x0 = -N2
+                __ASM_EMIT("xorps       0x10 + %[CC], %[x0]")   // x0 = -N2
                 __ASM_EMIT("movaps      0x10(%[bf]), %[x2]")    // x2 = b[1]
                 __ASM_EMIT("movaps      0x30(%[bf]), %[x3]")    // x3 = b[2]
 
@@ -898,7 +906,7 @@ namespace lsp
                 __ASM_EMIT("addss       %[x3], %[x4]")          // x4 = re = b[0]*cos_2w + b[1]*cos_w + b[2]
                 __ASM_EMIT("mulss       %[x2], %[x2]")          // x2 = im*im
                 __ASM_EMIT("mulss       %[x4], %[x4]")          // x4 = re*re
-                __ASM_EMIT("movaps      %[ONE], %[x0]")         // x0 = 1
+                __ASM_EMIT("movaps      0x00 + %[CC], %[x0]")   // x0 = 1
                 __ASM_EMIT("addss       %[x2], %[x4]")          // x4 = re*re + im*im
                 __ASM_EMIT("divss       %[x5], %[x0]")          // x0 = N2 = 1/b[0]
                 __ASM_EMIT("sqrtss      %[x4], %[x1]")          // x1 = ab = sqrt(re*re + im*im)
@@ -920,7 +928,7 @@ namespace lsp
                 __ASM_EMIT("movaps      %[x2], 0x00(%[bf])")
 
                 // Bottom part
-                __ASM_EMIT("xorps       %[ISIGN], %[x0]")       // x0 = -N2
+                __ASM_EMIT("xorps       0x10 + %[CC], %[x0]")   // x0 = -N2
                 __ASM_EMIT("movss       0x14(%[bc]), %[x2]")    // x2 = b[1]
                 __ASM_EMIT("movss       0x18(%[bc]), %[x3]")    // x3 = b[2]
 
@@ -941,8 +949,7 @@ namespace lsp
                   [count] "+r" (count),
                   [bc] "+r" (bc),
                   [bf] "+r" (bf)
-                : [ONE] "m" (ONE),
-                  [ISIGN] "m" (X_ISIGN),
+                : [CC] "o" (f_transform_const),
                   [COSW] "m" (COSW),
                   [SINW] "m" (SINW),
                   [COS2W] "m" (COS2W),

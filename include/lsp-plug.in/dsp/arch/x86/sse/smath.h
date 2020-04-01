@@ -68,6 +68,15 @@ namespace lsp
             return res;
         }
 
+        IF_ARCH_X86(
+            static const uint32_t irootf_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0x3f800000),
+                LSP_DSP_VEC4(0x7fffffff),
+                LSP_DSP_VEC4(0x3727c5ac)
+            };
+        );
+
         float irootf(float x, int deg)
         {
             float a, tmp, k, sign, xp;
@@ -92,9 +101,9 @@ namespace lsp
 
                 // Prepare calculations
                 __ASM_EMIT("2:")
-                __ASM_EMIT("movaps      %[X_ONE], %[a]")
+                __ASM_EMIT("movaps      0x00 + %[CC], %[a]")
                 __ASM_EMIT("cvtsi2ss    %[deg], %[tmp]")
-                __ASM_EMIT("movaps      %[X_SIGN], %[sign]")
+                __ASM_EMIT("movaps      0x10 + %[CC], %[sign]")
                 __ASM_EMIT("divss       %[tmp], %[a]")
                 __ASM_EMIT("dec         %[deg]")
                 __ASM_EMIT("cvtsi2ss    %[deg], %[k]")
@@ -104,7 +113,7 @@ namespace lsp
                 // Newton method
                 __ASM_EMIT("1:")
                     __ASM_EMIT("movaps      %[x], %[xp]")       // xp = x
-                    __ASM_EMIT("movaps      %[X_ONE], %[tres]") // tres = 1
+                    __ASM_EMIT("movaps      0x00 + %[CC], %[tres]") // tres = 1
                     __ASM_EMIT("movaps      %[x], %[tx]")       // tx = x
                     __ASM_EMIT("mov         %[deg], %[tdeg]")   // tdeg = deg
 
@@ -131,7 +140,7 @@ namespace lsp
                     // Estimate tolerance
                     __ASM_EMIT("movaps      %[x], %[tx]")           // tx = x
                     __ASM_EMIT("subss       %[x], %[xp]")           // xp = xp - x
-                    __ASM_EMIT("mulss       %[X_TOL], %[tx]")       // tx = x * TOL
+                    __ASM_EMIT("mulss       0x20 + %[CC], %[tx]")   // tx = x * TOL
                     __ASM_EMIT("andps       %[sign], %[x]")         // xp = abs(xp - x)
                     __ASM_EMIT("andps       %[sign], %[tx]")        // xp = abs(xp - x)
                     __ASM_EMIT("ucomiss     %[tx], %[xp]")          // abs(xp - x) <> x * TOL
@@ -142,9 +151,7 @@ namespace lsp
                 : [x] "+x" (x), [a] "=&x" (a), [tmp] "=&x" (tmp), [k] "=&x" (k),
                   [sign] "=&x" (sign), [xp] "=&x" (xp), [tres] "=&x" (tres), [tx] "=&x" (tx),
                   [deg] "+r" (deg), [tdeg] "=&r" (tdeg)
-                : [X_SIGN] "m" (X_SIGN),
-                  [X_ONE] "m" (ONE),
-                  [X_TOL] "m" (X_3D_TOLERANCE)
+                : [CC] "o" (irootf_const)
                 : "cc"
             );
 

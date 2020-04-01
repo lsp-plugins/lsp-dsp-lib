@@ -303,10 +303,33 @@ namespace lsp
 {
     namespace sse
     {
-        static const float IDENTITY0[4] __lsp_aligned16 = { 1.0f, 0.0f, 0.0f, 0.0f };
-        static const float IDENTITY1[4] __lsp_aligned16 = { 0.0f, 1.0f, 0.0f, 0.0f };
-        static const float IDENTITY2[4] __lsp_aligned16 = { 0.0f, 0.0f, 1.0f, 0.0f };
-        static const float IDENTITY3[4] __lsp_aligned16 = { 0.0f, 0.0f, 0.0f, 1.0f };
+        using namespace dsp;
+
+        IF_ARCH_X86(
+            static const float IDENTITY0[4] __lsp_aligned16 = { 1.0f, 0.0f, 0.0f, 0.0f };
+            static const float IDENTITY1[4] __lsp_aligned16 = { 0.0f, 1.0f, 0.0f, 0.0f };
+            static const float IDENTITY2[4] __lsp_aligned16 = { 0.0f, 0.0f, 1.0f, 0.0f };
+            static const float IDENTITY3[4] __lsp_aligned16 = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+            static const uint32_t X_MASK0001[] __lsp_aligned16  = { 0xffffffff, 0, 0, 0 };
+            static const uint32_t X_MASK0111[] __lsp_aligned16  = { 0xffffffff, 0xffffffff, 0xffffffff, 0 };
+            static const uint32_t X_SMASK0010[] __lsp_aligned16 = { 0, 0x80000000, 0, 0 };
+            static const uint32_t X_SMASK0001[] __lsp_aligned16 = { 0x80000000, 0, 0, 0 };
+            static const uint32_t X_SMASK0111[] __lsp_aligned16 = { 0x80000000, 0x80000000, 0x80000000, 0 };
+
+            static const uint32_t X_3DMASK[] __lsp_aligned16    = { 0xffffffff, 0xffffffff, 0xffffffff, 0 };
+            static const float X_3DPOINT[] __lsp_aligned16      = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+            static const float X_3D_TOLERANCE[] __lsp_aligned16 = { LSP_DSP_VEC4(DSP_3D_TOLERANCE) };
+            static const float X_3D_MTOLERANCE[] __lsp_aligned16 = { LSP_DSP_VEC4(-DSP_3D_TOLERANCE) };
+
+            static const float ONE[] __lsp_aligned16            = { LSP_DSP_VEC4(1.0f) };
+            static const float X_MINUS_ONE[] __lsp_aligned16    = { LSP_DSP_VEC4(-1.0f) };
+            static const uint32_t IONE[] __lsp_aligned16        = { LSP_DSP_VEC4(1) };
+            static const uint32_t X_ISIGN[] __lsp_aligned16     = { LSP_DSP_VEC4(0x80000000) };
+
+            static const uint32_t ICULL3[] __lsp_aligned16      = { 0x01, 0x04, 0x10, 0 };
+        )
 
         void init_point_xyz(point3d_t *p, float x, float y, float z)
         {
@@ -1008,7 +1031,7 @@ namespace lsp
                 :
                 : [m] "r" (m), [one] "m" (ONE)
                 : "memory",
-                    "%xmm0", "%xmm1"
+                  "%xmm0", "%xmm1"
             );
         }
 

@@ -326,7 +326,7 @@ namespace lsp
                 __ASM_EMIT("2000:") \
                 \
                 : [src] "+r" (src), [count] "+r" (count), "=Yz" (result) \
-                : [mask] "m" (X_SIGN) \
+                : [mask] "m" (minmax_const) \
                 : "cc", \
                     "%xmm1", "%xmm2", "%xmm3", \
                     "%xmm4", "%xmm5", "%xmm6", "%xmm7" \
@@ -334,6 +334,12 @@ namespace lsp
             \
             return result;
 
+        IF_ARCH_X86(
+            static const uint32_t minmax_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0x7fffffff)
+            };
+        );
 
         float abs_min(const float *src, size_t count)
         {
@@ -452,7 +458,7 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm1, 0x00(%[max])")
 
                 : [src] "+r" (src), [count] "+r" (count)
-                : [min] "r" (min), [max] "r" (max), [mask] "m" (X_SIGN)
+                : [min] "r" (min), [max] "r" (max), [mask] "m" (minmax_const)
                 : "cc",
                     "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                     "%xmm4", "%xmm5", "%xmm6", "%xmm7"

@@ -16,7 +16,7 @@ namespace lsp
 {
     namespace sse
     {
-        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const biquad_x1_t *f)
+        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f)
         {
             IF_ARCH_X86(size_t off);
 
@@ -73,7 +73,7 @@ namespace lsp
         }
 
 
-        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const biquad_x2_t *f)
+        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f)
         {
             ARCH_X86_ASM
             (
@@ -163,7 +163,14 @@ namespace lsp
             );
         }
 
-        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const biquad_x4_t *f)
+        IF_ARCH_X86(
+            static const uint32_t dyn_biquad_const[] __lsp_aligned16 =
+            {
+                0xffffffff, 0, 0, 0
+            };
+        );
+
+        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f)
         {
             IF_ARCH_X86(
                 float   MASK[4] __lsp_aligned16;
@@ -330,14 +337,14 @@ namespace lsp
                   [f] "+r" (f), [mask] "=&r"(mask),
                   [count] __ASM_ARG_RW (count)
                 : [d] "r" (d),
-                  [X_MASK] "m" (X_MASK0001),
+                  [X_MASK] "m" (dyn_biquad_const),
                   [MASK] "m" (MASK)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
-        void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f)
+        void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f)
         {
             float   MASK[4] __lsp_aligned16;
             size_t mask;
@@ -685,7 +692,7 @@ namespace lsp
                 : [context] "o" (context),
                   __IF_64([d] "r" (d),)
                   __IF_32([d] "g" (d),)
-                  [X_MASK] "m" (X_MASK0001),
+                  [X_MASK] "m" (dyn_biquad_const),
                   [MASK] "m" (MASK)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",

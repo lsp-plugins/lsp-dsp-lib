@@ -16,6 +16,13 @@ namespace lsp
 {
     namespace sse
     {
+        IF_ARCH_X86(
+            static const float msmatrix_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0.5f)
+            };
+        );
+
         void lr_to_ms(float *m, float *s, const float *l, const float *r, size_t count)
         {
             size_t off;
@@ -95,7 +102,7 @@ namespace lsp
                   __IF_32([count] "+g" (count))
                 : [left] "r"(l), [right] "r" (r),
                   [mid] "r" (m), [side] "r" (s),
-                  [X_HALF] "m" (X_HALF)
+                  [X_HALF] "m" (msmatrix_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -258,7 +265,7 @@ namespace lsp
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [left] "r"(l), [right] "r" (r),
                   [mid] "r" (m),
-                  [X_HALF] "m" (X_HALF)
+                  [X_HALF] "m" (msmatrix_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -275,7 +282,7 @@ namespace lsp
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [left] "r"(l), [right] "r" (r),
                   [side] "r" (s),
-                  [X_HALF] "m" (X_HALF)
+                  [X_HALF] "m" (msmatrix_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

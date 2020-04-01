@@ -204,6 +204,13 @@ namespace lsp
             return result;
         }
 
+        IF_ARCH_X86(
+            static const uint32_t h_abs_dotp_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0x7fffffff)
+            };
+        );
+
         float h_abs_dotp(const float *a, const float *b, size_t count)
         {
             IF_ARCH_X86(
@@ -275,7 +282,7 @@ namespace lsp
                 : [count] "+r" (count), [off] "=&r" (off),
                   "=Yz" (result)
                 : [a] "r" (a), [b] "r" (b),
-                  [SIGN] "o" (X_SIGN)
+                  [SIGN] "o" (h_abs_dotp_const)
                 : "cc", "memory",
                   "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

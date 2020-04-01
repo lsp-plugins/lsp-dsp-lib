@@ -16,7 +16,7 @@ namespace lsp
 {
     namespace sse
     {
-        IF_ARCH_X64(
+        IF_ARCH_X86(
             static const float lanczos_2x2[] __lsp_aligned16 =
             {
                 0.6203830132406946f, // k0

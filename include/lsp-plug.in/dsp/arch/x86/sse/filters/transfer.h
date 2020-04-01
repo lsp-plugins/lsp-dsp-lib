@@ -85,7 +85,7 @@ namespace lsp
             __ASM_EMIT("addps       %%xmm4, %%xmm1")            /* x1   = a_re * b_im + a_im * b_re */ \
             __ASM_EMIT("subps       %%xmm5, %%xmm0")            /* x0   = a_re * b_re - a_im * b_im */
 
-        void filter_transfer_calc_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_calc_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             IF_ARCH_X86( float fp[6*4] __lsp_aligned16; );
 
@@ -138,7 +138,7 @@ namespace lsp
             );
         }
 
-        void filter_transfer_apply_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_apply_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             IF_ARCH_X86( float fp[6*4] __lsp_aligned16; );
 
@@ -243,7 +243,7 @@ namespace lsp
             __ASM_EMIT("unpcklps    %%xmm1, %%xmm0")            /* x0   = r0 i0 r1 i1 */ \
             __ASM_EMIT("unpckhps    %%xmm1, %%xmm2")            /* x2   = r2 i2 r3 i3 */
 
-        void filter_transfer_calc_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_calc_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             IF_ARCH_X86( float fp[6*4] __lsp_aligned16; );
 
@@ -298,7 +298,7 @@ namespace lsp
             );
         }
 
-        void filter_transfer_apply_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_apply_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             IF_ARCH_X86( float fp[6*4] __lsp_aligned16; );
 

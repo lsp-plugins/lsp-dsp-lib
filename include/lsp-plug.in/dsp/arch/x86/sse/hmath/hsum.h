@@ -206,6 +206,13 @@ namespace lsp
             return result;
         }
 
+        IF_ARCH_X86(
+            static const uint32_t h_abs_sum_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0x7fffffff)
+            };
+        );
+
         float h_abs_sum(const float *src, size_t count)
         {
             IF_ARCH_X86(float result);
@@ -277,7 +284,7 @@ namespace lsp
 
                 : [src] "+r" (src), [count] "+r" (count),
                   "=Yz" (result)
-                : [X_SIGN] "m" (X_SIGN)
+                : [X_SIGN] "m" (h_abs_sum_const)
                 : "cc",
                   "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
