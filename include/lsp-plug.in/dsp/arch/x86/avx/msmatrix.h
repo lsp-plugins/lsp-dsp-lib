@@ -16,6 +16,13 @@ namespace lsp
 {
     namespace avx
     {
+        IF_ARCH_X86(
+            static const float msmatrix_const[] __lsp_aligned32 =
+            {
+                LSP_DSP_VEC8(0.5f)
+            };
+        )
+
         void lr_to_ms(float *m, float *s, const float *l, const float *r, size_t count)
         {
             IF_ARCH_X86(size_t off);
@@ -93,7 +100,7 @@ namespace lsp
                 : [off] "=&r" (off), [count] __ASM_ARG_RW(count)
                 : [left] "r"(l), [right] "r" (r),
                   [mid] "r" (m), [side] "r" (s),
-                  [X_HALF] "m" (X_HALF)
+                  [X_HALF] "m" (msmatrix_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -183,7 +190,7 @@ namespace lsp
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [left] "r" (l), [right] "r" (r),
                   [mid] "r" (m),
-                  [X_HALF] "m" (X_HALF)
+                  [X_HALF] "m" (msmatrix_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm6", "%xmm7"
@@ -198,7 +205,7 @@ namespace lsp
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [left] "r" (l), [right] "r" (r),
                   [side] "r" (s),
-                  [X_HALF] "m" (X_HALF)
+                  [X_HALF] "m" (msmatrix_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm6", "%xmm7"

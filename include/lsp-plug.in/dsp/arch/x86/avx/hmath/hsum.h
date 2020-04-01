@@ -299,13 +299,20 @@ namespace lsp
             return result;
         }
 
+        IF_ARCH_X86(
+            static const uint32_t h_abs_const[] __lsp_aligned32 =
+            {
+                LSP_DSP_VEC8(0x7fffffff)
+            };
+        )
+
         float h_abs_sum(const float *src, size_t count)
         {
             IF_ARCH_X86(float result);
             ARCH_X86_ASM
             (
                 __ASM_EMIT("vxorps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vmovaps         %[SIGN], %%ymm2")
+                __ASM_EMIT("vmovaps         %[CC], %%ymm2")
                 __ASM_EMIT("vxorps          %%ymm1, %%ymm1, %%ymm1")
                 __ASM_EMIT("vmovaps         %%ymm2, %%ymm3")
                 __ASM_EMIT("sub             $32, %[count]")
@@ -369,7 +376,7 @@ namespace lsp
                 __ASM_EMIT("10:")
                 : [src] "+r" (src), [count] "+r" (count),
                   [res] "=Yz" (result)
-                : [SIGN] "o" (X_SIGN)
+                : [CC] "o" (h_abs_const)
                 : "cc", "memory",
                   "%xmm1"
             );

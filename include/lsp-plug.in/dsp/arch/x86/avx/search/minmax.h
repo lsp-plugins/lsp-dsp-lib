@@ -119,7 +119,7 @@ namespace lsp
         __ASM_EMIT("jz              10f") \
         /* 32x block */ \
         __ASM_EMIT("vbroadcastss    (%[src]), %%ymm0") \
-        __ASM_EMIT("vmovaps         %[SIGN], %%ymm2") \
+        __ASM_EMIT("vmovaps         %[CC], %%ymm2") \
         __ASM_EMIT("vandps          %%ymm0, %%ymm2, %%ymm0") \
         __ASM_EMIT("sub             $32, %[count]") \
         __ASM_EMIT("vmovaps         %%ymm0, %%ymm1") \
@@ -185,6 +185,13 @@ namespace lsp
         /* end */ \
         __ASM_EMIT("10:")
 
+        IF_ARCH_X86(
+            static const uint32_t minmax_const[] __lsp_aligned32 =
+            {
+                LSP_DSP_VEC8(0x7fffffff)
+            };
+        )
+
         float abs_min(const float *src, size_t count)
         {
             float res = 0.0f;
@@ -192,7 +199,7 @@ namespace lsp
                 AMINMAX_CORE("src", "vmin")
                 : [src] "+r" (src), [count] "+r" (count),
                   [res] "+Yz" (res)
-                : [SIGN] "o" (X_SIGN)
+                : [CC] "o" (minmax_const)
                 : "cc",
                   "%xmm1", "%xmm2",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -208,7 +215,7 @@ namespace lsp
                 AMINMAX_CORE("src", "vmax")
                 : [src] "+r" (src), [count] "+r" (count),
                   [res] "+Yz" (res)
-                : [SIGN] "o" (X_SIGN)
+                : [CC] "o" (minmax_const)
                 : "cc",
                   "%xmm1", "%xmm2",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -324,7 +331,7 @@ namespace lsp
                 __ASM_EMIT("test            %[count], %[count]")
                 __ASM_EMIT("jz              10f")
                 /* 32x block */
-                __ASM_EMIT("vmovaps         %[SIGN], %%ymm2")
+                __ASM_EMIT("vmovaps         %[CC], %%ymm2")
                 __ASM_EMIT("vbroadcastss    (%[src]), %%ymm0")
                 __ASM_EMIT("vandps          %%ymm0, %%ymm2, %%ymm0")
                 __ASM_EMIT("sub             $32, %[count]")
@@ -410,7 +417,7 @@ namespace lsp
                 __ASM_EMIT("vmovss          %%xmm1, 0x00(%[max])")
                 : [src] "+r" (src), [count] "+r" (count)
                 : [min] "r" (min), [max] "r" (max),
-                  [SIGN] "o" (X_SIGN)
+                  [CC] "o" (minmax_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

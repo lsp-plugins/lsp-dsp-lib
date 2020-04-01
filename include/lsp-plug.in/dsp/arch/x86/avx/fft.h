@@ -5,9 +5,6 @@
  *      Author: sadko
  */
 
-#ifndef LSP_PLUG_IN_DSP_ARCH_X86_AVX_FFT_H_
-#define LSP_PLUG_IN_DSP_ARCH_X86_AVX_FFT_H_
-
 #ifndef LSP_PLUG_IN_DSP_ARCH_X86_AVX_IMPL
     #error "This header should not be included directly"
 #endif /* LSP_PLUG_IN_DSP_ARCH_X86_AVX_IMPL */
@@ -261,5 +258,3 @@ namespace lsp
         }
     }
 }
-
-#endif /* LSP_PLUG_IN_DSP_ARCH_X86_AVX_FFT_H_ */

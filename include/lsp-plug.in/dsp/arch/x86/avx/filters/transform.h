@@ -16,7 +16,14 @@ namespace lsp
 {
     namespace avx
     {
-        void bilinear_transform_x1(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count)
+        IF_ARCH_X86(
+            static const float bilinear_transform_const[] __lsp_aligned32 =
+            {
+                LSP_DSP_VEC8(1.0f)
+            };
+        )
+
+        void bilinear_transform_x1(dsp::biquad_x1_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count)
         {
             float DATA[12] __lsp_aligned16;
 
@@ -175,7 +182,7 @@ namespace lsp
 
                 __ASM_EMIT("100:")
                 : [bc] "+r" (bc), [bf] "+r" (bf), [count] "+r" (count)
-                : [ONE] "m" (ONE),
+                : [ONE] "m" (bilinear_transform_const),
                   [kf] "o" (kf),
                   [DATA] "o" (DATA)
                 : "cc", "memory",
@@ -184,7 +191,7 @@ namespace lsp
             );
         }
 
-        void bilinear_transform_x2(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count)
+        void bilinear_transform_x2(dsp::biquad_x2_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count)
         {
             float DATA[4] __lsp_aligned16;
 
@@ -332,7 +339,7 @@ namespace lsp
                 __ASM_EMIT("4:")
 
                 : [bc] "+r" (bc), [bf] "+r" (bf), [count] "+r" (count)
-                : [ONE] "m" (ONE),
+                : [ONE] "m" (bilinear_transform_const),
                   [kf] "o" (kf),
                   [DATA] "o" (DATA)
                 : "cc", "memory",
@@ -341,7 +348,7 @@ namespace lsp
             );
         }
 
-        void bilinear_transform_x4(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count)
+        void bilinear_transform_x4(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count)
         {
             float DATA[4] __lsp_aligned16;
 
@@ -431,7 +438,7 @@ namespace lsp
                 __ASM_EMIT("2:")
 
                 : [bc] "+r" (bc), [bf] "+r" (bf), [count] "+r" (count)
-                : [ONE] "m" (ONE),
+                : [ONE] "m" (bilinear_transform_const),
                   [kf] "o" (kf),
                   [DATA] "o" (DATA)
                 : "cc", "memory",
@@ -440,7 +447,7 @@ namespace lsp
             );
         }
 
-        void x64_bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count)
+        void x64_bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count)
         {
             ARCH_X86_64_ASM(
                 __ASM_EMIT("test            %[count], %[count]")
@@ -532,7 +539,8 @@ namespace lsp
 
                 __ASM_EMIT("100:")
                 : [count] "+r" (count), [bc] "+r" (bc), [bf] "+r" (bf)
-                : [ONE] "m" (ONE), [kf] "m" (kf)
+                : [ONE] "m" (bilinear_transform_const),
+                  [kf] "m" (kf)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",

@@ -5,9 +5,6 @@
  *      Author: sadko
  */
 
-#ifndef LSP_PLUG_IN_DSP_ARCH_X86_AVX_FFT_P_SCRAMBLE_H_
-#define LSP_PLUG_IN_DSP_ARCH_X86_AVX_FFT_P_SCRAMBLE_H_
-
 #ifndef LSP_PLUG_IN_DSP_ARCH_X86_AVX_IMPL
     #error "This header should not be included directly"
 #endif /* LSP_PLUG_IN_DSP_ARCH_X86_AVX_IMPL */
@@ -515,14 +512,12 @@ namespace lsp
                 );
             }
         }
-
-        #undef FFT_PSCRAMBLE_SELF_DIRECT_NAME
-        #undef FFT_PSCRAMBLE_SELF_REVERSE_NAME
-        #undef FFT_PSCRAMBLE_COPY_DIRECT_NAME
-        #undef FFT_PSCRAMBLE_COPY_REVERSE_NAME
-        #undef FFT_TYPE
-        #undef FFT_FMA
     }
 }
 
-#endif /* LSP_PLUG_IN_DSP_ARCH_X86_AVX_FFT_P_SCRAMBLE_H_ */
+#undef FFT_PSCRAMBLE_SELF_DIRECT_NAME
+#undef FFT_PSCRAMBLE_SELF_REVERSE_NAME
+#undef FFT_PSCRAMBLE_COPY_DIRECT_NAME
+#undef FFT_PSCRAMBLE_COPY_REVERSE_NAME
+#undef FFT_TYPE
+#undef FFT_FMA

@@ -16,7 +16,7 @@ namespace lsp
 {
     namespace avx
     {
-        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const biquad_x1_t *f)
+        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f)
         {
             IF_ARCH_X86(size_t off);
 
@@ -68,7 +68,7 @@ namespace lsp
             );
         }
 
-        void dyn_biquad_process_x1_fma3(float *dst, const float *src, float *d, size_t count, const biquad_x1_t *f)
+        void dyn_biquad_process_x1_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f)
         {
             IF_ARCH_X86(size_t off);
 
@@ -118,7 +118,7 @@ namespace lsp
             );
         }
 
-        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const biquad_x2_t *f)
+        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f)
         {
             ARCH_X86_ASM
             (
@@ -193,7 +193,7 @@ namespace lsp
             );
         }
 
-        void dyn_biquad_process_x2_fma3(float *dst, const float *src, float *d, size_t count, const biquad_x2_t *f)
+        void dyn_biquad_process_x2_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f)
         {
             ARCH_X86_ASM
             (
@@ -263,7 +263,14 @@ namespace lsp
             );
         }
 
-        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const biquad_x4_t *f)
+        IF_ARCH_X86(
+            static const uint32_t dyn_biquad_x4_mask[4] __lsp_aligned16 =
+            {
+                0xffffffff, 0, 0, 0
+            };
+        )
+
+        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f)
         {
             IF_ARCH_X86(
                 float   MASK[4] __lsp_aligned16;
@@ -387,7 +394,7 @@ namespace lsp
                   [mask] "=&r"(mask), [f] "+r" (f),
                   [count] __ASM_ARG_RW(count)
                 : [d] "r" (d),
-                  [X_MASK] "m" (BQ_X4MASK),
+                  [X_MASK] "m" (dyn_biquad_x4_mask),
                   [MASK] "m" (MASK)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
@@ -395,7 +402,7 @@ namespace lsp
             );
         }
 
-        void dyn_biquad_process_x4_fma3(float *dst, const float *src, float *d, size_t count, const biquad_x4_t *f)
+        void dyn_biquad_process_x4_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f)
         {
             IF_ARCH_X86(
                 float   MASK[4] __lsp_aligned16;
@@ -512,7 +519,7 @@ namespace lsp
                   [mask] "=&r"(mask), [f] "+r" (f),
                   [count] __ASM_ARG_RW(count)
                 : [d] "r" (d),
-                  [X_MASK] "m" (BQ_X4MASK),
+                  [X_MASK] "m" (dyn_biquad_x4_mask),
                   [MASK] "m" (MASK)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
@@ -520,8 +527,15 @@ namespace lsp
             );
         }
 
+        IF_ARCH_X86(
+            static const uint32_t dyn_biquad_x8_mask[] __lsp_aligned32 =
+            {
+                0xffffffff, 0, 0, 0, 0, 0, 0, 0
+            };
+        )
+
         // This function is tested, works and delivers high performance
-        void x64_dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f)
+        void x64_dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f)
         {
             IF_ARCH_X86_64(size_t mask);
             ARCH_X86_64_ASM
@@ -659,7 +673,7 @@ namespace lsp
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count), [f] "+r" (f),
                   [mask] "=&r"(mask)
                 : [d] "r" (d),
-                  [X_MASK] "m" (X_MASK0001)
+                  [X_MASK] "m" (dyn_biquad_x8_mask)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -668,7 +682,7 @@ namespace lsp
         }
 
         // This function is FMA3 implementation of biquad_process_x8
-        void dyn_biquad_process_x8_fma3(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f)
+        void dyn_biquad_process_x8_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f)
         {
             IF_ARCH_X86(size_t mask);
             ARCH_X86_ASM
@@ -799,9 +813,10 @@ namespace lsp
                   [mask] "=&r"(mask),
                   [count] __ASM_ARG_RW(count)
                 : [d] "r" (d),
-                  [X_MASK] "m" (X_MASK0001)
+                  [X_MASK] "m" (dyn_biquad_x8_mask)
                 : "cc", "memory",
-                  "%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
     }

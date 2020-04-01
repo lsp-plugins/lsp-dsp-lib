@@ -16,7 +16,7 @@ namespace lsp
 {
     namespace avx
     {
-        void filter_transfer_calc_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_calc_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             IF_ARCH_X86( float fp[6*8] __lsp_aligned32; );
 
@@ -183,7 +183,7 @@ namespace lsp
             );
         }
 
-        void filter_transfer_apply_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_apply_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             IF_ARCH_X86( float fp[6*8] __lsp_aligned32; );
 
@@ -378,7 +378,7 @@ namespace lsp
             );
         }
 
-        void filter_transfer_calc_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_calc_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             IF_ARCH_X86( float fp[6*8] __lsp_aligned32; );
 
@@ -548,7 +548,7 @@ namespace lsp
             );
         }
 
-        void filter_transfer_apply_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_apply_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             IF_ARCH_X86( float fp[6*8] __lsp_aligned32; );
 
@@ -757,7 +757,7 @@ namespace lsp
             );
         }
 
-        void filter_transfer_calc_ri_fma3(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_calc_ri_fma3(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             IF_ARCH_X86( float fp[6*8] __lsp_aligned32; );
 
@@ -904,7 +904,7 @@ namespace lsp
             );
         }
 
-        void filter_transfer_apply_ri_fma3(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_apply_ri_fma3(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             IF_ARCH_X86( float fp[6*8] __lsp_aligned32; );
 
@@ -1071,7 +1071,7 @@ namespace lsp
             );
         }
 
-        void filter_transfer_calc_pc_fma3(float *dst, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_calc_pc_fma3(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             IF_ARCH_X86( float fp[6*8] __lsp_aligned32; );
 
@@ -1221,7 +1221,7 @@ namespace lsp
             );
         }
 
-        void filter_transfer_apply_pc_fma3(float *dst, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_apply_pc_fma3(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             IF_ARCH_X86( float fp[6*8] __lsp_aligned32; );
 

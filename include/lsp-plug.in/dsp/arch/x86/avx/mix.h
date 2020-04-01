@@ -962,6 +962,7 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
+    #endif
     }
 }
 

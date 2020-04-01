@@ -17,7 +17,7 @@ namespace lsp
     namespace avx
     {
         // Lanczos kernel 2x2: 1 AVX register
-        IF_ARCH_x86(
+        IF_ARCH_X86(
             static const float lanczos_2x2[] __lsp_aligned16 =
             {
                 +0.6203830132406946f,       // k0
@@ -89,7 +89,7 @@ namespace lsp
             );
         }
 
-        IF_ARCH_x86(
+        IF_ARCH_X86(
             static const float lanczos_2x3[] __lsp_aligned16 =
             {
                 +0.0939539981090991f,       // k2
@@ -369,7 +369,7 @@ namespace lsp
         }
 
         // Lanczos kernel 3x3: 9 SSE registers
-        IF_ARCH_x86(
+        IF_ARCH_X86(
             static const float lanczos_3x3[] __lsp_aligned32 =
             {
                 // Shifted by 0 left (head)
@@ -542,7 +542,7 @@ namespace lsp
         }
 
         // Lanczos kernel 4x2: 4 SSE registers
-        IF_ARCH_x86(
+        IF_ARCH_X86(
             static const float lanczos_4x2[] __lsp_aligned32 =
             {
                 +0.0000000000000000f,
@@ -665,7 +665,7 @@ namespace lsp
             );
         }
 
-        IF_ARCH_x86(
+        IF_ARCH_X86(
             static const float lanczos_4x3[] __lsp_aligned32 =
             {
                 +0.0000000000000000f,
@@ -818,7 +818,7 @@ namespace lsp
         }
 
         // Lanczos kernel 6x2: 3 AVX registers
-        IF_ARCH_x86(
+        IF_ARCH_X86(
             static const float lanczos_6x2[] __lsp_aligned32 =
             {
                 +0.0000000000000000f,
@@ -889,7 +889,7 @@ namespace lsp
         }
 
         // Lanczos kernel 6x3: 4 AVX + 1 SSE registers
-        IF_ARCH_x86(
+        IF_ARCH_X86(
             static const float lanczos_6x3[] __lsp_aligned32 =
             {
                 +0.0000000000000000f,
@@ -979,7 +979,7 @@ namespace lsp
         }
 
         // Lanczos kernel 8x2: 4 AVX registers
-        IF_ARCH_x86(
+        IF_ARCH_X86(
             static const float lanczos_8x2[] __lsp_aligned32 =
             {
                 -0.0000000000000000f,
@@ -1125,7 +1125,7 @@ namespace lsp
             );
         }
 
-        IF_ARCH_x86(
+        IF_ARCH_X86(
             static const float lanczos_8x3[] __lsp_aligned32 =
             {
                 +0.0000000000000000f,

@@ -239,6 +239,13 @@ namespace lsp
             return result;
         }
 
+        IF_ARCH_X86(
+            static const uint32_t h_abs_dotp_const[] __lsp_aligned32 =
+            {
+                LSP_DSP_VEC8(0x7fffffff)
+            };
+        )
+
         float h_abs_dotp(const float *a, const float *b, size_t count)
         {
             IF_ARCH_X86(
@@ -248,7 +255,7 @@ namespace lsp
             ARCH_X86_ASM
             (
                 __ASM_EMIT("vxorps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vmovaps         %[SIGN], %%ymm2")
+                __ASM_EMIT("vmovaps         %[CC], %%ymm2")
                 __ASM_EMIT("vxorps          %%ymm1, %%ymm1, %%ymm1")
                 __ASM_EMIT("xor             %[off], %[off]")
                 __ASM_EMIT("vmovaps         %%ymm2, %%ymm3")
@@ -311,7 +318,7 @@ namespace lsp
                 : [count] "+r" (count), [off] "=&r" (off),
                   [res] "=Yz" (result)
                 : [a] "r" (a), [b] "r" (b),
-                  [SIGN] "o" (X_SIGN)
+                  [CC] "o" (h_abs_dotp_const)
                 : "cc", "memory",
                   "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
