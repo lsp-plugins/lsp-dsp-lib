@@ -156,6 +156,7 @@ namespace lsp
 
     #undef FMA_OFF
     #undef FMA_ON
+    #undef FFT_BUTTERFLY_BODY8
     }
 }
 
