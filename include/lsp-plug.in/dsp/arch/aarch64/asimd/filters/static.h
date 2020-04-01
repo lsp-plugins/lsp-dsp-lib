@@ -264,7 +264,7 @@ namespace lsp
         void biquad_process_x8(float *dst, const float *src, size_t count, biquad_t *f)
         {
             IF_ARCH_AARCH64(
-                float *fx8 = f->x8.a0;
+                float *fx8 = f->x8.b0;
                 size_t mask;
             );
 
