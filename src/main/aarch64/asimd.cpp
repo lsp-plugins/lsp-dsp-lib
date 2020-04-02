@@ -21,6 +21,7 @@
     // Include common architectural definitions
     #define LSP_PLUG_IN_DSP_ARCH_AARCH64_IMPL
         #include <lsp-plug.in/dsp/arch/aarch64/features.h>
+        #include <lsp-plug.in/dsp/arch/aarch64/fpcr.h>
     #undef LSP_PLUG_IN_DSP_ARCH_AARCH64_IMPL
 
     // Include ASIMD-specific definitions
