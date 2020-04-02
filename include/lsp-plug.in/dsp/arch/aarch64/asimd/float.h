@@ -19,6 +19,18 @@ namespace lsp
     #define SEL_DST(a, b)       a
     #define SEL_NODST(a, b)     b
 
+        IF_ARCH_AARCH64(
+            static uint32_t SAT_IARGS[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0x7f800000),                   // X_P_INF
+                LSP_DSP_VEC4(0xff800000),                   // X_N_INF
+                LSP_DSP_VEC4(LSP_DSP_FLOAT_SAT_P_NAN_I),    // SX_P_NAN
+                LSP_DSP_VEC4(LSP_DSP_FLOAT_SAT_P_INF_I),    // SX_P_INF
+                LSP_DSP_VEC4(LSP_DSP_FLOAT_SAT_N_NAN_I),    // SX_N_NAN
+                LSP_DSP_VEC4(LSP_DSP_FLOAT_SAT_N_INF_I)     // SX_N_INF
+            };
+        )
+
     #define MULTIPLE_SAT_BODY(DST, SRC, SEL) \
         __ASM_EMIT("ldp             q16, q17, [%[IARGS], #0x00]")       /* v16 = +inf, v17 = -inf */ \
         __ASM_EMIT("ldp             q18, q19, [%[IARGS], #0x20]")       /* v18 = X_P_NAN, v19 = X_P_INF */ \
@@ -93,7 +105,7 @@ namespace lsp
                 MULTIPLE_SAT_BODY("dst", "src", SEL_DST)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
-                : [IARGS] "r" (&SAT_IARGS[4])
+                : [IARGS] "r" (&SAT_IARGS[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
                   "q4", "q5",
@@ -107,7 +119,7 @@ namespace lsp
             ARCH_AARCH64_ASM(
                 MULTIPLE_SAT_BODY("dst", "dst", SEL_NODST)
                 : [dst] "+r" (dst), [count] "+r" (count)
-                : [IARGS] "r" (&SAT_IARGS[4])
+                : [IARGS] "r" (&SAT_IARGS[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
                   "q4", "q5",
