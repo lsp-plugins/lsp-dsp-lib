@@ -24,6 +24,15 @@
         #include <lsp-plug.in/dsp/arch/aarch64/fpcr.h>
     #undef LSP_PLUG_IN_DSP_ARCH_AARCH64_IMPL
 
+    namespace lsp
+    {
+        namespace asimd
+        {
+            using namespace aarch64;
+            using namespace dsp;
+        }
+    }
+
     // Include ASIMD-specific definitions
     #define LSP_PLUG_IN_DSP_ARCH_AARCH64_ASIMD_IMPL
         #include <lsp-plug.in/dsp/arch/aarch64/asimd/copy.h>

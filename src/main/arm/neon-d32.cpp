@@ -23,6 +23,14 @@
         #include <dsp/arch/arm/fpscr.h>
     #undef LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
 
+    namespace lsp
+    {
+        namespace neon_d32
+        {
+            using namespace arm;
+            using namespace dsp;
+        }
+    }
 
     #define LSP_PLUG_IN_DSP_ARCH_ARM_NEON_D32_IMPL
         #include <lsp-plug.in/dsp/arch/arm/neon-d32/copy.h>
