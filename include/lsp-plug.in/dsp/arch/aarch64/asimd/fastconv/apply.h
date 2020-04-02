@@ -12,7 +12,7 @@
     #error "This header should not be included directly"
 #endif /* LSP_PLUG_IN_DSP_ARCH_AARCH64_ASIMD_IMPL */
 
-namespace dsp
+namespace lsp
 {
     namespace asimd
     {
