@@ -78,22 +78,8 @@
     {
         namespace neon_d32
         {
-            static dsp::start_t     dsp_start       = NULL;
-            static dsp::finish_t    dsp_finish      = NULL;
-
             void dsp_init(const arm::cpu_features_t *f)
             {
-                if (f.hwcap & HWCAP_ARM_VFP)
-                {
-                    // Save previous entry points
-                    dsp_start                       = dsp::start;
-                    dsp_finish                      = dsp::finish;
-
-                    // Export routines
-                    EXPORT1(start);
-                    EXPORT1(finish);
-                }
-
                 if ((f->hwcap & (HWCAP_ARM_NEON | HWCAP_ARM_VFPD32)) != (HWCAP_ARM_NEON | HWCAP_ARM_VFPD32))
                     return;
 

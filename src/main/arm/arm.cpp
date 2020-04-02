@@ -117,6 +117,9 @@
                 { HWCAP_ARM_LPAE, "LPAE" }
             };
 
+            static dsp::start_t     dsp_start       = NULL;
+            static dsp::finish_t    dsp_finish      = NULL;
+
             const char *find_cpu_name(uint32_t id)
             {
                 ssize_t first = 0, last = (sizeof(cpu_parts) / sizeof(cpu_part_t)) - 1;
@@ -312,6 +315,17 @@
 
                 // Export functions
                 EXPORT1(info);
+
+                if (f.hwcap & HWCAP_ARM_VFP)
+                {
+                    // Save previous entry points
+                    dsp_start                       = dsp::start;
+                    dsp_finish                      = dsp::finish;
+
+                    // Export routines
+                    EXPORT1(start);
+                    EXPORT1(finish);
+                }
 
                 // Initialize support of NEON functions with D-32 registers
                 neon_d32::dsp_init(&f);
