@@ -10,8 +10,7 @@
 #ifdef ARCH_X86
     #include <lsp-plug.in/dsp/dsp.h>
     #include <lsp-plug.in/common/bits.h>
-
-    #include <math.h>
+    #include <lsp-plug.in/stdlib/math.h>
 
     // Test framework
     #ifdef LSP_TESTING

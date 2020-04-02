@@ -9,18 +9,18 @@
 
 #ifdef ARCH_AARCH64
     #include <lsp-plug.in/dsp/dsp.h>
+    #include <sp-plug.in/stdlib/string.h>
+    #include <sp-plug.in/stdlib/math.h>
+
+    #include <stdio.h>
+    #include <errno.h>
+    #include <stdlib.h>
 
     // Include common architectural definitions
     #define LSP_PLUG_IN_DSP_ARCH_AARCH64_IMPL
         #include <lsp-plug.in/dsp/arch/aarch64/features.h>
         #include <lsp-plug.in/dsp/arch/aarch64/fpcr.h>
     #undef LSP_PLUG_IN_DSP_ARCH_AARCH64_IMPL
-
-    #include <stdio.h>
-    #include <errno.h>
-    #include <stdlib.h>
-    #include <string.h>
-    #include <math.h>
 
 namespace lsp
 {

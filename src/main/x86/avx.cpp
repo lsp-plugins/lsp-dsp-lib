@@ -10,6 +10,7 @@
 #ifdef ARCH_X86
     #include <lsp-plug.in/dsp/dsp.h>
     #include <lsp-plug.in/common/bits.h>
+    #include <lsp-plug.in/stdlib/math.h>
 
     // Test framework
     #ifdef LSP_TESTING
@@ -26,7 +27,6 @@
     // AVX-specific function implementations
     #define LSP_PLUG_IN_DSP_ARCH_X86_AVX_IMPL
         #include <lsp-plug.in/dsp/arch/x86/avx/xcr.h>
-//        #include <lsp-plug.in/dsp/arch/x86/avx/const.h>
 
         #include <lsp-plug.in/dsp/arch/x86/avx/copy.h>
         #include <lsp-plug.in/dsp/arch/x86/avx/float.h>

@@ -7,10 +7,10 @@
 
 #include <lsp-plug.in/common/bits.h>
 #include <lsp-plug.in/dsp/dsp.h>
+#include <lsp-plug.in/stdlib/math.h>
+#include <lsp-plug.in/stdlib/string.h>
 
 #include <stdlib.h>
-#include <math.h>
-#include <string.h>
 
 #ifdef LSP_TESTING
     #include <lsp-plug.in/test-fw/test.h>

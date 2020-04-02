@@ -9,15 +9,17 @@
 
 #ifdef ARCH_ARM
     #include <lsp-plug.in/dsp/dsp.h>
+    #include <lsp-plug.in/stdlib/math.h>
+    #include <lsp-plug.in/stdlib/string.h>
 
     #include <stdio.h>
     #include <errno.h>
     #include <stdlib.h>
-    #include <string.h>
-    #include <math.h>
 
-    #include <lsp-plug.in/dsp/arch/arm/features.h>
-    #include <lsp-plug.in/dsp/arch/arm/fpscr.h>
+    #define LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
+        #include <lsp-plug.in/dsp/arch/arm/features.h>
+        #include <lsp-plug.in/dsp/arch/arm/fpscr.h>
+    #undef LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
 
     namespace lsp
     {

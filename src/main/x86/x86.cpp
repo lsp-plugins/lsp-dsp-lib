@@ -9,6 +9,8 @@
 
 #ifdef ARCH_X86
     #include <lsp-plug.in/dsp/dsp.h>
+    #include <lsp-plug.in/stdlib/math.h>
+    #include <lsp-plug.in/stdlib/string.h>
 
     #ifdef LSP_TESTING
         #include <lsp-plug.in/test-fw/test.h>
@@ -16,7 +18,6 @@
         #define TEST_EXPORT(...)
     #endif /* LSP_TESTING */
 
-    #include <string.h>
     #include <stdio.h>
     #include <stdlib.h>
 

@@ -9,6 +9,7 @@
 
 #ifdef ARCH_AARCH64
     #include <lsp-plug.in/dsp/dsp.h>
+    #include <lsp-plug.in/stdlib/math.h>
 
     // Add test framework if necessary
     #ifdef LSP_TESTING
