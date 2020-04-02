@@ -7,6 +7,7 @@ rwildcard               = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $
 
 CXX_SRCMAIN             = 
 CXX_SRCEXT              = main/dsp.cpp main/generic/generic.cpp
+CXX_SRCALL              = $(call rwildcard, main, *.cpp)
 CXX_SRCTEST             = $(call rwildcard, test, *.cpp)
 CXX_SRC                 = $(CXX_SRCMAIN)
 
@@ -40,7 +41,7 @@ ifeq ($(NO_DEPENDENCIES),1)
   BUILD_DEPS              =
 endif
 
-CXX_DEPS                = $(foreach src,$(CXX_SRCMAIN) $(CXX_SRCEXT) $(CXX_SRCTEST),$(patsubst %.cpp,$(ARTIFACT_BIN)/%.d,$(src)))
+CXX_DEPS                = $(foreach src,$(CXX_SRCALL) $(CXX_SRCTEST),$(patsubst %.cpp,$(ARTIFACT_BIN)/%.d,$(src)))
 CXX_DEPFILE             = $(patsubst $(ARTIFACT_BIN)/%.d,%.cpp,$(@))
 CXX_DEPTARGET           = $(patsubst $(ARTIFACT_BIN)/%.d,%.o,$(@))
 
@@ -66,27 +67,23 @@ AVX2_INSTR_SET          = $(AVX_INSTR_SET) -mavx2
 NEON_D32_INSTR_SET      = -mfpu=neon-vfpv4
 ASIMD_INSTR_SET      	= -march=armv8-a+simd
 
-ifeq ($(ARCHITECTURE),i586)
-  CXX_OBJEXT             += $(X86_IMPL) $(SSE_IMPL) $(SSE2_IMPL) $(SSE3_IMPL) $(SSE4_IMPL) $(AVX_IMPL) $(AVX2_IMPL)
-endif
-ifeq ($(ARCHITECTURE), x86_64)
-  CXX_OBJEXT             += $(X86_IMPL) $(SSE_IMPL) $(SSE2_IMPL) $(SSE3_IMPL) $(SSE4_IMPL) $(AVX_IMPL) $(AVX2_IMPL)
-endif
 ifeq ($(PLATFORM),BSD)
   ifeq ($(ARCHITECTURE), arm)
     CXX_OBJEXT             += $(ARM_IMPL) $(NEON_D32_IMPL)
   endif
 endif
-ifeq ($(ARCHITECTURE),armv7a)
+
+ifeq ($(ARCHITECTURE),i586)
+  CXX_OBJEXT             += $(X86_IMPL) $(SSE_IMPL) $(SSE2_IMPL) $(SSE3_IMPL) $(SSE4_IMPL) $(AVX_IMPL) $(AVX2_IMPL)
+else ifeq ($(ARCHITECTURE), x86_64)
+  CXX_OBJEXT             += $(X86_IMPL) $(SSE_IMPL) $(SSE2_IMPL) $(SSE3_IMPL) $(SSE4_IMPL) $(AVX_IMPL) $(AVX2_IMPL)
+else ifeq ($(ARCHITECTURE),armv7a)
   CXX_OBJEXT             += $(ARM_IMPL) $(NEON_D32_IMPL)
-endif
-ifeq ($(ARCHITECTURE),armv7ve)
+else ifeq ($(ARCHITECTURE),armv7ve)
   CXX_OBJEXT             += $(ARM_IMPL) $(NEON_D32_IMPL)
-endif
-ifeq ($(ARCHITECTURE),arm32)
+else ifeq ($(ARCHITECTURE),arm32)
   CXX_OBJEXT             += $(ARM_IMPL) $(NEON_D32_IMPL)
-endif
-ifeq ($(ARCHITECTURE),aarch64)
+else ifeq ($(ARCHITECTURE),aarch64)
   CXX_OBJEXT             += $(AARCH64_IMPL) $(ASIMD_IMPL)
 endif
 
