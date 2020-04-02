@@ -16,10 +16,15 @@ namespace lsp
 {
     namespace neon_d32
     {
+        IF_ARCH_ARM(
+            static const float msmatrix_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0.5f)
+            };
+        );
+
         void lr_to_ms(float *m, float *s, const float *l, const float *r, size_t count)
         {
-            IF_ARCH_ARM(const float *half = X_HALF);
-
             ARCH_ARM_ASM
             (
                 __ASM_EMIT("subs        %[count], $24")
@@ -158,7 +163,7 @@ namespace lsp
                 : [mid] "+r" (m), [side] "+r" (s),
                   [left] "+r" (l), [right] "+r" (r),
                   [count] "+r" (count)
-                : [X_HALF] "r" (half)
+                : [X_HALF] "r" (&msmatrix_const[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
                   "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
@@ -370,15 +375,13 @@ namespace lsp
 
         void lr_to_mid(float *m, const float *l, const float *r, size_t count)
         {
-            IF_ARCH_ARM(const float *half = X_HALF);
-
             ARCH_ARM_ASM
             (
                 LR_CVT_BODY("mid", "left", "right", "vadd")
                 : [mid] "+r" (m),
                   [left] "+r" (l), [right] "+r" (r),
                   [count] "+r" (count)
-                : [X_HALF] "r" (half)
+                : [X_HALF] "r" (&msmatrix_const[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
                   "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
@@ -387,15 +390,13 @@ namespace lsp
 
         void lr_to_side(float *s, const float *l, const float *r, size_t count)
         {
-            IF_ARCH_ARM(const float *half = X_HALF);
-
             ARCH_ARM_ASM
             (
                 LR_CVT_BODY("side", "left", "right", "vsub")
                 : [side] "+r" (s),
                   [left] "+r" (l), [right] "+r" (r),
                   [count] "+r" (count)
-                : [X_HALF] "r" (half)
+                : [X_HALF] "r" (&msmatrix_const[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
                   "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
