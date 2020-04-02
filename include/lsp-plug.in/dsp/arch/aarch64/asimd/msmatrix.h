@@ -16,6 +16,13 @@ namespace lsp
 {
     namespace asimd
     {
+        IF_ARCH_AARCH64(
+            static const float msmatrix_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0.5f)
+            };
+        );
+
         void lr_to_ms(float *m, float *s, const float *l, const float *r, size_t count)
         {
             ARCH_AARCH64_ASM(
@@ -115,7 +122,7 @@ namespace lsp
 
                 : [l] "+r" (l), [r] "+r" (r), [m] "+r" (m), [s] "+r" (s),
                   [count] "+r" (count)
-                : [HALF] "r" (&X_HALF[0])
+                : [HALF] "r" (&msmatrix_const[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
                   "q4", "q5", "q6", "q7",
@@ -207,7 +214,7 @@ namespace lsp
 
                 : [l] "+r" (l), [r] "+r" (r), [m] "+r" (m), [s] "+r" (s),
                   [count] "+r" (count)
-                : [HALF] "r" (&X_HALF[0])
+                : [HALF] "r" (&msmatrix_const[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
                   "q4", "q5", "q6", "q7",
@@ -292,7 +299,7 @@ namespace lsp
                 LR_TO_PART("fadd")
                 : [l] "+r" (l), [r] "+r" (r), [dst] "+r" (m),
                   [count] "+r" (count)
-                : [HALF] "r" (&X_HALF[0])
+                : [HALF] "r" (&msmatrix_const[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
                   "q4", "q5", "q6", "q7",
@@ -307,7 +314,7 @@ namespace lsp
                 LR_TO_PART("fsub")
                 : [l] "+r" (l), [r] "+r" (r), [dst] "+r" (s),
                   [count] "+r" (count)
-                : [HALF] "r" (&X_HALF[0])
+                : [HALF] "r" (&msmatrix_const[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
                   "q4", "q5", "q6", "q7",
