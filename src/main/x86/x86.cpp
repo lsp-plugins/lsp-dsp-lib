@@ -18,6 +18,7 @@
 
     #include <string.h>
     #include <stdio.h>
+    #include <stdlib.h>
 
     #define LSP_PLUG_IN_DSP_ARCH_X86_IMPL
         #include <lsp-plug.in/dsp/arch/x86/features.h>

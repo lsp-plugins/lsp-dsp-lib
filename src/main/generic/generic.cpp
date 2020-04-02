@@ -10,6 +10,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #ifdef LSP_TESTING
     #include <lsp-plug.in/test-fw/test.h>
