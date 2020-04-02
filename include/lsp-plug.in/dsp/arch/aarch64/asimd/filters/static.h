@@ -75,7 +75,7 @@ namespace lsp
 
         void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f)
         {
-            IF_ARCH_AARCH64(biquad_x2_t *x2 = &f->x2);
+            IF_ARCH_AARCH64(dsp::biquad_x2_t *x2 = &f->x2);
 
             // s'    = a0*s + d0;
             // d0'   = d1 + a1*s + b1*s';

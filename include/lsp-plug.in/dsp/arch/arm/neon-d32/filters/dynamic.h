@@ -16,7 +16,7 @@ namespace lsp
 {
     namespace neon_d32
     {
-        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const biquad_x1_t *f)
+        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f)
         {
             ARCH_ARM_ASM
             (
@@ -83,7 +83,7 @@ namespace lsp
             );
         }
 
-        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const biquad_x2_t *f)
+        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f)
         {
             ARCH_ARM_ASM
             (
@@ -155,7 +155,7 @@ namespace lsp
             };
         )
 
-        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const biquad_x4_t *f)
+        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f)
         {
             IF_ARCH_ARM(
                 size_t mask;
@@ -262,7 +262,7 @@ namespace lsp
             };
         )
 
-        void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f)
+        void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f)
         {
             IF_ARCH_ARM(
                 float vmask[16] __lsp_aligned16;
