@@ -155,7 +155,7 @@ namespace lsp
         void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f)
         {
             IF_ARCH_AARCH64(
-                biquad_x4_t *fx4 = &f->x4;
+                dsp::biquad_x4_t *fx4 = &f->x4;
                 size_t mask;
             );
 
