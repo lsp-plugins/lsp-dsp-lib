@@ -14,6 +14,7 @@
     #include <errno.h>
     #include <stdlib.h>
     #include <string.h>
+    #include <math.h>
 
     #include <lsp-plug.in/dsp/arch/arm/features.h>
     #include <lsp-plug.in/dsp/arch/arm/fpscr.h>
