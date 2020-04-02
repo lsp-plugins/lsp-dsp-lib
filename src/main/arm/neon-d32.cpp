@@ -9,7 +9,7 @@
 
 #ifdef ARCH_ARM
     #include <lsp-plug.in/dsp/dsp.h>
-    #include <sp-plug.in/stdlib/math.h>
+    #include <lsp-plug.in/stdlib/math.h>
 
     // Add test framework if necessary
     #ifdef LSP_TESTING
@@ -19,8 +19,8 @@
     #endif
 
     #define LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
-        #include <dsp/arch/arm/features.h>
-        #include <dsp/arch/arm/fpscr.h>
+        #include <lsp-plug.in/dsp/arch/arm/features.h>
+        #include <lsp-plug.in/dsp/arch/arm/fpscr.h>
     #undef LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
 
     namespace lsp
