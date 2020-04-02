@@ -19,34 +19,34 @@ namespace lsp
         IF_ARCH_AARCH64(
             static const uint32_t LOG2_CONST[] __lsp_aligned16 =
             {
-                LDP_DSP_VEC4(0x007fffff), // MM = frac
-                LDP_DSP_VEC4(0x0000007f), // ME = 127
-                LDP_DSP_VEC4(0x3d888889), // C0 = 1/15 = 0.0666666701436043
-                LDP_DSP_VEC4(0x3d9d89d9), // C1 = 1/13 = 0.0769230797886848
-                LDP_DSP_VEC4(0x3dba2e8c), // C2 = 1/11 = 0.0909090936183929
-                LDP_DSP_VEC4(0x3de38e39), // C3 = 1/9 = 0.1111111119389534
-                LDP_DSP_VEC4(0x3e124925), // C4 = 1/7 = 0.1428571492433548
-                LDP_DSP_VEC4(0x3e4ccccd), // C5 = 1/5 = 0.2000000029802322
-                LDP_DSP_VEC4(0x3eaaaaab), // C6 = 1/3 = 0.3333333432674408
-                LDP_DSP_VEC4(0x3f800000), // C7 = 1.0f
+                LSP_DSP_VEC4(0x007fffff), // MM = frac
+                LSP_DSP_VEC4(0x0000007f), // ME = 127
+                LSP_DSP_VEC4(0x3d888889), // C0 = 1/15 = 0.0666666701436043
+                LSP_DSP_VEC4(0x3d9d89d9), // C1 = 1/13 = 0.0769230797886848
+                LSP_DSP_VEC4(0x3dba2e8c), // C2 = 1/11 = 0.0909090936183929
+                LSP_DSP_VEC4(0x3de38e39), // C3 = 1/9 = 0.1111111119389534
+                LSP_DSP_VEC4(0x3e124925), // C4 = 1/7 = 0.1428571492433548
+                LSP_DSP_VEC4(0x3e4ccccd), // C5 = 1/5 = 0.2000000029802322
+                LSP_DSP_VEC4(0x3eaaaaab), // C6 = 1/3 = 0.3333333432674408
+                LSP_DSP_VEC4(0x3f800000), // C7 = 1.0f
             };
 
             static const float LOGB_C[] __lsp_aligned16 =
             {
-                LDP_DSP_VEC4(2.0f * M_LOG2E),
-                LDP_DSP_VEC4(2.0f * M_LOG2E)
+                LSP_DSP_VEC4(2.0f * M_LOG2E),
+                LSP_DSP_VEC4(2.0f * M_LOG2E)
             };
 
             static const float LOGE_C[] __lsp_aligned16 =
             {
-                LDP_DSP_VEC4(1.0f / M_LOG2E),
-                LDP_DSP_VEC4(1.0f / M_LOG2E)
+                LSP_DSP_VEC4(1.0f / M_LOG2E),
+                LSP_DSP_VEC4(1.0f / M_LOG2E)
             };
 
             static const float LOGD_C[] __lsp_aligned16 =
             {
-                LDP_DSP_VEC4(2.0f * M_LOG10E),
-                LDP_DSP_VEC4(0.301029995663981f) // 1/log2(10)
+                LSP_DSP_VEC4(2.0f * M_LOG10E),
+                LSP_DSP_VEC4(0.301029995663981f) // 1/log2(10)
             };
         )
 

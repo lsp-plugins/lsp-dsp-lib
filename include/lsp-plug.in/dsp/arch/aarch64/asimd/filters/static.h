@@ -16,7 +16,7 @@ namespace lsp
 {
     namespace asimd
     {
-        void biquad_process_x1(float *dst, const float *src, size_t count, biquad_t *f)
+        void biquad_process_x1(float *dst, const float *src, size_t count, dsp::biquad_t *f)
         {
             // s'    = a0*s + d0;
             // d0'   = d1 + a1*s + b1*s';
@@ -73,7 +73,7 @@ namespace lsp
             );
         }
 
-        void biquad_process_x2(float *dst, const float *src, size_t count, biquad_t *f)
+        void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f)
         {
             IF_ARCH_AARCH64(biquad_x2_t *x2 = &f->x2);
 
@@ -152,7 +152,7 @@ namespace lsp
             };
         )
 
-        void biquad_process_x4(float *dst, const float *src, size_t count, biquad_t *f)
+        void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f)
         {
             IF_ARCH_AARCH64(
                 biquad_x4_t *fx4 = &f->x4;
@@ -261,7 +261,7 @@ namespace lsp
             };
         )
 
-        void biquad_process_x8(float *dst, const float *src, size_t count, biquad_t *f)
+        void biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f)
         {
             IF_ARCH_AARCH64(
                 float *fx8 = f->x8.b0;

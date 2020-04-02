@@ -16,7 +16,7 @@ namespace lsp
 {
     namespace asimd
     {
-        void filter_transfer_calc_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_calc_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             ARCH_AARCH64_ASM(
                 // Unpack filter params
@@ -184,7 +184,7 @@ namespace lsp
             );
         }
 
-        void filter_transfer_apply_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_apply_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             ARCH_AARCH64_ASM(
                 // Unpack filter params
@@ -380,7 +380,7 @@ namespace lsp
             );
         }
 
-        void filter_transfer_calc_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_calc_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             ARCH_AARCH64_ASM(
                 // Unpack filter params
@@ -543,7 +543,7 @@ namespace lsp
             );
         }
 
-        void filter_transfer_apply_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count)
+        void filter_transfer_apply_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count)
         {
             ARCH_AARCH64_ASM(
                 // Unpack filter params

@@ -16,7 +16,7 @@ namespace lsp
 {
     namespace asimd
     {
-        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const biquad_x1_t *f)
+        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f)
         {
             // s'    = a0*s + d0;
             // d0'   = d1 + a1*s + b1*s';
@@ -77,7 +77,7 @@ namespace lsp
             );
         }
 
-        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const biquad_x2_t *f)
+        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f)
         {
             // s'    = a0*s + d0;
             // d0'   = d1 + a1*s + b1*s';
@@ -154,7 +154,7 @@ namespace lsp
             );
         }
 
-        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const biquad_x4_t *f)
+        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f)
         {
             IF_ARCH_AARCH64( size_t mask; );
 
@@ -260,7 +260,7 @@ namespace lsp
             );
         }
 
-        void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f)
+        void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f)
         {
             IF_ARCH_AARCH64(
                 size_t mask;

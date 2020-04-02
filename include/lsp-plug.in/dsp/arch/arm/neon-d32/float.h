@@ -113,10 +113,10 @@ namespace lsp
     IF_ARCH_ARM(
         static uint32_t XLIM_SAT[] __lsp_aligned16 =
         {
-            LDP_DSP_VEC4(0x7fffffff),      // -1
-            LDP_DSP_VEC4(0x3f800000),      // +1
-            LDP_DSP_VEC4(0x80000000),      // sign
-            LDP_DSP_VEC4(0x7f800000)       // +Inf
+            LSP_DSP_VEC4(0x7fffffff),      // -1
+            LSP_DSP_VEC4(0x3f800000),      // +1
+            LSP_DSP_VEC4(0x80000000),      // sign
+            LSP_DSP_VEC4(0x7f800000)       // +Inf
         };
     )
 
@@ -363,10 +363,10 @@ namespace lsp
         IF_ARCH_ARM(
             static uint32_t SANITIZE_CVAL[] __lsp_aligned16 =
             {
-                LDP_DSP_VEC4(0x7fffffff),            // X_ABS
-                LDP_DSP_VEC4(0x80000000),            // X_SIGN
-                LDP_DSP_VEC4(0x7f7fffff),            // X_MAX
-                LDP_DSP_VEC4(0x007fffff)             // X_MIN
+                LSP_DSP_VEC4(0x7fffffff),            // X_ABS
+                LSP_DSP_VEC4(0x80000000),            // X_SIGN
+                LSP_DSP_VEC4(0x7f7fffff),            // X_MAX
+                LSP_DSP_VEC4(0x007fffff)             // X_MIN
             };
         )
 

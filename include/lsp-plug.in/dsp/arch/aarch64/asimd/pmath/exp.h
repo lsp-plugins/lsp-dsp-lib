@@ -19,22 +19,22 @@ namespace lsp
         IF_ARCH_AARCH64(
             static const uint32_t EXP2_CONST[] __lsp_aligned16 =
             {
-                LDP_DSP_VEC4(0x7f),       // ME = 0x7f
-                LDP_DSP_VEC4(0x3f317218), // L2 = ln(2)
-                LDP_DSP_VEC4(0x40e00000), // C5 = 7!/6! = 7.0000000000000000
-                LDP_DSP_VEC4(0x42280000), // C4 = 7!/5! = 42.0000000000000000
-                LDP_DSP_VEC4(0x43520000), // C3 = 7!/4! = 210.0000000000000000
-                LDP_DSP_VEC4(0x44520000), // C2 = 7!/3! = 840.0000000000000000
-                LDP_DSP_VEC4(0x451d8000), // C1 = 7!/2! = 2520.0000000000000000
-                LDP_DSP_VEC4(0x459d8000), // C0 = 7!/1! = 5040.0000000000000000
-                LDP_DSP_VEC4(0x39500d01), // C6 = 1/7! = 0.0001984127011383
-                LDP_DSP_VEC4(0x3f800000), // C7 = 1.0
+                LSP_DSP_VEC4(0x7f),       // ME = 0x7f
+                LSP_DSP_VEC4(0x3f317218), // L2 = ln(2)
+                LSP_DSP_VEC4(0x40e00000), // C5 = 7!/6! = 7.0000000000000000
+                LSP_DSP_VEC4(0x42280000), // C4 = 7!/5! = 42.0000000000000000
+                LSP_DSP_VEC4(0x43520000), // C3 = 7!/4! = 210.0000000000000000
+                LSP_DSP_VEC4(0x44520000), // C2 = 7!/3! = 840.0000000000000000
+                LSP_DSP_VEC4(0x451d8000), // C1 = 7!/2! = 2520.0000000000000000
+                LSP_DSP_VEC4(0x459d8000), // C0 = 7!/1! = 5040.0000000000000000
+                LSP_DSP_VEC4(0x39500d01), // C6 = 1/7! = 0.0001984127011383
+                LSP_DSP_VEC4(0x3f800000), // C7 = 1.0
             };
 
             static const float EXP_LOG2E[] __lsp_aligned16 =
             {
-                LDP_DSP_VEC4(M_LOG2E),
-                LDP_DSP_VEC4(M_LOG2E)
+                LSP_DSP_VEC4(M_LOG2E),
+                LSP_DSP_VEC4(M_LOG2E)
             };
         )
 
