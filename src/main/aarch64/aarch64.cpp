@@ -9,8 +9,8 @@
 
 #ifdef ARCH_AARCH64
     #include <lsp-plug.in/dsp/dsp.h>
-    #include <sp-plug.in/stdlib/string.h>
-    #include <sp-plug.in/stdlib/math.h>
+    #include <lsp-plug.in/stdlib/string.h>
+    #include <lsp-plug.in/stdlib/math.h>
 
     #include <stdio.h>
     #include <errno.h>
