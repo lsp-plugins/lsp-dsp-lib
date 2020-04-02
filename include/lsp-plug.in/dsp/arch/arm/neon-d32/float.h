@@ -16,6 +16,18 @@ namespace lsp
 {
     namespace neon_d32
     {
+        IF_ARCH_ARM(
+            static uint32_t SAT_IARGS[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0x7f800000),                   // X_P_INF
+                LSP_DSP_VEC4(0xff800000),                   // X_N_INF
+                LSP_DSP_VEC4(LSP_DSP_FLOAT_SAT_P_NAN_I),    // SX_P_NAN
+                LSP_DSP_VEC4(LSP_DSP_FLOAT_SAT_P_INF_I),    // SX_P_INF
+                LSP_DSP_VEC4(LSP_DSP_FLOAT_SAT_N_NAN_I),    // SX_N_NAN
+                LSP_DSP_VEC4(LSP_DSP_FLOAT_SAT_N_INF_I)     // SX_N_INF
+            };
+        )
+
     #define MULTIPLE_SATURATION_BODY(DST, SRC, SINC) \
         __ASM_EMIT("vldm            %[X_IARGS], {q8-q13}") \
         /* q8 = +inf, q9 = -inf */ \
@@ -85,7 +97,7 @@ namespace lsp
                 MULTIPLE_SATURATION_BODY("dst", "src", "!")
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
-                : [X_IARGS] "r" (&SAT_IARGS[4])
+                : [X_IARGS] "r" (&SAT_IARGS[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
                   "q4", "q5", "q6", "q7",
@@ -99,7 +111,7 @@ namespace lsp
             ARCH_ARM_ASM(
                 MULTIPLE_SATURATION_BODY("dst", "dst", "")
                 : [dst] "+r" (dst), [count] "+r" (count)
-                : [X_IARGS] "r" (&SAT_IARGS[4])
+                : [X_IARGS] "r" (&SAT_IARGS[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
                   "q4", "q5", "q6", "q7",

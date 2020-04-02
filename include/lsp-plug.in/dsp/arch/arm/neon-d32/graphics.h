@@ -493,7 +493,7 @@ namespace lsp
                 params[0] = zero;
                 params[1] = norm_x;
                 params[2] = norm_y;
-                const uint32_t *iptr = &LOG_IARGS;
+                const uint32_t *iptr = LOG_IARGS;
                 const float *fptr = LOG_FARGS;
             );
 
