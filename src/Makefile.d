@@ -42,6 +42,7 @@ $(LSP_DSP_LIB_BIN)/main/x86/x86.o: main/x86/x86.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/smath.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/string.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdio.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/test.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \

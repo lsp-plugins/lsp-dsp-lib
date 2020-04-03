@@ -11,6 +11,7 @@
     #include <lsp-plug.in/dsp/dsp.h>
     #include <lsp-plug.in/stdlib/math.h>
     #include <lsp-plug.in/stdlib/string.h>
+    #include <lsp-plug.in/stdlib/stdio.h>
 
     #ifdef LSP_TESTING
         #include <lsp-plug.in/test-fw/test.h>
