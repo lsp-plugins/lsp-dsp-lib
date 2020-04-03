@@ -21,17 +21,17 @@
 
     // Feature detection
     #define LSP_PLUG_IN_DSP_ARCH_X86_IMPL
-        #include <lsp-plug.in/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/features.h>
     #undef LSP_PLUG_IN_DSP_ARCH_X86_IMPL
 
     #define LSP_PLUG_IN_DSP_ARCH_X86_SSE3_IMPL
-        #include <lsp-plug.in/dsp/arch/x86/sse3/copy.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse3/graphics.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse3/filters/static.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse3/filters/dynamic.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse3/filters/transform.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse3/pcomplex.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse3/3dmath.h>
+        #include <private/dsp/arch/x86/sse3/copy.h>
+        #include <private/dsp/arch/x86/sse3/graphics.h>
+        #include <private/dsp/arch/x86/sse3/filters/static.h>
+        #include <private/dsp/arch/x86/sse3/filters/dynamic.h>
+        #include <private/dsp/arch/x86/sse3/filters/transform.h>
+        #include <private/dsp/arch/x86/sse3/pcomplex.h>
+        #include <private/dsp/arch/x86/sse3/3dmath.h>
     #undef LSP_PLUG_IN_DSP_ARCH_X86_SSE3_IMPL
 
     namespace lsp

@@ -21,46 +21,46 @@
 
     // Feature detection
     #define LSP_PLUG_IN_DSP_ARCH_X86_IMPL
-        #include <lsp-plug.in/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/features.h>
     #undef LSP_PLUG_IN_DSP_ARCH_X86_IMPL
 
     #define LSP_PLUG_IN_DSP_ARCH_X86_SSE_IMPL
-        #include <lsp-plug.in/dsp/arch/x86/sse/mxcsr.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/copy.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/float.h>
+        #include <private/dsp/arch/x86/sse/mxcsr.h>
+        #include <private/dsp/arch/x86/sse/copy.h>
+        #include <private/dsp/arch/x86/sse/float.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse/pmath/op_kx.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/pmath/op_vv.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/pmath/fmop_kx.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/pmath/fmop_vv.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/pmath/abs_vv.h>
+        #include <private/dsp/arch/x86/sse/pmath/op_kx.h>
+        #include <private/dsp/arch/x86/sse/pmath/op_vv.h>
+        #include <private/dsp/arch/x86/sse/pmath/fmop_kx.h>
+        #include <private/dsp/arch/x86/sse/pmath/fmop_vv.h>
+        #include <private/dsp/arch/x86/sse/pmath/abs_vv.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse/hmath/hsum.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/hmath/hdotp.h>
+        #include <private/dsp/arch/x86/sse/hmath/hsum.h>
+        #include <private/dsp/arch/x86/sse/hmath/hdotp.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse/mix.h>
+        #include <private/dsp/arch/x86/sse/mix.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse/search/minmax.h>
+        #include <private/dsp/arch/x86/sse/search/minmax.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse/smath.h>
+        #include <private/dsp/arch/x86/sse/smath.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse/fft.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/fastconv.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/graphics.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/msmatrix.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/resampling.h>
+        #include <private/dsp/arch/x86/sse/fft.h>
+        #include <private/dsp/arch/x86/sse/fastconv.h>
+        #include <private/dsp/arch/x86/sse/graphics.h>
+        #include <private/dsp/arch/x86/sse/msmatrix.h>
+        #include <private/dsp/arch/x86/sse/resampling.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse/complex.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/pcomplex.h>
+        #include <private/dsp/arch/x86/sse/complex.h>
+        #include <private/dsp/arch/x86/sse/pcomplex.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse/convolution.h>
+        #include <private/dsp/arch/x86/sse/convolution.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse/filters/static.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/filters/dynamic.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/filters/transform.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse/filters/transfer.h>
+        #include <private/dsp/arch/x86/sse/filters/static.h>
+        #include <private/dsp/arch/x86/sse/filters/dynamic.h>
+        #include <private/dsp/arch/x86/sse/filters/transform.h>
+        #include <private/dsp/arch/x86/sse/filters/transfer.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse/3dmath.h>
+        #include <private/dsp/arch/x86/sse/3dmath.h>
     #undef LSP_PLUG_IN_DSP_ARCH_X86_SSE_IMPL
 
     namespace lsp

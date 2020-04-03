@@ -20,8 +20,8 @@
 
     // Include common architectural definitions
     #define LSP_PLUG_IN_DSP_ARCH_AARCH64_IMPL
-        #include <lsp-plug.in/dsp/arch/aarch64/features.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/fpcr.h>
+        #include <private/dsp/arch/aarch64/features.h>
+        #include <private/dsp/arch/aarch64/fpcr.h>
     #undef LSP_PLUG_IN_DSP_ARCH_AARCH64_IMPL
 
     namespace lsp
@@ -35,39 +35,39 @@
 
     // Include ASIMD-specific definitions
     #define LSP_PLUG_IN_DSP_ARCH_AARCH64_ASIMD_IMPL
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/copy.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/float.h>
+        #include <private/dsp/arch/aarch64/asimd/copy.h>
+        #include <private/dsp/arch/aarch64/asimd/float.h>
 
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/pmath/op_kx.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/pmath/op_vv.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/pmath/fmop_kx.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/pmath/fmop_vv.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/pmath/abs_vv.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/pmath/log.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/pmath/exp.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/pmath/pow.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/op_kx.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/op_vv.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/fmop_kx.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/fmop_vv.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/abs_vv.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/log.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/exp.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/pow.h>
 
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/hmath/hsum.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/hmath/hdotp.h>
+        #include <private/dsp/arch/aarch64/asimd/hmath/hsum.h>
+        #include <private/dsp/arch/aarch64/asimd/hmath/hdotp.h>
 
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/mix.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/msmatrix.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/search/minmax.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/search/iminmax.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/resampling.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/convolution.h>
+        #include <private/dsp/arch/aarch64/asimd/mix.h>
+        #include <private/dsp/arch/aarch64/asimd/msmatrix.h>
+        #include <private/dsp/arch/aarch64/asimd/search/minmax.h>
+        #include <private/dsp/arch/aarch64/asimd/search/iminmax.h>
+        #include <private/dsp/arch/aarch64/asimd/resampling.h>
+        #include <private/dsp/arch/aarch64/asimd/convolution.h>
 
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/complex.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/pcomplex.h>
+        #include <private/dsp/arch/aarch64/asimd/complex.h>
+        #include <private/dsp/arch/aarch64/asimd/pcomplex.h>
 
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/fft.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/pfft.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/fastconv.h>
+        #include <private/dsp/arch/aarch64/asimd/fft.h>
+        #include <private/dsp/arch/aarch64/asimd/pfft.h>
+        #include <private/dsp/arch/aarch64/asimd/fastconv.h>
 
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/filters/static.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/filters/dynamic.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/filters/transfer.h>
-        #include <lsp-plug.in/dsp/arch/aarch64/asimd/filters/transform.h>
+        #include <private/dsp/arch/aarch64/asimd/filters/static.h>
+        #include <private/dsp/arch/aarch64/asimd/filters/dynamic.h>
+        #include <private/dsp/arch/aarch64/asimd/filters/transfer.h>
+        #include <private/dsp/arch/aarch64/asimd/filters/transform.h>
     #undef LSP_PLUG_IN_DSP_ARCH_AARCH64_ASIMD_IMPL
 
     #define EXPORT2(function, export)           dsp::function = asimd::export; TEST_EXPORT(asimd::export);

@@ -19,8 +19,8 @@
     #endif
 
     #define LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
-        #include <lsp-plug.in/dsp/arch/arm/features.h>
-        #include <lsp-plug.in/dsp/arch/arm/fpscr.h>
+        #include <private/dsp/arch/arm/features.h>
+        #include <private/dsp/arch/arm/fpscr.h>
     #undef LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
 
     namespace lsp
@@ -33,41 +33,41 @@
     }
 
     #define LSP_PLUG_IN_DSP_ARCH_ARM_NEON_D32_IMPL
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/copy.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/complex.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/pcomplex.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/convolution.h>
+        #include <private/dsp/arch/arm/neon-d32/copy.h>
+        #include <private/dsp/arch/arm/neon-d32/complex.h>
+        #include <private/dsp/arch/arm/neon-d32/pcomplex.h>
+        #include <private/dsp/arch/arm/neon-d32/convolution.h>
 
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/graphics.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/graphics/effects.h>
+        #include <private/dsp/arch/arm/neon-d32/graphics.h>
+        #include <private/dsp/arch/arm/neon-d32/graphics/effects.h>
 
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/pmath/op_kx.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/pmath/op_vv.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/pmath/fmop_kx.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/pmath/fmop_vv.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/pmath/abs_vv.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/pmath/exp.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/pmath/log.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/pmath/pow.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/op_kx.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/op_vv.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/fmop_kx.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/fmop_vv.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/abs_vv.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/exp.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/log.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/pow.h>
 
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/hmath/hsum.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/hmath/hdotp.h>
+        #include <private/dsp/arch/arm/neon-d32/hmath/hsum.h>
+        #include <private/dsp/arch/arm/neon-d32/hmath/hdotp.h>
 
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/search/minmax.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/search/iminmax.h>
+        #include <private/dsp/arch/arm/neon-d32/search/minmax.h>
+        #include <private/dsp/arch/arm/neon-d32/search/iminmax.h>
 
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/float.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/msmatrix.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/resampling.h>
+        #include <private/dsp/arch/arm/neon-d32/float.h>
+        #include <private/dsp/arch/arm/neon-d32/msmatrix.h>
+        #include <private/dsp/arch/arm/neon-d32/resampling.h>
 
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/filters/static.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/filters/dynamic.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/filters/transform.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/filters/transfer.h>
+        #include <private/dsp/arch/arm/neon-d32/filters/static.h>
+        #include <private/dsp/arch/arm/neon-d32/filters/dynamic.h>
+        #include <private/dsp/arch/arm/neon-d32/filters/transform.h>
+        #include <private/dsp/arch/arm/neon-d32/filters/transfer.h>
 
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/fft.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/fastconv.h>
-        #include <lsp-plug.in/dsp/arch/arm/neon-d32/mix.h>
+        #include <private/dsp/arch/arm/neon-d32/fft.h>
+        #include <private/dsp/arch/arm/neon-d32/fastconv.h>
+        #include <private/dsp/arch/arm/neon-d32/mix.h>
     #undef LSP_PLUG_IN_DSP_ARCH_ARM_NEON_D32_IMPL
 
 

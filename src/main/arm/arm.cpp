@@ -17,8 +17,8 @@
     #include <stdlib.h>
 
     #define LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
-        #include <lsp-plug.in/dsp/arch/arm/features.h>
-        #include <lsp-plug.in/dsp/arch/arm/fpscr.h>
+        #include <private/dsp/arch/arm/features.h>
+        #include <private/dsp/arch/arm/fpscr.h>
     #undef LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
 
     namespace lsp

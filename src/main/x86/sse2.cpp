@@ -21,26 +21,26 @@
 
     // Feature detection
     #define LSP_PLUG_IN_DSP_ARCH_X86_IMPL
-        #include <lsp-plug.in/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/features.h>
     #undef LSP_PLUG_IN_DSP_ARCH_X86_IMPL
 
 
     #define LSP_PLUG_IN_DSP_ARCH_X86_SSE2_IMPL
-        #include <lsp-plug.in/dsp/arch/x86/sse2/float.h>
+        #include <private/dsp/arch/x86/sse2/float.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse2/search/iminmax.h>
+        #include <private/dsp/arch/x86/sse2/search/iminmax.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse2/graphics.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse2/graphics/effects.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse2/graphics/axis.h>
+        #include <private/dsp/arch/x86/sse2/graphics.h>
+        #include <private/dsp/arch/x86/sse2/graphics/effects.h>
+        #include <private/dsp/arch/x86/sse2/graphics/axis.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/sse2/pmath/op_kx.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse2/pmath/op_vv.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse2/pmath/fmop_kx.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse2/pmath/fmop_vv.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse2/pmath/exp.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse2/pmath/log.h>
-        #include <lsp-plug.in/dsp/arch/x86/sse2/pmath/pow.h>
+        #include <private/dsp/arch/x86/sse2/pmath/op_kx.h>
+        #include <private/dsp/arch/x86/sse2/pmath/op_vv.h>
+        #include <private/dsp/arch/x86/sse2/pmath/fmop_kx.h>
+        #include <private/dsp/arch/x86/sse2/pmath/fmop_vv.h>
+        #include <private/dsp/arch/x86/sse2/pmath/exp.h>
+        #include <private/dsp/arch/x86/sse2/pmath/log.h>
+        #include <private/dsp/arch/x86/sse2/pmath/pow.h>
     #undef LSP_PLUG_IN_DSP_ARCH_X86_SSE2_IMPL
 
     namespace lsp

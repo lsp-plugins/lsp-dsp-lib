@@ -21,42 +21,42 @@
 
     // Feature detection
     #define LSP_PLUG_IN_DSP_ARCH_X86_IMPL
-        #include <lsp-plug.in/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/features.h>
     #undef LSP_PLUG_IN_DSP_ARCH_X86_IMPL
 
     // AVX-specific function implementations
     #define LSP_PLUG_IN_DSP_ARCH_X86_AVX_IMPL
-        #include <lsp-plug.in/dsp/arch/x86/avx/xcr.h>
+        #include <private/dsp/arch/x86/avx/xcr.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/avx/copy.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/float.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/complex.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/pcomplex.h>
+        #include <private/dsp/arch/x86/avx/copy.h>
+        #include <private/dsp/arch/x86/avx/float.h>
+        #include <private/dsp/arch/x86/avx/complex.h>
+        #include <private/dsp/arch/x86/avx/pcomplex.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/avx/pmath/op_kx.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/pmath/op_vv.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/pmath/fmop_kx.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/pmath/fmop_vv.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/pmath/abs_vv.h>
+        #include <private/dsp/arch/x86/avx/pmath/op_kx.h>
+        #include <private/dsp/arch/x86/avx/pmath/op_vv.h>
+        #include <private/dsp/arch/x86/avx/pmath/fmop_kx.h>
+        #include <private/dsp/arch/x86/avx/pmath/fmop_vv.h>
+        #include <private/dsp/arch/x86/avx/pmath/abs_vv.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/avx/hmath/hsum.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/hmath/hdotp.h>
+        #include <private/dsp/arch/x86/avx/hmath/hsum.h>
+        #include <private/dsp/arch/x86/avx/hmath/hdotp.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/avx/mix.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/search/minmax.h>
+        #include <private/dsp/arch/x86/avx/mix.h>
+        #include <private/dsp/arch/x86/avx/search/minmax.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/avx/fft.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/pfft.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/fastconv.h>
+        #include <private/dsp/arch/x86/avx/fft.h>
+        #include <private/dsp/arch/x86/avx/pfft.h>
+        #include <private/dsp/arch/x86/avx/fastconv.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/avx/filters/static.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/filters/dynamic.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/filters/transform.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/filters/transfer.h>
+        #include <private/dsp/arch/x86/avx/filters/static.h>
+        #include <private/dsp/arch/x86/avx/filters/dynamic.h>
+        #include <private/dsp/arch/x86/avx/filters/transform.h>
+        #include <private/dsp/arch/x86/avx/filters/transfer.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/avx/msmatrix.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/resampling.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx/convolution.h>
+        #include <private/dsp/arch/x86/avx/msmatrix.h>
+        #include <private/dsp/arch/x86/avx/resampling.h>
+        #include <private/dsp/arch/x86/avx/convolution.h>
     #undef LSP_PLUG_IN_DSP_ARCH_X86_AVX_IMPL
 
     namespace lsp

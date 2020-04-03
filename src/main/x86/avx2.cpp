@@ -21,24 +21,24 @@
 
     // Feature detection
     #define LSP_PLUG_IN_DSP_ARCH_X86_IMPL
-        #include <lsp-plug.in/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/features.h>
     #undef LSP_PLUG_IN_DSP_ARCH_X86_IMPL
 
     #define LSP_PLUG_IN_DSP_ARCH_X86_AVX2_IMPL
-        #include <lsp-plug.in/dsp/arch/x86/avx2/float.h>
+        #include <private/dsp/arch/x86/avx2/float.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/avx2/pmath/op_kx.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx2/pmath/fmop_kx.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx2/pmath/exp.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx2/pmath/log.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx2/pmath/pow.h>
+        #include <private/dsp/arch/x86/avx2/pmath/op_kx.h>
+        #include <private/dsp/arch/x86/avx2/pmath/fmop_kx.h>
+        #include <private/dsp/arch/x86/avx2/pmath/exp.h>
+        #include <private/dsp/arch/x86/avx2/pmath/log.h>
+        #include <private/dsp/arch/x86/avx2/pmath/pow.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/avx2/fft/normalize.h>
+        #include <private/dsp/arch/x86/avx2/fft/normalize.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/avx2/search/iminmax.h>
+        #include <private/dsp/arch/x86/avx2/search/iminmax.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/avx2/graphics/transpose.h>
-        #include <lsp-plug.in/dsp/arch/x86/avx2/graphics/effects.h>
+        #include <private/dsp/arch/x86/avx2/graphics/transpose.h>
+        #include <private/dsp/arch/x86/avx2/graphics/effects.h>
     #undef LSP_PLUG_IN_DSP_ARCH_X86_AVX2_IMPL
 
     namespace lsp

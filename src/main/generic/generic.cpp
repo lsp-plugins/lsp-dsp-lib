@@ -24,46 +24,46 @@ namespace lsp
 }
 
 #define LSP_PLUG_IN_DSP_ARCH_GENERIC_IMPL
-    #include <lsp-plug.in/dsp/arch/generic/context.h>
-    #include <lsp-plug.in/dsp/arch/generic/copy.h>
-    #include <lsp-plug.in/dsp/arch/generic/complex.h>
-    #include <lsp-plug.in/dsp/arch/generic/pcomplex.h>
-    #include <lsp-plug.in/dsp/arch/generic/convolution.h>
+    #include <private/dsp/arch/generic/context.h>
+    #include <private/dsp/arch/generic/copy.h>
+    #include <private/dsp/arch/generic/complex.h>
+    #include <private/dsp/arch/generic/pcomplex.h>
+    #include <private/dsp/arch/generic/convolution.h>
 
-    #include <lsp-plug.in/dsp/arch/generic/graphics.h>
-    #include <lsp-plug.in/dsp/arch/generic/graphics/effects.h>
-    #include <lsp-plug.in/dsp/arch/generic/graphics/interpolation.h>
+    #include <private/dsp/arch/generic/graphics.h>
+    #include <private/dsp/arch/generic/graphics/effects.h>
+    #include <private/dsp/arch/generic/graphics/interpolation.h>
 
-    #include <lsp-plug.in/dsp/arch/generic/pmath.h>
-    #include <lsp-plug.in/dsp/arch/generic/pmath/op_kx.h>
-    #include <lsp-plug.in/dsp/arch/generic/pmath/op_vv.h>
-    #include <lsp-plug.in/dsp/arch/generic/pmath/fmop_kx.h>
-    #include <lsp-plug.in/dsp/arch/generic/pmath/fmop_vv.h>
-    #include <lsp-plug.in/dsp/arch/generic/pmath/abs_vv.h>
-    #include <lsp-plug.in/dsp/arch/generic/pmath/exp.h>
-    #include <lsp-plug.in/dsp/arch/generic/pmath/log.h>
-    #include <lsp-plug.in/dsp/arch/generic/pmath/pow.h>
+    #include <private/dsp/arch/generic/pmath.h>
+    #include <private/dsp/arch/generic/pmath/op_kx.h>
+    #include <private/dsp/arch/generic/pmath/op_vv.h>
+    #include <private/dsp/arch/generic/pmath/fmop_kx.h>
+    #include <private/dsp/arch/generic/pmath/fmop_vv.h>
+    #include <private/dsp/arch/generic/pmath/abs_vv.h>
+    #include <private/dsp/arch/generic/pmath/exp.h>
+    #include <private/dsp/arch/generic/pmath/log.h>
+    #include <private/dsp/arch/generic/pmath/pow.h>
 
-    #include <lsp-plug.in/dsp/arch/generic/hmath/hsum.h>
-    #include <lsp-plug.in/dsp/arch/generic/hmath/hdotp.h>
+    #include <private/dsp/arch/generic/hmath/hsum.h>
+    #include <private/dsp/arch/generic/hmath/hdotp.h>
 
-    #include <lsp-plug.in/dsp/arch/generic/search.h>
+    #include <private/dsp/arch/generic/search.h>
 
-    #include <lsp-plug.in/dsp/arch/generic/filters/static.h>
-    #include <lsp-plug.in/dsp/arch/generic/filters/dynamic.h>
-    #include <lsp-plug.in/dsp/arch/generic/filters/transform.h>
-    #include <lsp-plug.in/dsp/arch/generic/filters/transfer.h>
+    #include <private/dsp/arch/generic/filters/static.h>
+    #include <private/dsp/arch/generic/filters/dynamic.h>
+    #include <private/dsp/arch/generic/filters/transform.h>
+    #include <private/dsp/arch/generic/filters/transfer.h>
 
-    #include <lsp-plug.in/dsp/arch/generic/fft.h>
-    #include <lsp-plug.in/dsp/arch/generic/fastconv.h>
-    #include <lsp-plug.in/dsp/arch/generic/float.h>
-    #include <lsp-plug.in/dsp/arch/generic/resampling.h>
-    #include <lsp-plug.in/dsp/arch/generic/msmatrix.h>
-    #include <lsp-plug.in/dsp/arch/generic/smath.h>
-    #include <lsp-plug.in/dsp/arch/generic/mix.h>
-    #include <lsp-plug.in/dsp/arch/generic/3dmath.h>
+    #include <private/dsp/arch/generic/fft.h>
+    #include <private/dsp/arch/generic/fastconv.h>
+    #include <private/dsp/arch/generic/float.h>
+    #include <private/dsp/arch/generic/resampling.h>
+    #include <private/dsp/arch/generic/msmatrix.h>
+    #include <private/dsp/arch/generic/smath.h>
+    #include <private/dsp/arch/generic/mix.h>
+    #include <private/dsp/arch/generic/3dmath.h>
 
-    #include <lsp-plug.in/dsp/arch/generic/coding.h>
+    #include <private/dsp/arch/generic/coding.h>
 
 #undef LSP_PLUG_IN_DSP_ARCH_GENERIC_IMPL
 

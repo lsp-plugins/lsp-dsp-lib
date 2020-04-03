@@ -22,12 +22,12 @@
     #include <stdlib.h>
 
     #define LSP_PLUG_IN_DSP_ARCH_X86_IMPL
-        #include <lsp-plug.in/dsp/arch/x86/features.h>
-        #include <lsp-plug.in/dsp/arch/x86/float.h>
-        #include <lsp-plug.in/dsp/arch/x86/copy.h>
-        #include <lsp-plug.in/dsp/arch/x86/graphics.h>
+        #include <private/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/float.h>
+        #include <private/dsp/arch/x86/copy.h>
+        #include <private/dsp/arch/x86/graphics.h>
 
-        #include <lsp-plug.in/dsp/arch/x86/cpuid.h>
+        #include <private/dsp/arch/x86/cpuid.h>
     #undef LSP_PLUG_IN_DSP_ARCH_X86_IMPL
 
     //-------------------------------------------------------------------------
