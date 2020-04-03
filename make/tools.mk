@@ -16,13 +16,13 @@ else ifeq ($(PLATFORM),Windows)
   FLAG_STDLIB             =
 endif
 
+CFLAGS_EXT          = -O2
+CXXFLAGS_EXT        = -O2
+
 ifeq ($(TEST),1)
   CFLAGS_EXT         += -DLSP_TESTING
   CXXFLAGS_EXT       += -DLSP_TESTING
 else
-  CFLAGS_EXT         += -O2
-  CXXFLAGS_EXT       += -O2
-  
   ifneq ($(ARTIFACT_EXPORT_ALL),1)
     CFLAGS_EXT         += -fvisibility=hidden
     CXXFLAGS_EXT       += -fvisibility=hidden
