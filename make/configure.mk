@@ -58,6 +58,7 @@ define vardef =
     $(if $($(name)_INC),,     $(eval $(name)_INC     := $($(name)_PATH)/include)) \
     $(if $($(name)_SRC),,     $(eval $(name)_SRC     := $($(name)_PATH)/src)) \
     $(if $($(name)_TEST),,    $(eval $(name)_TEST    := $($(name)_PATH)/test)) \
+    $(if $($(name)_TESTING),, $(eval $(name)_TESTING := 0)) \
     $(if $($(name)_BIN),,     $(eval $(name)_BIN     := $(BUILDDIR)/$($(name)_NAME))) \
   )
   
@@ -78,6 +79,8 @@ ifndef $(ARTIFACT_VARS)_PATH
   $(ARTIFACT_VARS)_PATH      := $(BASEDIR)
 endif
 
+$(ARTIFACT_VARS)_TESTING    = $(TEST)
+
 OVERALL_DEPS := $(DEPENDENCIES) $(ARTIFACT_VARS)
 __tmp := $(foreach dep,$(OVERALL_DEPS),$(call vardef, $(dep)))
 
@@ -92,6 +95,7 @@ CONFIG_VARS = \
     $(name)_INC \
     $(name)_SRC \
     $(name)_TEST \
+    $(name)_TESTING \
     $(name)_URL \
     $(name)_BIN \
     $(name)_CFLAGS \

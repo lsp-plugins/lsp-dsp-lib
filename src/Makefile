@@ -21,7 +21,7 @@ CXX_INSTHEADERS         = $(patsubst $($(ARTIFACT_VARS)_INC)/%,$(DESTDIR)$(PREFI
 
 ARTIFACT_BIN            = $($(ARTIFACT_VARS)_BIN)
 ARTIFACT_LIB            = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)-$($(ARTIFACT_VARS)_VERSION)$(LIBRARY_EXT)
-ARTIFACT_TEST           = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)-test$(EXECUTABLE_EXT)
+ARTIFACT_TESTBIN        = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)-test$(EXECUTABLE_EXT)
 ARTIFACT_OBJ            = $($(ARTIFACT_VARS)_OBJ)
 ARTIFACT_MFLAGS         = $($(ARTIFACT_VARS)_MFLAGS)
 
@@ -31,9 +31,11 @@ LINKER_OBJS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_OBJ), $(
 LINKER_LIBS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_LIB), $($(dep)_LIB)))
 BUILD_ALL               = $(ARTIFACT_LIB)
 
-ifeq ($(TEST),1)
-  CXX_SRC                += $(CXX_SRCTEST)
-  BUILD_ALL              += $(ARTIFACT_TEST)
+ifeq ($(TEST), 1)
+  ifeq ($($(ARTIFACT_VARS)_TESTING),1)
+    CXX_SRC                += $(CXX_SRCTEST)
+    BUILD_ALL              += $(ARTIFACT_TESTBIN)
+  endif
   DEPENDENCIES           += $(TEST_DEPENDENCIES)
 endif
 
@@ -116,7 +118,7 @@ depend: $(CXX_DEPS)
 
 $(BUILD_DEPS):
 	@echo "make $(notdir $($(@)_OBJ))"
-	@$(MAKE) -s -C "$($(@)_PATH)" compile CONFIG="$(CONFIG)" NO_DEPENDENCIES="1"
+	@$(MAKE) -s -C "$($(@)_PATH)" compile CONFIG="$(CONFIG)" NO_DEPENDENCIES="1" DEMO_TEST="0"
 
 $(ARTIFACT_OBJ): $(BUILD_DEPS) $(CXX_OBJ) $(CXX_OBJEXT)
 	@echo "  $(LD)   $(notdir $(ARTIFACT_OBJ))"
@@ -126,9 +128,9 @@ $(ARTIFACT_LIB): $(ARTIFACT_OBJ)
 	@echo "  $(CXX)  $(notdir $(ARTIFACT_LIB))"
 	@$(CXX) -o $(ARTIFACT_LIB) $(LINKER_OBJS) $(ARTIFACT_OBJ) $(SO_FLAGS) $(LINKER_LIBS)
 
-$(ARTIFACT_TEST): $(ARTIFACT_OBJ)
-	@echo "  $(CXX)  $(notdir $(ARTIFACT_TEST))"
-	@$(CXX) -o $(ARTIFACT_TEST) $(LINKER_OBJS) $(ARTIFACT_OBJ) $(EXE_FLAGS) $(LINKER_LIBS)
+$(ARTIFACT_TESTBIN): $(ARTIFACT_OBJ)
+	@echo "  $(CXX)  $(notdir $(ARTIFACT_TESTBIN))"
+	@$(CXX) -o $(ARTIFACT_TESTBIN) $(LINKER_OBJS) $(ARTIFACT_OBJ) $(EXE_FLAGS) $(LINKER_LIBS)
 
 $(CXX_OBJ) $(CXX_OBJEXT):
 	@echo "  $(CXX)  $(CXX_FILE)"
