@@ -774,7 +774,6 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
-    }
     #else
         void mix_copy4(float *dst, const float *a, const float *b, const float *c, const float *d,
                 float k1, float k2, float k3, float k4, size_t count)
