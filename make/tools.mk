@@ -20,8 +20,13 @@ ifeq ($(TEST),1)
   CFLAGS_EXT         += -DLSP_TESTING
   CXXFLAGS_EXT       += -DLSP_TESTING
 else
-  CFLAGS_EXT         += -O2 -fvisibility=hidden
-  CXXFLAGS_EXT       += -O2 -fvisibility=hidden
+  CFLAGS_EXT         += -O2
+  CXXFLAGS_EXT       += -O2
+  
+  ifneq ($(ARTIFACT_EXPORT_ALL),1)
+    CFLAGS_EXT         += -fvisibility=hidden
+    CXXFLAGS_EXT       += -fvisibility=hidden
+  endif
 endif
 
 # ARMv7 architecture tuning
