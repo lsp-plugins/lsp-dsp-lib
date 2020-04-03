@@ -8,58 +8,60 @@
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
-#include <core/sugar.h>
 
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void    lr_to_mid(float *m, const float *l, const float *r, size_t count);
-    void    lr_to_side(float *s, const float *l, const float *r, size_t count);
-    void    ms_to_left(float *l, const float *m, const float *s, size_t count);
-    void    ms_to_right(float *r, const float *m, const float *s, size_t count);
+    namespace generic
+    {
+        void    lr_to_mid(float *m, const float *l, const float *r, size_t count);
+        void    lr_to_side(float *s, const float *l, const float *r, size_t count);
+        void    ms_to_left(float *l, const float *m, const float *s, size_t count);
+        void    ms_to_right(float *r, const float *m, const float *s, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void    lr_to_mid(float *m, const float *l, const float *r, size_t count);
+            void    lr_to_side(float *s, const float *l, const float *r, size_t count);
+            void    ms_to_left(float *l, const float *m, const float *s, size_t count);
+            void    ms_to_right(float *r, const float *m, const float *s, size_t count);
+        }
+
+        namespace avx
+        {
+            void    lr_to_mid(float *m, const float *l, const float *r, size_t count);
+            void    lr_to_side(float *s, const float *l, const float *r, size_t count);
+            void    ms_to_left(float *l, const float *m, const float *s, size_t count);
+            void    ms_to_right(float *r, const float *m, const float *s, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void    lr_to_mid(float *m, const float *l, const float *r, size_t count);
+            void    lr_to_side(float *s, const float *l, const float *r, size_t count);
+            void    ms_to_left(float *l, const float *m, const float *s, size_t count);
+            void    ms_to_right(float *r, const float *m, const float *s, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void    lr_to_mid(float *m, const float *l, const float *r, size_t count);
+            void    lr_to_side(float *s, const float *l, const float *r, size_t count);
+            void    ms_to_left(float *l, const float *m, const float *s, size_t count);
+            void    ms_to_right(float *r, const float *m, const float *s, size_t count);
+        }
+    )
+
+    typedef void (* conv2x1_t)(float *d, const float *s1, const float *s2, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void    lr_to_mid(float *m, const float *l, const float *r, size_t count);
-        void    lr_to_side(float *s, const float *l, const float *r, size_t count);
-        void    ms_to_left(float *l, const float *m, const float *s, size_t count);
-        void    ms_to_right(float *r, const float *m, const float *s, size_t count);
-    }
-
-    namespace avx
-    {
-        void    lr_to_mid(float *m, const float *l, const float *r, size_t count);
-        void    lr_to_side(float *s, const float *l, const float *r, size_t count);
-        void    ms_to_left(float *l, const float *m, const float *s, size_t count);
-        void    ms_to_right(float *r, const float *m, const float *s, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void    lr_to_mid(float *m, const float *l, const float *r, size_t count);
-        void    lr_to_side(float *s, const float *l, const float *r, size_t count);
-        void    ms_to_left(float *l, const float *m, const float *s, size_t count);
-        void    ms_to_right(float *r, const float *m, const float *s, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void    lr_to_mid(float *m, const float *l, const float *r, size_t count);
-        void    lr_to_side(float *s, const float *l, const float *r, size_t count);
-        void    ms_to_left(float *l, const float *m, const float *s, size_t count);
-        void    ms_to_right(float *r, const float *m, const float *s, size_t count);
-    }
-)
-
-typedef void (* conv2x1_t)(float *d, const float *s1, const float *s2, size_t count);
 
 //-----------------------------------------------------------------------------
 // Unit test for complex multiplication

@@ -9,48 +9,51 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-namespace generic
+namespace lsp
 {
-    void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
+    namespace generic
+    {
+        void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
+        }
+
+        namespace avx
+        {
+            void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
+            void convolve_fma3(float *dst, const float *src, const float *conv, size_t length, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
+        }
+    )
+
+    static void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count)
+    {
+        for (size_t i=0; i<count; ++i)
+        {
+            for (size_t j=0; j<length; ++j)
+                dst[i+j] += src[i] * conv[j];
+        }
+    }
+
+    typedef void (* convolve_t)(float *dst, const float *src, const float *conv, size_t length, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
-    }
-
-    namespace avx
-    {
-        void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
-        void convolve_fma3(float *dst, const float *src, const float *conv, size_t length, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
-    }
-)
-
-static void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count)
-{
-    for (size_t i=0; i<count; ++i)
-    {
-        for (size_t j=0; j<length; ++j)
-            dst[i+j] += src[i] * conv[j];
-    }
-}
-
-typedef void (* convolve_t)(float *dst, const float *src, const float *conv, size_t length, size_t count);
 
 UTEST_BEGIN("dsp", convolve)
     void call(const char *label, size_t align, convolve_t func)

@@ -14,48 +14,51 @@
     #define TOLERANCE 1e-4
 #endif
 
-namespace generic
+namespace lsp
 {
-    float h_dotp(const float *a, const float *b, size_t count);
-    float h_sqr_dotp(const float *a, const float *b, size_t count);
-    float h_abs_dotp(const float *a, const float *b, size_t count);
+    namespace generic
+    {
+        float h_dotp(const float *a, const float *b, size_t count);
+        float h_sqr_dotp(const float *a, const float *b, size_t count);
+        float h_abs_dotp(const float *a, const float *b, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            float h_dotp(const float *a, const float *b, size_t count);
+            float h_sqr_dotp(const float *a, const float *b, size_t count);
+            float h_abs_dotp(const float *a, const float *b, size_t count);
+        }
+
+        namespace avx
+        {
+            float h_dotp(const float *a, const float *b, size_t count);
+            float h_sqr_dotp(const float *a, const float *b, size_t count);
+            float h_abs_dotp(const float *a, const float *b, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            float h_dotp(const float *a, const float *b, size_t count);
+            float h_sqr_dotp(const float *a, const float *b, size_t count);
+            float h_abs_dotp(const float *a, const float *b, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            float h_dotp(const float *a, const float *b, size_t count);
+            float h_sqr_dotp(const float *a, const float *b, size_t count);
+            float h_abs_dotp(const float *a, const float *b, size_t count);
+        }
+    )
+
+    typedef float (* h_dotp_t)(const float *a, const float *b, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        float h_dotp(const float *a, const float *b, size_t count);
-        float h_sqr_dotp(const float *a, const float *b, size_t count);
-        float h_abs_dotp(const float *a, const float *b, size_t count);
-    }
-
-    namespace avx
-    {
-        float h_dotp(const float *a, const float *b, size_t count);
-        float h_sqr_dotp(const float *a, const float *b, size_t count);
-        float h_abs_dotp(const float *a, const float *b, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        float h_dotp(const float *a, const float *b, size_t count);
-        float h_sqr_dotp(const float *a, const float *b, size_t count);
-        float h_abs_dotp(const float *a, const float *b, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        float h_dotp(const float *a, const float *b, size_t count);
-        float h_sqr_dotp(const float *a, const float *b, size_t count);
-        float h_abs_dotp(const float *a, const float *b, size_t count);
-    }
-)
-
-typedef float (* h_dotp_t)(const float *a, const float *b, size_t count);
 
 UTEST_BEGIN("dsp.hmath", hdotp)
 

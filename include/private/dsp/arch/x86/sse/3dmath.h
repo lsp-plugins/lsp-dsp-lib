@@ -1106,7 +1106,7 @@ namespace lsp
             );
         }
 
-        inline void init_matrix3d_rotate_x(matrix3d_t *m, float angle)
+        void init_matrix3d_rotate_x(matrix3d_t *m, float angle)
         {
             float s     = sinf(angle);
             float c     = cosf(angle);
@@ -1135,7 +1135,7 @@ namespace lsp
             );
         }
 
-        inline void init_matrix3d_rotate_y(matrix3d_t *m, float angle)
+        void init_matrix3d_rotate_y(matrix3d_t *m, float angle)
         {
             float s     = sinf(angle);
             float c     = cosf(angle);
@@ -1164,7 +1164,7 @@ namespace lsp
             );
         }
 
-        inline void init_matrix3d_rotate_z(matrix3d_t *m, float angle)
+        void init_matrix3d_rotate_z(matrix3d_t *m, float angle)
         {
             float s     = sinf(angle);
             float c     = cosf(angle);
@@ -1991,7 +1991,7 @@ namespace lsp
             return x0;
         }
 
-        inline void calc_normal3d_v2(vector3d_t *n, const vector3d_t *v1, const vector3d_t *v2)
+        void calc_normal3d_v2(vector3d_t *n, const vector3d_t *v1, const vector3d_t *v2)
         {
             float x0, x1, x2, x3;
 
@@ -2022,7 +2022,7 @@ namespace lsp
             );
         }
 
-        inline void calc_normal3d_vv(vector3d_t *n, const vector3d_t *vv)
+        void calc_normal3d_vv(vector3d_t *n, const vector3d_t *vv)
         {
             float x0, x1, x2, x3;
 

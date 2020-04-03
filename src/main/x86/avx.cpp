@@ -20,12 +20,12 @@
     #endif /* LSP_TESTING */
 
     // Feature detection
-    #define LSP_PLUG_IN_DSP_ARCH_X86_IMPL
+    #define PRIVATE_DSP_ARCH_X86_IMPL
         #include <private/dsp/arch/x86/features.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_X86_IMPL
+    #undef PRIVATE_DSP_ARCH_X86_IMPL
 
     // AVX-specific function implementations
-    #define LSP_PLUG_IN_DSP_ARCH_X86_AVX_IMPL
+    #define PRIVATE_DSP_ARCH_X86_AVX_IMPL
         #include <private/dsp/arch/x86/avx/xcr.h>
 
         #include <private/dsp/arch/x86/avx/copy.h>
@@ -57,7 +57,7 @@
         #include <private/dsp/arch/x86/avx/msmatrix.h>
         #include <private/dsp/arch/x86/avx/resampling.h>
         #include <private/dsp/arch/x86/avx/convolution.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_X86_AVX_IMPL
+    #undef PRIVATE_DSP_ARCH_X86_AVX_IMPL
 
     namespace lsp
     {

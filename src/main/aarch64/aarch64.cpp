@@ -17,10 +17,10 @@
     #include <stdlib.h>
 
     // Include common architectural definitions
-    #define LSP_PLUG_IN_DSP_ARCH_AARCH64_IMPL
+    #define PRIVATE_DSP_ARCH_AARCH64_IMPL
         #include <private/dsp/arch/aarch64/features.h>
         #include <private/dsp/arch/aarch64/fpcr.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_AARCH64_IMPL
+    #undef PRIVATE_DSP_ARCH_AARCH64_IMPL
 
 namespace lsp
 {

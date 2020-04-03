@@ -9,29 +9,32 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-namespace generic
+namespace lsp
 {
-    void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
-    void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
+    namespace generic
+    {
+        void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
+        void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
+            void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
+            void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
+        }
+    )
+
+    typedef void (* hsla_to_fill_t)(float *dst, float c1, float c2, float c3, float c4, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
-        void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
-        void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
-    }
-)
-
-typedef void (* hsla_to_fill_t)(float *dst, float c1, float c2, float c3, float c4, size_t count);
 
 UTEST_BEGIN("dsp.graphics", fill)
     void call(const char *label, size_t align, hsla_to_fill_t func1, hsla_to_fill_t func2)

@@ -7,27 +7,30 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/utest.h>
-#include <testing/utest/dsp/3d/helpers.h>
+#include <private/utest/dsp/3d/helpers.h>
 
-namespace generic
+namespace lsp
 {
-    void init_vector_dxyz(vector3d_t *v, float dx, float dy, float dz);
-    void init_vector(vector3d_t *p, const vector3d_t *s);
-    void normalize_vector(vector3d_t *v);
-}
-
-IF_ARCH_X86(
-    namespace sse
+    namespace generic
     {
-        void init_vector_dxyz(vector3d_t *v, float dx, float dy, float dz);
-        void init_vector(vector3d_t *p, const vector3d_t *s);
-        void normalize_vector(vector3d_t *v);
+        void init_vector_dxyz(dsp::vector3d_t *v, float dx, float dy, float dz);
+        void init_vector(dsp::vector3d_t *p, const dsp::vector3d_t *s);
+        void normalize_vector(dsp::vector3d_t *v);
     }
-)
 
-typedef void (* init_vector_dxyz_t)(vector3d_t *v, float dx, float dy, float dz);
-typedef void (* init_vector_t)(vector3d_t *p, const vector3d_t *s);
-typedef void (* normalize_vector_t)(vector3d_t *v);
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void init_vector_dxyz(dsp::vector3d_t *v, float dx, float dy, float dz);
+            void init_vector(dsp::vector3d_t *p, const dsp::vector3d_t *s);
+            void normalize_vector(dsp::vector3d_t *v);
+        }
+    )
+
+    typedef void (* init_vector_dxyz_t)(dsp::vector3d_t *v, float dx, float dy, float dz);
+    typedef void (* init_vector_t)(dsp::vector3d_t *p, const dsp::vector3d_t *s);
+    typedef void (* normalize_vector_t)(dsp::vector3d_t *v);
+}
 
 UTEST_BEGIN("dsp.3d", vector)
 
@@ -43,7 +46,7 @@ UTEST_BEGIN("dsp.3d", vector)
 
         printf("Testing %s\n", label);
 
-        vector3d_t  v1, v2, v3;
+        dsp::vector3d_t  v1, v2, v3;
 
         generic::init_vector_dxyz(&v1, 1.0f, 2.0f, 3.0f);
         init_dxyz(&v2, 1.0f, 2.0f, 3.0f);

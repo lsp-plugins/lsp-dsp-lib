@@ -8,27 +8,31 @@
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
+#include <lsp-plug.in/stdlib/math.h>
 
 #define CASCADES            11
-#define BIQUAD_X1_FLOATS    (sizeof(biquad_x1_t) / sizeof(float))
-#define BIQUAD_X2_FLOATS    (sizeof(biquad_x2_t) / sizeof(float))
-#define BIQUAD_X4_FLOATS    (sizeof(biquad_x4_t) / sizeof(float))
-#define BIQUAD_X8_FLOATS    (sizeof(biquad_x8_t) / sizeof(float))
-#define CASCADE_FLOATS      (sizeof(f_cascade_t) / sizeof(float))
+#define BIQUAD_X1_FLOATS    (sizeof(dsp::biquad_x1_t) / sizeof(float))
+#define BIQUAD_X2_FLOATS    (sizeof(dsp::biquad_x2_t) / sizeof(float))
+#define BIQUAD_X4_FLOATS    (sizeof(dsp::biquad_x4_t) / sizeof(float))
+#define BIQUAD_X8_FLOATS    (sizeof(dsp::biquad_x8_t) / sizeof(float))
+#define CASCADE_FLOATS      (sizeof(dsp::f_cascade_t) / sizeof(float))
 
-namespace generic
+namespace lsp
 {
-    void matched_transform_x1(biquad_x1_t *bf, f_cascade_t *bc, float kf, float td, size_t count);
-}
-
-IF_ARCH_X86(
-    namespace sse
+    namespace generic
     {
-        void matched_transform_x1(biquad_x1_t *bf, f_cascade_t *bc, float kf, float td, size_t count);
+        void matched_transform_x1(dsp::biquad_x1_t *bf, dsp::f_cascade_t *bc, float kf, float td, size_t count);
     }
-)
 
-typedef void (* matched_transform_x1_t)(biquad_x1_t *bf, f_cascade_t *bc, float kf, float td, size_t count);
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void matched_transform_x1(dsp::biquad_x1_t *bf, dsp::f_cascade_t *bc, float kf, float td, size_t count);
+        }
+    )
+
+    typedef void (* matched_transform_x1_t)(dsp::biquad_x1_t *bf, dsp::f_cascade_t *bc, float kf, float td, size_t count);
+}
 
 UTEST_BEGIN("dsp.filters", mt)
 
@@ -43,7 +47,7 @@ UTEST_BEGIN("dsp.filters", mt)
 
         float td = 2.0*M_PI/48000.0;
         FloatBuffer src1(CASCADE_FLOATS * CASCADES, 64, true);
-        f_cascade_t *bc = src1.data<f_cascade_t>();
+        dsp::f_cascade_t *bc = src1.data<dsp::f_cascade_t>();
         for (size_t i=0; i<CASCADES; ++i)
         {
             float kt = i * 0.1;
@@ -56,8 +60,8 @@ UTEST_BEGIN("dsp.filters", mt)
         FloatBuffer dst1(BIQUAD_X1_FLOATS * CASCADES, 64, true);
         FloatBuffer dst2(BIQUAD_X1_FLOATS * CASCADES, 64, true);
 
-        f1(dst1.data<biquad_x1_t>(), bc, 1.5f, td, CASCADES);
-        f2(dst2.data<biquad_x1_t>(), bc, 1.5f, td, CASCADES);
+        f1(dst1.data<dsp::biquad_x1_t>(), bc, 1.5f, td, CASCADES);
+        f2(dst2.data<dsp::biquad_x1_t>(), bc, 1.5f, td, CASCADES);
 
         UTEST_ASSERT_MSG(src1.valid(), "Source buffer corrupted");
         UTEST_ASSERT_MSG(src2.valid(), "Source buffer corrupted");

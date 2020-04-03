@@ -9,38 +9,41 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/ByteBuffer.h>
 
-namespace generic
+namespace lsp
 {
-    void rgba32_to_bgra32(void *dst, const void *src, size_t count);
+    namespace generic
+    {
+        void rgba32_to_bgra32(void *dst, const void *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace x86
+        {
+            void rgba32_to_bgra32(void *dst, const void *src, size_t count);
+        }
+
+        namespace sse2
+        {
+            void rgba32_to_bgra32(void *dst, const void *src, size_t count);
+        }
+    )
+
+    IF_ARCH_X86_64(
+        namespace sse3
+        {
+            void x64_rgba32_to_bgra32(void *dst, const void *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void rgba32_to_bgra32(void *dst, const void *src, size_t count);
+        }
+    )
+
+    typedef void (* rgba32_to_bgra32_t)(void *dst, const void *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace x86
-    {
-        void rgba32_to_bgra32(void *dst, const void *src, size_t count);
-    }
-
-    namespace sse2
-    {
-        void rgba32_to_bgra32(void *dst, const void *src, size_t count);
-    }
-)
-
-IF_ARCH_X86_64(
-    namespace sse3
-    {
-        void x64_rgba32_to_bgra32(void *dst, const void *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void rgba32_to_bgra32(void *dst, const void *src, size_t count);
-    }
-)
-
-typedef void (* rgba32_to_bgra32_t)(void *dst, const void *src, size_t count);
 
 UTEST_BEGIN("dsp.graphics", rgba)
     void call(const char *label, size_t align, rgba32_to_bgra32_t func)

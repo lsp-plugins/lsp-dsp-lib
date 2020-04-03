@@ -7,27 +7,30 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/utest.h>
-#include <testing/utest/dsp/3d/helpers.h>
+#include <private/utest/dsp/3d/helpers.h>
 
-namespace generic
+namespace lsp
 {
-    float calc_plane_p3(vector3d_t *v, const point3d_t *p0, const point3d_t *p1, const point3d_t *p2);
-    float calc_plane_pv(vector3d_t *v, const point3d_t *pv);
-    float calc_plane_v1p2(vector3d_t *v, const vector3d_t *v0, const point3d_t *p0, const point3d_t *p1);
-}
-
-IF_ARCH_X86(
-    namespace sse
+    namespace generic
     {
-        float calc_plane_p3(vector3d_t *v, const point3d_t *p0, const point3d_t *p1, const point3d_t *p2);
-        float calc_plane_pv(vector3d_t *v, const point3d_t *pv);
-        float calc_plane_v1p2(vector3d_t *v, const vector3d_t *v0, const point3d_t *p0, const point3d_t *p1);
+        float calc_plane_p3(dsp::vector3d_t *v, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+        float calc_plane_pv(dsp::vector3d_t *v, const dsp::point3d_t *pv);
+        float calc_plane_v1p2(dsp::vector3d_t *v, const dsp::vector3d_t *v0, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
     }
-)
 
-typedef float (* calc_plane_p3_t)(vector3d_t *v, const point3d_t *p0, const point3d_t *p1, const point3d_t *p2);
-typedef float (* calc_plane_pv_t)(vector3d_t *v, const point3d_t *pv);
-typedef float (* calc_plane_v1p2_t)(vector3d_t *v, const vector3d_t *v0, const point3d_t *p0, const point3d_t *p1);
+    IF_ARCH_X86(
+        namespace sse
+        {
+            float calc_plane_p3(dsp::vector3d_t *v, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+            float calc_plane_pv(dsp::vector3d_t *v, const dsp::point3d_t *pv);
+            float calc_plane_v1p2(dsp::vector3d_t *v, const dsp::vector3d_t *v0, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
+        }
+    )
+
+    typedef float (* calc_plane_p3_t)(dsp::vector3d_t *v, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+    typedef float (* calc_plane_pv_t)(dsp::vector3d_t *v, const dsp::point3d_t *pv);
+    typedef float (* calc_plane_v1p2_t)(dsp::vector3d_t *v, const dsp::vector3d_t *v0, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
+}
 
 UTEST_BEGIN("dsp.3d", plane)
 
@@ -38,8 +41,8 @@ UTEST_BEGIN("dsp.3d", plane)
 
         printf("Testing %s...\n", label);
 
-        point3d_t pv[3];
-        vector3d_t v1, v2;
+        dsp::point3d_t pv[3];
+        dsp::vector3d_t v1, v2;
 
         for (size_t i=0; i<0x200; ++i)
         {
@@ -76,8 +79,8 @@ UTEST_BEGIN("dsp.3d", plane)
 
         printf("Testing %s...\n", label);
 
-        point3d_t pv[3];
-        vector3d_t v1, v2;
+        dsp::point3d_t pv[3];
+        dsp::vector3d_t v1, v2;
 
         for (size_t i=0; i<0x200; ++i)
         {
@@ -114,9 +117,9 @@ UTEST_BEGIN("dsp.3d", plane)
 
         printf("Testing %s...\n", label);
 
-        point3d_t pv[2];
-        vector3d_t sv;
-        vector3d_t v1, v2;
+        dsp::point3d_t pv[2];
+        dsp::vector3d_t sv;
+        dsp::vector3d_t v1, v2;
 
         for (size_t i=0; i<0x200; ++i)
         {

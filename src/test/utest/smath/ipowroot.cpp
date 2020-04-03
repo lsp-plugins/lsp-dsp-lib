@@ -10,21 +10,24 @@
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/stdlib/math.h>
 
-namespace generic
+namespace lsp
 {
-    float ipowf(float x, int deg);
-    float irootf(float x, int deg);
-}
-
-IF_ARCH_X86 (
-    namespace sse
+    namespace generic
     {
         float ipowf(float x, int deg);
         float irootf(float x, int deg);
     }
-)
 
-typedef float (* ipowrootf_t)(float x, int deg);
+    IF_ARCH_X86 (
+        namespace sse
+        {
+            float ipowf(float x, int deg);
+            float irootf(float x, int deg);
+        }
+    )
+
+    typedef float (* ipowrootf_t)(float x, int deg);
+}
 
 UTEST_BEGIN("dsp.smath", ipowroot)
 

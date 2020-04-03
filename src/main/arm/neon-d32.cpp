@@ -18,10 +18,10 @@
         #define TEST_EXPORT(...)
     #endif
 
-    #define LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
+    #define PRIVATE_DSP_ARCH_ARM_IMPL
         #include <private/dsp/arch/arm/features.h>
         #include <private/dsp/arch/arm/fpscr.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
+    #undef PRIVATE_DSP_ARCH_ARM_IMPL
 
     namespace lsp
     {
@@ -32,7 +32,7 @@
         }
     }
 
-    #define LSP_PLUG_IN_DSP_ARCH_ARM_NEON_D32_IMPL
+    #define PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL
         #include <private/dsp/arch/arm/neon-d32/copy.h>
         #include <private/dsp/arch/arm/neon-d32/complex.h>
         #include <private/dsp/arch/arm/neon-d32/pcomplex.h>
@@ -68,7 +68,7 @@
         #include <private/dsp/arch/arm/neon-d32/fft.h>
         #include <private/dsp/arch/arm/neon-d32/fastconv.h>
         #include <private/dsp/arch/arm/neon-d32/mix.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_ARM_NEON_D32_IMPL
+    #undef PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL
 
 
     #define EXPORT2(function, export)           dsp::function = neon_d32::export; TEST_EXPORT(neon_d32::export);

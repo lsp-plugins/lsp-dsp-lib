@@ -9,73 +9,76 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-namespace generic
+namespace lsp
 {
-    void logb1(float *dst, size_t count);
-    void logb2(float *dst, const float *src, size_t count);
-    void loge1(float *dst, size_t count);
-    void loge2(float *dst, const float *src, size_t count);
-    void logd1(float *dst, size_t count);
-    void logd2(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void logb1(float *dst, size_t count);
+        void logb2(float *dst, const float *src, size_t count);
+        void loge1(float *dst, size_t count);
+        void loge2(float *dst, const float *src, size_t count);
+        void logd1(float *dst, size_t count);
+        void logd2(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse2
+        {
+            void logb1(float *dst, size_t count);
+            void logb2(float *dst, const float *src, size_t count);
+            void loge1(float *dst, size_t count);
+            void loge2(float *dst, const float *src, size_t count);
+            void logd1(float *dst, size_t count);
+            void logd2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_X86_64(
+        namespace avx2
+        {
+            void x64_logb1(float *dst, size_t count);
+            void x64_logb2(float *dst, const float *src, size_t count);
+            void x64_loge1(float *dst, size_t count);
+            void x64_loge2(float *dst, const float *src, size_t count);
+            void x64_logd1(float *dst, size_t count);
+            void x64_logd2(float *dst, const float *src, size_t count);
+
+            void x64_logb1_fma3(float *dst, size_t count);
+            void x64_logb2_fma3(float *dst, const float *src, size_t count);
+            void x64_loge1_fma3(float *dst, size_t count);
+            void x64_loge2_fma3(float *dst, const float *src, size_t count);
+            void x64_logd1_fma3(float *dst, size_t count);
+            void x64_logd2_fma3(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void logb1(float *dst, size_t count);
+            void logb2(float *dst, const float *src, size_t count);
+            void loge1(float *dst, size_t count);
+            void loge2(float *dst, const float *src, size_t count);
+            void logd1(float *dst, size_t count);
+            void logd2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void logb1(float *dst, size_t count);
+            void logb2(float *dst, const float *src, size_t count);
+            void loge1(float *dst, size_t count);
+            void loge2(float *dst, const float *src, size_t count);
+            void logd1(float *dst, size_t count);
+            void logd2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* log1_t)(float *dst, size_t count);
+    typedef void (* log2_t)(float *dst, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse2
-    {
-        void logb1(float *dst, size_t count);
-        void logb2(float *dst, const float *src, size_t count);
-        void loge1(float *dst, size_t count);
-        void loge2(float *dst, const float *src, size_t count);
-        void logd1(float *dst, size_t count);
-        void logd2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_X86_64(
-    namespace avx2
-    {
-        void x64_logb1(float *dst, size_t count);
-        void x64_logb2(float *dst, const float *src, size_t count);
-        void x64_loge1(float *dst, size_t count);
-        void x64_loge2(float *dst, const float *src, size_t count);
-        void x64_logd1(float *dst, size_t count);
-        void x64_logd2(float *dst, const float *src, size_t count);
-
-        void x64_logb1_fma3(float *dst, size_t count);
-        void x64_logb2_fma3(float *dst, const float *src, size_t count);
-        void x64_loge1_fma3(float *dst, size_t count);
-        void x64_loge2_fma3(float *dst, const float *src, size_t count);
-        void x64_logd1_fma3(float *dst, size_t count);
-        void x64_logd2_fma3(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void logb1(float *dst, size_t count);
-        void logb2(float *dst, const float *src, size_t count);
-        void loge1(float *dst, size_t count);
-        void loge2(float *dst, const float *src, size_t count);
-        void logd1(float *dst, size_t count);
-        void logd2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void logb1(float *dst, size_t count);
-        void logb2(float *dst, const float *src, size_t count);
-        void loge1(float *dst, size_t count);
-        void loge2(float *dst, const float *src, size_t count);
-        void logd1(float *dst, size_t count);
-        void logd2(float *dst, const float *src, size_t count);
-    }
-)
-
-typedef void (* log1_t)(float *dst, size_t count);
-typedef void (* log2_t)(float *dst, const float *src, size_t count);
 
 //-----------------------------------------------------------------------------
 // Unit test

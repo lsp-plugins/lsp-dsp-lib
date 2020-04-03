@@ -10,94 +10,97 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-namespace generic
+namespace lsp
 {
-    void mix2(float *dst, const float *src, float k1, float k2, size_t count);
-    void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
-    void mix4(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
+    namespace generic
+    {
+        void mix2(float *dst, const float *src, float k1, float k2, size_t count);
+        void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
+        void mix4(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
 
-    void mix_copy2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
-    void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-    void mix_copy4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+        void mix_copy2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
+        void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+        void mix_copy4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
 
-    void mix_add2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
-    void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-    void mix_add4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+        void mix_add2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
+        void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+        void mix_add4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void mix2(float *dst, const float *src, float k1, float k2, size_t count);
+            void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
+            void mix4(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
+
+            void mix_copy2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
+            void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+            void mix_copy4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+
+            void mix_add2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
+            void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+            void mix_add4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+        }
+
+        namespace avx
+        {
+            void mix2(float *dst, const float *src, float k1, float k2, size_t count);
+            void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
+            void mix4(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
+
+            void mix_copy2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
+            void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+            void mix_copy4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+
+            void mix_add2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
+            void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+            void mix_add4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void mix2(float *dst, const float *src, float k1, float k2, size_t count);
+            void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
+            void mix4(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
+
+            void mix_copy2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
+            void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+            void mix_copy4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+
+            void mix_add2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
+            void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+            void mix_add4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void mix2(float *dst, const float *src, float k1, float k2, size_t count);
+            void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
+            void mix4(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
+
+            void mix_copy2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
+            void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+            void mix_copy4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+
+            void mix_add2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
+            void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+            void mix_add4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+        }
+    )
+
+    typedef void (* mix2_t)(float *dst, const float *src, float k1, float k2, size_t count);
+    typedef void (* mix3_t)(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
+    typedef void (* mix4_t)(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
+
+    typedef void (* mix_dst2_t)(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
+    typedef void (* mix_dst3_t)(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+    typedef void (* mix_dst4_t)(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void mix2(float *dst, const float *src, float k1, float k2, size_t count);
-        void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
-        void mix4(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
-
-        void mix_copy2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
-        void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-        void mix_copy4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
-
-        void mix_add2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
-        void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-        void mix_add4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
-    }
-
-    namespace avx
-    {
-        void mix2(float *dst, const float *src, float k1, float k2, size_t count);
-        void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
-        void mix4(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
-
-        void mix_copy2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
-        void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-        void mix_copy4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
-
-        void mix_add2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
-        void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-        void mix_add4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void mix2(float *dst, const float *src, float k1, float k2, size_t count);
-        void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
-        void mix4(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
-
-        void mix_copy2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
-        void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-        void mix_copy4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
-
-        void mix_add2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
-        void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-        void mix_add4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void mix2(float *dst, const float *src, float k1, float k2, size_t count);
-        void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
-        void mix4(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
-
-        void mix_copy2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
-        void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-        void mix_copy4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
-
-        void mix_add2(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
-        void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-        void mix_add4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
-    }
-)
-
-typedef void (* mix2_t)(float *dst, const float *src, float k1, float k2, size_t count);
-typedef void (* mix3_t)(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
-typedef void (* mix4_t)(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
-
-typedef void (* mix_dst2_t)(float *dst, const float *src1, const float *src2, float k1, float k2, size_t count);
-typedef void (* mix_dst3_t)(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-typedef void (* mix_dst4_t)(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
 
 
 UTEST_BEGIN("dsp", mix)

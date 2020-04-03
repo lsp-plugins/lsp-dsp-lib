@@ -21,14 +21,14 @@
     #include <stdio.h>
     #include <stdlib.h>
 
-    #define LSP_PLUG_IN_DSP_ARCH_X86_IMPL
+    #define PRIVATE_DSP_ARCH_X86_IMPL
         #include <private/dsp/arch/x86/features.h>
         #include <private/dsp/arch/x86/float.h>
         #include <private/dsp/arch/x86/copy.h>
         #include <private/dsp/arch/x86/graphics.h>
 
         #include <private/dsp/arch/x86/cpuid.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_X86_IMPL
+    #undef PRIVATE_DSP_ARCH_X86_IMPL
 
     //-------------------------------------------------------------------------
     // References to extension initialization routines

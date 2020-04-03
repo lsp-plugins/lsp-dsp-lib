@@ -7,47 +7,51 @@
 
 
 #include <lsp-plug.in/dsp/dsp.h>
+#include <lsp-plug.in/stdlib/math.h>
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-namespace generic
+namespace lsp
 {
-    void copy_saturated(float *dst, const float *src, size_t count);
-    void saturate(float *dst, size_t count);
+    namespace generic
+    {
+        void copy_saturated(float *dst, const float *src, size_t count);
+        void saturate(float *dst, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse2
+        {
+            void copy_saturated(float *dst, const float *src, size_t count);
+            void saturate(float *dst, size_t count);
+        }
+
+        namespace avx2
+        {
+            void copy_saturated(float *dst, const float *src, size_t count);
+            void saturate(float *dst, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void copy_saturated(float *dst, const float *src, size_t count);
+            void saturate(float *dst, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void copy_saturated(float *dst, const float *src, size_t count);
+            void saturate(float *dst, size_t count);
+        }
+    )
+
+    typedef void (* copy_saturated_t)(float *dst, const float *src, size_t count);
+    typedef void (* saturate_t)(float *dst, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse2
-    {
-        void copy_saturated(float *dst, const float *src, size_t count);
-        void saturate(float *dst, size_t count);
-    }
-
-    namespace avx2
-    {
-        void copy_saturated(float *dst, const float *src, size_t count);
-        void saturate(float *dst, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void copy_saturated(float *dst, const float *src, size_t count);
-        void saturate(float *dst, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void copy_saturated(float *dst, const float *src, size_t count);
-        void saturate(float *dst, size_t count);
-    }
-)
-
-typedef void (* copy_saturated_t)(float *dst, const float *src, size_t count);
-typedef void (* saturate_t)(float *dst, size_t count);
 
 UTEST_BEGIN("dsp.float", saturation)
 

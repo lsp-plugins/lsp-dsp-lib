@@ -12,21 +12,21 @@ namespace lsp
 {
     namespace generic
     {
-        size_t longest_edge3d_p3(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3);
-        size_t longest_edge3d_pv(const point3d_t *p);
+        size_t longest_edge3d_p3(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
+        size_t longest_edge3d_pv(const dsp::point3d_t *p);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
-            size_t longest_edge3d_p3(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3);
-            size_t longest_edge3d_pv(const point3d_t *p);
+            size_t longest_edge3d_p3(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
+            size_t longest_edge3d_pv(const dsp::point3d_t *p);
         }
     )
-}
 
-typedef size_t (* longest_edge3d_p3_t)(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3);
-typedef size_t (* longest_edge3d_pv_t)(const point3d_t *p);
+    typedef size_t (* longest_edge3d_p3_t)(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
+    typedef size_t (* longest_edge3d_pv_t)(const dsp::point3d_t *p);
+}
 
 UTEST_BEGIN("dsp.3d", edge)
 
@@ -37,7 +37,7 @@ UTEST_BEGIN("dsp.3d", edge)
     {
         printf("Testing %s...\n", label);
 
-        point3d_t lp[3];
+        dsp::point3d_t lp[3];
         dsp::init_point_xyz(&lp[0], 1.0f, 1.0f, 1.0f);
         dsp::init_point_xyz(&lp[1], 2.0f, 2.0f, 2.0f);
         dsp::init_point_xyz(&lp[2], 0.1f, 0.1f, 0.1f);

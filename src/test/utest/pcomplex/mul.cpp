@@ -9,60 +9,63 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-namespace generic
+namespace lsp
 {
-    void pcomplex_mul2(float *dst, const float *src, size_t count);
-    void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
+    namespace generic
+    {
+        void pcomplex_mul2(float *dst, const float *src, size_t count);
+        void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void pcomplex_mul2(float *dst, const float *src, size_t count);
+            void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
+        }
+
+        namespace sse3
+        {
+            void pcomplex_mul2(float *dst, const float *src, size_t count);
+            void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
+        }
+
+        namespace avx
+        {
+            void pcomplex_mul2(float *dst, const float *src, size_t count);
+            void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
+            void pcomplex_mul2_fma3(float *dst, const float *src, size_t count);
+            void pcomplex_mul3_fma3(float *dst, const float *src1, const float *src2, size_t count);
+        }
+    )
+
+    IF_ARCH_X86_64(
+        namespace sse3
+        {
+            void x64_pcomplex_mul2(float *dst, const float *src, size_t count);
+            void x64_pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void pcomplex_mul2(float *dst, const float *src, size_t count);
+            void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void pcomplex_mul2(float *dst, const float *src, size_t count);
+            void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
+        }
+    )
+
+    typedef void (* pcomplex_mul2_t) (float *dst, const float *src, size_t count);
+    typedef void (* pcomplex_mul3_t) (float *dst, const float *src1, const float *src2, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void pcomplex_mul2(float *dst, const float *src, size_t count);
-        void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
-    }
-
-    namespace sse3
-    {
-        void pcomplex_mul2(float *dst, const float *src, size_t count);
-        void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
-    }
-
-    namespace avx
-    {
-        void pcomplex_mul2(float *dst, const float *src, size_t count);
-        void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
-        void pcomplex_mul2_fma3(float *dst, const float *src, size_t count);
-        void pcomplex_mul3_fma3(float *dst, const float *src1, const float *src2, size_t count);
-    }
-)
-
-IF_ARCH_X86_64(
-    namespace sse3
-    {
-        void x64_pcomplex_mul2(float *dst, const float *src, size_t count);
-        void x64_pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void pcomplex_mul2(float *dst, const float *src, size_t count);
-        void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void pcomplex_mul2(float *dst, const float *src, size_t count);
-        void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count);
-    }
-)
-
-typedef void (* pcomplex_mul2_t) (float *dst, const float *src, size_t count);
-typedef void (* pcomplex_mul3_t) (float *dst, const float *src1, const float *src2, size_t count);
 
 
 UTEST_BEGIN("dsp.pcomplex", mul)

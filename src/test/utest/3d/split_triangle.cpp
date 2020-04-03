@@ -5,39 +5,39 @@
  *      Author: sadko
  */
 
-#include <core/alloc.h>
+#include <lsp-plug.in/dsp/dsp.h>
+#include <lsp-plug.in/common/alloc.h>
 #include <lsp-plug.in/test-fw/utest.h>
 
-#include <core/3d/common.h>
-
-using namespace lsp;
-
-namespace generic
+namespace lsp
 {
-    void split_triangle_raw(raw_triangle_t *out, size_t *n_out, raw_triangle_t *in, size_t *n_in, const vector3d_t *pl, const raw_triangle_t *pv);
+    namespace generic
+    {
+        void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+        }
+
+        namespace sse3
+        {
+            void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+        }
+    )
+
+    typedef void (* split_triangle_raw_t)(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void split_triangle_raw(raw_triangle_t *out, size_t *n_out, raw_triangle_t *in, size_t *n_in, const vector3d_t *pl, const raw_triangle_t *pv);
-    }
-
-    namespace sse3
-    {
-        void split_triangle_raw(raw_triangle_t *out, size_t *n_out, raw_triangle_t *in, size_t *n_in, const vector3d_t *pl, const raw_triangle_t *pv);
-    }
-)
-
-typedef void (* split_triangle_raw_t)(raw_triangle_t *out, size_t *n_out, raw_triangle_t *in, size_t *n_in, const vector3d_t *pl, const raw_triangle_t *pv);
 
 UTEST_BEGIN("dsp.3d", split_triangle)
 
     bool do_test(split_triangle_raw_t fn,
-            const vector3d_t &pl, const point3d_t &p0, const point3d_t &p1, const point3d_t &p2,
+            const dsp::vector3d_t &pl, const dsp::point3d_t &p0, const dsp::point3d_t &p1, const dsp::point3d_t &p2,
             size_t ein, size_t eout)
     {
-        raw_triangle_t rt, in[2], out[2];
+    dsp::raw_triangle_t rt, in[2], out[2];
         size_t nin, nout;
         rt.v[0] = p0;
         rt.v[1] = p1;
@@ -61,8 +61,8 @@ UTEST_BEGIN("dsp.3d", split_triangle)
         printf("Testing %s...\n", label);
 
         // Create culling plane
-        vector3d_t pl;
-        point3d_t p[3];
+        dsp::vector3d_t pl;
+        dsp::point3d_t p[3];
 
         // Culling plane
         dsp::init_vector_dxyz(&pl, 0.0f, 1.0f, 0.0f);
@@ -162,7 +162,7 @@ UTEST_BEGIN("dsp.3d", split_triangle)
 
     UTEST_MAIN
     {
-        test_func("generic::split_triangle_raw", native::split_triangle_raw);
+        test_func("generic::split_triangle_raw", generic::split_triangle_raw);
         IF_ARCH_X86(test_func("sse::split_triangle_raw", sse::split_triangle_raw));
         IF_ARCH_X86(test_func("sse3::split_triangle_raw", sse3::split_triangle_raw));
     }

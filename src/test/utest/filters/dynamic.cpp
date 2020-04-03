@@ -6,83 +6,86 @@
  */
 
 #include <lsp-plug.in/dsp/dsp.h>
+#include <lsp-plug.in/common/alloc.h>
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/helpers.h>
-#include <core/sugar.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
 #define BUF_SIZE        1024
 #define TOLERANCE       1e-3f
 
-namespace generic
+namespace lsp
 {
-    void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const biquad_x1_t *f);
-    void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const biquad_x2_t *f);
-    void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const biquad_x4_t *f);
-    void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f);
+    namespace generic
+    {
+        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
+        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
+        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f);
+        void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
+            void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
+            void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f);
+            void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+        }
+
+        namespace sse3
+        {
+            void x64_dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+        }
+
+        namespace avx
+        {
+            void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
+            void dyn_biquad_process_x1_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
+
+            void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
+            void dyn_biquad_process_x2_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
+
+            void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f);
+            void dyn_biquad_process_x4_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f);
+
+            void x64_dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+            void dyn_biquad_process_x8_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
+            void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
+            void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f);
+            void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
+            void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
+            void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f);
+            void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+        }
+    )
+
+    typedef void (* dyn_biquad_process_x1_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
+    typedef void (* dyn_biquad_process_x2_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
+    typedef void (* dyn_biquad_process_x4_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f);
+    typedef void (* dyn_biquad_process_x8_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+
+    static dsp::biquad_x1_t bq_normal =
+    {
+        0.992303491f, -1.98460698f, 0.992303491f, // a0 - a2
+        1.98398674f, -0.985227287f, // b1-b2
+        0.0f, 0.0f, 0.0f // padding
+    };
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const biquad_x1_t *f);
-        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const biquad_x2_t *f);
-        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const biquad_x4_t *f);
-        void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f);
-    }
-
-    namespace sse3
-    {
-        void x64_dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f);
-    }
-
-    namespace avx
-    {
-        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const biquad_x1_t *f);
-        void dyn_biquad_process_x1_fma3(float *dst, const float *src, float *d, size_t count, const biquad_x1_t *f);
-
-        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const biquad_x2_t *f);
-        void dyn_biquad_process_x2_fma3(float *dst, const float *src, float *d, size_t count, const biquad_x2_t *f);
-
-        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const biquad_x4_t *f);
-        void dyn_biquad_process_x4_fma3(float *dst, const float *src, float *d, size_t count, const biquad_x4_t *f);
-
-        void x64_dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f);
-        void dyn_biquad_process_x8_fma3(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const biquad_x1_t *f);
-        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const biquad_x2_t *f);
-        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const biquad_x4_t *f);
-        void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const biquad_x1_t *f);
-        void dyn_biquad_process_x2(float *dst, const float *src, float *d, size_t count, const biquad_x2_t *f);
-        void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const biquad_x4_t *f);
-        void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f);
-    }
-)
-
-typedef void (* dyn_biquad_process_x1_t)(float *dst, const float *src, float *d, size_t count, const biquad_x1_t *f);
-typedef void (* dyn_biquad_process_x2_t)(float *dst, const float *src, float *d, size_t count, const biquad_x2_t *f);
-typedef void (* dyn_biquad_process_x4_t)(float *dst, const float *src, float *d, size_t count, const biquad_x4_t *f);
-typedef void (* dyn_biquad_process_x8_t)(float *dst, const float *src, float *d, size_t count, const biquad_x8_t *f);
-
-static biquad_x1_t bq_normal =
-{
-    0.992303491f, -1.98460698f, 0.992303491f, // a0 - a2
-    1.98398674f, -0.985227287f, // b1-b2
-    0.0f, 0.0f, 0.0f // padding
-};
 
 UTEST_BEGIN("dsp.filters", dynamic)
 
@@ -91,7 +94,7 @@ UTEST_BEGIN("dsp.filters", dynamic)
         if (!UTEST_SUPPORTED(func))
             return;
 
-        float d[BIQUAD_D_ITEMS];
+        float d[LSP_DSP_BIQUAD_D_ITEMS];
 
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0x1f, 0x40, 0x1ff)
         {
@@ -104,8 +107,8 @@ UTEST_BEGIN("dsp.filters", dynamic)
 
             // Initialize filters
             void *p1 = NULL, *p2 = NULL;
-            biquad_x1_t *f1 = alloc_aligned<biquad_x1_t>(p1, count, 64);
-            biquad_x1_t *f2 = alloc_aligned<biquad_x1_t>(p2, count, 64);
+            dsp::biquad_x1_t *f1 = alloc_aligned<dsp::biquad_x1_t>(p1, count, 64);
+            dsp::biquad_x1_t *f2 = alloc_aligned<dsp::biquad_x1_t>(p2, count, 64);
             UTEST_ASSERT_MSG(f1 != NULL, "Out of memory while allocating f1");
             UTEST_ASSERT_MSG(f2 != NULL, "Out of memory while allocating f2");
 
@@ -115,10 +118,10 @@ UTEST_BEGIN("dsp.filters", dynamic)
                 f2[i]       = bq_normal;
 
             // Apply processing
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, src, d, count, f1);
 
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             func(dst2, src, d, count, f2);
 
             // Perform validation
@@ -145,7 +148,7 @@ UTEST_BEGIN("dsp.filters", dynamic)
         if (!UTEST_SUPPORTED(func))
             return;
 
-        float d[BIQUAD_D_ITEMS];
+        float d[LSP_DSP_BIQUAD_D_ITEMS];
 
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0x1f, 0x40, 0x1ff)
         {
@@ -158,8 +161,8 @@ UTEST_BEGIN("dsp.filters", dynamic)
 
             // Initialize filters
             void *p1 = NULL, *p2 = NULL;
-            biquad_x1_t *f1 = alloc_aligned<biquad_x1_t>(p1, count, 64);
-            biquad_x2_t *f2 = alloc_aligned<biquad_x2_t>(p2, count+1, 64);
+            dsp::biquad_x1_t *f1 = alloc_aligned<dsp::biquad_x1_t>(p1, count, 64);
+            dsp::biquad_x2_t *f2 = alloc_aligned<dsp::biquad_x2_t>(p2, count+1, 64);
             UTEST_ASSERT_MSG(f1 != NULL, "Out of memory while allocating f1");
             UTEST_ASSERT_MSG(f2 != NULL, "Out of memory while allocating f2");
 
@@ -179,12 +182,12 @@ UTEST_BEGIN("dsp.filters", dynamic)
             }
 
             // Apply processing
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, src, d, count, f1);
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, dst1, d, count, f1);
 
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             func(dst2, src, d, count, f2);
 
             // Perform validation
@@ -211,7 +214,7 @@ UTEST_BEGIN("dsp.filters", dynamic)
         if (!UTEST_SUPPORTED(func))
             return;
 
-        float d[BIQUAD_D_ITEMS];
+        float d[LSP_DSP_BIQUAD_D_ITEMS];
 
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0x1f, 0x40, 0x1ff)
         {
@@ -224,8 +227,8 @@ UTEST_BEGIN("dsp.filters", dynamic)
 
             // Initialize filters
             void *p1 = NULL, *p2 = NULL;
-            biquad_x1_t *f1 = alloc_aligned<biquad_x1_t>(p1, count, 64);
-            biquad_x4_t *f2 = alloc_aligned<biquad_x4_t>(p2, count+3, 64);
+            dsp::biquad_x1_t *f1 = alloc_aligned<dsp::biquad_x1_t>(p1, count, 64);
+            dsp::biquad_x4_t *f2 = alloc_aligned<dsp::biquad_x4_t>(p2, count+3, 64);
             UTEST_ASSERT_MSG(f1 != NULL, "Out of memory while allocating f1");
             UTEST_ASSERT_MSG(f2 != NULL, "Out of memory while allocating f2");
 
@@ -244,16 +247,16 @@ UTEST_BEGIN("dsp.filters", dynamic)
             }
 
             // Apply processing
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, src, d, count, f1);
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, dst1, d, count, f1);
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, dst1, d, count, f1);
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, dst1, d, count, f1);
 
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             func(dst2, src, d, count, f2);
 
             // Perform validation
@@ -280,7 +283,7 @@ UTEST_BEGIN("dsp.filters", dynamic)
         if (!UTEST_SUPPORTED(func))
             return;
 
-        float d[BIQUAD_D_ITEMS];
+        float d[LSP_DSP_BIQUAD_D_ITEMS];
 
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 0x1f, 0x40, 0x1ff)
         {
@@ -293,8 +296,8 @@ UTEST_BEGIN("dsp.filters", dynamic)
 
             // Initialize filters
             void *p1 = NULL, *p2 = NULL;
-            biquad_x1_t *f1 = alloc_aligned<biquad_x1_t>(p1, count, 64);
-            biquad_x8_t *f2 = alloc_aligned<biquad_x8_t>(p2, count+7, 64);
+            dsp::biquad_x1_t *f1 = alloc_aligned<dsp::biquad_x1_t>(p1, count, 64);
+            dsp::biquad_x8_t *f2 = alloc_aligned<dsp::biquad_x8_t>(p2, count+7, 64);
             UTEST_ASSERT_MSG(f1 != NULL, "Out of memory while allocating f1");
             UTEST_ASSERT_MSG(f2 != NULL, "Out of memory while allocating f2");
 
@@ -313,24 +316,24 @@ UTEST_BEGIN("dsp.filters", dynamic)
             }
 
             // Apply processing
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, src, d, count, f1);
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, dst1, d, count, f1);
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, dst1, d, count, f1);
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, dst1, d, count, f1);
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, dst1, d, count, f1);
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, dst1, d, count, f1);
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, dst1, d, count, f1);
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             generic::dyn_biquad_process_x1(dst1, dst1, d, count, f1);
 
-            dsp::fill_zero(d, BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
             func(dst2, src, d, count, f2);
 
             // Perform validation

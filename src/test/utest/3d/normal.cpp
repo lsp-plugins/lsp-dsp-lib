@@ -8,30 +8,33 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/dsp/dsp.h>
-#include <testing/utest/dsp/3d/helpers.h>
+#include <private/utest/dsp/3d/helpers.h>
 
-namespace generic
+namespace lsp
 {
-    void calc_normal3d_v2(vector3d_t *n, const vector3d_t *v1, const vector3d_t *v2);
-    void calc_normal3d_vv(vector3d_t *n, const vector3d_t *vv);
-    void calc_normal3d_p3(vector3d_t *n, const point3d_t *p1, const point3d_t *p2, const point3d_t *p3);
-    void calc_normal3d_pv(vector3d_t *n, const point3d_t *pv);
-}
-
-IF_ARCH_X86(
-    namespace sse
+    namespace generic
     {
-        void calc_normal3d_v2(vector3d_t *n, const vector3d_t *v1, const vector3d_t *v2);
-        void calc_normal3d_vv(vector3d_t *n, const vector3d_t *vv);
-        void calc_normal3d_p3(vector3d_t *n, const point3d_t *p1, const point3d_t *p2, const point3d_t *p3);
-        void calc_normal3d_pv(vector3d_t *n, const point3d_t *pv);
+        void calc_normal3d_v2(dsp::vector3d_t *n, const dsp::vector3d_t *v1, const dsp::vector3d_t *v2);
+        void calc_normal3d_vv(dsp::vector3d_t *n, const dsp::vector3d_t *vv);
+        void calc_normal3d_p3(dsp::vector3d_t *n, const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
+        void calc_normal3d_pv(dsp::vector3d_t *n, const dsp::point3d_t *pv);
     }
-)
 
-typedef void (* calc_normal3d_v2_t)(vector3d_t *n, const vector3d_t *v1, const vector3d_t *v2);
-typedef void (* calc_normal3d_vv_t)(vector3d_t *n, const vector3d_t *vv);
-typedef void (* calc_normal3d_p3_t)(vector3d_t *n, const point3d_t *p1, const point3d_t *p2, const point3d_t *p3);
-typedef void (* calc_normal3d_pv_t)(vector3d_t *n, const point3d_t *pv);
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void calc_normal3d_v2(dsp::vector3d_t *n, const dsp::vector3d_t *v1, const dsp::vector3d_t *v2);
+            void calc_normal3d_vv(dsp::vector3d_t *n, const dsp::vector3d_t *vv);
+            void calc_normal3d_p3(dsp::vector3d_t *n, const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
+            void calc_normal3d_pv(dsp::vector3d_t *n, const dsp::point3d_t *pv);
+        }
+    )
+
+    typedef void (* calc_normal3d_v2_t)(dsp::vector3d_t *n, const dsp::vector3d_t *v1, const dsp::vector3d_t *v2);
+    typedef void (* calc_normal3d_vv_t)(dsp::vector3d_t *n, const dsp::vector3d_t *vv);
+    typedef void (* calc_normal3d_p3_t)(dsp::vector3d_t *n, const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
+    typedef void (* calc_normal3d_pv_t)(dsp::vector3d_t *n, const dsp::point3d_t *pv);
+}
 
 UTEST_BEGIN("dsp.3d", normal)
 
@@ -42,7 +45,7 @@ UTEST_BEGIN("dsp.3d", normal)
 
         printf("Testing %s...\n", label);
 
-        vector3d_t sv[2], n[2];
+        dsp::vector3d_t sv[2], n[2];
 
         for (size_t i=0; i<0x200; ++i)
         {
@@ -72,7 +75,7 @@ UTEST_BEGIN("dsp.3d", normal)
 
         printf("Testing %s...\n", label);
 
-        vector3d_t sv[2], n[2];
+        dsp::vector3d_t sv[2], n[2];
 
         for (size_t i=0; i<0x200; ++i)
         {
@@ -102,8 +105,8 @@ UTEST_BEGIN("dsp.3d", normal)
 
         printf("Testing %s...\n", label);
 
-        point3d_t p[3];
-        vector3d_t n[2];
+        dsp::point3d_t p[3];
+        dsp::vector3d_t n[2];
 
         for (size_t i=0; i<0x200; ++i)
         {
@@ -135,8 +138,8 @@ UTEST_BEGIN("dsp.3d", normal)
 
         printf("Testing %s...\n", label);
 
-        point3d_t p[3];
-        vector3d_t n[2];
+        dsp::point3d_t p[3];
+        dsp::vector3d_t n[2];
 
         for (size_t i=0; i<0x200; ++i)
         {

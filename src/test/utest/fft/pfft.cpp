@@ -11,44 +11,47 @@
 
 #define TOLERANCE       5e-2
 
-namespace generic
+namespace lsp
 {
-    void packed_direct_fft(float *dst, const float *src, size_t rank);
-    void packed_reverse_fft(float *dst, const float *src, size_t rank);
+    namespace generic
+    {
+        void packed_direct_fft(float *dst, const float *src, size_t rank);
+        void packed_reverse_fft(float *dst, const float *src, size_t rank);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
+            void packed_reverse_fft(float *dst, const float *src, size_t rank);
+        }
+
+        namespace avx
+        {
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
+            void packed_reverse_fft(float *dst, const float *src, size_t rank);
+
+            void packed_direct_fft_fma3(float *dst, const float *src, size_t rank);
+            void packed_reverse_fft_fma3(float *dst, const float *src, size_t rank);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
+            void packed_reverse_fft(float *dst, const float *src, size_t rank);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
+            void packed_reverse_fft(float *dst, const float *src, size_t rank);
+        }
+    )
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void packed_direct_fft(float *dst, const float *src, size_t rank);
-        void packed_reverse_fft(float *dst, const float *src, size_t rank);
-    }
-
-    namespace avx
-    {
-        void packed_direct_fft(float *dst, const float *src, size_t rank);
-        void packed_reverse_fft(float *dst, const float *src, size_t rank);
-
-        void packed_direct_fft_fma3(float *dst, const float *src, size_t rank);
-        void packed_reverse_fft_fma3(float *dst, const float *src, size_t rank);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void packed_direct_fft(float *dst, const float *src, size_t rank);
-        void packed_reverse_fft(float *dst, const float *src, size_t rank);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void packed_direct_fft(float *dst, const float *src, size_t rank);
-        void packed_reverse_fft(float *dst, const float *src, size_t rank);
-    }
-)
 
 typedef void (* packed_fft_t)(float *dst, const float *src, size_t rank);
 

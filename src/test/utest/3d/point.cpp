@@ -7,27 +7,30 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/utest.h>
-#include <testing/utest/dsp/3d/helpers.h>
+#include <private/utest/dsp/3d/helpers.h>
 
-namespace generic
+namespace lsp
 {
-    void init_point_xyz(point3d_t *p, float x, float y, float z);
-    void init_point(point3d_t *p, const point3d_t *s);
-    void normalize_point(point3d_t *p);
-}
-
-IF_ARCH_X86(
-    namespace sse
+    namespace generic
     {
-        void init_point_xyz(point3d_t *p, float x, float y, float z);
-        void init_point(point3d_t *p, const point3d_t *s);
-        void normalize_point(point3d_t *p);
+        void init_point_xyz(dsp::point3d_t *p, float x, float y, float z);
+        void init_point(dsp::point3d_t *p, const dsp::point3d_t *s);
+        void normalize_point(dsp::point3d_t *p);
     }
-)
 
-typedef void (* init_point_xyz_t)(point3d_t *p, float x, float y, float z);
-typedef void (* init_point_t)(point3d_t *p, const point3d_t *s);
-typedef void (* normalize_point_t)(point3d_t *p);
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void init_point_xyz(dsp::point3d_t *p, float x, float y, float z);
+            void init_point(dsp::point3d_t *p, const dsp::point3d_t *s);
+            void normalize_point(dsp::point3d_t *p);
+        }
+    )
+
+    typedef void (* init_point_xyz_t)(dsp::point3d_t *p, float x, float y, float z);
+    typedef void (* init_point_t)(dsp::point3d_t *p, const dsp::point3d_t *s);
+    typedef void (* normalize_point_t)(dsp::point3d_t *p);
+}
 
 UTEST_BEGIN("dsp.3d", point)
 
@@ -43,7 +46,7 @@ UTEST_BEGIN("dsp.3d", point)
 
         printf("Testing %s\n", label);
 
-        point3d_t   p1, p2, p3;
+        dsp::point3d_t   p1, p2, p3;
 
         generic::init_point_xyz(&p1, 1.0f, 2.0f, 3.0f);
         init_xyz(&p2, 1.0f, 2.0f, 3.0f);

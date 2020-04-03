@@ -9,26 +9,29 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-namespace generic
+namespace lsp
 {
-    void hsla_to_rgba(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void hsla_to_rgba(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse2
+        {
+            void hsla_to_rgba(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void hsla_to_rgba(float *dst, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* hsla_to_rgba_t)(float *dst, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse2
-    {
-        void hsla_to_rgba(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void hsla_to_rgba(float *dst, const float *src, size_t count);
-    }
-)
-
-typedef void (* hsla_to_rgba_t)(float *dst, const float *src, size_t count);
 
 UTEST_BEGIN("dsp.graphics", hsla_to_rgba)
     void call(const char *label, size_t align, hsla_to_rgba_t func)

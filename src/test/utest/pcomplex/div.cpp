@@ -9,53 +9,56 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-namespace generic
+namespace lsp
 {
-    void pcomplex_div2(float *dst, const float *src, size_t count);
-    void pcomplex_rdiv2(float *dst, const float *src, size_t count);
-    void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
+    namespace generic
+    {
+        void pcomplex_div2(float *dst, const float *src, size_t count);
+        void pcomplex_rdiv2(float *dst, const float *src, size_t count);
+        void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void pcomplex_div2(float *dst, const float *src, size_t count);
+            void pcomplex_rdiv2(float *dst, const float *src, size_t count);
+            void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
+        }
+
+        namespace avx
+        {
+            void pcomplex_div2(float *dst, const float *src, size_t count);
+            void pcomplex_rdiv2(float *dst, const float *src, size_t count);
+            void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
+
+            void pcomplex_div2_fma3(float *dst, const float *src, size_t count);
+            void pcomplex_rdiv2_fma3(float *dst, const float *src, size_t count);
+            void pcomplex_div3_fma3(float *dst, const float *t, const float *b, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void pcomplex_div2(float *dst, const float *src, size_t count);
+            void pcomplex_rdiv2(float *dst, const float *src, size_t count);
+            void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void pcomplex_div2(float *dst, const float *src, size_t count);
+            void pcomplex_rdiv2(float *dst, const float *src, size_t count);
+            void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
+        }
+    )
+
+    typedef void (* pcomplex_div2_t) (float *dst, const float *src, size_t count);
+    typedef void (* pcomplex_div3_t) (float *dst, const float *t, const float *b, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void pcomplex_div2(float *dst, const float *src, size_t count);
-        void pcomplex_rdiv2(float *dst, const float *src, size_t count);
-        void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
-    }
-
-    namespace avx
-    {
-        void pcomplex_div2(float *dst, const float *src, size_t count);
-        void pcomplex_rdiv2(float *dst, const float *src, size_t count);
-        void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
-
-        void pcomplex_div2_fma3(float *dst, const float *src, size_t count);
-        void pcomplex_rdiv2_fma3(float *dst, const float *src, size_t count);
-        void pcomplex_div3_fma3(float *dst, const float *t, const float *b, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void pcomplex_div2(float *dst, const float *src, size_t count);
-        void pcomplex_rdiv2(float *dst, const float *src, size_t count);
-        void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void pcomplex_div2(float *dst, const float *src, size_t count);
-        void pcomplex_rdiv2(float *dst, const float *src, size_t count);
-        void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
-    }
-)
-
-typedef void (* pcomplex_div2_t) (float *dst, const float *src, size_t count);
-typedef void (* pcomplex_div3_t) (float *dst, const float *t, const float *b, size_t count);
 
 UTEST_BEGIN("dsp.pcomplex", div)
 

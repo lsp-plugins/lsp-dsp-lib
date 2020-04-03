@@ -16,10 +16,10 @@
     #include <errno.h>
     #include <stdlib.h>
 
-    #define LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
+    #define PRIVATE_DSP_ARCH_ARM_IMPL
         #include <private/dsp/arch/arm/features.h>
         #include <private/dsp/arch/arm/fpscr.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_ARM_IMPL
+    #undef PRIVATE_DSP_ARCH_ARM_IMPL
 
     namespace lsp
     {

@@ -9,37 +9,40 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-namespace generic
+namespace lsp
 {
-    void pcomplex_r2c(float *dst, const float *src, size_t count);
-    void pcomplex_c2r(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void pcomplex_r2c(float *dst, const float *src, size_t count);
+        void pcomplex_c2r(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void pcomplex_r2c(float *dst, const float *src, size_t count);
+            void pcomplex_c2r(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void pcomplex_r2c(float *dst, const float *src, size_t count);
+            void pcomplex_c2r(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void pcomplex_r2c(float *dst, const float *src, size_t count);
+            void pcomplex_c2r(float *dst, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* complex_cvt_t) (float *dst, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void pcomplex_r2c(float *dst, const float *src, size_t count);
-        void pcomplex_c2r(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void pcomplex_r2c(float *dst, const float *src, size_t count);
-        void pcomplex_c2r(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void pcomplex_r2c(float *dst, const float *src, size_t count);
-        void pcomplex_c2r(float *dst, const float *src, size_t count);
-    }
-)
-
-typedef void (* complex_cvt_t) (float *dst, const float *src, size_t count);
 
 UTEST_BEGIN("dsp.pcomplex", cvt)
 

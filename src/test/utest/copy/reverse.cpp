@@ -9,41 +9,44 @@
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 #include <math.h>
 
-namespace generic
+namespace lsp
 {
-    void reverse1(float *dst, size_t count);
-    void reverse2(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void reverse1(float *dst, size_t count);
+        void reverse2(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void reverse1(float *dst, size_t count);
+            void reverse2(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx
+        {
+            void reverse1(float *dst, size_t count);
+            void reverse2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void reverse1(float *dst, size_t count);
+            void reverse2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void reverse1(float *dst, size_t count);
+            void reverse2(float *dst, const float *src, size_t count);
+        }
+    )
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void reverse1(float *dst, size_t count);
-        void reverse2(float *dst, const float *src, size_t count);
-    }
-
-    namespace avx
-    {
-        void reverse1(float *dst, size_t count);
-        void reverse2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void reverse1(float *dst, size_t count);
-        void reverse2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void reverse1(float *dst, size_t count);
-        void reverse2(float *dst, const float *src, size_t count);
-    }
-)
 
 typedef void (* reverse1_t)(float *dst, size_t count);
 typedef void (* reverse2_t)(float *dst, const float *src, size_t count);

@@ -41,10 +41,13 @@ static const base64check_t base64checks[] =
     { NULL, NULL }
 };
 
-namespace generic
+namespace lsp
 {
-    size_t base64_enc(void *dst, size_t *dst_left, const void *src, size_t *src_left);
-    ssize_t base64_dec(void *dst, size_t *dst_left, const void *src, size_t *src_left);
+    namespace generic
+    {
+        size_t base64_enc(void *dst, size_t *dst_left, const void *src, size_t *src_left);
+        ssize_t base64_dec(void *dst, size_t *dst_left, const void *src, size_t *src_left);
+    }
 }
 
 UTEST_BEGIN("dsp.coding", base64)
@@ -130,9 +133,9 @@ UTEST_BEGIN("dsp.coding", base64)
 
     UTEST_MAIN
     {
-        test_encode("generic::base64_enc", native::base64_enc);
-        test_decode("generic::base64_dec", native::base64_dec);
-        test_encdec("generic::base64_encdec", native::base64_enc, native::base64_dec);
+        test_encode("generic::base64_enc", generic::base64_enc);
+        test_decode("generic::base64_dec", generic::base64_dec);
+        test_encdec("generic::base64_encdec", generic::base64_enc, generic::base64_dec);
     }
 UTEST_END;
 

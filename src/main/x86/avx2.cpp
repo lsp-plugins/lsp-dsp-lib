@@ -20,11 +20,11 @@
     #endif /* LSP_TESTING */
 
     // Feature detection
-    #define LSP_PLUG_IN_DSP_ARCH_X86_IMPL
+    #define PRIVATE_DSP_ARCH_X86_IMPL
         #include <private/dsp/arch/x86/features.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_X86_IMPL
+    #undef PRIVATE_DSP_ARCH_X86_IMPL
 
-    #define LSP_PLUG_IN_DSP_ARCH_X86_AVX2_IMPL
+    #define PRIVATE_DSP_ARCH_X86_AVX2_IMPL
         #include <private/dsp/arch/x86/avx2/float.h>
 
         #include <private/dsp/arch/x86/avx2/pmath/op_kx.h>
@@ -39,7 +39,7 @@
 
         #include <private/dsp/arch/x86/avx2/graphics/transpose.h>
         #include <private/dsp/arch/x86/avx2/graphics/effects.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_X86_AVX2_IMPL
+    #undef PRIVATE_DSP_ARCH_X86_AVX2_IMPL
 
     namespace lsp
     {

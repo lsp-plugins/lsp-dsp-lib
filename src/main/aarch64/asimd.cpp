@@ -19,10 +19,10 @@
     #endif
 
     // Include common architectural definitions
-    #define LSP_PLUG_IN_DSP_ARCH_AARCH64_IMPL
+    #define PRIVATE_DSP_ARCH_AARCH64_IMPL
         #include <private/dsp/arch/aarch64/features.h>
         #include <private/dsp/arch/aarch64/fpcr.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_AARCH64_IMPL
+    #undef PRIVATE_DSP_ARCH_AARCH64_IMPL
 
     namespace lsp
     {
@@ -34,7 +34,7 @@
     }
 
     // Include ASIMD-specific definitions
-    #define LSP_PLUG_IN_DSP_ARCH_AARCH64_ASIMD_IMPL
+    #define PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL
         #include <private/dsp/arch/aarch64/asimd/copy.h>
         #include <private/dsp/arch/aarch64/asimd/float.h>
 
@@ -68,7 +68,7 @@
         #include <private/dsp/arch/aarch64/asimd/filters/dynamic.h>
         #include <private/dsp/arch/aarch64/asimd/filters/transfer.h>
         #include <private/dsp/arch/aarch64/asimd/filters/transform.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_AARCH64_ASIMD_IMPL
+    #undef PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL
 
     #define EXPORT2(function, export)           dsp::function = asimd::export; TEST_EXPORT(asimd::export);
     #define EXPORT1(function)                   EXPORT2(function, function)

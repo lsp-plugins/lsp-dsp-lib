@@ -6,31 +6,35 @@
  */
 
 #include <lsp-plug.in/dsp/dsp.h>
+#include <lsp-plug.in/stdlib/math.h>
 #include <lsp-plug.in/test-fw/utest.h>
-#include <testing/utest/dsp/3d/helpers.h>
+#include <private/utest/dsp/3d/helpers.h>
 
-namespace generic
+namespace lsp
 {
-    void calc_split_point_p2v1(point3d_t *sp, const point3d_t *l0, const point3d_t *l1, const vector3d_t *pl);
-    void calc_split_point_pvv1(point3d_t *sp, const point3d_t *lv, const vector3d_t *pl);
+    namespace generic
+    {
+        void calc_split_point_p2v1(dsp::point3d_t *sp, const dsp::point3d_t *l0, const dsp::point3d_t *l1, const dsp::vector3d_t *pl);
+        void calc_split_point_pvv1(dsp::point3d_t *sp, const dsp::point3d_t *lv, const dsp::vector3d_t *pl);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void calc_split_point_p2v1(dsp::point3d_t *sp, const dsp::point3d_t *l0, const dsp::point3d_t *l1, const dsp::vector3d_t *pl);
+            void calc_split_point_pvv1(dsp::point3d_t *sp, const dsp::point3d_t *lv, const dsp::vector3d_t *pl);
+        }
+
+        namespace sse3
+        {
+            void calc_split_point_p2v1(dsp::point3d_t *sp, const dsp::point3d_t *l0, const dsp::point3d_t *l1, const dsp::vector3d_t *pl);
+            void calc_split_point_pvv1(dsp::point3d_t *sp, const dsp::point3d_t *lv, const dsp::vector3d_t *pl);
+        }
+    )
+
+    typedef void (* calc_split_point_p2v1_t)(dsp::point3d_t *sp, const dsp::point3d_t *l0, const dsp::point3d_t *l1, const dsp::vector3d_t *pl);
+    typedef void (* calc_split_point_pvv1_t)(dsp::point3d_t *sp, const dsp::point3d_t *lv, const dsp::vector3d_t *pl);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void calc_split_point_p2v1(point3d_t *sp, const point3d_t *l0, const point3d_t *l1, const vector3d_t *pl);
-        void calc_split_point_pvv1(point3d_t *sp, const point3d_t *lv, const vector3d_t *pl);
-    }
-
-    namespace sse3
-    {
-        void calc_split_point_p2v1(point3d_t *sp, const point3d_t *l0, const point3d_t *l1, const vector3d_t *pl);
-        void calc_split_point_pvv1(point3d_t *sp, const point3d_t *lv, const vector3d_t *pl);
-    }
-)
-
-typedef void (* calc_split_point_p2v1_t)(point3d_t *sp, const point3d_t *l0, const point3d_t *l1, const vector3d_t *pl);
-typedef void (* calc_split_point_pvv1_t)(point3d_t *sp, const point3d_t *lv, const vector3d_t *pl);
 
 UTEST_BEGIN("dsp.3d", split_point)
 
@@ -41,8 +45,8 @@ UTEST_BEGIN("dsp.3d", split_point)
 
         printf("Testing %s...\n", label);
 
-        point3d_t pv[2], sp[2];
-        vector3d_t pl;
+        dsp::point3d_t pv[2], sp[2];
+        dsp::vector3d_t pl;
 
         for (size_t i=0; i<0x200; )
         {
@@ -101,8 +105,8 @@ UTEST_BEGIN("dsp.3d", split_point)
 
         printf("Testing %s...\n", label);
 
-        point3d_t pv[2], sp[2];
-        vector3d_t pl;
+        dsp::point3d_t pv[2], sp[2];
+        dsp::vector3d_t pl;
 
         for (size_t i=0; i<0x200; )
         {

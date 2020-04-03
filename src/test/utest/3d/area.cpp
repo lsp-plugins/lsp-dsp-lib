@@ -7,33 +7,34 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/utest.h>
-#include <testing/utest/dsp/3d/helpers.h>
+#include <private/utest/dsp/3d/helpers.h>
 
 namespace lsp
 {
     namespace generic
     {
-        float calc_area_p3(const point3d_t *p0, const point3d_t *p1, const point3d_t *p2);
-        float calc_area_pv(const point3d_t *pv);
+        float calc_area_p3(const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+        float calc_area_pv(const dsp::point3d_t *pv);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
-            float calc_area_p3(const point3d_t *p0, const point3d_t *p1, const point3d_t *p2);
-            float calc_area_pv(const point3d_t *pv);
+            float calc_area_p3(const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+            float calc_area_pv(const dsp::point3d_t *pv);
         }
     )
+
+    typedef float (* calc_area_p3_t)(const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+    typedef float (* calc_area_pv_t)(const dsp::point3d_t *pv);
 }
 
-typedef float (* calc_area_p3_t)(const point3d_t *p0, const point3d_t *p1, const point3d_t *p2);
-typedef float (* calc_area_pv_t)(const point3d_t *pv);
 
 UTEST_BEGIN("dsp.3d", area)
 
     void call(const char *label, calc_area_p3_t ca_p3, calc_area_pv_t ca_pv)
     {
-        point3d_t pv[3];
+        dsp::point3d_t pv[3];
 
         if ((!UTEST_SUPPORTED(ca_p3)) || (!UTEST_SUPPORTED(ca_pv)))
             return;

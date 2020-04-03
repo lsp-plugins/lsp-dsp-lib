@@ -9,69 +9,72 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-#define BIQUAD_X1_FLOATS    (sizeof(biquad_x1_t) / sizeof(float))
-#define BIQUAD_X2_FLOATS    (sizeof(biquad_x2_t) / sizeof(float))
-#define BIQUAD_X4_FLOATS    (sizeof(biquad_x4_t) / sizeof(float))
-#define BIQUAD_X8_FLOATS    (sizeof(biquad_x8_t) / sizeof(float))
-#define CASCADE_FLOATS      (sizeof(f_cascade_t) / sizeof(float))
+#define BIQUAD_X1_FLOATS    (sizeof(dsp::biquad_x1_t) / sizeof(float))
+#define BIQUAD_X2_FLOATS    (sizeof(dsp::biquad_x2_t) / sizeof(float))
+#define BIQUAD_X4_FLOATS    (sizeof(dsp::biquad_x4_t) / sizeof(float))
+#define BIQUAD_X8_FLOATS    (sizeof(dsp::biquad_x8_t) / sizeof(float))
+#define CASCADE_FLOATS      (sizeof(dsp::f_cascade_t) / sizeof(float))
 
-namespace generic
+namespace lsp
 {
-    void bilinear_transform_x1(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
-    void bilinear_transform_x2(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
-    void bilinear_transform_x4(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
-    void bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
-}
-
-IF_ARCH_X86(
-    namespace sse
+    namespace generic
     {
-        void bilinear_transform_x1(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x2(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x4(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
+        void bilinear_transform_x1(dsp::biquad_x1_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+        void bilinear_transform_x2(dsp::biquad_x2_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+        void bilinear_transform_x4(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+        void bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
     }
 
-    IF_ARCH_X86_64(
-        namespace sse3
+    IF_ARCH_X86(
+        namespace sse
         {
-            void x64_bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x1(dsp::biquad_x1_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x2(dsp::biquad_x2_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x4(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+        }
+
+        IF_ARCH_X86_64(
+            namespace sse3
+            {
+                void x64_bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            }
+        )
+
+        namespace avx
+        {
+            void bilinear_transform_x1(dsp::biquad_x1_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x2(dsp::biquad_x2_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x4(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void x64_bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
         }
     )
 
-    namespace avx
-    {
-        void bilinear_transform_x1(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x2(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x4(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void x64_bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
-    }
-)
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void bilinear_transform_x1(dsp::biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x2(dsp::biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x4(dsp::biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x8(dsp::biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
+        }
+    )
 
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void bilinear_transform_x1(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x2(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x4(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
-    }
-)
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void bilinear_transform_x1(dsp::biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x2(dsp::biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x4(dsp::biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x8(dsp::biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
+        }
+    )
 
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void bilinear_transform_x1(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x2(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x4(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
-    }
-)
-
-typedef void (* bilinear_transform_x1_t)(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
-typedef void (* bilinear_transform_x2_t)(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
-typedef void (* bilinear_transform_x4_t)(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
-typedef void (* bilinear_transform_x8_t)(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
+    typedef void (* bilinear_transform_x1_t)(dsp::biquad_x1_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+    typedef void (* bilinear_transform_x2_t)(dsp::biquad_x2_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+    typedef void (* bilinear_transform_x4_t)(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+    typedef void (* bilinear_transform_x8_t)(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+}
 
 UTEST_BEGIN("dsp.filters", bt)
 
@@ -92,7 +95,7 @@ UTEST_BEGIN("dsp.filters", bt)
             FloatBuffer dst1(BIQUAD_X1_FLOATS * filters, 64, true);
             FloatBuffer dst2(dst1);
 
-            f_cascade_t *bc = src.data<f_cascade_t>();
+            dsp::f_cascade_t *bc = src.data<dsp::f_cascade_t>();
             for (size_t i=0; i<cascades; ++i)
             {
                 float kt = i * 0.1;
@@ -101,8 +104,8 @@ UTEST_BEGIN("dsp.filters", bt)
                 bc[i].b[0] = 1 + kb; bc[i].b[1] = -2 + kb; bc[i].b[2] = 1 - kb; bc[i].b[3] = 0;
             }
 
-            f1(dst1.data<biquad_x1_t>(), bc, 1.5f, filters);
-            f2(dst2.data<biquad_x1_t>(), bc, 1.5f, filters);
+            f1(dst1.data<dsp::biquad_x1_t>(), bc, 1.5f, filters);
+            f2(dst2.data<dsp::biquad_x1_t>(), bc, 1.5f, filters);
 
             UTEST_ASSERT_MSG(src.valid(), "Source buffer corrupted");
             UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");
@@ -135,7 +138,7 @@ UTEST_BEGIN("dsp.filters", bt)
             FloatBuffer dst1(BIQUAD_X2_FLOATS * filters, 64, true);
             FloatBuffer dst2(dst1);
 
-            f_cascade_t *bc = src.data<f_cascade_t>();
+            dsp::f_cascade_t *bc = src.data<dsp::f_cascade_t>();
             for (size_t i=0; i<cascades; ++i)
             {
                 float kt = i * 0.1;
@@ -144,8 +147,8 @@ UTEST_BEGIN("dsp.filters", bt)
                 bc[i].b[0] = 1 + kb; bc[i].b[1] = -2 + kb; bc[i].b[2] = 1 - kb; bc[i].b[3] = 0;
             }
 
-            f1(dst1.data<biquad_x2_t>(), bc, 1.5f, filters);
-            f2(dst2.data<biquad_x2_t>(), bc, 1.5f, filters);
+            f1(dst1.data<dsp::biquad_x2_t>(), bc, 1.5f, filters);
+            f2(dst2.data<dsp::biquad_x2_t>(), bc, 1.5f, filters);
 
             UTEST_ASSERT_MSG(src.valid(), "Source buffer corrupted");
             UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");
@@ -178,7 +181,7 @@ UTEST_BEGIN("dsp.filters", bt)
             FloatBuffer dst1(BIQUAD_X4_FLOATS * filters, 64, true);
             FloatBuffer dst2(dst1);
 
-            f_cascade_t *bc = src.data<f_cascade_t>();
+            dsp::f_cascade_t *bc = src.data<dsp::f_cascade_t>();
             for (size_t i=0; i<cascades; ++i)
             {
                 float kt = i * 0.1;
@@ -187,8 +190,8 @@ UTEST_BEGIN("dsp.filters", bt)
                 bc[i].b[0] = 1 + kb; bc[i].b[1] = -2 + kb; bc[i].b[2] = 1 - kb; bc[i].b[3] = 0;
             }
 
-            f1(dst1.data<biquad_x4_t>(), bc, 1.5f, filters);
-            f2(dst2.data<biquad_x4_t>(), bc, 1.5f, filters);
+            f1(dst1.data<dsp::biquad_x4_t>(), bc, 1.5f, filters);
+            f2(dst2.data<dsp::biquad_x4_t>(), bc, 1.5f, filters);
 
             UTEST_ASSERT_MSG(src.valid(), "Source buffer corrupted");
             UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");
@@ -221,7 +224,7 @@ UTEST_BEGIN("dsp.filters", bt)
             FloatBuffer dst1(BIQUAD_X8_FLOATS * filters, 64, true);
             FloatBuffer dst2(dst1);
 
-            f_cascade_t *bc = src.data<f_cascade_t>();
+            dsp::f_cascade_t *bc = src.data<dsp::f_cascade_t>();
             for (size_t i=0; i<cascades; ++i)
             {
                 float kt = i * 0.1;
@@ -230,8 +233,8 @@ UTEST_BEGIN("dsp.filters", bt)
                 bc[i].b[0] = 1 + kb; bc[i].b[1] = -2 + kb; bc[i].b[2] = 1 - kb; bc[i].b[3] = 0;
             }
 
-            f1(dst1.data<biquad_x8_t>(), bc, 1.5f, filters);
-            f2(dst2.data<biquad_x8_t>(), bc, 1.5f, filters);
+            f1(dst1.data<dsp::biquad_x8_t>(), bc, 1.5f, filters);
+            f2(dst2.data<dsp::biquad_x8_t>(), bc, 1.5f, filters);
 
             UTEST_ASSERT_MSG(src.valid(), "Source buffer corrupted");
             UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");

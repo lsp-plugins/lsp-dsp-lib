@@ -12,47 +12,50 @@
 #define MIN_RANK    4
 #define MAX_RANK    16
 
-namespace generic
+namespace lsp
 {
-    void normalize_fft3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-    void normalize_fft2(float *dst_re, float *dst_im, size_t rank);
+    namespace generic
+    {
+        void normalize_fft3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+        void normalize_fft2(float *dst_re, float *dst_im, size_t rank);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void normalize_fft3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void normalize_fft2(float *dst_re, float *dst_im, size_t rank);
+        }
+
+        namespace avx
+        {
+            void normalize_fft3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void normalize_fft2(float *dst_re, float *dst_im, size_t rank);
+        }
+
+        namespace avx2
+        {
+            void normalize_fft3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void normalize_fft2(float *dst_re, float *dst_im, size_t rank);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void normalize_fft3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void normalize_fft2(float *dst_re, float *dst_im, size_t rank);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void normalize_fft3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void normalize_fft2(float *dst_re, float *dst_im, size_t rank);
+        }
+    )
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void normalize_fft3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void normalize_fft2(float *dst_re, float *dst_im, size_t rank);
-    }
-
-    namespace avx
-    {
-        void normalize_fft3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void normalize_fft2(float *dst_re, float *dst_im, size_t rank);
-    }
-
-    namespace avx2
-    {
-        void normalize_fft3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void normalize_fft2(float *dst_re, float *dst_im, size_t rank);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void normalize_fft3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void normalize_fft2(float *dst_re, float *dst_im, size_t rank);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void normalize_fft3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void normalize_fft2(float *dst_re, float *dst_im, size_t rank);
-    }
-)
 
 typedef void (* normalize_fft3_t)(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
 typedef void (* normalize_fft2_t)(float *dst_re, float *dst_im, size_t rank);

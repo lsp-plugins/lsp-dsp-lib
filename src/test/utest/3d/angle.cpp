@@ -25,10 +25,10 @@ namespace lsp
             float calc_angle3d_vv(const dsp::vector3d_t *v);
         }
     )
-}
 
-typedef float (* calc_angle3d_v2_t)(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2);
-typedef float (* calc_angle3d_vv_t)(const dsp::vector3d_t *v);
+    typedef float (* calc_angle3d_v2_t)(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2);
+    typedef float (* calc_angle3d_vv_t)(const dsp::vector3d_t *v);
+}
 
 UTEST_BEGIN("dsp.3d", angle)
 

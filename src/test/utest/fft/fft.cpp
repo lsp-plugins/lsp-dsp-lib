@@ -11,44 +11,47 @@
 
 #define TOLERANCE       5e-2
 
-namespace generic
+namespace lsp
 {
-    void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-    void reverse_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+    namespace generic
+    {
+        void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+        void reverse_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void reverse_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+        }
+
+        namespace avx
+        {
+            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void reverse_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+
+            void direct_fft_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void reverse_fft_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void reverse_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void reverse_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+        }
+    )
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void reverse_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-    }
-
-    namespace avx
-    {
-        void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void reverse_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-
-        void direct_fft_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void reverse_fft_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void reverse_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void reverse_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-    }
-)
 
 typedef void (* fft_t)(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
 

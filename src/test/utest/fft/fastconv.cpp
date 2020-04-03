@@ -13,56 +13,59 @@
 #define MAX_RANK    12
 #define TOLERANCE   5e-2
 
-namespace generic
+namespace lsp
 {
-    void fastconv_parse(float *dst, const float *src, size_t rank);
-    void fastconv_parse_apply(float *dst, float *tmp, const float *c, const float *src, size_t rank);
-    void fastconv_restore(float *dst, float *src, size_t rank);
-    void fastconv_apply(float *dst, float *tmp, const float *c1, const float *c2, size_t rank);
+    namespace generic
+    {
+        void fastconv_parse(float *dst, const float *src, size_t rank);
+        void fastconv_parse_apply(float *dst, float *tmp, const float *c, const float *src, size_t rank);
+        void fastconv_restore(float *dst, float *src, size_t rank);
+        void fastconv_apply(float *dst, float *tmp, const float *c1, const float *c2, size_t rank);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void fastconv_parse(float *dst, const float *src, size_t rank);
+            void fastconv_parse_apply(float *dst, float *tmp, const float *c, const float *src, size_t rank);
+            void fastconv_restore(float *dst, float *src, size_t rank);
+            void fastconv_apply(float *dst, float *tmp, const float *c1, const float *c2, size_t rank);
+        }
+
+        namespace avx
+        {
+            void fastconv_parse(float *dst, const float *src, size_t rank);
+            void fastconv_parse_apply(float *dst, float *tmp, const float *c, const float *src, size_t rank);
+            void fastconv_restore(float *dst, float *src, size_t rank);
+            void fastconv_apply(float *dst, float *tmp, const float *c1, const float *c2, size_t rank);
+
+            void fastconv_parse_fma3(float *dst, const float *src, size_t rank);
+            void fastconv_parse_apply_fma3(float *dst, float *tmp, const float *c, const float *src, size_t rank);
+            void fastconv_restore_fma3(float *dst, float *src, size_t rank);
+            void fastconv_apply_fma3(float *dst, float *tmp, const float *c1, const float *c2, size_t rank);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void fastconv_parse(float *dst, const float *src, size_t rank);
+            void fastconv_parse_apply(float *dst, float *tmp, const float *c, const float *src, size_t rank);
+            void fastconv_restore(float *dst, float *src, size_t rank);
+            void fastconv_apply(float *dst, float *tmp, const float *c1, const float *c2, size_t rank);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void fastconv_parse(float *dst, const float *src, size_t rank);
+            void fastconv_parse_apply(float *dst, float *tmp, const float *c, const float *src, size_t rank);
+            void fastconv_restore(float *dst, float *src, size_t rank);
+            void fastconv_apply(float *dst, float *tmp, const float *c1, const float *c2, size_t rank);
+        }
+    )
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void fastconv_parse(float *dst, const float *src, size_t rank);
-        void fastconv_parse_apply(float *dst, float *tmp, const float *c, const float *src, size_t rank);
-        void fastconv_restore(float *dst, float *src, size_t rank);
-        void fastconv_apply(float *dst, float *tmp, const float *c1, const float *c2, size_t rank);
-    }
-
-    namespace avx
-    {
-        void fastconv_parse(float *dst, const float *src, size_t rank);
-        void fastconv_parse_apply(float *dst, float *tmp, const float *c, const float *src, size_t rank);
-        void fastconv_restore(float *dst, float *src, size_t rank);
-        void fastconv_apply(float *dst, float *tmp, const float *c1, const float *c2, size_t rank);
-
-        void fastconv_parse_fma3(float *dst, const float *src, size_t rank);
-        void fastconv_parse_apply_fma3(float *dst, float *tmp, const float *c, const float *src, size_t rank);
-        void fastconv_restore_fma3(float *dst, float *src, size_t rank);
-        void fastconv_apply_fma3(float *dst, float *tmp, const float *c1, const float *c2, size_t rank);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void fastconv_parse(float *dst, const float *src, size_t rank);
-        void fastconv_parse_apply(float *dst, float *tmp, const float *c, const float *src, size_t rank);
-        void fastconv_restore(float *dst, float *src, size_t rank);
-        void fastconv_apply(float *dst, float *tmp, const float *c1, const float *c2, size_t rank);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void fastconv_parse(float *dst, const float *src, size_t rank);
-        void fastconv_parse_apply(float *dst, float *tmp, const float *c, const float *src, size_t rank);
-        void fastconv_restore(float *dst, float *src, size_t rank);
-        void fastconv_apply(float *dst, float *tmp, const float *c1, const float *c2, size_t rank);
-    }
-)
 
 typedef void (* fastconv_parse_t)(float *dst, const float *src, size_t rank);
 

@@ -23,7 +23,7 @@ namespace lsp
     using namespace dsp;
 }
 
-#define LSP_PLUG_IN_DSP_ARCH_GENERIC_IMPL
+#define PRIVATE_DSP_ARCH_GENERIC_IMPL
     #include <private/dsp/arch/generic/context.h>
     #include <private/dsp/arch/generic/copy.h>
     #include <private/dsp/arch/generic/complex.h>
@@ -65,7 +65,7 @@ namespace lsp
 
     #include <private/dsp/arch/generic/coding.h>
 
-#undef LSP_PLUG_IN_DSP_ARCH_GENERIC_IMPL
+#undef PRIVATE_DSP_ARCH_GENERIC_IMPL
 
 #include <stdlib.h>
 

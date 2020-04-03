@@ -9,33 +9,36 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-namespace generic
+namespace lsp
 {
-    void pcomplex_add_r(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void pcomplex_add_r(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void pcomplex_add_r(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void pcomplex_add_r(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void pcomplex_add_r(float *dst, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* complex_rops_t) (float *dst, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void pcomplex_add_r(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void pcomplex_add_r(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void pcomplex_add_r(float *dst, const float *src, size_t count);
-    }
-)
-
-typedef void (* complex_rops_t) (float *dst, const float *src, size_t count);
 
 UTEST_BEGIN("dsp.pcomplex", rops)
 

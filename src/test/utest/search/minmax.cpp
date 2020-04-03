@@ -10,69 +10,72 @@
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 #include <lsp-plug.in/test-fw/helpers.h>
 
-namespace generic
+namespace lsp
 {
-    float   min(const float *src, size_t count);
-    float   max(const float *src, size_t count);
-    void    minmax(const float *src, size_t count, float *min, float *max);
+    namespace generic
+    {
+        float   min(const float *src, size_t count);
+        float   max(const float *src, size_t count);
+        void    minmax(const float *src, size_t count, float *min, float *max);
 
-    float   abs_min(const float *src, size_t count);
-    float   abs_max(const float *src, size_t count);
-    void    abs_minmax(const float *src, size_t count, float *min, float *max);
+        float   abs_min(const float *src, size_t count);
+        float   abs_max(const float *src, size_t count);
+        void    abs_minmax(const float *src, size_t count, float *min, float *max);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            float   min(const float *src, size_t count);
+            float   max(const float *src, size_t count);
+            void    minmax(const float *src, size_t count, float *min, float *max);
+
+            float   abs_min(const float *src, size_t count);
+            float   abs_max(const float *src, size_t count);
+            void    abs_minmax(const float *src, size_t count, float *min, float *max);
+        }
+
+        namespace avx
+        {
+            float   min(const float *src, size_t count);
+            float   max(const float *src, size_t count);
+            void    minmax(const float *src, size_t count, float *min, float *max);
+
+            float   abs_min(const float *src, size_t count);
+            float   abs_max(const float *src, size_t count);
+            void    abs_minmax(const float *src, size_t count, float *min, float *max);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            float   min(const float *src, size_t count);
+            float   max(const float *src, size_t count);
+            void    minmax(const float *src, size_t count, float *min, float *max);
+
+            float   abs_min(const float *src, size_t count);
+            float   abs_max(const float *src, size_t count);
+            void    abs_minmax(const float *src, size_t count, float *min, float *max);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            float   min(const float *src, size_t count);
+            float   max(const float *src, size_t count);
+            void    minmax(const float *src, size_t count, float *min, float *max);
+
+            float   abs_min(const float *src, size_t count);
+            float   abs_max(const float *src, size_t count);
+            void    abs_minmax(const float *src, size_t count, float *min, float *max);
+        }
+    )
+
+    typedef float (* ext_t)(const float *src, size_t count);
+    typedef void  (* minmax_t)(const float *src, size_t count, float *min, float *max);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        float   min(const float *src, size_t count);
-        float   max(const float *src, size_t count);
-        void    minmax(const float *src, size_t count, float *min, float *max);
-
-        float   abs_min(const float *src, size_t count);
-        float   abs_max(const float *src, size_t count);
-        void    abs_minmax(const float *src, size_t count, float *min, float *max);
-    }
-
-    namespace avx
-    {
-        float   min(const float *src, size_t count);
-        float   max(const float *src, size_t count);
-        void    minmax(const float *src, size_t count, float *min, float *max);
-
-        float   abs_min(const float *src, size_t count);
-        float   abs_max(const float *src, size_t count);
-        void    abs_minmax(const float *src, size_t count, float *min, float *max);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        float   min(const float *src, size_t count);
-        float   max(const float *src, size_t count);
-        void    minmax(const float *src, size_t count, float *min, float *max);
-
-        float   abs_min(const float *src, size_t count);
-        float   abs_max(const float *src, size_t count);
-        void    abs_minmax(const float *src, size_t count, float *min, float *max);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        float   min(const float *src, size_t count);
-        float   max(const float *src, size_t count);
-        void    minmax(const float *src, size_t count, float *min, float *max);
-
-        float   abs_min(const float *src, size_t count);
-        float   abs_max(const float *src, size_t count);
-        void    abs_minmax(const float *src, size_t count, float *min, float *max);
-    }
-)
-
-typedef float (* ext_t)(const float *src, size_t count);
-typedef void  (* minmax_t)(const float *src, size_t count, float *min, float *max);
 
 UTEST_BEGIN("dsp.search", minmax)
 

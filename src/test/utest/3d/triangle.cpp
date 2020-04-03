@@ -8,25 +8,28 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/dsp/dsp.h>
 
-namespace generic
+namespace lsp
 {
-    float check_point3d_on_triangle_p3p(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3, const point3d_t *p);
-    float check_point3d_on_triangle_pvp(const point3d_t *pv, const point3d_t *p);
-    float check_point3d_on_triangle_tp(const triangle3d_t *t, const point3d_t *p);
-}
-
-IF_ARCH_X86(
-    namespace sse
+    namespace generic
     {
-        float check_point3d_on_triangle_p3p(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3, const point3d_t *p);
-        float check_point3d_on_triangle_pvp(const point3d_t *pv, const point3d_t *p);
-        float check_point3d_on_triangle_tp(const triangle3d_t *t, const point3d_t *p);
+        float check_point3d_on_triangle_p3p(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3, const dsp::point3d_t *p);
+        float check_point3d_on_triangle_pvp(const dsp::point3d_t *pv, const dsp::point3d_t *p);
+        float check_point3d_on_triangle_tp(const dsp::triangle3d_t *t, const dsp::point3d_t *p);
     }
-)
 
-typedef float (* check_point3d_on_triangle_p3p_t)(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3, const point3d_t *p);
-typedef float (* check_point3d_on_triangle_pvp_t)(const point3d_t *pv, const point3d_t *p);
-typedef float (* check_point3d_on_triangle_tp_t)(const triangle3d_t *t, const point3d_t *p);
+    IF_ARCH_X86(
+        namespace sse
+        {
+            float check_point3d_on_triangle_p3p(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3, const dsp::point3d_t *p);
+            float check_point3d_on_triangle_pvp(const dsp::point3d_t *pv, const dsp::point3d_t *p);
+            float check_point3d_on_triangle_tp(const dsp::triangle3d_t *t, const dsp::point3d_t *p);
+        }
+    )
+
+    typedef float (* check_point3d_on_triangle_p3p_t)(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3, const dsp::point3d_t *p);
+    typedef float (* check_point3d_on_triangle_pvp_t)(const dsp::point3d_t *pv, const dsp::point3d_t *p);
+    typedef float (* check_point3d_on_triangle_tp_t)(const dsp::triangle3d_t *t, const dsp::point3d_t *p);
+}
 
 UTEST_BEGIN("dsp.3d", triangle)
 
@@ -43,9 +46,9 @@ UTEST_BEGIN("dsp.3d", triangle)
 
         printf("Testing %s...\n", label);
 
-        triangle3d_t t;
-        point3d_t cp[12];
-        point3d_t ip[10];
+        dsp::triangle3d_t t;
+        dsp::point3d_t cp[12];
+        dsp::point3d_t ip[10];
         float ck;
 
         // Special check

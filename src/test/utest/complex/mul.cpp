@@ -9,44 +9,47 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-namespace generic
+namespace lsp
 {
-    void complex_mul2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
-    void complex_mul3(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);
+    namespace generic
+    {
+        void complex_mul2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+        void complex_mul3(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void complex_mul2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+            void complex_mul3(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);
+        }
+
+        namespace avx
+        {
+            void complex_mul2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+            void complex_mul2_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+
+            void complex_mul3(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);
+            void complex_mul3_fma3(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void complex_mul2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+            void complex_mul3(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void complex_mul2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+            void complex_mul3(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);
+        }
+    )
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void complex_mul2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
-        void complex_mul3(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);
-    }
-
-    namespace avx
-    {
-        void complex_mul2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
-        void complex_mul2_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
-
-        void complex_mul3(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);
-        void complex_mul3_fma3(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void complex_mul2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
-        void complex_mul3(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void complex_mul2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
-        void complex_mul3(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);
-    }
-)
 
 typedef void (* complex_mul2_t)(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
 typedef void (* complex_mul3_t)(float *dst_re, float *dst_im, const float *src1_re, const float *src1_im, const float *src2_re, const float *src2_im, size_t count);

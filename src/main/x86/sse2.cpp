@@ -20,12 +20,12 @@
     #endif /* LSP_TESTING */
 
     // Feature detection
-    #define LSP_PLUG_IN_DSP_ARCH_X86_IMPL
+    #define PRIVATE_DSP_ARCH_X86_IMPL
         #include <private/dsp/arch/x86/features.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_X86_IMPL
+    #undef PRIVATE_DSP_ARCH_X86_IMPL
 
 
-    #define LSP_PLUG_IN_DSP_ARCH_X86_SSE2_IMPL
+    #define PRIVATE_DSP_ARCH_X86_SSE2_IMPL
         #include <private/dsp/arch/x86/sse2/float.h>
 
         #include <private/dsp/arch/x86/sse2/search/iminmax.h>
@@ -41,7 +41,7 @@
         #include <private/dsp/arch/x86/sse2/pmath/exp.h>
         #include <private/dsp/arch/x86/sse2/pmath/log.h>
         #include <private/dsp/arch/x86/sse2/pmath/pow.h>
-    #undef LSP_PLUG_IN_DSP_ARCH_X86_SSE2_IMPL
+    #undef PRIVATE_DSP_ARCH_X86_SSE2_IMPL
 
     namespace lsp
     {

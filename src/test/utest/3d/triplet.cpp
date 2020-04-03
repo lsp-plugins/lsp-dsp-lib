@@ -8,37 +8,40 @@
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/dsp/dsp.h>
 
-namespace generic
+namespace lsp
 {
-    float check_triplet3d_p3n(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3, const vector3d_t *n);
-    float check_triplet3d_pvn(const point3d_t *pv, const vector3d_t *n);
-    float check_triplet3d_v2n(const vector3d_t *v1, const vector3d_t *v2, const vector3d_t *n);
-    float check_triplet3d_vvn(const vector3d_t *v, const vector3d_t *n);
-    float check_triplet3d_vv(const vector3d_t *v);
-    float check_triplet3d_t(const triangle3d_t *t);
-    float check_triplet3d_tn(const triangle3d_t *t, const vector3d_t *n);
-}
-
-IF_ARCH_X86(
-    namespace sse
+    namespace generic
     {
-        float check_triplet3d_p3n(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3, const vector3d_t *n);
-        float check_triplet3d_pvn(const point3d_t *pv, const vector3d_t *n);
-        float check_triplet3d_v2n(const vector3d_t *v1, const vector3d_t *v2, const vector3d_t *n);
-        float check_triplet3d_vvn(const vector3d_t *v, const vector3d_t *n);
-        float check_triplet3d_vv(const vector3d_t *v);
-        float check_triplet3d_t(const triangle3d_t *t);
-        float check_triplet3d_tn(const triangle3d_t *t, const vector3d_t *n);
+        float check_triplet3d_p3n(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3, const dsp::vector3d_t *n);
+        float check_triplet3d_pvn(const dsp::point3d_t *pv, const dsp::vector3d_t *n);
+        float check_triplet3d_v2n(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::vector3d_t *n);
+        float check_triplet3d_vvn(const dsp::vector3d_t *v, const dsp::vector3d_t *n);
+        float check_triplet3d_vv(const dsp::vector3d_t *v);
+        float check_triplet3d_t(const dsp::triangle3d_t *t);
+        float check_triplet3d_tn(const dsp::triangle3d_t *t, const dsp::vector3d_t *n);
     }
-)
 
-typedef float (* check_triplet3d_p3n_t)(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3, const vector3d_t *n);
-typedef float (* check_triplet3d_pvn_t)(const point3d_t *pv, const vector3d_t *n);
-typedef float (* check_triplet3d_v2n_t)(const vector3d_t *v1, const vector3d_t *v2, const vector3d_t *n);
-typedef float (* check_triplet3d_vvn_t)(const vector3d_t *v, const vector3d_t *n);
-typedef float (* check_triplet3d_vv_t)(const vector3d_t *v);
-typedef float (* check_triplet3d_t_t)(const triangle3d_t *t);
-typedef float (* check_triplet3d_tn_t)(const triangle3d_t *t, const vector3d_t *n);
+    IF_ARCH_X86(
+        namespace sse
+        {
+            float check_triplet3d_p3n(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3, const dsp::vector3d_t *n);
+            float check_triplet3d_pvn(const dsp::point3d_t *pv, const dsp::vector3d_t *n);
+            float check_triplet3d_v2n(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::vector3d_t *n);
+            float check_triplet3d_vvn(const dsp::vector3d_t *v, const dsp::vector3d_t *n);
+            float check_triplet3d_vv(const dsp::vector3d_t *v);
+            float check_triplet3d_t(const dsp::triangle3d_t *t);
+            float check_triplet3d_tn(const dsp::triangle3d_t *t, const dsp::vector3d_t *n);
+        }
+    )
+
+    typedef float (* check_triplet3d_p3n_t)(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3, const dsp::vector3d_t *n);
+    typedef float (* check_triplet3d_pvn_t)(const dsp::point3d_t *pv, const dsp::vector3d_t *n);
+    typedef float (* check_triplet3d_v2n_t)(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::vector3d_t *n);
+    typedef float (* check_triplet3d_vvn_t)(const dsp::vector3d_t *v, const dsp::vector3d_t *n);
+    typedef float (* check_triplet3d_vv_t)(const dsp::vector3d_t *v);
+    typedef float (* check_triplet3d_t_t)(const dsp::triangle3d_t *t);
+    typedef float (* check_triplet3d_tn_t)(const dsp::triangle3d_t *t, const dsp::vector3d_t *n);
+}
 
 UTEST_BEGIN("dsp.3d", triplet)
 
@@ -65,12 +68,12 @@ UTEST_BEGIN("dsp.3d", triplet)
 
         printf("Launching %s implementation\n", label);
 
-        triangle3d_t t[3];
+        dsp::triangle3d_t t[3];
         dsp::calc_triangle3d_xyz(&t[0], 1.0f, 1.0f, 1.0f, 2.0f, 2.0f, 1.0f, -3.0f, 3.0f, 1.0f);
         dsp::calc_triangle3d_xyz(&t[1], 1.0f, 2.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 3.0f, -3.0f);
         dsp::calc_triangle3d_xyz(&t[2], 1.0f, 1.0f, 2.0f, 2.0f, 1.0f, 2.0f, 3.0f, 1.0f, -3.0f);
 
-        vector3d_t n1, n2;
+        dsp::vector3d_t n1, n2;
         dsp::init_vector_dxyz(&n1, 1.0f, 1.0f, 1.0f);
         dsp::init_vector_dxyz(&n2, -1.0f, -1.0f, -1.0f);
 
@@ -87,7 +90,7 @@ UTEST_BEGIN("dsp.3d", triplet)
             UTEST_ASSERT(check_triplet3d_pvn(&t[i].p[0], &n1) >= 0.0f);
             UTEST_ASSERT(check_triplet3d_pvn(&t[i].p[0], &n2) <= 0.0f);
 
-            vector3d_t v[3];
+            dsp::vector3d_t v[3];
             dsp::init_vector_p2(&v[0], &t->p[0], &t->p[1]);
             dsp::init_vector_p2(&v[1], &t->p[1], &t->p[2]);
             dsp::init_vector_p2(&v[2], &t->p[2], &t->p[0]);

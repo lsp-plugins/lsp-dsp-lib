@@ -7,82 +7,86 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/utest.h>
-#include <testing/utest/dsp/3d/helpers.h>
+#include <lsp-plug.in/stdlib/math.h>
+#include <private/utest/dsp/3d/helpers.h>
 
-namespace generic
+namespace lsp
 {
-    void init_matrix3d(matrix3d_t *dst, const matrix3d_t *src);
-    void init_matrix3d_zero(matrix3d_t *m);
-    void init_matrix3d_one(matrix3d_t *m);
-    void init_matrix3d_identity(matrix3d_t *m);
-    void transpose_matrix3d1(matrix3d_t *r);
-    void transpose_matrix3d2(matrix3d_t *r, const matrix3d_t *m);
-
-    void init_matrix3d_translate(matrix3d_t *m, float dx, float dy, float dz);
-    void init_matrix3d_scale(matrix3d_t *m, float sx, float sy, float sz);
-    void init_matrix3d_rotate_x(matrix3d_t *m, float angle);
-    void init_matrix3d_rotate_y(matrix3d_t *m, float angle);
-    void init_matrix3d_rotate_z(matrix3d_t *m, float angle);
-    void init_matrix3d_rotate_xyz(matrix3d_t *m, float x, float y, float z, float angle);
-
-    void calc_matrix3d_transform_p1v1(matrix3d_t *m, const point3d_t *p, const vector3d_t *v);
-    void calc_matrix3d_transform_r1(matrix3d_t *m, const ray3d_t *r);
-
-    void apply_matrix3d_mv2(vector3d_t *r, const vector3d_t *v, const matrix3d_t *m);
-    void apply_matrix3d_mv1(vector3d_t *r, const matrix3d_t *m);
-    void apply_matrix3d_mp2(point3d_t *r, const point3d_t *p, const matrix3d_t *m);
-    void apply_matrix3d_mp1(point3d_t *r, const matrix3d_t *m);
-    void apply_matrix3d_mm2(matrix3d_t *r, const matrix3d_t *s, const matrix3d_t *m);
-    void apply_matrix3d_mm1(matrix3d_t *r, const matrix3d_t *m);
-}
-
-IF_ARCH_X86(
-    namespace sse
+    namespace generic
     {
-        void init_matrix3d(matrix3d_t *dst, const matrix3d_t *src);
-        void init_matrix3d_zero(matrix3d_t *m);
-        void init_matrix3d_one(matrix3d_t *m);
-        void init_matrix3d_identity(matrix3d_t *m);
-        void transpose_matrix3d1(matrix3d_t *r);
-        void transpose_matrix3d2(matrix3d_t *r, const matrix3d_t *m);
+        void init_matrix3d(dsp::matrix3d_t *dst, const dsp::matrix3d_t *src);
+        void init_matrix3d_zero(dsp::matrix3d_t *m);
+        void init_matrix3d_one(dsp::matrix3d_t *m);
+        void init_matrix3d_identity(dsp::matrix3d_t *m);
+        void transpose_matrix3d1(dsp::matrix3d_t *r);
+        void transpose_matrix3d2(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
 
-        void init_matrix3d_translate(matrix3d_t *m, float dx, float dy, float dz);
-        void init_matrix3d_scale(matrix3d_t *m, float sx, float sy, float sz);
-        void init_matrix3d_rotate_x(matrix3d_t *m, float angle);
-        void init_matrix3d_rotate_y(matrix3d_t *m, float angle);
-        void init_matrix3d_rotate_z(matrix3d_t *m, float angle);
-        void init_matrix3d_rotate_xyz(matrix3d_t *m, float x, float y, float z, float angle);
+        void init_matrix3d_translate(dsp::matrix3d_t *m, float dx, float dy, float dz);
+        void init_matrix3d_scale(dsp::matrix3d_t *m, float sx, float sy, float sz);
+        void init_matrix3d_rotate_x(dsp::matrix3d_t *m, float angle);
+        void init_matrix3d_rotate_y(dsp::matrix3d_t *m, float angle);
+        void init_matrix3d_rotate_z(dsp::matrix3d_t *m, float angle);
+        void init_matrix3d_rotate_xyz(dsp::matrix3d_t *m, float x, float y, float z, float angle);
 
-        void apply_matrix3d_mv2(vector3d_t *r, const vector3d_t *v, const matrix3d_t *m);
-        void apply_matrix3d_mv1(vector3d_t *r, const matrix3d_t *m);
-        void apply_matrix3d_mp2(point3d_t *r, const point3d_t *p, const matrix3d_t *m);
-        void apply_matrix3d_mp1(point3d_t *r, const matrix3d_t *m);
-        void apply_matrix3d_mm2(matrix3d_t *r, const matrix3d_t *s, const matrix3d_t *m);
-        void apply_matrix3d_mm1(matrix3d_t *r, const matrix3d_t *m);
+        void calc_matrix3d_transform_p1v1(dsp::matrix3d_t *m, const dsp::point3d_t *p, const dsp::vector3d_t *v);
+        void calc_matrix3d_transform_r1(dsp::matrix3d_t *m, const dsp::ray3d_t *r);
+
+        void apply_matrix3d_mv2(dsp::vector3d_t *r, const dsp::vector3d_t *v, const dsp::matrix3d_t *m);
+        void apply_matrix3d_mv1(dsp::vector3d_t *r, const dsp::matrix3d_t *m);
+        void apply_matrix3d_mp2(dsp::point3d_t *r, const dsp::point3d_t *p, const dsp::matrix3d_t *m);
+        void apply_matrix3d_mp1(dsp::point3d_t *r, const dsp::matrix3d_t *m);
+        void apply_matrix3d_mm2(dsp::matrix3d_t *r, const dsp::matrix3d_t *s, const dsp::matrix3d_t *m);
+        void apply_matrix3d_mm1(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
     }
-)
 
-typedef void (* init_matrix3d_t)(matrix3d_t *dst, const matrix3d_t *src);
-typedef void (* init_matrix3d_zero_t)(matrix3d_t *m);
-typedef void (* init_matrix3d_one_t)(matrix3d_t *m);
-typedef void (* init_matrix3d_identity_t)(matrix3d_t *m);
-typedef void (* init_matrix3d_translate_t)(matrix3d_t *m, float dx, float dy, float dz);
-typedef void (* init_matrix3d_scale_t)(matrix3d_t *m, float sx, float sy, float sz);
-typedef void (* init_matrix3d_rotate_x_t)(matrix3d_t *m, float angle);
-typedef void (* init_matrix3d_rotate_y_t)(matrix3d_t *m, float angle);
-typedef void (* init_matrix3d_rotate_z_t)(matrix3d_t *m, float angle);
-typedef void (* init_matrix3d_rotate_xyz_t)(matrix3d_t *m, float x, float y, float z, float angle);
-typedef void (* apply_matrix3d_mv2_t)(vector3d_t *r, const vector3d_t *v, const matrix3d_t *m);
-typedef void (* apply_matrix3d_mv1_t)(vector3d_t *r, const matrix3d_t *m);
-typedef void (* apply_matrix3d_mp2_t)(point3d_t *r, const point3d_t *p, const matrix3d_t *m);
-typedef void (* apply_matrix3d_mp1_t)(point3d_t *r, const matrix3d_t *m);
-typedef void (* apply_matrix3d_mm2_t)(matrix3d_t *r, const matrix3d_t *s, const matrix3d_t *m);
-typedef void (* apply_matrix3d_mm1_t)(matrix3d_t *r, const matrix3d_t *m);
-typedef void (* transpose_matrix3d1_t)(matrix3d_t *r);
-typedef void (* transpose_matrix3d2_t)(matrix3d_t *r, const matrix3d_t *m);
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void init_matrix3d(dsp::matrix3d_t *dst, const dsp::matrix3d_t *src);
+            void init_matrix3d_zero(dsp::matrix3d_t *m);
+            void init_matrix3d_one(dsp::matrix3d_t *m);
+            void init_matrix3d_identity(dsp::matrix3d_t *m);
+            void transpose_matrix3d1(dsp::matrix3d_t *r);
+            void transpose_matrix3d2(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
 
-typedef void (* calc_matrix3d_transform_p1v1)(matrix3d_t *m, const point3d_t *p, const vector3d_t *v);
-typedef void (* calc_matrix3d_transform_r1)(matrix3d_t *m, const ray3d_t *r);
+            void init_matrix3d_translate(dsp::matrix3d_t *m, float dx, float dy, float dz);
+            void init_matrix3d_scale(dsp::matrix3d_t *m, float sx, float sy, float sz);
+            void init_matrix3d_rotate_x(dsp::matrix3d_t *m, float angle);
+            void init_matrix3d_rotate_y(dsp::matrix3d_t *m, float angle);
+            void init_matrix3d_rotate_z(dsp::matrix3d_t *m, float angle);
+            void init_matrix3d_rotate_xyz(dsp::matrix3d_t *m, float x, float y, float z, float angle);
+
+            void apply_matrix3d_mv2(dsp::vector3d_t *r, const dsp::vector3d_t *v, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mv1(dsp::vector3d_t *r, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mp2(dsp::point3d_t *r, const dsp::point3d_t *p, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mp1(dsp::point3d_t *r, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mm2(dsp::matrix3d_t *r, const dsp::matrix3d_t *s, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mm1(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
+        }
+    )
+
+    typedef void (* init_matrix3d_t)(dsp::matrix3d_t *dst, const dsp::matrix3d_t *src);
+    typedef void (* init_matrix3d_zero_t)(dsp::matrix3d_t *m);
+    typedef void (* init_matrix3d_one_t)(dsp::matrix3d_t *m);
+    typedef void (* init_matrix3d_identity_t)(dsp::matrix3d_t *m);
+    typedef void (* init_matrix3d_translate_t)(dsp::matrix3d_t *m, float dx, float dy, float dz);
+    typedef void (* init_matrix3d_scale_t)(dsp::matrix3d_t *m, float sx, float sy, float sz);
+    typedef void (* init_matrix3d_rotate_x_t)(dsp::matrix3d_t *m, float angle);
+    typedef void (* init_matrix3d_rotate_y_t)(dsp::matrix3d_t *m, float angle);
+    typedef void (* init_matrix3d_rotate_z_t)(dsp::matrix3d_t *m, float angle);
+    typedef void (* init_matrix3d_rotate_xyz_t)(dsp::matrix3d_t *m, float x, float y, float z, float angle);
+    typedef void (* apply_matrix3d_mv2_t)(dsp::vector3d_t *r, const dsp::vector3d_t *v, const dsp::matrix3d_t *m);
+    typedef void (* apply_matrix3d_mv1_t)(dsp::vector3d_t *r, const dsp::matrix3d_t *m);
+    typedef void (* apply_matrix3d_mp2_t)(dsp::point3d_t *r, const dsp::point3d_t *p, const dsp::matrix3d_t *m);
+    typedef void (* apply_matrix3d_mp1_t)(dsp::point3d_t *r, const dsp::matrix3d_t *m);
+    typedef void (* apply_matrix3d_mm2_t)(dsp::matrix3d_t *r, const dsp::matrix3d_t *s, const dsp::matrix3d_t *m);
+    typedef void (* apply_matrix3d_mm1_t)(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
+    typedef void (* transpose_matrix3d1_t)(dsp::matrix3d_t *r);
+    typedef void (* transpose_matrix3d2_t)(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
+
+    typedef void (* calc_matrix3d_transform_p1v1)(dsp::matrix3d_t *m, const dsp::point3d_t *p, const dsp::vector3d_t *v);
+    typedef void (* calc_matrix3d_transform_r1)(dsp::matrix3d_t *m, const dsp::ray3d_t *r);
+}
 
 UTEST_BEGIN("dsp.3d", matrix)
 
@@ -99,15 +103,15 @@ UTEST_BEGIN("dsp.3d", matrix)
             )
             return;
 
-        ray3d_t r;
+        dsp::ray3d_t r;
         dsp::init_point_xyz(&r.z, 1.0f, 2.0f, 3.0f);
         dsp::init_vector_dxyz(&r.v, 0.5f, 0.6f, 0.7f);
 
-        point3d_t p, dp, check;
+        dsp::point3d_t p, dp, check;
         dsp::init_point_xyz(&p, 0.0f, 0.0f, 2.0f);
         dsp::init_point_xyz(&check, 2.0f, 3.2f, 4.4f);
 
-        matrix3d_t m;
+        dsp::matrix3d_t m;
 
         transform_p1v1(&m, &r.z, &r.v);
         dsp::apply_matrix3d_mp2(&dp, &p, &m);
@@ -146,7 +150,7 @@ UTEST_BEGIN("dsp.3d", matrix)
 
         printf("Testing %s\n", label);
 
-        matrix3d_t m1, m2, m3;
+        dsp::matrix3d_t m1, m2, m3;
         generic::init_matrix3d_zero(&m1);
         init_matrix3d_zero(&m2);
         UTEST_ASSERT_MSG(matrix3d_ck(&m1, &m2), "init_matrix3d_zero failed");
@@ -168,7 +172,7 @@ UTEST_BEGIN("dsp.3d", matrix)
         UTEST_ASSERT_MSG(matrix3d_ck(&m1, &m2), "init_matrix3d failed");
         UTEST_ASSERT_MSG(matrix3d_ck(&m2, &m2), "init_matrix3d failed");
 
-        matrix3d_t m1t, m2t;
+        dsp::matrix3d_t m1t, m2t;
         generic::transpose_matrix3d1(&m1);
         transpose_matrix3d1(&m2);
         UTEST_ASSERT_MSG(matrix3d_ck(&m1, &m2), "transpose_matrix3d1 failed");
@@ -208,8 +212,8 @@ UTEST_BEGIN("dsp.3d", matrix)
 
         printf("Testing %s\n", label);
 
-        matrix3d_t  i1, t1, s1, rx1, ry1, rz1, rxyz1;
-        matrix3d_t  i2, t2, s2, rx2, ry2, rz2, rxyz2;
+        dsp::matrix3d_t  i1, t1, s1, rx1, ry1, rz1, rxyz1;
+        dsp::matrix3d_t  i2, t2, s2, rx2, ry2, rz2, rxyz2;
 
         generic::init_matrix3d_identity(&i1);
         init_matrix3d_identity(&i2);
@@ -217,7 +221,7 @@ UTEST_BEGIN("dsp.3d", matrix)
 
         generic::init_matrix3d_translate(&t1, 1.0f, 2.0f, 3.0f);
         init_matrix3d_translate(&t2, 1.0f, 2.0f, 3.0f);
-        UTEST_ASSERT_MSG(matrix3d_ck(&t1, &t2), "init_matrix3d_translate failed");
+        UTEST_ASSERT_MSG(matrix3d_ck(&t1, &t2), "init_dsp::matrix3d_translate failed");
 
         generic::init_matrix3d_scale(&s1, 1.0f, 2.0f, 3.0f);
         init_matrix3d_scale(&s2, 1.0f, 2.0f, 3.0f);
@@ -270,8 +274,8 @@ UTEST_BEGIN("dsp.3d", matrix)
             apply_matrix3d_mp2_t apply_matrix3d_mp2
             )
     {
-        matrix3d_t m;
-        point3d_t p1, p2, p3, p4, pc;
+        dsp::matrix3d_t m;
+        dsp::point3d_t p1, p2, p3, p4, pc;
 
         printf("Testing %s\n", label);
 
@@ -379,8 +383,8 @@ UTEST_BEGIN("dsp.3d", matrix)
             apply_matrix3d_mv2_t apply_matrix3d_mv2
             )
     {
-        matrix3d_t m;
-        vector3d_t v1, v2, v3, v4, vc;
+        dsp::matrix3d_t m;
+        dsp::vector3d_t v1, v2, v3, v4, vc;
 
         // Apply identity matrix
         dsp::init_vector_dxyz(&vc, 1.0f, 2.0f, 3.0f);
