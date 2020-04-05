@@ -5,50 +5,54 @@
  *      Author: sadko
  */
 
-#include <dsp/dsp.h>
+#include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
-#include <core/sugar.h>
+#include <lsp-plug.in/common/alloc.h>
 #include <lsp-plug.in/test-fw/helpers.h>
+#include <lsp-plug.in/stdlib/math.h>
 
 #define N_PLANES        256
 #define N_POINTS        256
 
-namespace generic
+namespace lsp
 {
-    size_t colocation_x3_v1p3(const vector3d_t *pl, const point3d_t *p0, const point3d_t *p1, const point3d_t *p2);
-    size_t colocation_x3_v1pv(const vector3d_t *pl, const point3d_t *pv);
-    size_t colocation_x3_v3p1(const vector3d_t *v0, const vector3d_t *v1, const vector3d_t *v2, const point3d_t *p);
-    size_t colocation_x3_vvp1(const vector3d_t *vv, const point3d_t *p);
+    namespace generic
+    {
+        size_t colocation_x3_v1p3(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+        size_t colocation_x3_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
+        size_t colocation_x3_v3p1(const dsp::vector3d_t *v0, const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::point3d_t *p);
+        size_t colocation_x3_vvp1(const dsp::vector3d_t *vv, const dsp::point3d_t *p);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            size_t colocation_x3_v1p3(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+            size_t colocation_x3_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
+            size_t colocation_x3_v3p1(const dsp::vector3d_t *v0, const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::point3d_t *p);
+            size_t colocation_x3_vvp1(const dsp::vector3d_t *vv, const dsp::point3d_t *p);
+        }
+
+        namespace sse3
+        {
+            size_t colocation_x3_v1p3(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+            size_t colocation_x3_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
+            size_t colocation_x3_v3p1(const dsp::vector3d_t *v0, const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::point3d_t *p);
+            size_t colocation_x3_vvp1(const dsp::vector3d_t *vv, const dsp::point3d_t *p);
+        }
+    )
+
+    typedef size_t (* colocation_x3_v1p3_t)(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+    typedef size_t (* colocation_x3_v1pv_t)(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
+    typedef size_t (* colocation_x3_v3p1_t)(const dsp::vector3d_t *v0, const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::point3d_t *p);
+    typedef size_t (* colocation_x3_vvp1_t)(const dsp::vector3d_t *vv, const dsp::point3d_t *p);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        size_t colocation_x3_v1p3(const vector3d_t *pl, const point3d_t *p0, const point3d_t *p1, const point3d_t *p2);
-        size_t colocation_x3_v1pv(const vector3d_t *pl, const point3d_t *pv);
-        size_t colocation_x3_v3p1(const vector3d_t *v0, const vector3d_t *v1, const vector3d_t *v2, const point3d_t *p);
-        size_t colocation_x3_vvp1(const vector3d_t *vv, const point3d_t *p);
-    }
-
-    namespace sse3
-    {
-        size_t colocation_x3_v1p3(const vector3d_t *pl, const point3d_t *p0, const point3d_t *p1, const point3d_t *p2);
-        size_t colocation_x3_v1pv(const vector3d_t *pl, const point3d_t *pv);
-        size_t colocation_x3_v3p1(const vector3d_t *v0, const vector3d_t *v1, const vector3d_t *v2, const point3d_t *p);
-        size_t colocation_x3_vvp1(const vector3d_t *vv, const point3d_t *p);
-    }
-)
-
-typedef size_t (* colocation_x3_v1p3_t)(const vector3d_t *pl, const point3d_t *p0, const point3d_t *p1, const point3d_t *p2);
-typedef size_t (* colocation_x3_v1pv_t)(const vector3d_t *pl, const point3d_t *pv);
-typedef size_t (* colocation_x3_v3p1_t)(const vector3d_t *v0, const vector3d_t *v1, const vector3d_t *v2, const point3d_t *p);
-typedef size_t (* colocation_x3_vvp1_t)(const vector3d_t *vv, const point3d_t *p);
 
 //-----------------------------------------------------------------------------
 // Performance test
 PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
 
-    void call_pv(const char *label, const vector3d_t *pl, const point3d_t *pv, colocation_x3_v1p3_t func)
+    void call_pv(const char *label, const dsp::vector3d_t *pl, const dsp::point3d_t *pv, colocation_x3_v1p3_t func)
     {
         if (!PTEST_SUPPORTED(func))
             return;
@@ -58,17 +62,17 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
-            const vector3d_t *xpl = pl;
+            const dsp::vector3d_t *xpl = pl;
             for (size_t i=0; i<N_PLANES*3; ++i, ++xpl)
             {
-                const point3d_t *xp = pv;
+                const dsp::point3d_t *xp = pv;
                 for (size_t j=0; j<N_POINTS; ++j, xp += 3)
                     func(xpl, &xp[0], &xp[1], &xp[2]);
             }
         );
     }
 
-    void call_pv(const char *label, const vector3d_t *pl, const point3d_t *pv, colocation_x3_v1pv_t func)
+    void call_pv(const char *label, const dsp::vector3d_t *pl, const dsp::point3d_t *pv, colocation_x3_v1pv_t func)
     {
         if (!PTEST_SUPPORTED(func))
             return;
@@ -78,17 +82,17 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
-            const vector3d_t *xpl = pl;
+            const dsp::vector3d_t *xpl = pl;
             for (size_t i=0; i<N_PLANES*3; ++i, ++xpl)
             {
-                const point3d_t *xp = pv;
+                const dsp::point3d_t *xp = pv;
                 for (size_t j=0; j<N_POINTS; ++j, xp += 3)
                     func(xpl, xp);
             }
         );
     }
 
-    void call_vv(const char *label, const vector3d_t *pl, const point3d_t *pv, colocation_x3_v3p1_t func)
+    void call_vv(const char *label, const dsp::vector3d_t *pl, const dsp::point3d_t *pv, colocation_x3_v3p1_t func)
     {
         if (!PTEST_SUPPORTED(func))
             return;
@@ -98,17 +102,17 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
-            const vector3d_t *xpl = pl;
+            const dsp::vector3d_t *xpl = pl;
             for (size_t i=0; i<N_PLANES; ++i, xpl += 3)
             {
-                const point3d_t *xp = pv;
+                const dsp::point3d_t *xp = pv;
                 for (size_t j=0; j<N_POINTS*3; ++j, ++xp)
                     func(&xpl[0], &xpl[1], &xpl[2], xp);
             }
         );
     }
 
-    void call_vv(const char *label, const vector3d_t *pl, const point3d_t *pv, colocation_x3_vvp1_t func)
+    void call_vv(const char *label, const dsp::vector3d_t *pl, const dsp::point3d_t *pv, colocation_x3_vvp1_t func)
     {
         if (!PTEST_SUPPORTED(func))
             return;
@@ -118,10 +122,10 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
-            const vector3d_t *xpl = pl;
+            const dsp::vector3d_t *xpl = pl;
             for (size_t i=0; i<N_PLANES; ++i, xpl += 3)
             {
-                const point3d_t *xp = pv;
+                const dsp::point3d_t *xp = pv;
                 for (size_t j=0; j<N_POINTS*3; ++j, ++xp)
                     func(xpl, xp);
             }
@@ -130,18 +134,18 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
 
     PTEST_MAIN
     {
-        size_t buf_size     = N_PLANES * 3 * sizeof(vector3d_t) + N_POINTS * 3 * sizeof(point3d_t);
+        size_t buf_size     = N_PLANES * 3 * sizeof(dsp::vector3d_t) + N_POINTS * 3 * sizeof(dsp::point3d_t);
         uint8_t *data       = NULL;
         uint8_t *ptr        = alloc_aligned<uint8_t>(data, buf_size, 64);
 
-        vector3d_t *planes  = reinterpret_cast<vector3d_t *>(ptr);
-        ptr                += N_PLANES * 3 * sizeof(vector3d_t);
-        point3d_t *points   = reinterpret_cast<point3d_t *>(ptr);
+        dsp::vector3d_t *planes  = reinterpret_cast<dsp::vector3d_t *>(ptr);
+        ptr                     += N_PLANES * 3 * sizeof(dsp::vector3d_t);
+        dsp::point3d_t *points   = reinterpret_cast<dsp::point3d_t *>(ptr);
 
         // Initialize planes
         for (size_t i=0; i < N_PLANES*3;)
         {
-            vector3d_t *pl  = &planes[i];
+            dsp::vector3d_t *pl  = &planes[i];
 
             dsp::init_vector_dxyz(pl, randf(-1.0f, 1.0f), randf(-1.0f, 1.0f), randf(-1.0f, 1.0f));
             float w = sqrtf(pl->dx * pl->dx + pl->dy * pl->dy + pl->dz * pl->dz);

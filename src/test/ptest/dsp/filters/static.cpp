@@ -5,7 +5,7 @@
  *      Author: sadko
  */
 
-#include <dsp/dsp.h>
+#include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
 
 #define FTEST_BUF_SIZE 0x200
