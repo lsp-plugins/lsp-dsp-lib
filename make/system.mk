@@ -25,36 +25,33 @@ endif
 # Detect processor architecture
 ifndef ARCHITECTURE
   ifeq ($(PLATFORM),Windows)
-    ifndef BUILD_PROFILE
+    ifeq ($(PROCESSOR_ARCHITECTURE),x86)
       ARCHITECTURE             := i586
-      ifeq ($(PROCESSOR_ARCHITECTURE),x86)
-        ARCHITECTURE             := i586
-      endif
-      ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
-        ARCHITECTURE             := x86_64
-      endif
+    else ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
+      ARCHITECTURE             := x86_64
+    else
+      ARCHITECTURE             := i586
     endif
   else # BUILD_PLATFORM != Windows
-    ifndef BUILD_PROFILE
-      BUILD_ARCH             := $(shell cat "$(OBJDIR)/$(BUILD_PROFILE_FILE)" 2>/dev/null || uname -m)
+    BUILD_ARCH             := $(shell uname -m)
+    ifeq ($(patsubst armv6%,armv6,$(BUILD_ARCH)), armv6)
+      ARCHITECTURE           := armv6a
+    else ifeq ($(patsubst armv7%,armv7,$(BUILD_ARCH)), armv7)
+      ARCHITECTURE           := armv7a
+    else ifeq ($(patsubst armv8%,armv8,$(BUILD_ARCH)), armv8)
+      ARCHITECTURE           := armv8a
+    else ifeq ($(patsubst aarch64%,aarch64,$(BUILD_ARCH)), aarch64)
+      ARCHITECTURE           := aarch64
+    else ifeq ($(BUILD_ARCH),x86_64)
+      ARCHITECTURE           := x86_64
+    else ifeq ($(BUILD_ARCH),amd64)
+      ARCHITECTURE           := x86_64
+    else ifeq ($(BUILD_ARCH),i86pc)
+      ARCHITECTURE           := x86_64
+    else ifeq ($(patsubst i%86,i586,$(BUILD_ARCH)), i586)
+      ARCHITECTURE           := i586
+    else
       ARCHITECTURE           := $(BUILD_ARCH)
-      ifeq ($(patsubst armv6%,armv6,$(BUILD_ARCH)), armv6)
-        ARCHITECTURE           := armv6a
-      else ifeq ($(patsubst armv7%,armv7,$(BUILD_ARCH)), armv7)
-        ARCHITECTURE           := armv7a
-      else ifeq ($(patsubst armv8%,armv8,$(BUILD_ARCH)), armv8)
-        ARCHITECTURE           := armv8a
-      else ifeq ($(patsubst aarch64%,aarch64,$(BUILD_ARCH)), aarch64)
-        ARCHITECTURE           := aarch64
-      else ifeq ($(BUILD_ARCH),x86_64)
-        ARCHITECTURE           := x86_64
-      else ifeq ($(BUILD_ARCH),amd64)
-        ARCHITECTURE           := x86_64
-      else ifeq ($(BUILD_ARCH),i86pc)
-        ARCHITECTURE           := x86_64
-      else ifeq ($(patsubst i%86,i586,$(BUILD_ARCH)), i586)
-        ARCHITECTURE           := i586
-      endif
     endif
   endif # PLATFORM != Windows
 endif

@@ -48,19 +48,12 @@ endif
 ifeq ($(ARCHITECTURE),i586)
   CXXFLAGS_EXT    += -m32
   CFLAGS_EXT      += -m32
-  ifeq ($(PLATFORM),Linux)
-    EXE_FLAGS_EXT   += -m elf_i386
-  else ifeq ($(PLATFORM),BSD)
-    EXE_FLAGS_EXT   += -m elf_i386_fbsd
-  endif
+else ifeq ($(ARCHITECTURE),x86_64)
+  CXXFLAGS_EXT    += -m64
+  CFLAGS_EXT      += -m64
 else ifeq ($(ARCHITECTURE),armv6a)
   CXXFLAGS_EXT    += -march=armv6-a -marm
   CFLAGS_EXT      += -march=armv6-a -marm
-  ifeq ($(PLATFORM), Linux)
-    EXE_FLAGS_EXT   += -m elf_x86_64
-  else ifeq ($(PLATFORM), BSD)
-    EXE_FLAGS_EXT   += -m elf_x86_64_fbsd
-  endif
 else ifeq ($(ARCHITECTURE),armv7a)
   CXXFLAGS_EXT    += -march=armv7-a -marm
   CFLAGS_EXT      += -march=armv7-a -marm
@@ -101,7 +94,7 @@ CXXFLAGS           := \
 INCLUDE            :=
 LDFLAGS            := $(LDFLAGS_EXT) -r
 EXE_FLAGS          := $(EXE_FLAGS_EXT) $(FLAG_RELRO) -Wl,--gc-sections
-SO_FLAGS           := $(FLAG_RELRO) -Wl,--gc-sections -shared -Llibrary $(FLAG_STDLIB) -fPIC 
+SO_FLAGS           := $(SO_FLAGS_EXT) $(FLAG_RELRO) -Wl,--gc-sections -shared -Llibrary $(FLAG_STDLIB) -fPIC 
 
 TOOL_VARS := \
   CC CXX LD GIT INSTALL \
