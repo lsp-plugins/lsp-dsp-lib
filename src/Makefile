@@ -114,7 +114,7 @@ depend: $(CXX_DEPS)
 	    $(eval SED_RULES += s/$(shell echo "$($(dep)_BIN)" | sed "s/\\//\\\\\//g")/\\$$$$\\($(dep)_BIN\\)/g;)\
 	  )\
 	)
-	@cat $(CXX_DEPS) | sed -E "$(SED_RULES)" >Makefile.d
+	@cat $(CXX_DEPS) | sed -E "$(SED_RULES)" >Makefile.$(ARCHITECTURE).d
 
 $(BUILD_DEPS):
 	@echo "make $(notdir $($(@)_OBJ))"
@@ -166,4 +166,4 @@ $(NEON_D32_IMPL):   EXT_FLAGS=$(NEON_D32_INSTR_SET)
 $(ASIMD_IMPL):      EXT_FLAGS=$(ASIMD_INSTR_SET)
 
 # Dependencies
--include $(CURDIR)/Makefile.d
+-include $(CURDIR)/Makefile.$(ARCHITECTURE).d

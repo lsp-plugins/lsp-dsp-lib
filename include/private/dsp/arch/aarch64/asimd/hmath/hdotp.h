@@ -164,7 +164,7 @@ namespace lsp
                 __ASM_EMIT("ld1         {v4.s}[0], [%[b]]")
                 __ASM_EMIT("fmul        v1.4s, v1.4s, v1.4s")
                 __ASM_EMIT("fmul        v4.4s, v4.4s, v4.4s")
-                __ASM_EMIT("fmla        %S[res].4s, v1.4s, v4.s")
+                __ASM_EMIT("fmla        %S[res].4s, v1.4s, v4.4s")
                 __ASM_EMIT("subs        %[count], %[count], #1")
                 __ASM_EMIT("add         %[a], %[a], #0x04")
                 __ASM_EMIT("add         %[b], %[b], #0x04")
