@@ -12,38 +12,41 @@
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void axis_apply_log1(float *x, const float *v, float zero, float norm_x, size_t count);
-    void axis_apply_log2(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
-}
-
-IF_ARCH_X86(
-    namespace sse2
+    namespace generic
     {
         void axis_apply_log1(float *x, const float *v, float zero, float norm_x, size_t count);
         void axis_apply_log2(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
     }
 
-    IF_ARCH_X86_64(
-        namespace sse3
+    IF_ARCH_X86(
+        namespace sse2
         {
-            void x64_axis_apply_log1(float *x, const float *v, float zero, float norm_x, size_t count);
-            void x64_axis_apply_log2(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
+            void axis_apply_log1(float *x, const float *v, float zero, float norm_x, size_t count);
+            void axis_apply_log2(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
+        }
+
+        IF_ARCH_X86_64(
+            namespace sse3
+            {
+                void x64_axis_apply_log1(float *x, const float *v, float zero, float norm_x, size_t count);
+                void x64_axis_apply_log2(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
+            }
+        )
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void axis_apply_log1(float *x, const float *v, float zero, float norm_x, size_t count);
+            void axis_apply_log2(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
         }
     )
-)
 
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void axis_apply_log1(float *x, const float *v, float zero, float norm_x, size_t count);
-        void axis_apply_log2(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
-    }
-)
-
-typedef void (* axis_apply_log1_t)(float *x, const float *v, float zero, float norm_x, size_t count);
-typedef void (* axis_apply_log2_t)(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
+    typedef void (* axis_apply_log1_t)(float *x, const float *v, float zero, float norm_x, size_t count);
+    typedef void (* axis_apply_log2_t)(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
+}
 
 //-----------------------------------------------------------------------------
 // Performance test for logarithmic axis calculation

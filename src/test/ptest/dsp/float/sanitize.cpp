@@ -13,51 +13,53 @@
 #define MIN_RANK 7
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void sanitize1(float *dst, size_t count);
-    void sanitize2(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void sanitize1(float *dst, size_t count);
+        void sanitize2(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse2
+        {
+            void sanitize1(float *dst, size_t count);
+            void sanitize2(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx
+        {
+            void sanitize1(float *dst, size_t count);
+            void sanitize2(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx2
+        {
+            void sanitize1(float *dst, size_t count);
+            void sanitize2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void sanitize1(float *dst, size_t count);
+            void sanitize2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void sanitize1(float *dst, size_t count);
+            void sanitize2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* sanitize1_t)(float *dst, size_t count);
+    typedef void (* sanitize2_t)(float *dst, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse2
-    {
-        void sanitize1(float *dst, size_t count);
-        void sanitize2(float *dst, const float *src, size_t count);
-    }
-
-    namespace avx
-    {
-        void sanitize1(float *dst, size_t count);
-        void sanitize2(float *dst, const float *src, size_t count);
-    }
-
-    namespace avx2
-    {
-        void sanitize1(float *dst, size_t count);
-        void sanitize2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void sanitize1(float *dst, size_t count);
-        void sanitize2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void sanitize1(float *dst, size_t count);
-        void sanitize2(float *dst, const float *src, size_t count);
-    }
-)
-
-typedef void (* sanitize1_t)(float *dst, size_t count);
-typedef void (* sanitize2_t)(float *dst, const float *src, size_t count);
-
 
 //-----------------------------------------------------------------------------
 // Performance test for logarithmic axis calculation

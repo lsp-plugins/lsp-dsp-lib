@@ -12,44 +12,47 @@
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void pcomplex_mod(float *dst_mod, const float *src, size_t count);
+    namespace generic
+    {
+        void pcomplex_mod(float *dst_mod, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void pcomplex_mod(float *dst_mod, const float *src, size_t count);
+        }
+
+        namespace sse3
+        {
+            void pcomplex_mod(float *dst_mod, const float *src, size_t count);
+            void x64_pcomplex_mod(float *dst_mod, const float *src, size_t count);
+        }
+
+        namespace avx
+        {
+            void pcomplex_mod(float *dst_mod, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void pcomplex_mod(float *dst_mod, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void pcomplex_mod(float *dst_mod, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* pcomplex_mod_t)(float *dst_mod, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void pcomplex_mod(float *dst_mod, const float *src, size_t count);
-    }
-
-    namespace sse3
-    {
-        void pcomplex_mod(float *dst_mod, const float *src, size_t count);
-        void x64_pcomplex_mod(float *dst_mod, const float *src, size_t count);
-    }
-
-    namespace avx
-    {
-        void pcomplex_mod(float *dst_mod, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void pcomplex_mod(float *dst_mod, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void pcomplex_mod(float *dst_mod, const float *src, size_t count);
-    }
-)
-
-typedef void (* pcomplex_mod_t)(float *dst_mod, const float *src, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test for complex multiplication

@@ -12,26 +12,29 @@
 #define MIN_RANK 6
 #define MAX_RANK 14
 
-namespace generic
+namespace lsp
 {
-    void rgba_to_hsla(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void rgba_to_hsla(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse2
+        {
+            void rgba_to_hsla(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void rgba_to_hsla(float *dst, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* rgba_to_hsla_t)(float *dst, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse2
-    {
-        void rgba_to_hsla(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void rgba_to_hsla(float *dst, const float *src, size_t count);
-    }
-)
-
-typedef void (* rgba_to_hsla_t)(float *dst, const float *src, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test for logarithmic axis calculation

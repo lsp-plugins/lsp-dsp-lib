@@ -12,29 +12,32 @@
 #define MIN_RANK 6
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
-    void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
+    namespace generic
+    {
+        void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
+        void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
+            void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
+            void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
+        }
+    )
+
+    typedef void (* hsla_to_fill_t)(float *dst, float c1, float c2, float c3, float c4, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
-        void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
-        void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
-    }
-)
-
-typedef void (* hsla_to_fill_t)(float *dst, float c1, float c2, float c3, float c4, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test for logarithmic axis calculation

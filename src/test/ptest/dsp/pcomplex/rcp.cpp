@@ -12,44 +12,47 @@
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void pcomplex_rcp1(float *dst, size_t count);
-    void pcomplex_rcp2(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void pcomplex_rcp1(float *dst, size_t count);
+        void pcomplex_rcp2(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void pcomplex_rcp1(float *dst, size_t count);
+            void pcomplex_rcp2(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx
+        {
+            void pcomplex_rcp1(float *dst, size_t count);
+            void pcomplex_rcp2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void pcomplex_rcp1(float *dst, size_t count);
+            void pcomplex_rcp2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void pcomplex_rcp1(float *dst, size_t count);
+            void pcomplex_rcp2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* pcomplex_rcp1_t) (float *dst, size_t count);
+    typedef void (* pcomplex_rcp2_t) (float *dst, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void pcomplex_rcp1(float *dst, size_t count);
-        void pcomplex_rcp2(float *dst, const float *src, size_t count);
-    }
-
-    namespace avx
-    {
-        void pcomplex_rcp1(float *dst, size_t count);
-        void pcomplex_rcp2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void pcomplex_rcp1(float *dst, size_t count);
-        void pcomplex_rcp2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void pcomplex_rcp1(float *dst, size_t count);
-        void pcomplex_rcp2(float *dst, const float *src, size_t count);
-    }
-)
-
-typedef void (* pcomplex_rcp1_t) (float *dst, size_t count);
-typedef void (* pcomplex_rcp2_t) (float *dst, const float *src, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test for complex reciprocal

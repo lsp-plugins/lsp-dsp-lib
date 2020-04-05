@@ -8,48 +8,52 @@
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
 #include <lsp-plug.in/common/alloc.h>
+#include <lsp-plug.in/stdlib/math.h>
 
 #define MIN_RANK 7
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void limit1(float *dst, float min, float max, size_t count);
-    void limit2(float *dst, const float *src, float min, float max, size_t count);
+    namespace generic
+    {
+        void limit1(float *dst, float min, float max, size_t count);
+        void limit2(float *dst, const float *src, float min, float max, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void limit1(float *dst, float min, float max, size_t count);
+            void limit2(float *dst, const float *src, float min, float max, size_t count);
+        }
+
+        namespace avx
+        {
+            void limit1(float *dst, float min, float max, size_t count);
+            void limit2(float *dst, const float *src, float min, float max, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void limit1(float *dst, float min, float max, size_t count);
+            void limit2(float *dst, const float *src, float min, float max, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void limit1(float *dst, float min, float max, size_t count);
+            void limit2(float *dst, const float *src, float min, float max, size_t count);
+        }
+    )
+
+    typedef void (* limit1_t)(float *dst, float min, float max, size_t count);
+    typedef void (* limit2_t)(float *dst, const float *src, float min, float max, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void limit1(float *dst, float min, float max, size_t count);
-        void limit2(float *dst, const float *src, float min, float max, size_t count);
-    }
-
-    namespace avx
-    {
-        void limit1(float *dst, float min, float max, size_t count);
-        void limit2(float *dst, const float *src, float min, float max, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void limit1(float *dst, float min, float max, size_t count);
-        void limit2(float *dst, const float *src, float min, float max, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void limit1(float *dst, float min, float max, size_t count);
-        void limit2(float *dst, const float *src, float min, float max, size_t count);
-    }
-)
-
-typedef void (* limit1_t)(float *dst, float min, float max, size_t count);
-typedef void (* limit2_t)(float *dst, const float *src, float min, float max, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test for logarithmic axis calculation
