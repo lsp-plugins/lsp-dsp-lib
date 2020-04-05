@@ -11,8 +11,8 @@
 #include <lsp-plug.in/common/types.h>
 
 // Define version of headers
-#define LSP_DSP_LIB_MAJOR           1
-#define LSP_DSP_LIB_MINOR           0
+#define LSP_DSP_LIB_MAJOR           0
+#define LSP_DSP_LIB_MINOR           5
 #define LSP_DSP_LIB_MICRO           0
 
 // Macro definitions
