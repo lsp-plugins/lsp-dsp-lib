@@ -12,48 +12,51 @@
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-    void packed_direct_fft(float *dst, const float *src, size_t rank);
+    namespace generic
+    {
+        void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+        void packed_direct_fft(float *dst, const float *src, size_t rank);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
+        }
+
+        namespace avx
+        {
+            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void direct_fft_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
+            void packed_direct_fft_fma3(float *dst, const float *src, size_t rank);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
+        }
+    )
+
+    typedef void (* direct_fft_t) (float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+    typedef void (* conv_direct_fft_t) (float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+    typedef void (* packed_direct_fft_t) (float *dst, const float *src, size_t rank);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void packed_direct_fft(float *dst, const float *src, size_t rank);
-    }
-
-    namespace avx
-    {
-        void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void direct_fft_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-
-        void packed_direct_fft(float *dst, const float *src, size_t rank);
-        void packed_direct_fft_fma3(float *dst, const float *src, size_t rank);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void packed_direct_fft(float *dst, const float *src, size_t rank);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        void packed_direct_fft(float *dst, const float *src, size_t rank);
-    }
-)
-
-typedef void (* direct_fft_t) (float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-typedef void (* conv_direct_fft_t) (float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-typedef void (* packed_direct_fft_t) (float *dst, const float *src, size_t rank);
 
 //-----------------------------------------------------------------------------
 // Performance test for complex multiplication

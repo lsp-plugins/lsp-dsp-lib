@@ -9,30 +9,34 @@
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
 #include <lsp-plug.in/common/alloc.h>
+#include <lsp-plug.in/stdlib/math.h>
 
 #define PERF_BUF_SIZE   0x200
 #define KF              100.0f
 #define TD              (2*M_PI/48000.0)
 
-namespace generic
+namespace lsp
 {
-    void matched_transform_x1(biquad_x1_t *bf, f_cascade_t *bc, float kf, float td, size_t count);
-}
-
-IF_ARCH_X86(
-    namespace sse
+    namespace generic
     {
-        void matched_transform_x1(biquad_x1_t *bf, f_cascade_t *bc, float kf, float td, size_t count);
+        void matched_transform_x1(dsp::biquad_x1_t *bf, dsp::f_cascade_t *bc, float kf, float td, size_t count);
     }
-)
 
-typedef void (* matched_transform_x1_t)(biquad_x1_t *bf, f_cascade_t *bc, float kf, float td, size_t count);
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void matched_transform_x1(dsp::biquad_x1_t *bf, dsp::f_cascade_t *bc, float kf, float td, size_t count);
+        }
+    )
 
-static const f_cascade_t test_c =
-{
-    1, 2, 1, 0,
-    1, -2, 1, 0
-};
+    typedef void (* matched_transform_x1_t)(dsp::biquad_x1_t *bf, dsp::f_cascade_t *bc, float kf, float td, size_t count);
+
+    static const dsp::f_cascade_t test_c =
+    {
+        1, 2, 1, 0,
+        1, -2, 1, 0
+    };
+}
 
 //-----------------------------------------------------------------------------
 // Performance test for bilinear transform
@@ -43,14 +47,14 @@ PTEST_BEGIN("dsp.filters", mt, 10, 10000)
         printf("Testing %s matched transform on buffer size %d ...\n", label, int(count));
 
         void *p1 = NULL, *p2 = NULL;
-        biquad_x1_t *dst = alloc_aligned<biquad_x1_t>(p1, count, 32);
-        f_cascade_t *src = alloc_aligned<f_cascade_t>(p2, count, 32);
-        f_cascade_t *tmp = alloc_aligned<f_cascade_t>(p2, count, 32);
+        dsp::biquad_x1_t *dst = alloc_aligned<dsp::biquad_x1_t>(p1, count, 32);
+        dsp::f_cascade_t *src = alloc_aligned<dsp::f_cascade_t>(p2, count, 32);
+        dsp::f_cascade_t *tmp = alloc_aligned<dsp::f_cascade_t>(p2, count, 32);
 
         for (size_t i=0; i<count; ++i)
             src[i]  = test_c;
 
-        size_t to_copy = count * (sizeof(f_cascade_t) / sizeof(float));
+        size_t to_copy = count * (sizeof(dsp::f_cascade_t) / sizeof(float));
 
         PTEST_LOOP(label,
                 dsp::copy(tmp->t, src->t, to_copy);

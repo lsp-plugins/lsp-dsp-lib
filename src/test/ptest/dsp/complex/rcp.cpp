@@ -12,47 +12,50 @@
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void complex_rcp1(float *dst_re, float *dst_im, size_t count);
-    void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+    namespace generic
+    {
+        void complex_rcp1(float *dst_re, float *dst_im, size_t count);
+        void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void complex_rcp1(float *dst_re, float *dst_im, size_t count);
+            void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+        }
+
+        namespace avx
+        {
+            void complex_rcp1(float *dst_re, float *dst_im, size_t count);
+            void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+
+            void complex_rcp1_fma3(float *dst_re, float *dst_im, size_t count);
+            void complex_rcp2_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void complex_rcp1(float *dst_re, float *dst_im, size_t count);
+            void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void complex_rcp1(float *dst_re, float *dst_im, size_t count);
+            void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+        }
+    )
+
+    typedef void (* complex_rcp1_t) (float *dst_re, float *dst_im, size_t count);
+    typedef void (* complex_rcp2_t) (float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void complex_rcp1(float *dst_re, float *dst_im, size_t count);
-        void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
-    }
-
-    namespace avx
-    {
-        void complex_rcp1(float *dst_re, float *dst_im, size_t count);
-        void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
-
-        void complex_rcp1_fma3(float *dst_re, float *dst_im, size_t count);
-        void complex_rcp2_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void complex_rcp1(float *dst_re, float *dst_im, size_t count);
-        void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void complex_rcp1(float *dst_re, float *dst_im, size_t count);
-        void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
-    }
-)
-
-typedef void (* complex_rcp1_t) (float *dst_re, float *dst_im, size_t count);
-typedef void (* complex_rcp2_t) (float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test for complex reciprocal

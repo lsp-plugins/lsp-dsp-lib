@@ -7,58 +7,61 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
-#include <string.h>
+#include <lsp-plug.in/common/alloc.h>
 
 #define MIN_RANK 8
 #define MAX_RANK 20
 
-namespace generic
+namespace lsp
 {
-    void move(float *dst, const float *src, size_t count);
-    void copy(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void move(float *dst, const float *src, size_t count);
+        void copy(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace x86
+        {
+            void copy(float *dst, const float *src, size_t count);
+        }
+
+        namespace sse
+        {
+            void move(float *dst, const float *src, size_t count);
+            void copy(float *dst, const float *src, size_t count);
+            void copy_movntps(float *dst, const float *src, size_t count);
+        }
+
+        namespace sse3
+        {
+            void copy(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx
+        {
+            void copy(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void move(float *dst, const float *src, size_t count);
+            void copy(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void move(float *dst, const float *src, size_t count);
+            void copy(float *dst, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* copy_t)(float *dst, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace x86
-    {
-        void copy(float *dst, const float *src, size_t count);
-    }
-
-    namespace sse
-    {
-        void move(float *dst, const float *src, size_t count);
-        void copy(float *dst, const float *src, size_t count);
-        void copy_movntps(float *dst, const float *src, size_t count);
-    }
-
-    namespace sse3
-    {
-        void copy(float *dst, const float *src, size_t count);
-    }
-
-    namespace avx
-    {
-        void copy(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void move(float *dst, const float *src, size_t count);
-        void copy(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void move(float *dst, const float *src, size_t count);
-        void copy(float *dst, const float *src, size_t count);
-    }
-)
-
-typedef void (* copy_t)(float *dst, const float *src, size_t count);
 
 // Standard implementation provided by C library
 static void copy(float *dst, const float *src, size_t count)

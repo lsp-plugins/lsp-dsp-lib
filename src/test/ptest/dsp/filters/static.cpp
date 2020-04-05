@@ -10,71 +10,74 @@
 
 #define FTEST_BUF_SIZE 0x200
 
-namespace generic
+namespace lsp
 {
-    void biquad_process_x1(float *dst, const float *src, size_t count, biquad_t *f);
-    void biquad_process_x2(float *dst, const float *src, size_t count, biquad_t *f);
-    void biquad_process_x4(float *dst, const float *src, size_t count, biquad_t *f);
-    void biquad_process_x8(float *dst, const float *src, size_t count, biquad_t *f);
+    namespace generic
+    {
+        void biquad_process_x1(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+        void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+        void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+        void biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void biquad_process_x1(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+        }
+
+        namespace sse3
+        {
+            void x64_biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+        }
+
+        namespace avx
+        {
+            void biquad_process_x1(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x1_fma3(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+
+            void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x2_fma3(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+
+            void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x4_fma3(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+
+            void x64_biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x8_fma3(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void biquad_process_x1(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void biquad_process_x1(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+        }
+    )
+
+    typedef void (* biquad_process_t)(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+
+    static dsp::biquad_x1_t bq_normal = {
+        1.0, 2.0, 1.0,
+        -2.0, -1.0,
+        0.0, 0.0, 0.0
+    };
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void biquad_process_x1(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x2(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x4(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x8(float *dst, const float *src, size_t count, biquad_t *f);
-    }
-
-    namespace sse3
-    {
-        void x64_biquad_process_x8(float *dst, const float *src, size_t count, biquad_t *f);
-    }
-
-    namespace avx
-    {
-        void biquad_process_x1(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x1_fma3(float *dst, const float *src, size_t count, biquad_t *f);
-
-        void biquad_process_x2(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x2_fma3(float *dst, const float *src, size_t count, biquad_t *f);
-
-        void biquad_process_x4(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x4_fma3(float *dst, const float *src, size_t count, biquad_t *f);
-
-        void x64_biquad_process_x8(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x8_fma3(float *dst, const float *src, size_t count, biquad_t *f);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void biquad_process_x1(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x2(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x4(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x8(float *dst, const float *src, size_t count, biquad_t *f);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void biquad_process_x1(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x2(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x4(float *dst, const float *src, size_t count, biquad_t *f);
-        void biquad_process_x8(float *dst, const float *src, size_t count, biquad_t *f);
-    }
-)
-
-typedef void (* biquad_process_t)(float *dst, const float *src, size_t count, biquad_t *f);
-
-static biquad_x1_t bq_normal = {
-    1.0, 2.0, 1.0,
-    -2.0, -1.0,
-    0.0, 0.0, 0.0
-};
 
 //-----------------------------------------------------------------------------
 // Performance test for static biquad processing
@@ -87,7 +90,7 @@ PTEST_BEGIN("dsp.filters", static, 10, 1000)
 
         printf("Testing %s static filters on input buffer of %d samples ...\n", text, int(count));
 
-        biquad_t f __lsp_aligned64;
+        dsp::biquad_t f __lsp_aligned64;
 
         f.x1 = bq_normal;
 
@@ -109,7 +112,7 @@ PTEST_BEGIN("dsp.filters", static, 10, 1000)
             return;
         printf("Testing %s static filters on input buffer of %d samples ...\n", text, int(count));
 
-        biquad_t f __lsp_aligned64;
+        dsp::biquad_t f __lsp_aligned64;
 
         // Filters x 2
         for (size_t i=0; i<2; ++i)
@@ -139,7 +142,7 @@ PTEST_BEGIN("dsp.filters", static, 10, 1000)
             return;
         printf("Testing %s static filters on input buffer of %d samples ...\n", text, int(count));
 
-        biquad_t f __lsp_aligned64;
+        dsp::biquad_t f __lsp_aligned64;
 
         // Filters x 4
         for (size_t i=0; i<4; ++i)
@@ -166,7 +169,7 @@ PTEST_BEGIN("dsp.filters", static, 10, 1000)
             return;
         printf("Testing %s static filters on input buffer of %d samples ...\n", text, int(count));
 
-        biquad_t f __lsp_aligned64;
+        dsp::biquad_t f __lsp_aligned64;
         // Filters x 8
         for (size_t i=0; i<8; ++i)
         {

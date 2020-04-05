@@ -11,69 +11,72 @@
 
 #define PERF_BUF_SIZE   0x200
 
-namespace generic
+namespace lsp
 {
-    void bilinear_transform_x1(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
-    void bilinear_transform_x2(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
-    void bilinear_transform_x4(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
-    void bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
-}
-
-IF_ARCH_X86(
-    namespace sse
+    namespace generic
     {
-        void bilinear_transform_x1(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x2(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x4(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
+        void bilinear_transform_x1(dsp::biquad_x1_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+        void bilinear_transform_x2(dsp::biquad_x2_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+        void bilinear_transform_x4(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+        void bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
     }
 
-    IF_ARCH_X86_64(
-        namespace sse3
+    IF_ARCH_X86(
+        namespace sse
         {
-            void x64_bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x1(dsp::biquad_x1_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x2(dsp::biquad_x2_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x4(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+        }
+
+        IF_ARCH_X86_64(
+            namespace sse3
+            {
+                void x64_bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            }
+        )
+
+        namespace avx
+        {
+            void bilinear_transform_x1(dsp::biquad_x1_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x2(dsp::biquad_x2_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x4(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void x64_bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
         }
     )
 
-    namespace avx
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void bilinear_transform_x1(dsp::biquad_x1_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x2(dsp::biquad_x2_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x4(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void bilinear_transform_x1(dsp::biquad_x1_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x2(dsp::biquad_x2_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x4(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+            void bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+        }
+    )
+
+    typedef void (* bilinear_transform_x1_t)(dsp::biquad_x1_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+    typedef void (* bilinear_transform_x2_t)(dsp::biquad_x2_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+    typedef void (* bilinear_transform_x4_t)(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+    typedef void (* bilinear_transform_x8_t)(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+
+    static const dsp::f_cascade_t test_c =
     {
-        void bilinear_transform_x1(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x2(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x4(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void x64_bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void bilinear_transform_x1(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x2(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x4(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void bilinear_transform_x1(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x2(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x4(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
-        void bilinear_transform_x8(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
-    }
-)
-
-typedef void (* bilinear_transform_x1_t)(biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
-typedef void (* bilinear_transform_x2_t)(biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
-typedef void (* bilinear_transform_x4_t)(biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
-typedef void (* bilinear_transform_x8_t)(biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
-
-static const f_cascade_t test_c =
-{
-    1, 2, 1, 0,
-    1, -2, 1, 0
-};
+        1, 2, 1, 0,
+        1, -2, 1, 0
+    };
+}
 
 //-----------------------------------------------------------------------------
 // Performance test for bilinear transform
@@ -84,8 +87,8 @@ PTEST_BEGIN("dsp.filters", bt, 10, 10000)
         printf("Testing %s bilinear transform on buffer size %d ...\n", label, int(count));
 
         void *p1 = NULL, *p2 = NULL;
-        biquad_x1_t *dst = alloc_aligned<biquad_x1_t>(p1, count, 64);
-        f_cascade_t *src = alloc_aligned<f_cascade_t>(p2, count, 64);
+        dsp::biquad_x1_t *dst = alloc_aligned<dsp::biquad_x1_t>(p1, count, 64);
+        dsp::f_cascade_t *src = alloc_aligned<dsp::f_cascade_t>(p2, count, 64);
 
         for (size_t i=0; i<count; ++i)
             src[i]  = test_c;
@@ -111,8 +114,8 @@ PTEST_BEGIN("dsp.filters", bt, 10, 10000)
 
         count++;
         void *p1 = NULL, *p2 = NULL;
-        biquad_x2_t *dst = alloc_aligned<biquad_x2_t>(p1, count, 32);
-        f_cascade_t *src = alloc_aligned<f_cascade_t>(p2, count*2, 32);
+        dsp::biquad_x2_t *dst = alloc_aligned<dsp::biquad_x2_t>(p1, count, 32);
+        dsp::f_cascade_t *src = alloc_aligned<dsp::f_cascade_t>(p2, count*2, 32);
 
         for (size_t i=0; i<count*2; ++i)
             src[i]  = test_c;
@@ -134,8 +137,8 @@ PTEST_BEGIN("dsp.filters", bt, 10, 10000)
 
         count += 3;
         void *p1 = NULL, *p2 = NULL;
-        biquad_x4_t *dst = alloc_aligned<biquad_x4_t>(p1, count, 32);
-        f_cascade_t *src = alloc_aligned<f_cascade_t>(p2, count*4, 32);
+        dsp::biquad_x4_t *dst = alloc_aligned<dsp::biquad_x4_t>(p1, count, 32);
+        dsp::f_cascade_t *src = alloc_aligned<dsp::f_cascade_t>(p2, count*4, 32);
 
         for (size_t i=0; i<count*4; ++i)
             src[i]  = test_c;
@@ -155,8 +158,8 @@ PTEST_BEGIN("dsp.filters", bt, 10, 10000)
 
         count += 7;
         void *p1 = NULL, *p2 = NULL;
-        biquad_x8_t *dst = alloc_aligned<biquad_x8_t>(p1, count, 32);
-        f_cascade_t *src = alloc_aligned<f_cascade_t>(p2, count*8, 32);
+        dsp::biquad_x8_t *dst = alloc_aligned<dsp::biquad_x8_t>(p1, count, 32);
+        dsp::f_cascade_t *src = alloc_aligned<dsp::f_cascade_t>(p2, count*8, 32);
 
         for (size_t i=0; i<count*8; ++i)
             src[i]  = test_c;

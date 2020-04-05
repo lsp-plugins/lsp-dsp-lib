@@ -8,6 +8,8 @@
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
 #include <lsp-plug.in/test-fw/helpers.h>
+#include <lsp-plug.in/common/alloc.h>
+#include <lsp-plug.in/stdlib/math.h>
 
 #define MIN_RANK        6
 #define MAX_RANK        12
@@ -16,65 +18,68 @@
 #define FREQ_MAX        24000.0f
 #define TOLERANCE       1e-4
 
-namespace generic
+namespace lsp
 {
-    void filter_transfer_calc_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-    void filter_transfer_apply_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-    void filter_transfer_calc_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count);
-    void filter_transfer_apply_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count);
+    namespace generic
+    {
+        void filter_transfer_calc_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+        void filter_transfer_apply_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+        void filter_transfer_calc_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
+        void filter_transfer_apply_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void filter_transfer_calc_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_apply_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_calc_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_apply_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
+        }
+
+        namespace avx
+        {
+            void filter_transfer_calc_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_apply_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_calc_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_apply_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
+
+            void filter_transfer_calc_ri_fma3(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_apply_ri_fma3(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_calc_pc_fma3(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_apply_pc_fma3(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void filter_transfer_calc_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_apply_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_calc_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_apply_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void filter_transfer_calc_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_apply_ri(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_calc_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
+            void filter_transfer_apply_pc(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
+        }
+    )
+
+    typedef void (* filter_transfer_calc_ri_t)(float *re, float *im, const dsp::f_cascade_t *c, const float *freq, size_t count);
+    typedef void (* filter_transfer_calc_pc_t)(float *dst, const dsp::f_cascade_t *c, const float *freq, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void filter_transfer_calc_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_apply_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_calc_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_apply_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count);
-    }
-
-    namespace avx
-    {
-        void filter_transfer_calc_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_apply_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_calc_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_apply_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count);
-
-        void filter_transfer_calc_ri_fma3(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_apply_ri_fma3(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_calc_pc_fma3(float *dst, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_apply_pc_fma3(float *dst, const f_cascade_t *c, const float *freq, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void filter_transfer_calc_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_apply_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_calc_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_apply_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void filter_transfer_calc_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_apply_ri(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_calc_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count);
-        void filter_transfer_apply_pc(float *dst, const f_cascade_t *c, const float *freq, size_t count);
-    }
-)
-
-typedef void (* filter_transfer_calc_ri_t)(float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
-typedef void (* filter_transfer_calc_pc_t)(float *dst, const f_cascade_t *c, const float *freq, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test for static biquad processing
 PTEST_BEGIN("dsp.filters", transfer, 5, 1000)
 
-    void call(const char *text, float *re, float *im, const float *in, const f_cascade_t *fc, filter_transfer_calc_ri_t func, size_t count)
+    void call(const char *text, float *re, float *im, const float *in, const dsp::f_cascade_t *fc, filter_transfer_calc_ri_t func, size_t count)
     {
         if (!PTEST_SUPPORTED(func))
             return;
@@ -86,7 +91,7 @@ PTEST_BEGIN("dsp.filters", transfer, 5, 1000)
         );
     }
 
-    void call(const char *text, float *out, const float *in, const f_cascade_t *fc, filter_transfer_calc_pc_t func, size_t count)
+    void call(const char *text, float *out, const float *in, const dsp::f_cascade_t *fc, filter_transfer_calc_pc_t func, size_t count)
     {
         if (!PTEST_SUPPORTED(func))
             return;
@@ -112,7 +117,7 @@ PTEST_BEGIN("dsp.filters", transfer, 5, 1000)
             src[i] = FREQ_MIN * expf( i * step );
 
         // H[p]=(2+0.001*p+0.000001*p^2)/(1.5+0.01*p+0.0001*p^2);
-        f_cascade_t fc;
+        dsp::f_cascade_t fc;
         fc.t[0] = 2.0f;
         fc.t[1] = 1e-3f;
         fc.t[2] = 1e-6f;
