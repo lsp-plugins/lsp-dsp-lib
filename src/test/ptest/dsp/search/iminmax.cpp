@@ -7,73 +7,77 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
+#include <lsp-plug.in/common/alloc.h>
 
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    size_t  min_index(const float *src, size_t count);
-    size_t  max_index(const float *src, size_t count);
-    void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+    namespace generic
+    {
+        size_t  min_index(const float *src, size_t count);
+        size_t  max_index(const float *src, size_t count);
+        void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
 
-    size_t  abs_min_index(const float *src, size_t count);
-    size_t  abs_max_index(const float *src, size_t count);
-    void    abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+        size_t  abs_min_index(const float *src, size_t count);
+        size_t  abs_max_index(const float *src, size_t count);
+        void    abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+    }
+
+    IF_ARCH_X86(
+        namespace sse2
+        {
+            size_t  min_index(const float *src, size_t count);
+            size_t  max_index(const float *src, size_t count);
+            void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+
+            size_t  abs_min_index(const float *src, size_t count);
+            size_t  abs_max_index(const float *src, size_t count);
+            void    abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+        }
+
+        namespace avx2
+        {
+            size_t  min_index(const float *src, size_t count);
+            size_t  max_index(const float *src, size_t count);
+            void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+
+            size_t  abs_min_index(const float *src, size_t count);
+            size_t  abs_max_index(const float *src, size_t count);
+            void    abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            size_t  min_index(const float *src, size_t count);
+            size_t  max_index(const float *src, size_t count);
+            void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+
+            size_t  abs_min_index(const float *src, size_t count);
+            size_t  abs_max_index(const float *src, size_t count);
+            void    abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            size_t  min_index(const float *src, size_t count);
+            size_t  max_index(const float *src, size_t count);
+            void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+
+            size_t  abs_min_index(const float *src, size_t count);
+            size_t  abs_max_index(const float *src, size_t count);
+            void    abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+        }
+    )
+
+    typedef size_t  (* cond_index_t)(const float *src, size_t count);
+    typedef void    (* cond_minmax_t)(const float *src, size_t count, size_t *min, size_t *max);
 }
-
-IF_ARCH_X86(
-    namespace sse2
-    {
-        size_t  min_index(const float *src, size_t count);
-        size_t  max_index(const float *src, size_t count);
-        void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
-
-        size_t  abs_min_index(const float *src, size_t count);
-        size_t  abs_max_index(const float *src, size_t count);
-        void    abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max);
-    }
-
-    namespace avx2
-    {
-        size_t  min_index(const float *src, size_t count);
-        size_t  max_index(const float *src, size_t count);
-        void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
-
-        size_t  abs_min_index(const float *src, size_t count);
-        size_t  abs_max_index(const float *src, size_t count);
-        void    abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        size_t  min_index(const float *src, size_t count);
-        size_t  max_index(const float *src, size_t count);
-        void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
-
-        size_t  abs_min_index(const float *src, size_t count);
-        size_t  abs_max_index(const float *src, size_t count);
-        void    abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        size_t  min_index(const float *src, size_t count);
-        size_t  max_index(const float *src, size_t count);
-        void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
-
-        size_t  abs_min_index(const float *src, size_t count);
-        size_t  abs_max_index(const float *src, size_t count);
-        void    abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max);
-    }
-)
-
-typedef size_t  (* cond_index_t)(const float *src, size_t count);
-typedef void    (* cond_minmax_t)(const float *src, size_t count, size_t *min, size_t *max);
 
 //-----------------------------------------------------------------------------
 // Performance test for minimum and maximum searching

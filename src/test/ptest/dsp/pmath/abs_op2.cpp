@@ -14,65 +14,68 @@
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void    abs_add2(float *dst, const float *src, size_t count);
-    void    abs_sub2(float *dst, const float *src, size_t count);
-    void    abs_rsub2(float *dst, const float *src, size_t count);
-    void    abs_mul2(float *dst, const float *src, size_t count);
-    void    abs_div2(float *dst, const float *src, size_t count);
-    void    abs_rdiv2(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void    abs_add2(float *dst, const float *src, size_t count);
+        void    abs_sub2(float *dst, const float *src, size_t count);
+        void    abs_rsub2(float *dst, const float *src, size_t count);
+        void    abs_mul2(float *dst, const float *src, size_t count);
+        void    abs_div2(float *dst, const float *src, size_t count);
+        void    abs_rdiv2(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void    abs_add2(float *dst, const float *src, size_t count);
+            void    abs_sub2(float *dst, const float *src, size_t count);
+            void    abs_rsub2(float *dst, const float *src, size_t count);
+            void    abs_mul2(float *dst, const float *src, size_t count);
+            void    abs_div2(float *dst, const float *src, size_t count);
+            void    abs_rdiv2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_X86_64(
+        namespace avx
+        {
+            void    x64_abs_add2(float *dst, const float *src, size_t count);
+            void    x64_abs_sub2(float *dst, const float *src, size_t count);
+            void    x64_abs_rsub2(float *dst, const float *src, size_t count);
+            void    x64_abs_mul2(float *dst, const float *src, size_t count);
+            void    x64_abs_div2(float *dst, const float *src, size_t count);
+            void    x64_abs_rdiv2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void    abs_add2(float *dst, const float *src, size_t count);
+            void    abs_sub2(float *dst, const float *src, size_t count);
+            void    abs_rsub2(float *dst, const float *src, size_t count);
+            void    abs_mul2(float *dst, const float *src, size_t count);
+            void    abs_div2(float *dst, const float *src, size_t count);
+            void    abs_rdiv2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void    abs_add2(float *dst, const float *src, size_t count);
+            void    abs_sub2(float *dst, const float *src, size_t count);
+            void    abs_rsub2(float *dst, const float *src, size_t count);
+            void    abs_mul2(float *dst, const float *src, size_t count);
+            void    abs_div2(float *dst, const float *src, size_t count);
+            void    abs_rdiv2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* abs_op2_t)(float *dst, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void    abs_add2(float *dst, const float *src, size_t count);
-        void    abs_sub2(float *dst, const float *src, size_t count);
-        void    abs_rsub2(float *dst, const float *src, size_t count);
-        void    abs_mul2(float *dst, const float *src, size_t count);
-        void    abs_div2(float *dst, const float *src, size_t count);
-        void    abs_rdiv2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_X86_64(
-    namespace avx
-    {
-        void    x64_abs_add2(float *dst, const float *src, size_t count);
-        void    x64_abs_sub2(float *dst, const float *src, size_t count);
-        void    x64_abs_rsub2(float *dst, const float *src, size_t count);
-        void    x64_abs_mul2(float *dst, const float *src, size_t count);
-        void    x64_abs_div2(float *dst, const float *src, size_t count);
-        void    x64_abs_rdiv2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void    abs_add2(float *dst, const float *src, size_t count);
-        void    abs_sub2(float *dst, const float *src, size_t count);
-        void    abs_rsub2(float *dst, const float *src, size_t count);
-        void    abs_mul2(float *dst, const float *src, size_t count);
-        void    abs_div2(float *dst, const float *src, size_t count);
-        void    abs_rdiv2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void    abs_add2(float *dst, const float *src, size_t count);
-        void    abs_sub2(float *dst, const float *src, size_t count);
-        void    abs_rsub2(float *dst, const float *src, size_t count);
-        void    abs_mul2(float *dst, const float *src, size_t count);
-        void    abs_div2(float *dst, const float *src, size_t count);
-        void    abs_rdiv2(float *dst, const float *src, size_t count);
-    }
-)
-
-typedef void (* abs_op2_t)(float *dst, const float *src, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test for complex multiplication

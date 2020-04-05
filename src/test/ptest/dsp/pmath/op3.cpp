@@ -14,63 +14,66 @@
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void    add3(float *dst, const float *src1, const float *src2, size_t count);
-    void    sub3(float *dst, const float *src1, const float *src2, size_t count);
-    void    mul3(float *dst, const float *src1, const float *src2, size_t count);
-    void    div3(float *dst, const float *src1, const float *src2, size_t count);
-    void    mod3(float *dst, const float *src1, const float *src2, size_t count);
+    namespace generic
+    {
+        void    add3(float *dst, const float *src1, const float *src2, size_t count);
+        void    sub3(float *dst, const float *src1, const float *src2, size_t count);
+        void    mul3(float *dst, const float *src1, const float *src2, size_t count);
+        void    div3(float *dst, const float *src1, const float *src2, size_t count);
+        void    mod3(float *dst, const float *src1, const float *src2, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void    add3(float *dst, const float *src1, const float *src2, size_t count);
+            void    sub3(float *dst, const float *src1, const float *src2, size_t count);
+            void    mul3(float *dst, const float *src1, const float *src2, size_t count);
+            void    div3(float *dst, const float *src1, const float *src2, size_t count);
+        }
+
+        namespace sse2
+        {
+            void    mod3(float *dst, const float *src1, const float *src2, size_t count);
+        }
+
+        namespace avx
+        {
+            void    add3(float *dst, const float *src1, const float *src2, size_t count);
+            void    sub3(float *dst, const float *src1, const float *src2, size_t count);
+            void    mul3(float *dst, const float *src1, const float *src2, size_t count);
+            void    div3(float *dst, const float *src1, const float *src2, size_t count);
+            void    mod3(float *dst, const float *src1, const float *src2, size_t count);
+            void    mod3_fma3(float *dst, const float *src1, const float *src2, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void    add3(float *dst, const float *src1, const float *src2, size_t count);
+            void    sub3(float *dst, const float *src1, const float *src2, size_t count);
+            void    mul3(float *dst, const float *src1, const float *src2, size_t count);
+            void    div3(float *dst, const float *src1, const float *src2, size_t count);
+            void    mod3(float *dst, const float *src1, const float *src2, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void    add3(float *dst, const float *src1, const float *src2, size_t count);
+            void    sub3(float *dst, const float *src1, const float *src2, size_t count);
+            void    mul3(float *dst, const float *src1, const float *src2, size_t count);
+            void    div3(float *dst, const float *src1, const float *src2, size_t count);
+            void    mod3(float *dst, const float *src1, const float *src2, size_t count);
+        }
+    )
+
+    typedef void (* func3)(float *dst, const float *src1, const float *src2, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void    add3(float *dst, const float *src1, const float *src2, size_t count);
-        void    sub3(float *dst, const float *src1, const float *src2, size_t count);
-        void    mul3(float *dst, const float *src1, const float *src2, size_t count);
-        void    div3(float *dst, const float *src1, const float *src2, size_t count);
-    }
-
-    namespace sse2
-    {
-        void    mod3(float *dst, const float *src1, const float *src2, size_t count);
-    }
-
-    namespace avx
-    {
-        void    add3(float *dst, const float *src1, const float *src2, size_t count);
-        void    sub3(float *dst, const float *src1, const float *src2, size_t count);
-        void    mul3(float *dst, const float *src1, const float *src2, size_t count);
-        void    div3(float *dst, const float *src1, const float *src2, size_t count);
-        void    mod3(float *dst, const float *src1, const float *src2, size_t count);
-        void    mod3_fma3(float *dst, const float *src1, const float *src2, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void    add3(float *dst, const float *src1, const float *src2, size_t count);
-        void    sub3(float *dst, const float *src1, const float *src2, size_t count);
-        void    mul3(float *dst, const float *src1, const float *src2, size_t count);
-        void    div3(float *dst, const float *src1, const float *src2, size_t count);
-        void    mod3(float *dst, const float *src1, const float *src2, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void    add3(float *dst, const float *src1, const float *src2, size_t count);
-        void    sub3(float *dst, const float *src1, const float *src2, size_t count);
-        void    mul3(float *dst, const float *src1, const float *src2, size_t count);
-        void    div3(float *dst, const float *src1, const float *src2, size_t count);
-        void    mod3(float *dst, const float *src1, const float *src2, size_t count);
-    }
-)
-
-typedef void (* func3)(float *dst, const float *src1, const float *src2, size_t count);
 
 //-----------------------------------------------------------------------------
 PTEST_BEGIN("dsp.pmath", op3, 5, 1000)

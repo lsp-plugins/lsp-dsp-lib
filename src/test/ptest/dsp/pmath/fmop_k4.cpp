@@ -14,101 +14,104 @@
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-    void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-    void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-    void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-    void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-    void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-    void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-    void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+    namespace generic
+    {
+        void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+        void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+        void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+        void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+        void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+        void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+        void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+        void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+        }
+
+        namespace sse2
+        {
+            void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+        }
+
+        namespace avx
+        {
+            void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+
+            void    fmadd_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmsub_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrsub_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmod_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrmod_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
+        }
+
+        namespace avx2
+        {
+            void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+
+            void    fmadd_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmsub_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrsub_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmod_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrmod_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+        }
+    )
+
+    typedef void (* fmop_k4_t)(float *dst, const float *src1, const float *src2, float k, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-    }
-
-    namespace sse2
-    {
-        void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-    }
-
-    namespace avx
-    {
-        void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-
-        void    fmadd_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmsub_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrsub_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmmod_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrmod_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
-    }
-
-    namespace avx2
-    {
-        void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-
-        void    fmadd_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmsub_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrsub_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmmod_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrmod_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-        void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
-    }
-)
-
-typedef void (* fmop_k4_t)(float *dst, const float *src1, const float *src2, float k, size_t count);
 
 //-----------------------------------------------------------------------------
 PTEST_BEGIN("dsp.pmath", fmop_k4, 5, 1000)

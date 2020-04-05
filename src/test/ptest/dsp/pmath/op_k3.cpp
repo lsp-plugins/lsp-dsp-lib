@@ -12,93 +12,96 @@
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void    add_k3(float *dst, const float *src, float k, size_t count);
-    void    sub_k3(float *dst, const float *src, float k, size_t count);
-    void    rsub_k3(float *dst, const float *src, float k, size_t count);
-    void    mul_k3(float *dst, const float *src, float k, size_t count);
-    void    div_k3(float *dst, const float *src, float k, size_t count);
-    void    rdiv_k3(float *dst, const float *src, float k, size_t count);
-    void    mod_k3(float *dst, const float *src, float k, size_t count);
-    void    rmod_k3(float *dst, const float *src, float k, size_t count);
+    namespace generic
+    {
+        void    add_k3(float *dst, const float *src, float k, size_t count);
+        void    sub_k3(float *dst, const float *src, float k, size_t count);
+        void    rsub_k3(float *dst, const float *src, float k, size_t count);
+        void    mul_k3(float *dst, const float *src, float k, size_t count);
+        void    div_k3(float *dst, const float *src, float k, size_t count);
+        void    rdiv_k3(float *dst, const float *src, float k, size_t count);
+        void    mod_k3(float *dst, const float *src, float k, size_t count);
+        void    rmod_k3(float *dst, const float *src, float k, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void    add_k3(float *dst, const float *src, float k, size_t count);
+            void    sub_k3(float *dst, const float *src, float k, size_t count);
+            void    rsub_k3(float *dst, const float *src, float k, size_t count);
+            void    mul_k3(float *dst, const float *src, float k, size_t count);
+            void    div_k3(float *dst, const float *src, float k, size_t count);
+            void    rdiv_k3(float *dst, const float *src, float k, size_t count);
+        }
+
+        namespace sse2
+        {
+            void    mod_k3(float *dst, const float *src, float k, size_t count);
+            void    rmod_k3(float *dst, const float *src, float k, size_t count);
+        }
+
+        namespace avx
+        {
+            void    add_k3(float *dst, const float *src, float k, size_t count);
+            void    sub_k3(float *dst, const float *src, float k, size_t count);
+            void    rsub_k3(float *dst, const float *src, float k, size_t count);
+            void    mul_k3(float *dst, const float *src, float k, size_t count);
+            void    div_k3(float *dst, const float *src, float k, size_t count);
+            void    rdiv_k3(float *dst, const float *src, float k, size_t count);
+            void    mod_k3(float *dst, const float *src, float k, size_t count);
+            void    rmod_k3(float *dst, const float *src, float k, size_t count);
+            void    mod_k3_fma3(float *dst, const float *src, float k, size_t count);
+            void    rmod_k3_fma3(float *dst, const float *src, float k, size_t count);
+        }
+
+        namespace avx2
+        {
+            void    add_k3(float *dst, const float *src, float k, size_t count);
+            void    sub_k3(float *dst, const float *src, float k, size_t count);
+            void    rsub_k3(float *dst, const float *src, float k, size_t count);
+            void    mul_k3(float *dst, const float *src, float k, size_t count);
+            void    div_k3(float *dst, const float *src, float k, size_t count);
+            void    rdiv_k3(float *dst, const float *src, float k, size_t count);
+            void    mod_k3(float *dst, const float *src, float k, size_t count);
+            void    rmod_k3(float *dst, const float *src, float k, size_t count);
+            void    mod_k3_fma3(float *dst, const float *src, float k, size_t count);
+            void    rmod_k3_fma3(float *dst, const float *src, float k, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void    add_k3(float *dst, const float *src, float k, size_t count);
+            void    sub_k3(float *dst, const float *src, float k, size_t count);
+            void    rsub_k3(float *dst, const float *src, float k, size_t count);
+            void    mul_k3(float *dst, const float *src, float k, size_t count);
+            void    div_k3(float *dst, const float *src, float k, size_t count);
+            void    rdiv_k3(float *dst, const float *src, float k, size_t count);
+            void    mod_k3(float *dst, const float *src, float k, size_t count);
+            void    rmod_k3(float *dst, const float *src, float k, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void    add_k3(float *dst, const float *src, float k, size_t count);
+            void    sub_k3(float *dst, const float *src, float k, size_t count);
+            void    rsub_k3(float *dst, const float *src, float k, size_t count);
+            void    mul_k3(float *dst, const float *src, float k, size_t count);
+            void    div_k3(float *dst, const float *src, float k, size_t count);
+            void    rdiv_k3(float *dst, const float *src, float k, size_t count);
+            void    mod_k3(float *dst, const float *src, float k, size_t count);
+            void    rmod_k3(float *dst, const float *src, float k, size_t count);
+        }
+    )
+
+    typedef void (* op_k3_t)(float *dst, const float *src, float k, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void    add_k3(float *dst, const float *src, float k, size_t count);
-        void    sub_k3(float *dst, const float *src, float k, size_t count);
-        void    rsub_k3(float *dst, const float *src, float k, size_t count);
-        void    mul_k3(float *dst, const float *src, float k, size_t count);
-        void    div_k3(float *dst, const float *src, float k, size_t count);
-        void    rdiv_k3(float *dst, const float *src, float k, size_t count);
-    }
-
-    namespace sse2
-    {
-        void    mod_k3(float *dst, const float *src, float k, size_t count);
-        void    rmod_k3(float *dst, const float *src, float k, size_t count);
-    }
-
-    namespace avx
-    {
-        void    add_k3(float *dst, const float *src, float k, size_t count);
-        void    sub_k3(float *dst, const float *src, float k, size_t count);
-        void    rsub_k3(float *dst, const float *src, float k, size_t count);
-        void    mul_k3(float *dst, const float *src, float k, size_t count);
-        void    div_k3(float *dst, const float *src, float k, size_t count);
-        void    rdiv_k3(float *dst, const float *src, float k, size_t count);
-        void    mod_k3(float *dst, const float *src, float k, size_t count);
-        void    rmod_k3(float *dst, const float *src, float k, size_t count);
-        void    mod_k3_fma3(float *dst, const float *src, float k, size_t count);
-        void    rmod_k3_fma3(float *dst, const float *src, float k, size_t count);
-    }
-
-    namespace avx2
-    {
-        void    add_k3(float *dst, const float *src, float k, size_t count);
-        void    sub_k3(float *dst, const float *src, float k, size_t count);
-        void    rsub_k3(float *dst, const float *src, float k, size_t count);
-        void    mul_k3(float *dst, const float *src, float k, size_t count);
-        void    div_k3(float *dst, const float *src, float k, size_t count);
-        void    rdiv_k3(float *dst, const float *src, float k, size_t count);
-        void    mod_k3(float *dst, const float *src, float k, size_t count);
-        void    rmod_k3(float *dst, const float *src, float k, size_t count);
-        void    mod_k3_fma3(float *dst, const float *src, float k, size_t count);
-        void    rmod_k3_fma3(float *dst, const float *src, float k, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void    add_k3(float *dst, const float *src, float k, size_t count);
-        void    sub_k3(float *dst, const float *src, float k, size_t count);
-        void    rsub_k3(float *dst, const float *src, float k, size_t count);
-        void    mul_k3(float *dst, const float *src, float k, size_t count);
-        void    div_k3(float *dst, const float *src, float k, size_t count);
-        void    rdiv_k3(float *dst, const float *src, float k, size_t count);
-        void    mod_k3(float *dst, const float *src, float k, size_t count);
-        void    rmod_k3(float *dst, const float *src, float k, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void    add_k3(float *dst, const float *src, float k, size_t count);
-        void    sub_k3(float *dst, const float *src, float k, size_t count);
-        void    rsub_k3(float *dst, const float *src, float k, size_t count);
-        void    mul_k3(float *dst, const float *src, float k, size_t count);
-        void    div_k3(float *dst, const float *src, float k, size_t count);
-        void    rdiv_k3(float *dst, const float *src, float k, size_t count);
-        void    mod_k3(float *dst, const float *src, float k, size_t count);
-        void    rmod_k3(float *dst, const float *src, float k, size_t count);
-    }
-)
-
-typedef void (* op_k3_t)(float *dst, const float *src, float k, size_t count);
 
 //-----------------------------------------------------------------------------
 PTEST_BEGIN("dsp.pmath", op_k3, 5, 1000)

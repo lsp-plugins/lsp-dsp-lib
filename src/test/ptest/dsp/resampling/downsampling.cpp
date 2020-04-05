@@ -10,58 +10,61 @@
 
 #define RTEST_BUF_SIZE  0x1000
 
-namespace generic
+namespace lsp
 {
-    void downsample_2x(float *dst, const float *src, size_t count);
-    void downsample_3x(float *dst, const float *src, size_t count);
-    void downsample_4x(float *dst, const float *src, size_t count);
-    void downsample_6x(float *dst, const float *src, size_t count);
-    void downsample_8x(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void downsample_2x(float *dst, const float *src, size_t count);
+        void downsample_3x(float *dst, const float *src, size_t count);
+        void downsample_4x(float *dst, const float *src, size_t count);
+        void downsample_6x(float *dst, const float *src, size_t count);
+        void downsample_8x(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void downsample_2x(float *dst, const float *src, size_t count);
+            void downsample_3x(float *dst, const float *src, size_t count);
+            void downsample_4x(float *dst, const float *src, size_t count);
+            void downsample_6x(float *dst, const float *src, size_t count);
+            void downsample_8x(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx
+        {
+            void downsample_2x(float *dst, const float *src, size_t count);
+            void downsample_3x(float *dst, const float *src, size_t count);
+            void downsample_4x(float *dst, const float *src, size_t count);
+            void downsample_6x(float *dst, const float *src, size_t count);
+            void downsample_8x(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void downsample_2x(float *dst, const float *src, size_t count);
+            void downsample_3x(float *dst, const float *src, size_t count);
+            void downsample_4x(float *dst, const float *src, size_t count);
+            void downsample_6x(float *dst, const float *src, size_t count);
+            void downsample_8x(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void downsample_2x(float *dst, const float *src, size_t count);
+            void downsample_3x(float *dst, const float *src, size_t count);
+            void downsample_4x(float *dst, const float *src, size_t count);
+            void downsample_6x(float *dst, const float *src, size_t count);
+            void downsample_8x(float *dst, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* downsample_t)(float *dst, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void downsample_2x(float *dst, const float *src, size_t count);
-        void downsample_3x(float *dst, const float *src, size_t count);
-        void downsample_4x(float *dst, const float *src, size_t count);
-        void downsample_6x(float *dst, const float *src, size_t count);
-        void downsample_8x(float *dst, const float *src, size_t count);
-    }
-
-    namespace avx
-    {
-        void downsample_2x(float *dst, const float *src, size_t count);
-        void downsample_3x(float *dst, const float *src, size_t count);
-        void downsample_4x(float *dst, const float *src, size_t count);
-        void downsample_6x(float *dst, const float *src, size_t count);
-        void downsample_8x(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void downsample_2x(float *dst, const float *src, size_t count);
-        void downsample_3x(float *dst, const float *src, size_t count);
-        void downsample_4x(float *dst, const float *src, size_t count);
-        void downsample_6x(float *dst, const float *src, size_t count);
-        void downsample_8x(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void downsample_2x(float *dst, const float *src, size_t count);
-        void downsample_3x(float *dst, const float *src, size_t count);
-        void downsample_4x(float *dst, const float *src, size_t count);
-        void downsample_6x(float *dst, const float *src, size_t count);
-        void downsample_8x(float *dst, const float *src, size_t count);
-    }
-)
-
-typedef void (* downsample_t)(float *dst, const float *src, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test for lanczos resampling

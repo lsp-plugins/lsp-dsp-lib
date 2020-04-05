@@ -12,46 +12,49 @@
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void abs1(float *src, size_t count);
-    void abs2(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void abs1(float *src, size_t count);
+        void abs2(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void abs1(float *src, size_t count);
+            void abs2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_X86_64(
+        namespace avx
+        {
+            void x64_abs1(float *src, size_t count);
+            void x64_abs2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void abs1(float *src, size_t count);
+            void abs2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void abs1(float *src, size_t count);
+            void abs2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* abs1_t)(float *src, size_t count);
+    typedef void (* abs2_t)(float *dst, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void abs1(float *src, size_t count);
-        void abs2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_X86_64(
-    namespace avx
-    {
-        void x64_abs1(float *src, size_t count);
-        void x64_abs2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void abs1(float *src, size_t count);
-        void abs2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void abs1(float *src, size_t count);
-        void abs2(float *dst, const float *src, size_t count);
-    }
-)
-
-typedef void (* abs1_t)(float *src, size_t count);
-typedef void (* abs2_t)(float *dst, const float *src, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test

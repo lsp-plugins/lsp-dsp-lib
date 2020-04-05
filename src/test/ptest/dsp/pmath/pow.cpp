@@ -8,79 +8,83 @@
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
 #include <lsp-plug.in/common/alloc.h>
+#include <lsp-plug.in/stdlib/math.h>
 
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void powcv1(float *v, float c, size_t count);
-    void powcv2(float *dst, const float *v, float c, size_t count);
-    void powvc1(float *c, float v, size_t count);
-    void powvc2(float *dst, const float *c, float v, size_t count);
-    void powvx1(float *v, const float *x, size_t count);
-    void powvx2(float *dst, const float *v, const float *x, size_t count);
+    namespace generic
+    {
+        void powcv1(float *v, float c, size_t count);
+        void powcv2(float *dst, const float *v, float c, size_t count);
+        void powvc1(float *c, float v, size_t count);
+        void powvc2(float *dst, const float *c, float v, size_t count);
+        void powvx1(float *v, const float *x, size_t count);
+        void powvx2(float *dst, const float *v, const float *x, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse2
+        {
+            void powcv1(float *v, float c, size_t count);
+            void powcv2(float *dst, const float *v, float c, size_t count);
+            void powvc1(float *c, float v, size_t count);
+            void powvc2(float *dst, const float *c, float v, size_t count);
+            void powvx1(float *v, const float *x, size_t count);
+            void powvx2(float *dst, const float *v, const float *x, size_t count);
+        }
+    )
+
+    IF_ARCH_X86_64(
+        namespace avx2
+        {
+            void x64_powcv1(float *v, float c, size_t count);
+            void x64_powcv2(float *dst, const float *v, float c, size_t count);
+            void x64_powvc1(float *c, float v, size_t count);
+            void x64_powvc2(float *dst, const float *c, float v, size_t count);
+            void x64_powvx1(float *v, const float *x, size_t count);
+            void x64_powvx2(float *dst, const float *v, const float *x, size_t count);
+
+            void x64_powcv1_fma3(float *v, float c, size_t count);
+            void x64_powcv2_fma3(float *dst, const float *v, float c, size_t count);
+            void x64_powvc1_fma3(float *c, float v, size_t count);
+            void x64_powvc2_fma3(float *dst, const float *c, float v, size_t count);
+            void x64_powvx1_fma3(float *v, const float *x, size_t count);
+            void x64_powvx2_fma3(float *dst, const float *v, const float *x, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void powcv1(float *v, float c, size_t count);
+            void powcv2(float *dst, const float *v, float c, size_t count);
+            void powvc1(float *c, float v, size_t count);
+            void powvc2(float *dst, const float *c, float v, size_t count);
+            void powvx1(float *v, const float *x, size_t count);
+            void powvx2(float *dst, const float *v, const float *x, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void powcv1(float *v, float c, size_t count);
+            void powcv2(float *dst, const float *v, float c, size_t count);
+            void powvc1(float *c, float v, size_t count);
+            void powvc2(float *dst, const float *c, float v, size_t count);
+            void powvx1(float *v, const float *x, size_t count);
+            void powvx2(float *dst, const float *v, const float *x, size_t count);
+        }
+    )
+
+    typedef void (* powav1_t)(float *v, float c, size_t count);
+    typedef void (* powav2_t)(float *dst, const float *v, float c, size_t count);
+    typedef void (* powvx1_t)(float *v, const float *x, size_t count);
+    typedef void (* powvx2_t)(float *dst, const float *v, const float *x, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse2
-    {
-        void powcv1(float *v, float c, size_t count);
-        void powcv2(float *dst, const float *v, float c, size_t count);
-        void powvc1(float *c, float v, size_t count);
-        void powvc2(float *dst, const float *c, float v, size_t count);
-        void powvx1(float *v, const float *x, size_t count);
-        void powvx2(float *dst, const float *v, const float *x, size_t count);
-    }
-)
-
-IF_ARCH_X86_64(
-    namespace avx2
-    {
-        void x64_powcv1(float *v, float c, size_t count);
-        void x64_powcv2(float *dst, const float *v, float c, size_t count);
-        void x64_powvc1(float *c, float v, size_t count);
-        void x64_powvc2(float *dst, const float *c, float v, size_t count);
-        void x64_powvx1(float *v, const float *x, size_t count);
-        void x64_powvx2(float *dst, const float *v, const float *x, size_t count);
-
-        void x64_powcv1_fma3(float *v, float c, size_t count);
-        void x64_powcv2_fma3(float *dst, const float *v, float c, size_t count);
-        void x64_powvc1_fma3(float *c, float v, size_t count);
-        void x64_powvc2_fma3(float *dst, const float *c, float v, size_t count);
-        void x64_powvx1_fma3(float *v, const float *x, size_t count);
-        void x64_powvx2_fma3(float *dst, const float *v, const float *x, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void powcv1(float *v, float c, size_t count);
-        void powcv2(float *dst, const float *v, float c, size_t count);
-        void powvc1(float *c, float v, size_t count);
-        void powvc2(float *dst, const float *c, float v, size_t count);
-        void powvx1(float *v, const float *x, size_t count);
-        void powvx2(float *dst, const float *v, const float *x, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void powcv1(float *v, float c, size_t count);
-        void powcv2(float *dst, const float *v, float c, size_t count);
-        void powvc1(float *c, float v, size_t count);
-        void powvc2(float *dst, const float *c, float v, size_t count);
-        void powvx1(float *v, const float *x, size_t count);
-        void powvx2(float *dst, const float *v, const float *x, size_t count);
-    }
-)
-
-typedef void (* powav1_t)(float *v, float c, size_t count);
-typedef void (* powav2_t)(float *dst, const float *v, float c, size_t count);
-typedef void (* powvx1_t)(float *v, const float *x, size_t count);
-typedef void (* powvx2_t)(float *dst, const float *v, const float *x, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test

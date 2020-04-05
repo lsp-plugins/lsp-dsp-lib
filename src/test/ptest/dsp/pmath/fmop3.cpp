@@ -13,83 +13,86 @@
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void    fmadd3(float *dst, const float *a, const float *b, size_t count);
-    void    fmsub3(float *dst, const float *a, const float *b, size_t count);
-    void    fmrsub3(float *dst, const float *a, const float *b, size_t count);
-    void    fmmul3(float *dst, const float *a, const float *b, size_t count);
-    void    fmdiv3(float *dst, const float *a, const float *b, size_t count);
-    void    fmrdiv3(float *dst, const float *a, const float *b, size_t count);
-    void    fmmod3(float *dst, const float *a, const float *b, size_t count);
-    void    fmrmod3(float *dst, const float *a, const float *b, size_t count);
+    namespace generic
+    {
+        void    fmadd3(float *dst, const float *a, const float *b, size_t count);
+        void    fmsub3(float *dst, const float *a, const float *b, size_t count);
+        void    fmrsub3(float *dst, const float *a, const float *b, size_t count);
+        void    fmmul3(float *dst, const float *a, const float *b, size_t count);
+        void    fmdiv3(float *dst, const float *a, const float *b, size_t count);
+        void    fmrdiv3(float *dst, const float *a, const float *b, size_t count);
+        void    fmmod3(float *dst, const float *a, const float *b, size_t count);
+        void    fmrmod3(float *dst, const float *a, const float *b, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void    fmadd3(float *dst, const float *a, const float *b, size_t count);
+            void    fmsub3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrsub3(float *dst, const float *a, const float *b, size_t count);
+            void    fmmul3(float *dst, const float *a, const float *b, size_t count);
+            void    fmdiv3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrdiv3(float *dst, const float *a, const float *b, size_t count);
+        }
+
+        namespace sse2
+        {
+            void    fmmod3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrmod3(float *dst, const float *a, const float *b, size_t count);
+        }
+
+        namespace avx
+        {
+            void    fmadd3(float *dst, const float *a, const float *b, size_t count);
+            void    fmsub3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrsub3(float *dst, const float *a, const float *b, size_t count);
+            void    fmmul3(float *dst, const float *a, const float *b, size_t count);
+            void    fmdiv3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrdiv3(float *dst, const float *a, const float *b, size_t count);
+            void    fmmod3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrmod3(float *dst, const float *a, const float *b, size_t count);
+
+            void    fmadd3_fma3(float *dst, const float *a, const float *b, size_t count);
+            void    fmsub3_fma3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrsub3_fma3(float *dst, const float *a, const float *b, size_t count);
+            void    fmmod3_fma3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrmod3_fma3(float *dst, const float *a, const float *b, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void    fmadd3(float *dst, const float *a, const float *b, size_t count);
+            void    fmsub3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrsub3(float *dst, const float *a, const float *b, size_t count);
+            void    fmmul3(float *dst, const float *a, const float *b, size_t count);
+            void    fmdiv3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrdiv3(float *dst, const float *a, const float *b, size_t count);
+            void    fmmod3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrmod3(float *dst, const float *a, const float *b, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void    fmadd3(float *dst, const float *a, const float *b, size_t count);
+            void    fmsub3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrsub3(float *dst, const float *a, const float *b, size_t count);
+            void    fmmul3(float *dst, const float *a, const float *b, size_t count);
+            void    fmdiv3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrdiv3(float *dst, const float *a, const float *b, size_t count);
+            void    fmmod3(float *dst, const float *a, const float *b, size_t count);
+            void    fmrmod3(float *dst, const float *a, const float *b, size_t count);
+        }
+    )
+
+    typedef void (* fmop3_t)(float *dst, const float *a, const float *b, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void    fmadd3(float *dst, const float *a, const float *b, size_t count);
-        void    fmsub3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrsub3(float *dst, const float *a, const float *b, size_t count);
-        void    fmmul3(float *dst, const float *a, const float *b, size_t count);
-        void    fmdiv3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrdiv3(float *dst, const float *a, const float *b, size_t count);
-    }
-
-    namespace sse2
-    {
-        void    fmmod3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrmod3(float *dst, const float *a, const float *b, size_t count);
-    }
-
-    namespace avx
-    {
-        void    fmadd3(float *dst, const float *a, const float *b, size_t count);
-        void    fmsub3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrsub3(float *dst, const float *a, const float *b, size_t count);
-        void    fmmul3(float *dst, const float *a, const float *b, size_t count);
-        void    fmdiv3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrdiv3(float *dst, const float *a, const float *b, size_t count);
-        void    fmmod3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrmod3(float *dst, const float *a, const float *b, size_t count);
-
-        void    fmadd3_fma3(float *dst, const float *a, const float *b, size_t count);
-        void    fmsub3_fma3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrsub3_fma3(float *dst, const float *a, const float *b, size_t count);
-        void    fmmod3_fma3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrmod3_fma3(float *dst, const float *a, const float *b, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void    fmadd3(float *dst, const float *a, const float *b, size_t count);
-        void    fmsub3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrsub3(float *dst, const float *a, const float *b, size_t count);
-        void    fmmul3(float *dst, const float *a, const float *b, size_t count);
-        void    fmdiv3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrdiv3(float *dst, const float *a, const float *b, size_t count);
-        void    fmmod3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrmod3(float *dst, const float *a, const float *b, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void    fmadd3(float *dst, const float *a, const float *b, size_t count);
-        void    fmsub3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrsub3(float *dst, const float *a, const float *b, size_t count);
-        void    fmmul3(float *dst, const float *a, const float *b, size_t count);
-        void    fmdiv3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrdiv3(float *dst, const float *a, const float *b, size_t count);
-        void    fmmod3(float *dst, const float *a, const float *b, size_t count);
-        void    fmrmod3(float *dst, const float *a, const float *b, size_t count);
-    }
-)
-
-typedef void (* fmop3_t)(float *dst, const float *a, const float *b, size_t count);
 
 //-----------------------------------------------------------------------------
 PTEST_BEGIN("dsp.pmath", fmop3, 5, 1000)

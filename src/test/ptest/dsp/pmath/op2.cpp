@@ -14,79 +14,82 @@
 #define MIN_RANK 8
 #define MAX_RANK 16
 
-namespace generic
+namespace lsp
 {
-    void    add2(float *dst, const float *src, size_t count);
-    void    sub2(float *dst, const float *src, size_t count);
-    void    rsub2(float *dst, const float *src, size_t count);
-    void    mul2(float *dst, const float *src, size_t count);
-    void    div2(float *dst, const float *src, size_t count);
-    void    rdiv2(float *dst, const float *src, size_t count);
-    void    mod2(float *dst, const float *src, size_t count);
-    void    rmod2(float *dst, const float *src, size_t count);
+    namespace generic
+    {
+        void    add2(float *dst, const float *src, size_t count);
+        void    sub2(float *dst, const float *src, size_t count);
+        void    rsub2(float *dst, const float *src, size_t count);
+        void    mul2(float *dst, const float *src, size_t count);
+        void    div2(float *dst, const float *src, size_t count);
+        void    rdiv2(float *dst, const float *src, size_t count);
+        void    mod2(float *dst, const float *src, size_t count);
+        void    rmod2(float *dst, const float *src, size_t count);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void    add2(float *dst, const float *src, size_t count);
+            void    sub2(float *dst, const float *src, size_t count);
+            void    rsub2(float *dst, const float *src, size_t count);
+            void    mul2(float *dst, const float *src, size_t count);
+            void    div2(float *dst, const float *src, size_t count);
+            void    rdiv2(float *dst, const float *src, size_t count);
+        }
+
+        namespace sse2
+        {
+            void    mod2(float *dst, const float *src, size_t count);
+            void    rmod2(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx
+        {
+            void    add2(float *dst, const float *src, size_t count);
+            void    sub2(float *dst, const float *src, size_t count);
+            void    rsub2(float *dst, const float *src, size_t count);
+            void    mul2(float *dst, const float *src, size_t count);
+            void    div2(float *dst, const float *src, size_t count);
+            void    rdiv2(float *dst, const float *src, size_t count);
+            void    mod2(float *dst, const float *src, size_t count);
+            void    rmod2(float *dst, const float *src, size_t count);
+            void    mod2_fma3(float *dst, const float *src, size_t count);
+            void    rmod2_fma3(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void    add2(float *dst, const float *src, size_t count);
+            void    sub2(float *dst, const float *src, size_t count);
+            void    rsub2(float *dst, const float *src, size_t count);
+            void    mul2(float *dst, const float *src, size_t count);
+            void    div2(float *dst, const float *src, size_t count);
+            void    rdiv2(float *dst, const float *src, size_t count);
+            void    mod2(float *dst, const float *src, size_t count);
+            void    rmod2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void    add2(float *dst, const float *src, size_t count);
+            void    sub2(float *dst, const float *src, size_t count);
+            void    rsub2(float *dst, const float *src, size_t count);
+            void    mul2(float *dst, const float *src, size_t count);
+            void    div2(float *dst, const float *src, size_t count);
+            void    rdiv2(float *dst, const float *src, size_t count);
+            void    mod2(float *dst, const float *src, size_t count);
+            void    rmod2(float *dst, const float *src, size_t count);
+        }
+    )
+
+    typedef void (* func2)(float *dst, const float *src, size_t count);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void    add2(float *dst, const float *src, size_t count);
-        void    sub2(float *dst, const float *src, size_t count);
-        void    rsub2(float *dst, const float *src, size_t count);
-        void    mul2(float *dst, const float *src, size_t count);
-        void    div2(float *dst, const float *src, size_t count);
-        void    rdiv2(float *dst, const float *src, size_t count);
-    }
-
-    namespace sse2
-    {
-        void    mod2(float *dst, const float *src, size_t count);
-        void    rmod2(float *dst, const float *src, size_t count);
-    }
-
-    namespace avx
-    {
-        void    add2(float *dst, const float *src, size_t count);
-        void    sub2(float *dst, const float *src, size_t count);
-        void    rsub2(float *dst, const float *src, size_t count);
-        void    mul2(float *dst, const float *src, size_t count);
-        void    div2(float *dst, const float *src, size_t count);
-        void    rdiv2(float *dst, const float *src, size_t count);
-        void    mod2(float *dst, const float *src, size_t count);
-        void    rmod2(float *dst, const float *src, size_t count);
-        void    mod2_fma3(float *dst, const float *src, size_t count);
-        void    rmod2_fma3(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void    add2(float *dst, const float *src, size_t count);
-        void    sub2(float *dst, const float *src, size_t count);
-        void    rsub2(float *dst, const float *src, size_t count);
-        void    mul2(float *dst, const float *src, size_t count);
-        void    div2(float *dst, const float *src, size_t count);
-        void    rdiv2(float *dst, const float *src, size_t count);
-        void    mod2(float *dst, const float *src, size_t count);
-        void    rmod2(float *dst, const float *src, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void    add2(float *dst, const float *src, size_t count);
-        void    sub2(float *dst, const float *src, size_t count);
-        void    rsub2(float *dst, const float *src, size_t count);
-        void    mul2(float *dst, const float *src, size_t count);
-        void    div2(float *dst, const float *src, size_t count);
-        void    rdiv2(float *dst, const float *src, size_t count);
-        void    mod2(float *dst, const float *src, size_t count);
-        void    rmod2(float *dst, const float *src, size_t count);
-    }
-)
-
-typedef void (* func2)(float *dst, const float *src, size_t count);
 
 //-----------------------------------------------------------------------------
 PTEST_BEGIN("dsp.pmath", op2, 5, 1000)

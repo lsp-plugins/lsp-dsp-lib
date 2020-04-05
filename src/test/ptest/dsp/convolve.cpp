@@ -7,61 +7,65 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
+#include <lsp-plug.in/common/alloc.h>
 
 #define MIN_RANK        5
 #define MAX_RANK        8
 
-namespace generic
+namespace lsp
 {
-    void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
-}
-
-IF_ARCH_X86(
-    namespace sse
+    namespace generic
     {
         void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
     }
 
-    namespace avx
-    {
-        void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
-        void convolve_fma3(float *dst, const float *src, const float *conv, size_t length, size_t count);
-    }
-)
-
-IF_ARCH_ARM(
-    namespace neon_d32
-    {
-        void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
-    }
-)
-
-IF_ARCH_AARCH64(
-    namespace asimd
-    {
-        void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
-    }
-)
-
-namespace test
-{
-    static void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count)
-    {
-        for (size_t i=0; i<count; ++i)
+    IF_ARCH_X86(
+        namespace sse
         {
-            for (size_t j=0; j<length; ++j)
-                dst[i+j] += src[i] * conv[j];
+            void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
+        }
+
+        namespace avx
+        {
+            void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
+            void convolve_fma3(float *dst, const float *src, const float *conv, size_t length, size_t count);
+        }
+    )
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
+        }
+    )
+
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
+        }
+    )
+
+    namespace test
+    {
+        static void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                for (size_t j=0; j<length; ++j)
+                    dst[i+j] += src[i] * conv[j];
+            }
+        }
+
+        static void convolve_sadd(float *dst, const float *src, const float *conv, size_t length, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+                dsp::fmadd_k3(&dst[i], conv, src[i], length);
         }
     }
 
-    static void convolve_sadd(float *dst, const float *src, const float *conv, size_t length, size_t count)
-    {
-        for (size_t i=0; i<count; ++i)
-            dsp::fmadd_k3(&dst[i], conv, src[i], length);
-    }
+    typedef void (* convolve_t)(float *dst, const float *src, const float *conv, size_t length, size_t count);
 }
-
-typedef void (* convolve_t)(float *dst, const float *src, const float *conv, size_t length, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test for lanczos resampling
