@@ -5,6 +5,9 @@ BUILDDIR                   := $(BASEDIR)/.build
 CONFIG                     := $(BASEDIR)/.config.mk
 MODULES                    := $(BASEDIR)/modules
 TEST                       := 0
+DEBUG                      := 0
+PROFILE                    := 0
+TRACE                      := 0
 
 include $(BASEDIR)/make/system.mk
 include $(BASEDIR)/make/tools.mk

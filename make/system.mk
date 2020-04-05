@@ -105,17 +105,23 @@ COMMON_VARS = \
 	EXECUTABLE_EXT \
 	PREFIX \
 	TEMPDIR \
-	TEST
+	TEST \
+	DEBUG \
+	PROFILE \
+	TRACE
 
 .PHONY: sysvars
 
 sysvars:
 	@echo "List of available system variables:"
 	@echo "  ARCHITECTURE              target architecture to perform build"
+	@echo "  DEBUG                     build with debug options"
 	@echo "  EXECUTABLE_EXT            file extension for executable files"
 	@echo "  LIBRARY_EXT               file extension for library files"
 	@echo "  PLATFORM                  target software platform to perform build"
 	@echo "  PREFIX                    installation prefix for binary files"
+	@echo "  PROFILE                   build with profile options"
 	@echo "  TEMPDIR                   location of temporary directory"
 	@echo "  TEST                      use test build"
+	@echo "  TRACE                     compile with additional trace information output"
 
