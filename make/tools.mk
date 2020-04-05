@@ -45,18 +45,37 @@ else
 endif
 
 # ARMv7 architecture tuning
-ifeq ($(ARCHITECTURE),armv6a)
+ifeq ($(ARCHITECTURE),i586)
+  CXXFLAGS_EXT    += -m32
+  CFLAGS_EXT      += -m32
+  ifeq ($(PLATFORM),Linux)
+    EXE_FLAGS_EXT   += -m elf_i386
+  else ifeq ($(PLATFORM),BSD)
+    EXE_FLAGS_EXT   += -m elf_i386_fbsd
+  endif
+else ifeq ($(ARCHITECTURE),armv6a)
   CXXFLAGS_EXT    += -march=armv6-a -marm
+  CFLAGS_EXT      += -march=armv6-a -marm
+  ifeq ($(PLATFORM), Linux)
+    EXE_FLAGS_EXT   += -m elf_x86_64
+  else ifeq ($(PLATFORM), BSD)
+    EXE_FLAGS_EXT   += -m elf_x86_64_fbsd
+  endif
 else ifeq ($(ARCHITECTURE),armv7a)
   CXXFLAGS_EXT    += -march=armv7-a -marm
+  CFLAGS_EXT      += -march=armv7-a -marm
 else ifeq ($(ARCHITECTURE),armv7ve)
   CXXFLAGS_EXT    += -march=armv7ve -marm
+  CFLAGS_EXT      += -march=armv7ve -marm
 else ifeq ($(ARCHITECTURE),arm32)
   CXXFLAGS_EXT    += -marm
+  CFLAGS_EXT      += -marm
 else ifeq ($(ARCHITECTURE),armv8a)
   CXXFLAGS_EXT    += -march=armv7-a -marm
+  CFLAGS_EXT      += -march=armv7-a -marm
 else ifeq ($(ARCHITECTURE),aarch64)
   CXXFLAGS_EXT    += -march=armv8-a
+  CFLAGS_EXT      += -march=armv8-a
 endif
 
 # Define flags
@@ -81,7 +100,7 @@ CXXFLAGS           := \
 
 INCLUDE            :=
 LDFLAGS            := $(LDFLAGS_EXT) -r
-EXE_FLAGS          := $(FLAG_RELRO) -Wl,--gc-sections
+EXE_FLAGS          := $(EXE_FLAGS_EXT) $(FLAG_RELRO) -Wl,--gc-sections
 SO_FLAGS           := $(FLAG_RELRO) -Wl,--gc-sections -shared -Llibrary $(FLAG_STDLIB) -fPIC 
 
 TOOL_VARS := \
