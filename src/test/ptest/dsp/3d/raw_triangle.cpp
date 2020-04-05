@@ -7,57 +7,57 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
-#include <core/sugar.h>
+#include <lsp-plug.in/common/alloc.h>
 #include <lsp-plug.in/test-fw/helpers.h>
-
-#include <core/3d/common.h>
+#include <lsp-plug.in/stdlib/math.h>
 
 #define N_PLANES    128
 #define N_TRIANGLES 1024
 
-using namespace lsp;
-
-namespace generic
+namespace lsp
 {
-    void cull_triangle_raw(raw_triangle_t *in, size_t *n_in, const vector3d_t *pl, const raw_triangle_t *pv);
-    void split_triangle_raw(raw_triangle_t *out, size_t *n_out, raw_triangle_t *in, size_t *n_in, const vector3d_t *pl, const raw_triangle_t *pv);
+    namespace generic
+    {
+        void cull_triangle_raw(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+        void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+    }
+
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void cull_triangle_raw(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+            void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+        }
+
+        namespace sse3
+        {
+            void cull_triangle_raw(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+            void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+        }
+    )
+
+    typedef void (* cull_triangle_raw_t)(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+    typedef void (* split_triangle_raw_t)(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
 }
-
-IF_ARCH_X86(
-    namespace sse
-    {
-        void cull_triangle_raw(raw_triangle_t *in, size_t *n_in, const vector3d_t *pl, const raw_triangle_t *pv);
-        void split_triangle_raw(raw_triangle_t *out, size_t *n_out, raw_triangle_t *in, size_t *n_in, const vector3d_t *pl, const raw_triangle_t *pv);
-    }
-
-    namespace sse3
-    {
-        void cull_triangle_raw(raw_triangle_t *in, size_t *n_in, const vector3d_t *pl, const raw_triangle_t *pv);
-        void split_triangle_raw(raw_triangle_t *out, size_t *n_out, raw_triangle_t *in, size_t *n_in, const vector3d_t *pl, const raw_triangle_t *pv);
-    }
-)
-
-typedef void (* cull_triangle_raw_t)(raw_triangle_t *in, size_t *n_in, const vector3d_t *pl, const raw_triangle_t *pv);
-typedef void (* split_triangle_raw_t)(raw_triangle_t *out, size_t *n_out, raw_triangle_t *in, size_t *n_in, const vector3d_t *pl, const raw_triangle_t *pv);
 
 
 //-----------------------------------------------------------------------------
 // Performance test
 PTEST_BEGIN("dsp.3d", raw_triangle, 5, 1000)
 
-    void call(const char *label, const vector3d_t *vp, const raw_triangle_t *vt, cull_triangle_raw_t func)
+    void call(const char *label, const dsp::vector3d_t *vp, const dsp::raw_triangle_t *vt, cull_triangle_raw_t func)
     {
         if (!PTEST_SUPPORTED(func))
             return;
 
         printf("Testing %s...\n", label);
-        raw_triangle_t in[N_TRIANGLES*2];
+        dsp::raw_triangle_t in[N_TRIANGLES*2];
 
         PTEST_LOOP(label,
-            const vector3d_t *pl = vp;
+            const dsp::vector3d_t *pl = vp;
             for (size_t i=0; i<N_PLANES; ++i, ++pl)
             {
-                const raw_triangle_t *t = vt;
+                const dsp::raw_triangle_t *t = vt;
                 size_t nin = 0;
                 for (size_t j=0; j<N_TRIANGLES; ++j, ++t)
                     func(in, &nin, pl, vt);
@@ -65,19 +65,19 @@ PTEST_BEGIN("dsp.3d", raw_triangle, 5, 1000)
         );
     }
 
-    void call(const char *label, const vector3d_t *vp, const raw_triangle_t *vt, split_triangle_raw_t func)
+    void call(const char *label, const dsp::vector3d_t *vp, const dsp::raw_triangle_t *vt, split_triangle_raw_t func)
     {
         if (!PTEST_SUPPORTED(func))
             return;
 
         printf("Testing %s...\n", label);
-        raw_triangle_t in[N_TRIANGLES*2], out[N_TRIANGLES*2];
+        dsp::raw_triangle_t in[N_TRIANGLES*2], out[N_TRIANGLES*2];
 
         PTEST_LOOP(label,
-            const vector3d_t *pl = vp;
+            const dsp::vector3d_t *pl = vp;
             for (size_t i=0; i<N_PLANES; ++i, ++pl)
             {
-                const raw_triangle_t *t = vt;
+                const dsp::raw_triangle_t *t = vt;
                 size_t nin = 0, nout=0;
                 for (size_t j=0; j<N_TRIANGLES; ++j, ++t)
                     func(out, &nout, in, &nin, pl, vt);
@@ -87,18 +87,18 @@ PTEST_BEGIN("dsp.3d", raw_triangle, 5, 1000)
 
     PTEST_MAIN
     {
-        size_t buf_size     = N_PLANES * sizeof(vector3d_t) + N_TRIANGLES * sizeof(raw_triangle_t);
+        size_t buf_size     = N_PLANES * sizeof(dsp::vector3d_t) + N_TRIANGLES * sizeof(dsp::raw_triangle_t);
         uint8_t *data       = NULL;
         uint8_t *ptr        = alloc_aligned<uint8_t>(data, buf_size, 64);
 
-        vector3d_t *planes          = reinterpret_cast<vector3d_t *>(ptr);
-        ptr                        += N_PLANES * sizeof(vector3d_t);
-        raw_triangle_t *triangles   = reinterpret_cast<raw_triangle_t *>(ptr);
+        dsp::vector3d_t *planes          = reinterpret_cast<dsp::vector3d_t *>(ptr);
+        ptr                             += N_PLANES * sizeof(dsp::vector3d_t);
+        dsp::raw_triangle_t *triangles   = reinterpret_cast<dsp::raw_triangle_t *>(ptr);
 
         // Initialize planes
         for (size_t i=0; i < N_PLANES;)
         {
-            vector3d_t *pl  = &planes[i];
+            dsp::vector3d_t *pl  = &planes[i];
 
             dsp::init_vector_dxyz(pl, randf(-1.0f, 1.0f), randf(-1.0f, 1.0f), randf(-1.0f, 1.0f));
             float w = sqrtf(pl->dx * pl->dx + pl->dy * pl->dy + pl->dz * pl->dz);

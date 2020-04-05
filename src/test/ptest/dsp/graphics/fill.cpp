@@ -7,7 +7,7 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
-#include <core/sugar.h>
+#include <lsp-plug.in/common/alloc.h>
 
 #define MIN_RANK 6
 #define MAX_RANK 16
