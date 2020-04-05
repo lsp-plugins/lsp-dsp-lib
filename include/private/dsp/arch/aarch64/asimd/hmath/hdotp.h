@@ -18,7 +18,7 @@ namespace lsp
     {
         float h_dotp(const float *a, const float *b, size_t count)
         {
-            IF_ARCH_AARCH64(float res);
+            float res;
             ARCH_AARCH64_ASM
             (
                 __ASM_EMIT("eor         v16.16b, v16.16b, v16.16b")
