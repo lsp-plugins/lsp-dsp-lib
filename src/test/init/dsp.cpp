@@ -22,6 +22,8 @@ INIT_BEGIN(dsp_initializer)
             printf("Processor:      %s\n", info->cpu);
             printf("Model:          %s\n", info->model);
             printf("Features:       %s\n", info->features);
+
+            ::free(info);
         }
     }
 
