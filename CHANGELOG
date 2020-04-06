@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.0 ===
-Initial release
+* Initial release.
 * Supports SIMD optimizations for 32-bit i586 architecture.
 * Supports SIMD optimizations for 64-bit x86_64 architecture.
 * Supports SIMD optimizations for 32-bit ARMv7 architecture.
