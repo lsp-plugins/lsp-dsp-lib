@@ -1,0 +1,15 @@
+/.svn/*
+/.settings/*
+/.build/*
+/.test/*
+/Debug/*
+/Release/*
+/.cproject
+/.project
+/Debug/
+/Release
+*.log
+/gmon.out
+**/*.gmon
+*.core
+/.config.mk
