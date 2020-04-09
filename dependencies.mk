@@ -9,3 +9,11 @@ LSP_TEST_FW_URL            := https://github.com/sadko4u/$(LSP_TEST_FW_NAME).git
 
 STDLIB_VERSION             := system
 STDLIB_LDFLAGS             := -lpthread
+
+ifeq ($(PLATFORM),Windows)
+  TEST_STDLIB_VERSION        := system
+  TEST_STDLIB_LDFLAGS        := -lshlwapi
+else
+  TEST_STDLIB_VERSION        := system
+  TEST_STDLIB_LDFLAGS        := 
+endif

@@ -28,7 +28,7 @@ ARTIFACT_MFLAGS         = $($(ARTIFACT_VARS)_MFLAGS)
 INCLUDE_DEPS            = $(foreach dep, $(DEPENDENCIES) $(ARTIFACT_VARS), $(if $($(dep)_INC), -I$($(dep)_INC)))
 BUILD_DEPS              = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_OBJ), $(dep)))
 LINKER_OBJS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_OBJ), $($(dep)_OBJ)))
-LINKER_LIBS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_LIB), $($(dep)_LIB)))
+LINKER_LIBS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_LDFLAGS), $($(dep)_LDFLAGS)))
 BUILD_ALL               = $(ARTIFACT_LIB)
 
 ifeq ($(TEST), 1)

@@ -6,6 +6,7 @@ VERSION                     = 0.5.0-devel
 
 # List of dependencies
 TEST_DEPENDENCIES = \
+  TEST_STDLIB \
   LSP_TEST_FW
 
 DEPENDENCIES = \
