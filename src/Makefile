@@ -23,12 +23,12 @@ ARTIFACT_BIN            = $($(ARTIFACT_VARS)_BIN)
 ARTIFACT_LIB            = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)-$($(ARTIFACT_VARS)_VERSION)$(LIBRARY_EXT)
 ARTIFACT_TESTBIN        = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)-test$(EXECUTABLE_EXT)
 ARTIFACT_OBJ            = $($(ARTIFACT_VARS)_OBJ)
-ARTIFACT_MFLAGS         = $($(ARTIFACT_VARS)_MFLAGS)
+ARTIFACT_MFLAGS         = $($(ARTIFACT_VARS)_MFLAGS) $(foreach dep,$(DEPENDENCIES),-DUSE_$(dep))
 
-INCLUDE_DEPS            = $(foreach dep, $(DEPENDENCIES) $(ARTIFACT_VARS), $(if $($(dep)_INC), -I$($(dep)_INC)))
+CFLAGS_DEPS             = $(foreach dep, $(DEPENDENCIES) $(ARTIFACT_VARS), $(if $($(dep)_CFLAGS), $($(dep)_CFLAGS)))
 BUILD_DEPS              = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_OBJ), $(dep)))
+LINKER_DEPS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_LDFLAGS), $($(dep)_LDFLAGS)))
 LINKER_OBJS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_OBJ), $($(dep)_OBJ)))
-LINKER_LIBS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_LDFLAGS), $($(dep)_LDFLAGS)))
 BUILD_ALL               = $(ARTIFACT_LIB)
 
 ifeq ($(TEST), 1)
@@ -103,7 +103,7 @@ dep_clean:
 $(CXX_DEPS): dep_clean
 	@echo "  dep  [$(ARTIFACT_NAME)] $(CXX_DEPFILE)"
 	@mkdir -p $(dir $(@))
-	$(CXX) -MM -MT "\$$($(ARTIFACT_VARS)_BIN)/$(CXX_DEPTARGET)" -MF $(@) $(CXX_DEPFILE) $(CXXFLAGS) $(INCLUDE) $(INCLUDE_DEPS)
+	$(CXX) -MM -MT "\$$($(ARTIFACT_VARS)_BIN)/$(CXX_DEPTARGET)" -MF $(@) $(CXX_DEPFILE) $(CXXFLAGS) $(INCLUDE) $(CFLAGS_DEPS)
 
 depend: $(CXX_DEPS)
 	$(foreach dep,$(DEPENDENCIES) $(ARTIFACT_VARS),\
@@ -126,16 +126,16 @@ $(ARTIFACT_OBJ): $(BUILD_DEPS) $(CXX_OBJ) $(CXX_OBJEXT)
 
 $(ARTIFACT_LIB): $(ARTIFACT_OBJ)
 	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_LIB))"
-	@$(CXX) -o $(ARTIFACT_LIB) $(LINKER_OBJS) $(ARTIFACT_OBJ) $(SO_FLAGS) $(LINKER_LIBS)
+	@$(CXX) -o $(ARTIFACT_LIB) $(LINKER_OBJS) $(ARTIFACT_OBJ) $(SO_FLAGS) $(LINKER_DEPS)
 
 $(ARTIFACT_TESTBIN): $(ARTIFACT_OBJ)
 	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_TESTBIN))"
-	@$(CXX) -o $(ARTIFACT_TESTBIN) $(LINKER_OBJS) $(ARTIFACT_OBJ) $(EXE_FLAGS) $(LINKER_LIBS)
+	@$(CXX) -o $(ARTIFACT_TESTBIN) $(LINKER_OBJS) $(ARTIFACT_OBJ) $(EXE_FLAGS) $(LINKER_DEPS)
 
 $(CXX_OBJ) $(CXX_OBJEXT):
 	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(CXX_FILE)"
 	@mkdir -p $(dir $@)
-	@$(CXX) -o $(@) -c $(CXX_FILE) -fPIC $(CXXFLAGS) $(ARTIFACT_MFLAGS) $(EXT_FLAGS) $(INCLUDE) $(INCLUDE_DEPS)
+	@$(CXX) -o $(@) -c $(CXX_FILE) -fPIC $(CXXFLAGS) $(ARTIFACT_MFLAGS) $(EXT_FLAGS) $(INCLUDE) $(CFLAGS_DEPS)
 
 install: all
 	@echo "Installing $($(ARTIFACT_VARS)_NAME)"
