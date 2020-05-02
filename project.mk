@@ -2,7 +2,7 @@
 ARTIFACT_NAME               = lsp-dsp-lib
 ARTIFACT_VARS               = LSP_DSP_LIB
 ARTIFACT_HEADERS            = lsp-plug.in
-VERSION                     = 0.5.1
+VERSION                     = 0.5.2-devel
 
 # List of dependencies
 TEST_DEPENDENCIES = \
