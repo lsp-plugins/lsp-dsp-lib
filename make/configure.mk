@@ -10,8 +10,8 @@ PROFILE                    := 0
 TRACE                      := 0
 
 include $(BASEDIR)/make/system.mk
-include $(BASEDIR)/make/tools.mk
 include $(BASEDIR)/project.mk
+include $(BASEDIR)/make/tools.mk
 include $(BASEDIR)/dependencies.mk
 
 DEPENDENCIES               += $(TEST_DEPENDENCIES)
@@ -44,6 +44,12 @@ endef
 
 define bldconfig =
   $(eval name = $(1))
+  $(if $($(name)_PATH),,    $(eval $(name)_PATH    := $(MODULES)/$($(name)_NAME)))
+  $(if $($(name)_INC),,     $(eval $(name)_INC     := $($(name)_PATH)/include))
+  $(if $($(name)_SRC),,     $(eval $(name)_SRC     := $($(name)_PATH)/src))
+  $(if $($(name)_TEST),,    $(eval $(name)_TEST    := $($(name)_PATH)/test))
+  $(if $($(name)_TESTING),, $(eval $(name)_TESTING := 0))
+  $(if $($(name)_BIN),,     $(eval $(name)_BIN     := $(BUILDDIR)/$($(name)_NAME)))
   $(if $($(name)_CFLAGS),,  $(eval $(name)_CFLAGS  := "-I\"$($(name)_INC)\""$(xflags)))
   $(if $($(name)_LDLAGS),,  $(eval $(name)_LDFLAGS :=))
   $(if $($(name)_OBJ),,     $(eval $(name)_OBJ     := "$($(name)_BIN)/$($(name)_NAME).o"))
@@ -56,15 +62,6 @@ endef
 define vardef =
   $(eval name = $(1))
   # Override variables if they are not defined
-  $(if $($(name)_NAME), \
-    $(if $($(name)_PATH),,    $(eval $(name)_PATH    := $(MODULES)/$($(name)_NAME))) \
-    $(if $($(name)_INC),,     $(eval $(name)_INC     := $($(name)_PATH)/include)) \
-    $(if $($(name)_SRC),,     $(eval $(name)_SRC     := $($(name)_PATH)/src)) \
-    $(if $($(name)_TEST),,    $(eval $(name)_TEST    := $($(name)_PATH)/test)) \
-    $(if $($(name)_TESTING),, $(eval $(name)_TESTING := 0)) \
-    $(if $($(name)_BIN),,     $(eval $(name)_BIN     := $(BUILDDIR)/$($(name)_NAME))) \
-  )
-  
   $(if $(findstring system,$($(name)_VERSION)), \
     $(eval $(call pkgconfig, $(name))), \
     $(eval $(call bldconfig, $(name))) \

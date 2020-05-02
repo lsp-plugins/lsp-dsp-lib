@@ -13,7 +13,7 @@
 // Define version of headers
 #define LSP_DSP_LIB_MAJOR           0
 #define LSP_DSP_LIB_MINOR           5
-#define LSP_DSP_LIB_MICRO           0
+#define LSP_DSP_LIB_MICRO           1
 
 // Macro definitions
 #define LSP_DSP_VEC2(v)     v, v

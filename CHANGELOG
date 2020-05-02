@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.1 ===
+* Some minor code refactoring.
+
 === 1.0.0 ===
 * Initial release.
 * Supports SIMD optimizations for 32-bit i586 architecture.
