@@ -16,8 +16,8 @@
 #ifdef LSP_DSP_LIB_BUILTIN
     #define LSP_DSP_LIB_EXPORT
     #define LSP_DSP_LIB_CEXPORT
-    #define LSP_DSP_LIB_IMPORT
-    #define LSP_DSP_LIB_CIMPORT
+    #define LSP_DSP_LIB_IMPORT          LSP_SYMBOL_IMPORT
+    #define LSP_DSP_LIB_CIMPORT         LSP_CSYMBOL_IMPORT
 #else
     #define LSP_DSP_LIB_EXPORT          LSP_SYMBOL_EXPORT
     #define LSP_DSP_LIB_CEXPORT         LSP_CSYMBOL_EXPORT
