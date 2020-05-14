@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_MSMATRIX_H_
 #define LSP_PLUG_IN_DSP_COMMON_MSMATRIX_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -22,7 +22,8 @@ namespace lsp
          * @param r right signal
          * @param count number of samples to process
          */
-        extern void (* lr_to_ms)(float *m, float *s, const float *l, const float *r, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lr_to_ms)(float *m, float *s, const float *l, const float *r, size_t count);
 
         /** Convert stereo signal to middle signal
          *
@@ -31,7 +32,8 @@ namespace lsp
          * @param r right channel
          * @param count number of samples to process
          */
-        extern void (* lr_to_mid)(float *m, const float *l, const float *r, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lr_to_mid)(float *m, const float *l, const float *r, size_t count);
 
         /** Convert stereo signal to side signal
          *
@@ -40,7 +42,8 @@ namespace lsp
          * @param r right channel
          * @param count number of samples to process
          */
-        extern void (* lr_to_side)(float *s, const float *l, const float *r, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lr_to_side)(float *s, const float *l, const float *r, size_t count);
 
         /** Convert mid-side signal to left-right signal
          *
@@ -50,7 +53,8 @@ namespace lsp
          * @param s side signal
          * @param count number of samples to process
          */
-        extern void (* ms_to_lr)(float *l, float *r, const float *m, const float *s, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* ms_to_lr)(float *l, float *r, const float *m, const float *s, size_t count);
 
         /** Convert mid-side signal to left signal
          *
@@ -59,7 +63,8 @@ namespace lsp
          * @param s side signal
          * @param count number of samples to process
          */
-        extern void (* ms_to_left)(float *l, const float *m, const float *s, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* ms_to_left)(float *l, const float *m, const float *s, size_t count);
 
         /** Convert mid-side signal to right signal
          *
@@ -68,7 +73,8 @@ namespace lsp
          * @param s side signal
          * @param count number of samples to process
          */
-        extern void (* ms_to_right)(float *r, const float *m, const float *s, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* ms_to_right)(float *r, const float *m, const float *s, size_t count);
 
     }
 }

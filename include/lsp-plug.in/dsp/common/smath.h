@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_SMATH_H_
 #define LSP_PLUG_IN_DSP_COMMON_SMATH_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -20,7 +20,8 @@ namespace lsp
          * @param deg the power degree
          * @return result of x^deg calculation
          */
-        extern float (* ipowf)(float x, int deg);
+        LSP_DSP_LIB_IMPORT
+        float (* ipowf)(float x, int deg);
 
         /** Calculate the integer root of value
          *
@@ -28,7 +29,8 @@ namespace lsp
          * @param deg the root degree, should be positive
          * @return the deg'th root of x
          */
-        extern float (* irootf)(float x, int deg);
+        LSP_DSP_LIB_IMPORT
+        float (* irootf)(float x, int deg);
     }
 }
 

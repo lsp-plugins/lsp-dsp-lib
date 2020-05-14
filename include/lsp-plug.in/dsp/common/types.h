@@ -5,15 +5,11 @@
  *      Author: sadko
  */
 
-#ifndef LSP_PLUG_IN_DSP_VERSION_H_
-#define LSP_PLUG_IN_DSP_VERSION_H_
+#ifndef LSP_PLUG_IN_DSP_COMMON_TYPES_H_
+#define LSP_PLUG_IN_DSP_COMMON_TYPES_H_
 
+#include <lsp-plug.in/dsp/version.h>
 #include <lsp-plug.in/common/types.h>
-
-// Define version of headers
-#define LSP_DSP_LIB_MAJOR           0
-#define LSP_DSP_LIB_MINOR           5
-#define LSP_DSP_LIB_MICRO           2
 
 // Macro definitions
 #define LSP_DSP_VEC2(v)     v, v
@@ -35,4 +31,4 @@
 #define LSP_DSP_FLOAT_SAT_P_INF_I           0x501502f9
 #define LSP_DSP_FLOAT_SAT_N_INF_I           0xd01502f9
 
-#endif /* LSP_PLUG_IN_DSP_VERSION_H_ */
+#endif /* LSP_PLUG_IN_DSP_COMMON_TYPES_H_ */

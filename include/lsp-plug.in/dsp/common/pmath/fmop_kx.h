@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_PMATH_FMOP_KX_H_
 #define LSP_PLUG_IN_DSP_COMMON_PMATH_FMOP_KX_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -21,7 +21,8 @@ namespace lsp
          * @param k multiplier
          * @param count number of elements
          */
-        extern void (* fmadd_k3)(float *dst, const float *src, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmadd_k3)(float *dst, const float *src, float k, size_t count);
 
         /** Calculate dst[i] = dst[i] - src[i] * k
          *
@@ -30,7 +31,8 @@ namespace lsp
          * @param k multiplier
          * @param count number of elements
          */
-        extern void (* fmsub_k3)(float *dst, const float *src, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmsub_k3)(float *dst, const float *src, float k, size_t count);
 
         /** Calculate dst[i] = src[i] * k - dst[i]
          *
@@ -39,7 +41,8 @@ namespace lsp
          * @param k multiplier
          * @param count number of elements
          */
-        extern void (* fmrsub_k3)(float *dst, const float *src, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmrsub_k3)(float *dst, const float *src, float k, size_t count);
 
         /** Calculate dst[i] = dst[i] * src[i] * k
          *
@@ -48,7 +51,8 @@ namespace lsp
          * @param k multiplier
          * @param count number of elements
          */
-        extern void (* fmmul_k3)(float *dst, const float *src, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmmul_k3)(float *dst, const float *src, float k, size_t count);
 
         /** Calculate dst[i] = dst[i] / (src[i] * k)
          *
@@ -57,7 +61,8 @@ namespace lsp
          * @param k multiplier
          * @param count number of elements
          */
-        extern void (* fmdiv_k3)(float *dst, const float *src, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmdiv_k3)(float *dst, const float *src, float k, size_t count);
 
         /** Calculate dst[i] = (src[i] * k) / dst[i]
          *
@@ -66,7 +71,8 @@ namespace lsp
          * @param k multiplier
          * @param count number of elements
          */
-        extern void (* fmrdiv_k3)(float *dst, const float *src, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmrdiv_k3)(float *dst, const float *src, float k, size_t count);
 
         /** Calculate remainder: dst[i] = dst[i] - (src[i]*k)*int(dst[i]/(src[i]*k))
          *
@@ -75,7 +81,8 @@ namespace lsp
          * @param k multiplier
          * @param count number of elements
          */
-        extern void (* fmmod_k3)(float *dst, const float *src, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmmod_k3)(float *dst, const float *src, float k, size_t count);
 
         /** Calculate reverse remainder: dst[i] = src[i] - (dst[i]*k)*int(src[i]/(dst[i]*k))
          *
@@ -84,7 +91,8 @@ namespace lsp
          * @param k multiplier
          * @param count number of elements
          */
-        extern void (* fmrmod_k3)(float *dst, const float *src, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmrmod_k3)(float *dst, const float *src, float k, size_t count);
 
         /** Calculate dst[i] = src1[i] + src2[i] * k
          *
@@ -94,7 +102,8 @@ namespace lsp
          * @param k multiplier for elements of array 2
          * @param count number of elements
          */
-        extern void (* fmadd_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmadd_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
 
         /** Calculate dst[i] = src1[i] - src2[i] * k
          *
@@ -104,7 +113,8 @@ namespace lsp
          * @param k multiplier for elements of array 2
          * @param count number of elements
          */
-        extern void (* fmsub_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmsub_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
 
         /** Calculate dst[i] = src2[i] * k - src1[i]
          *
@@ -114,7 +124,8 @@ namespace lsp
          * @param k multiplier for elements of array 2
          * @param count number of elements
          */
-        extern void (* fmrsub_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmrsub_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
 
         /** Calculate dst[i] = src1[i] * src2[i] * k
          *
@@ -124,7 +135,8 @@ namespace lsp
          * @param k multiplier for elements of array 2
          * @param count number of elements
          */
-        extern void (* fmmul_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmmul_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
 
         /** Calculate dst[i] = src1[i] / (src2[i] * k)
          *
@@ -134,7 +146,8 @@ namespace lsp
          * @param k multiplier for elements of array 2
          * @param count number of elements
          */
-        extern void (* fmdiv_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmdiv_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
 
         /** Calculate dst[i] = (src2[i] * k) / src1[i]
          *
@@ -144,7 +157,8 @@ namespace lsp
          * @param k multiplier for elements of array 2
          * @param count number of elements
          */
-        extern void (* fmrdiv_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmrdiv_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
 
         /** Calculate remainder: dst[i] = src1[i] - (src2[i]*k)*int(src1[i]/(src2[i]*k))
          *
@@ -154,7 +168,8 @@ namespace lsp
          * @param k multiplier for elements of array 2
          * @param count number of elements
          */
-        extern void (* fmmod_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmmod_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
 
         /** Calculate reverse remainder: dst[i] = src2[i]*k - src1[i]*int((src2[i]*k)/src1[i])
          *
@@ -164,7 +179,8 @@ namespace lsp
          * @param k multiplier for elements of array 2
          * @param count number of elements
          */
-        extern void (* fmrmod_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fmrmod_k4)(float *dst, const float *src1, const float *src2, float k, size_t count);
     }
 }
 

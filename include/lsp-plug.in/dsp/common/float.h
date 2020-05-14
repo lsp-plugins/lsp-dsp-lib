@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_FLOAT_H_
 #define LSP_PLUG_IN_DSP_COMMON_FLOAT_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -22,7 +22,8 @@ namespace lsp
          * @param src source pointer
          * @param count number of elements
          */
-        extern void (*copy_saturated)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (*copy_saturated)(float *dst, const float *src, size_t count);
 
         /** Saturate floating-point data in buffer
          * Avoid +Inf, -Inf values by replacing with large values
@@ -31,7 +32,8 @@ namespace lsp
          * @param dst destination pointer
          * @param count number of elements
          */
-        extern void (* saturate)(float *dst, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* saturate)(float *dst, size_t count);
 
         /** Limit floating-point data in buffer
          * Avoid +Inf, -Inf values by replacing with 1.0 and -1.0
@@ -43,7 +45,8 @@ namespace lsp
          * @param src source pointer
          * @param count number of elements
          */
-        extern void (* limit_saturate1)(float *dst, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* limit_saturate1)(float *dst, size_t count);
 
         /** Limit floating-point data in buffer and copy do destination
          * Avoid +Inf, -Inf values by replacing with 1.0 and -1.0
@@ -55,7 +58,8 @@ namespace lsp
          * @param src source pointer
          * @param count number of elements
          */
-        extern void (* limit_saturate2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* limit_saturate2)(float *dst, const float *src, size_t count);
 
         /**
          * Limit floating-point data in buffer
@@ -68,7 +72,8 @@ namespace lsp
          * @param max maximum value
          * @param count number of samples
          */
-        extern void (* limit1)(float *dst, float min, float max, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* limit1)(float *dst, float min, float max, size_t count);
 
         /**
          * Limit floating-point data in buffer
@@ -82,7 +87,8 @@ namespace lsp
          * @param max maximum value
          * @param count number of samples
          */
-        extern void (* limit2)(float *dst, const float *src, float min, float max, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* limit2)(float *dst, const float *src, float min, float max, size_t count);
 
         /**
          * Sanitize floating-point samples from NaN's, Inf's and denormal values
@@ -91,7 +97,8 @@ namespace lsp
          * @param dst destination buffer to sanitize
          * @param count number of samples
          */
-        extern void (* sanitize1)(float *dst, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* sanitize1)(float *dst, size_t count);
 
         /**
          * Sanitize floating-point samples from NaN's, Inf's and denormal values
@@ -100,7 +107,8 @@ namespace lsp
          * @param dst destination buffer to sanitize
          * @param count number of samples
          */
-        extern void (* sanitize2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* sanitize2)(float *dst, const float *src, size_t count);
     }
 }
 

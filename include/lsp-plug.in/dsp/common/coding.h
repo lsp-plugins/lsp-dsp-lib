@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_CODING_H_
 #define LSP_PLUG_IN_DSP_COMMON_CODING_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -24,7 +24,8 @@ namespace lsp
          * @param src_left number of bytes left in source buffer
          * @return number of bytes of source buffer processed
          */
-        extern size_t (* base64_enc)(void *dst, size_t *dst_left, const void *src, size_t *src_left);
+        LSP_DSP_LIB_IMPORT
+        size_t (* base64_enc)(void *dst, size_t *dst_left, const void *src, size_t *src_left);
 
         /**
          * Decode base-64 value, the function treats '=' characters as error (for optimization purposes)
@@ -36,7 +37,8 @@ namespace lsp
          * @param src_left number of bytes left in source buffer
          * @return number of bytes decoded into destination buffer, negative value on illegal character in sequence
          */
-        extern ssize_t (* base64_dec)(void *dst, size_t *dst_left, const void *src, size_t *src_left);
+        LSP_DSP_LIB_IMPORT
+        ssize_t (* base64_dec)(void *dst, size_t *dst_left, const void *src, size_t *src_left);
     }
 }
 

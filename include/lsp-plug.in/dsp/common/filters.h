@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_FILTERS_H_
 #define LSP_PLUG_IN_DSP_COMMON_FILTERS_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 #include <lsp-plug.in/dsp/common/filters/types.h>
 #include <lsp-plug.in/dsp/common/filters/dynamic.h>

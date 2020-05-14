@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_PMATH_OP_VV_H_
 #define LSP_PLUG_IN_DSP_COMMON_PMATH_OP_VV_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -20,7 +20,8 @@ namespace lsp
          * @param src source array
          * @param count number of elements
          */
-        extern void (* add2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* add2)(float *dst, const float *src, size_t count);
 
         /** Calculate dst[i] = dst[i] - src[i]
          *
@@ -28,7 +29,8 @@ namespace lsp
          * @param src source array
          * @param count number of elements
          */
-        extern void (* sub2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* sub2)(float *dst, const float *src, size_t count);
 
         /** Calculate dst[i] = src[i] - dst[i]
          *
@@ -36,7 +38,8 @@ namespace lsp
          * @param src source array
          * @param count number of elements
          */
-        extern void (* rsub2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* rsub2)(float *dst, const float *src, size_t count);
 
         /** Multiply: dst[i] = dst[i] * src[i]
          *
@@ -44,7 +47,8 @@ namespace lsp
          * @param src first source
          * @param count number of elements
          */
-        extern void (* mul2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* mul2)(float *dst, const float *src, size_t count);
 
         /** Divide: dst[i] = dst[i] / src[i]
          *
@@ -52,7 +56,8 @@ namespace lsp
          * @param src first source
          * @param count number of elements
          */
-        extern void (* div2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* div2)(float *dst, const float *src, size_t count);
 
         /** Divide: dst[i] = src[i] / dst[i]
          *
@@ -60,7 +65,8 @@ namespace lsp
          * @param src first source
          * @param count number of elements
          */
-        extern void (* rdiv2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* rdiv2)(float *dst, const float *src, size_t count);
 
         /** Compute remainder: dst[i] = dst[i] - src[i] * int(dst[i]/src[i])
          *
@@ -68,7 +74,8 @@ namespace lsp
          * @param src source
          * @param count number of elements
          */
-        extern void (* mod2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* mod2)(float *dst, const float *src, size_t count);
 
         /** Compute reverse remainder: dst[i] = src[i] - dst[i] * int(src[i]/dst[i])
          *
@@ -76,7 +83,8 @@ namespace lsp
          * @param src source
          * @param count number of elements
          */
-        extern void (* rmod2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* rmod2)(float *dst, const float *src, size_t count);
 
         /** Calculate dst[i] = src1[i] + src2[i]
          *
@@ -84,7 +92,8 @@ namespace lsp
          * @param src source array
          * @param count number of elements
          */
-        extern void (* add3)(float *dst, const float *src1, const float *src2, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* add3)(float *dst, const float *src1, const float *src2, size_t count);
 
         /** Calculate dst[i] = src1[i] - src2[i]
          *
@@ -92,7 +101,8 @@ namespace lsp
          * @param src source array
          * @param count number of elements
          */
-        extern void (* sub3)(float *dst, const float *src1, const float *src2, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* sub3)(float *dst, const float *src1, const float *src2, size_t count);
 
         /** Multiply: dst[i] = src1[i] * src2[i]
          *
@@ -101,7 +111,8 @@ namespace lsp
          * @param src2 second source
          * @param count number of elements
          */
-        extern void (* mul3)(float *dst, const float *src1, const float *src2, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* mul3)(float *dst, const float *src1, const float *src2, size_t count);
 
         /** Divide: dst[i] = src1[i] / src2[i]
          *
@@ -110,7 +121,8 @@ namespace lsp
          * @param src2 second source
          * @param count number of elements
          */
-        extern void (* div3)(float *dst, const float *src1, const float *src2, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* div3)(float *dst, const float *src1, const float *src2, size_t count);
 
         /** Remainder: dst[i] = src1[i] - src2[i]*int(src1[i]/src2[i]);
          *
@@ -119,7 +131,8 @@ namespace lsp
          * @param src2 second source
          * @param count number of elements
          */
-        extern void (* mod3)(float *dst, const float *src1, const float *src2, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* mod3)(float *dst, const float *src1, const float *src2, size_t count);
 
     }
 }

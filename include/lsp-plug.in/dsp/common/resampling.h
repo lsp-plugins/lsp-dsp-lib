@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_RESAMPLING_H_
 #define LSP_PLUG_IN_DSP_COMMON_RESAMPLING_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 /**
  * The number of additionally reserved samples at the tail of the buffer
@@ -37,7 +37,8 @@ namespace lsp
          * @param src source buffer of count samples
          * @param count number of samples
          */
-        extern void (* lanczos_resample_2x2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lanczos_resample_2x2)(float *dst, const float *src, size_t count);
 
         /** Perform lanczos resampling, destination buffer must be cleared and contain only
          * resampling tail from previous resampling
@@ -46,7 +47,8 @@ namespace lsp
          * @param src source buffer of count samples
          * @param count number of samples
          */
-        extern void (* lanczos_resample_2x3)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lanczos_resample_2x3)(float *dst, const float *src, size_t count);
 
         /** Perform lanczos resampling, destination buffer must be cleared and contain only
          * resampling tail from previous resampling
@@ -55,7 +57,8 @@ namespace lsp
          * @param src source buffer of count samples
          * @param count number of samples
          */
-        extern void (* lanczos_resample_3x2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lanczos_resample_3x2)(float *dst, const float *src, size_t count);
 
         /** Perform lanczos resampling, destination buffer must be cleared and contain only
          * resampling tail from previous resampling
@@ -64,7 +67,8 @@ namespace lsp
          * @param src source buffer of count samples
          * @param count number of samples
          */
-        extern void (* lanczos_resample_3x3)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lanczos_resample_3x3)(float *dst, const float *src, size_t count);
 
         /** Perform lanczos resampling, destination buffer must be cleared and contain only
          * resampling tail from previous resampling
@@ -73,7 +77,8 @@ namespace lsp
          * @param src source buffer of count samples
          * @param count number of samples
          */
-        extern void (* lanczos_resample_4x2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lanczos_resample_4x2)(float *dst, const float *src, size_t count);
 
         /** Perform lanczos resampling, destination buffer must be cleared and contain only
          * resampling tail from previous resampling
@@ -82,7 +87,8 @@ namespace lsp
          * @param src source buffer of count samples
          * @param count number of samples
          */
-        extern void (* lanczos_resample_4x3)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lanczos_resample_4x3)(float *dst, const float *src, size_t count);
 
         /** Perform lanczos resampling, destination buffer must be cleared and contain only
          * resampling tail from previous resampling
@@ -91,7 +97,8 @@ namespace lsp
          * @param src source buffer of count samples
          * @param count number of samples
          */
-        extern void (* lanczos_resample_6x2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lanczos_resample_6x2)(float *dst, const float *src, size_t count);
 
         /** Perform lanczos resampling, destination buffer must be cleared and contain only
          * resampling tail from previous resampling
@@ -100,7 +107,8 @@ namespace lsp
          * @param src source buffer of count samples
          * @param count number of samples
          */
-        extern void (* lanczos_resample_6x3)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lanczos_resample_6x3)(float *dst, const float *src, size_t count);
 
         /** Perform lanczos resampling, destination buffer must be cleared and contain only
          * resampling tail from previous resampling
@@ -109,7 +117,8 @@ namespace lsp
          * @param src source buffer of count samples
          * @param count number of samples
          */
-        extern void (* lanczos_resample_8x2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lanczos_resample_8x2)(float *dst, const float *src, size_t count);
 
         /** Perform lanczos resampling, destination buffer must be cleared and contain only
          * resampling tail from previous resampling
@@ -118,7 +127,8 @@ namespace lsp
          * @param src source buffer of count samples
          * @param count number of samples
          */
-        extern void (* lanczos_resample_8x3)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* lanczos_resample_8x3)(float *dst, const float *src, size_t count);
 
         /** Copy each even sample to output buffer
          *
@@ -126,7 +136,8 @@ namespace lsp
          * @param src source buffer
          * @param count number of samples to process
          */
-        extern void (* downsample_2x)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* downsample_2x)(float *dst, const float *src, size_t count);
 
         /** Copy each 3rd sample to output buffer
          *
@@ -134,7 +145,8 @@ namespace lsp
          * @param src source buffer
          * @param count number of samples to process
          */
-        extern void (* downsample_3x)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* downsample_3x)(float *dst, const float *src, size_t count);
 
         /** Copy each 4th sample to output buffer
          *
@@ -142,7 +154,8 @@ namespace lsp
          * @param src source buffer
          * @param count number of samples to process
          */
-        extern void (* downsample_4x)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* downsample_4x)(float *dst, const float *src, size_t count);
 
         /** Copy each 6th sample to output buffer
          *
@@ -150,7 +163,8 @@ namespace lsp
          * @param src source buffer
          * @param count number of samples to process
          */
-        extern void (* downsample_6x)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* downsample_6x)(float *dst, const float *src, size_t count);
 
         /** Copy each 8th sample to output buffer
          *
@@ -158,7 +172,8 @@ namespace lsp
          * @param src source buffer
          * @param count number of samples to process
          */
-        extern void (* downsample_8x)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* downsample_8x)(float *dst, const float *src, size_t count);
     }
 }
 

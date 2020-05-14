@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_CONVOLUTION_H_
 #define LSP_PLUG_IN_DSP_COMMON_CONVOLUTION_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -22,7 +22,8 @@ namespace lsp
          * @param length length of convolution
          * @param count the number of samples in source signal to process
          */
-        extern void (* convolve)(float *dst, const float *src, const float *conv, size_t length, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* convolve)(float *dst, const float *src, const float *conv, size_t length, size_t count);
 
     }
 }

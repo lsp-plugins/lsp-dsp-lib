@@ -8,8 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_FILTERS_STATIC_H_
 #define LSP_PLUG_IN_DSP_COMMON_FILTERS_STATIC_H_
 
-#include <lsp-plug.in/dsp/types.h>
-
+#include <lsp-plug.in/dsp/common/types.h>
 #include <lsp-plug.in/dsp/common/filters/types.h>
 
 namespace lsp
@@ -23,7 +22,8 @@ namespace lsp
          * @param count number of samples to process
          * @param f bi-quadratic filter structure
          */
-        extern void (* biquad_process_x1)(float *dst, const float *src, size_t count, biquad_t *f);
+        LSP_DSP_LIB_IMPORT
+        void (* biquad_process_x1)(float *dst, const float *src, size_t count, biquad_t *f);
 
         /** Process two bi-quadratic filters for multiple samples simultaneously
          *
@@ -32,7 +32,8 @@ namespace lsp
          * @param count number of samples to process
          * @param f bi-quadratic filter structure
          */
-        extern void (* biquad_process_x2)(float *dst, const float *src, size_t count, biquad_t *f);
+        LSP_DSP_LIB_IMPORT
+        void (* biquad_process_x2)(float *dst, const float *src, size_t count, biquad_t *f);
 
         /** Process four bi-quadratic filters for multiple samples simultaneously
          *
@@ -41,7 +42,8 @@ namespace lsp
          * @param count number of samples to process
          * @param f bi-quadratic filter structure
          */
-        extern void (* biquad_process_x4)(float *dst, const float *src, size_t count, biquad_t *f);
+        LSP_DSP_LIB_IMPORT
+        void (* biquad_process_x4)(float *dst, const float *src, size_t count, biquad_t *f);
 
         /** Process eight bi-quadratic filters for multiple samples simultaneously
          *
@@ -50,7 +52,8 @@ namespace lsp
          * @param count number of samples to process
          * @param f bi-quadratic filter structure
          */
-        extern void (* biquad_process_x8)(float *dst, const float *src, size_t count, biquad_t *f);
+        LSP_DSP_LIB_IMPORT
+        void (* biquad_process_x8)(float *dst, const float *src, size_t count, biquad_t *f);
     }
 }
 

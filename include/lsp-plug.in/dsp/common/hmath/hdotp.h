@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_HMATH_HDOTP_H_
 #define LSP_PLUG_IN_DSP_COMMON_HMATH_HDOTP_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -22,7 +22,8 @@ namespace lsp
          * @param count number of elements
          * @return scalar multiplication
          */
-        extern float (* h_dotp)(const float *a, const float *b, size_t count);
+        LSP_DSP_LIB_IMPORT
+        float (* h_dotp)(const float *a, const float *b, size_t count);
 
         /** Calculate dot product of squares: sum {from 0 to count-1} (sqr(a[i]) * sqr(b[i]))
          *
@@ -31,7 +32,8 @@ namespace lsp
          * @param count number of elements
          * @return scalar multiplication
          */
-        extern float (* h_sqr_dotp)(const float *a, const float *b, size_t count);
+        LSP_DSP_LIB_IMPORT
+        float (* h_sqr_dotp)(const float *a, const float *b, size_t count);
 
         /** Calculate dot product of absolute values: sum {from 0 to count-1} (abs(a[i]) * abs(b[i]))
          *
@@ -40,7 +42,8 @@ namespace lsp
          * @param count number of elements
          * @return scalar multiplication
          */
-        extern float (* h_abs_dotp)(const float *a, const float *b, size_t count);
+        LSP_DSP_LIB_IMPORT
+        float (* h_abs_dotp)(const float *a, const float *b, size_t count);
     }
 }
 
