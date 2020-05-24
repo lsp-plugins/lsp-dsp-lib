@@ -5,6 +5,7 @@
 === 0.5.2 ===
 * Updated build system.
 * Code refactoring.
+* Added openBSD support in build.
 
 === 0.5.1 ===
 * Some minor code refactoring.

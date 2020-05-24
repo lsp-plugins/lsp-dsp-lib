@@ -1,6 +1,15 @@
+# Determine tools
+ifeq ($(PLATFORM),OpenBSD)
+  X_CC_TOOL          := egcc
+  X_CXX_TOOL         := eg++
+else
+  X_CC_TOOL          := gcc
+  X_CXX_TOOL         := g++
+endif
+
 # Define tool variables
-CC                 := gcc
-CXX                := g++
+CC                 := $(X_CC_TOOL)
+CXX                := $(X_CXX_TOOL)
 LD                 := ld
 GIT                := git
 INSTALL            := install
