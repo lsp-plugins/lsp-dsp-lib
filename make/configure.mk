@@ -16,13 +16,13 @@ include $(BASEDIR)/dependencies.mk
 
 DEPENDENCIES               += $(TEST_DEPENDENCIES)
 
-ifeq ($(findstring -devel,$(VERSION)),-devel)
+ifeq ($(findstring -devel,$(ARTIFACT_VERSION)),-devel)
   $(foreach dep, $(DEPENDENCIES), \
     $(eval $(dep)_BRANCH=devel) \
   )
   # Strip '-devel' from version
-  tmp_version :=$(shell echo "$(VERSION)" | sed s/-devel//g)
-  VERSION=$(tmp_version)
+  tmp_version :=$(shell echo "$(ARTIFACT_VERSION)" | sed s/-devel//g)
+  ARTIFACT_VERSION=$(tmp_version)
 else
   $(foreach dep, $(DEPENDENCIES), \
     $(eval \
