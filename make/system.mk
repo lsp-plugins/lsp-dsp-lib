@@ -10,14 +10,13 @@ ifndef PLATFORM
 
   ifeq ($(BUILD_SYSTEM),Windows)
     PLATFORM       := Windows
-  endif
-  ifeq ($(findstring BSD,$(BUILD_SYSTEM)),BSD)
+  else ifeq ($(findstring OpenBSD,$(BUILD_SYSTEM)),OpenBSD)
+    PLATFORM       := OpenBSD
+  else ifeq ($(findstring BSD,$(BUILD_SYSTEM)),BSD)
     PLATFORM       := BSD
-  endif
-  ifeq ($(findstring Linux,$(BUILD_SYSTEM)),Linux)
+  else ifeq ($(findstring Linux,$(BUILD_SYSTEM)),Linux)
     PLATFORM       := Linux
-  endif
-  ifeq ($(findstring SunOS,$(BUILD_SYSTEM)),SunOS)
+  else ifeq ($(findstring SunOS,$(BUILD_SYSTEM)),SunOS)
     PLATFORM       := Solaris
   endif
 endif

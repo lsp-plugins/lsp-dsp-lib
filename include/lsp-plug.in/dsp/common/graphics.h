@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_GRAPHICS_H_
 #define LSP_PLUG_IN_DSP_COMMON_GRAPHICS_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -47,7 +47,8 @@ namespace lsp
          * @param zero graphics zero point
          * @param norm_x X norming factor
          */
-        extern void (* axis_apply_log1)(float *x, const float *v, float zero, float norm_x, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* axis_apply_log1)(float *x, const float *v, float zero, float norm_x, size_t count);
 
         /** Do logarithmic vector apply for 2D-schema:
          *  x[i] = x[i] + norm_x * logf(absf(v[i]*zero))
@@ -60,7 +61,8 @@ namespace lsp
          * @param norm_x X norming factor
          * @param norm_y Y norming factor
          */
-        extern void (* axis_apply_log2)(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* axis_apply_log2)(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
 
         /** Convert RGBA32 -> BGRA32 color
          *
@@ -68,7 +70,8 @@ namespace lsp
          * @param src source buffer
          * @param count number of samples to process
          */
-        extern void (* rgba32_to_bgra32)(void *dst, const void *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* rgba32_to_bgra32)(void *dst, const void *src, size_t count);
 
         /** Convert ABGR32 -> BGRA32 color
          *
@@ -76,7 +79,8 @@ namespace lsp
          * @param src source buffer
          * @param count number of samples to process
          */
-        extern void (* abgr32_to_bgra32)(void *dst, const void *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* abgr32_to_bgra32)(void *dst, const void *src, size_t count);
 
         /** Convert ABGR32 -> BGR32 color with Alpha=0xff
          *
@@ -84,7 +88,8 @@ namespace lsp
          * @param src source buffer
          * @param count number of samples to process
          */
-        extern void (* abgr32_to_bgrff32)(void *dst, const void *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* abgr32_to_bgrff32)(void *dst, const void *src, size_t count);
 
         /**
          * Fill array with RGBA colors
@@ -95,7 +100,8 @@ namespace lsp
          * @param a alpha amount
          * @param count number of elements
          */
-        extern void (* fill_rgba)(float *dst, float r, float g, float b, float a, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fill_rgba)(float *dst, float r, float g, float b, float a, size_t count);
 
         /**
          * Fill array with HSLA colors
@@ -106,7 +112,8 @@ namespace lsp
          * @param a alpha amount
          * @param count number of elements
          */
-        extern void (* fill_hsla)(float *dst, float h, float s, float l, float a, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fill_hsla)(float *dst, float h, float s, float l, float a, size_t count);
 
         /**
          * Convert RGBA to HSLA color
@@ -114,7 +121,8 @@ namespace lsp
          * @param src array containing RGBA
          * @param count number of structures to convert
          */
-        extern void (* rgba_to_hsla)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* rgba_to_hsla)(float *dst, const float *src, size_t count);
 
         /**
          * Convert HSLA to RGBA color
@@ -122,7 +130,8 @@ namespace lsp
          * @param src array containing HSLA
          * @param count number of structures to convert
          */
-        extern void (* hsla_to_rgba)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* hsla_to_rgba)(float *dst, const float *src, size_t count);
 
         /** Convert RGBA (float) -> BGRA32 color
          * Alpha color is applied to result by formula:
@@ -135,7 +144,8 @@ namespace lsp
          * @param src source buffer (4 floats per pixel)
          * @param count number of samples to process
          */
-        extern void (* rgba_to_bgra32)(void *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* rgba_to_bgra32)(void *dst, const float *src, size_t count);
 
         /** Convert RGBA32 (4 bytes) -> BGRA32 (4 bytes) color with reversed alpha channel
          * Alpha color is applied to result by formula:
@@ -148,7 +158,8 @@ namespace lsp
          * @param src source buffer (4 bytes per pixel)
          * @param count number of samples to process
          */
-        extern void (* rgba32_to_bgra32_ra)(void *dst, const void *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* rgba32_to_bgra32_ra)(void *dst, const void *src, size_t count);
 
         /**
          * Generate set of pixels with applied hue shift effect
@@ -157,7 +168,8 @@ namespace lsp
          * @param eff effect parameters
          * @param count number of points to process
          */
-        extern void (* eff_hsla_hue)(float *dst, const float *v, const hsla_hue_eff_t *eff, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* eff_hsla_hue)(float *dst, const float *v, const hsla_hue_eff_t *eff, size_t count);
 
         /**
          * Generate set of pixels with applied saturation shift effect
@@ -166,7 +178,8 @@ namespace lsp
          * @param eff effect parameters
          * @param count number of points to process
          */
-        extern void (* eff_hsla_sat)(float *dst, const float *v, const hsla_sat_eff_t *eff, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* eff_hsla_sat)(float *dst, const float *v, const hsla_sat_eff_t *eff, size_t count);
 
         /**
          * Generate set of pixels with applied lighness shift effect
@@ -175,7 +188,8 @@ namespace lsp
          * @param eff effect parameters
          * @param count number of points to process
          */
-        extern void (* eff_hsla_light)(float *dst, const float *v, const hsla_light_eff_t *eff, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* eff_hsla_light)(float *dst, const float *v, const hsla_light_eff_t *eff, size_t count);
 
         /**
          * Generate set of pixels with applied alpha effect
@@ -184,7 +198,8 @@ namespace lsp
          * @param eff effect parameters
          * @param count number of points to process
          */
-        extern void (* eff_hsla_alpha)(float *dst, const float *v, const hsla_alpha_eff_t *eff, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* eff_hsla_alpha)(float *dst, const float *v, const hsla_alpha_eff_t *eff, size_t count);
 
         /**
          * Perform cubic smooth of linear-scaled data using x^2*(3-2*x) polynom
@@ -193,7 +208,8 @@ namespace lsp
          * @param stop end interpolation value
          * @param count number of samples to calculate
          */
-        extern void (* smooth_cubic_linear)(float *dst, float start, float stop, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* smooth_cubic_linear)(float *dst, float start, float stop, size_t count);
 
         /**
          * Perform cubic smooth of logarithmic-scaled data using x^2*(3-2*x) polynom
@@ -202,7 +218,8 @@ namespace lsp
          * @param stop end interpolation value
          * @param count number of samples to calculate
          */
-        extern void (* smooth_cubic_log)(float *dst, float start, float stop, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* smooth_cubic_log)(float *dst, float start, float stop, size_t count);
     }
 }
 

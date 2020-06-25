@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_MISC_H_
 #define LSP_PLUG_IN_DSP_COMMON_MISC_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -20,7 +20,8 @@ namespace lsp
          * @param src source vector
          * @param count number of elements
          */
-        extern void (* abs_normalized)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* abs_normalized)(float *dst, const float *src, size_t count);
 
         /** Calculate normalized values: dst[i] = src[i] / (max { abs(src) })
          *
@@ -28,7 +29,8 @@ namespace lsp
          * @param src source vector
          * @param count number of elements
          */
-        extern void (* normalize)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* normalize)(float *dst, const float *src, size_t count);
     }
 }
 

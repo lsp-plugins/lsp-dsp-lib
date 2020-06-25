@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_PMATH_LOG_H_
 #define LSP_PLUG_IN_DSP_COMMON_PMATH_LOG_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -19,7 +19,8 @@ namespace lsp
          * @param dst destination
          * @param count number of elements in destination
          */
-        extern void (* logb1)(float *dst, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* logb1)(float *dst, size_t count);
 
         /**
          * Compute binary logarithm: dst[i] = log(2, src[i])
@@ -27,14 +28,16 @@ namespace lsp
          * @param src source
          * @param count number of elements in source
          */
-        extern void (* logb2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* logb2)(float *dst, const float *src, size_t count);
 
         /**
          * Compute natural logarithm: dst[i] = log(E, dst[i])
          * @param dst destination
          * @param count number of elements in destination
          */
-        extern void (* loge1)(float *dst, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* loge1)(float *dst, size_t count);
 
         /**
          * Compute natural logarithm: dst[i] = log(E, src[i])
@@ -42,14 +45,16 @@ namespace lsp
          * @param src source
          * @param count number of elements in source
          */
-        extern void (* loge2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* loge2)(float *dst, const float *src, size_t count);
 
         /**
          * Compute decimal logarithm: dst[i] = log(10, dst[i])
          * @param dst destination
          * @param count number of elements in destination
          */
-        extern void (* logd1)(float *dst, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* logd1)(float *dst, size_t count);
 
         /**
          * Compute decimal logarithm: dst[i] = log(10, src[i])
@@ -57,7 +62,8 @@ namespace lsp
          * @param src source
          * @param count number of elements in source
          */
-        extern void (* logd2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* logd2)(float *dst, const float *src, size_t count);
 
     }
 }

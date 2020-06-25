@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_SEARCH_IMINMAX_H_
 #define LSP_PLUG_IN_DSP_COMMON_SEARCH_IMINMAX_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -20,7 +20,8 @@ namespace lsp
          * @param count number of elements
          * @return minimum value index
          */
-        extern size_t (* min_index)(const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        size_t (* min_index)(const float *src, size_t count);
 
         /** Calculate @ max { src }
          *
@@ -28,7 +29,8 @@ namespace lsp
          * @param count number of elements
          * @return maximum value
          */
-        extern size_t (* max_index)(const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        size_t (* max_index)(const float *src, size_t count);
 
         /** Calculate @ minmax { src }
          *
@@ -37,7 +39,8 @@ namespace lsp
          * @param min pointer to store minimum value index
          * @param max pointer to store maximum value index
          */
-        extern void (* minmax_index)(const float *src, size_t count, size_t *min, size_t *max);
+        LSP_DSP_LIB_IMPORT
+        void (* minmax_index)(const float *src, size_t count, size_t *min, size_t *max);
 
         /** Calculate @ max { abs(src) }
          *
@@ -45,7 +48,8 @@ namespace lsp
          * @param count number of samples
          * @return index of maximum element
          */
-        extern size_t  (* abs_max_index)(const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        size_t  (* abs_max_index)(const float *src, size_t count);
 
         /** Calculate @ min { abs(src) }
          *
@@ -53,7 +57,8 @@ namespace lsp
          * @param count number of samples
          * @return index of maximum element
          */
-        extern size_t  (* abs_min_index)(const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        size_t  (* abs_min_index)(const float *src, size_t count);
 
         /** Calculate @ minmax { abs(src) }
          *
@@ -62,7 +67,8 @@ namespace lsp
          * @param min pointer to store absolute minimum value index
          * @param max pointer to store absolute maximum value index
          */
-        extern void (* abs_minmax_index)(const float *src, size_t count, size_t *min, size_t *max);
+        LSP_DSP_LIB_IMPORT
+        void (* abs_minmax_index)(const float *src, size_t count, size_t *min, size_t *max);
     }
 }
 

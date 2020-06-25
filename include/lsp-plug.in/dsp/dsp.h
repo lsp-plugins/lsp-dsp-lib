@@ -8,9 +8,10 @@
 #ifndef LSP_PLUG_IN_DSP_DSP_H_
 #define LSP_PLUG_IN_DSP_DSP_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/version.h>
 
 // Include all partial definitions
+#include <lsp-plug.in/dsp/common/types.h>
 #include <lsp-plug.in/dsp/common/3dmath.h>
 #include <lsp-plug.in/dsp/common/coding.h>
 #include <lsp-plug.in/dsp/common/complex.h>

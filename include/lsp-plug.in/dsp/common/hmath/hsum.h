@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_HMATH_HSUM_H_
 #define LSP_PLUG_IN_DSP_COMMON_HMATH_HSUM_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -20,7 +20,8 @@ namespace lsp
          * @param count number of elements
          * @return status of operation
          */
-        extern float (* h_sum)(const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        float (* h_sum)(const float *src, size_t count);
 
         /** Calculate horizontal sum: result = sum (i) from 0 to count-1 sqr(src[i])
          *
@@ -28,7 +29,8 @@ namespace lsp
          * @param count number of elements
          * @return status of operation
          */
-        extern float (* h_sqr_sum)(const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        float (* h_sqr_sum)(const float *src, size_t count);
 
         /** Calculate horizontal sum of absolute values: result = sum (i) from 0 to count-1 abs(src[i])
          *
@@ -36,7 +38,8 @@ namespace lsp
          * @param count number of elements
          * @return status of operation
          */
-        extern float (* h_abs_sum)(const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        float (* h_abs_sum)(const float *src, size_t count);
 
     }
 }

@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_SEARCH_MINMAX_H_
 #define LSP_PLUG_IN_DSP_COMMON_SEARCH_MINMAX_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -20,7 +20,8 @@ namespace lsp
          * @param count number of elements
          * @return minimum value
          */
-        extern float (* min)(const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        float (* min)(const float *src, size_t count);
 
         /** Calculate max { src }
          *
@@ -28,7 +29,8 @@ namespace lsp
          * @param count number of elements
          * @return maximum value
          */
-        extern float (* max)(const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        float (* max)(const float *src, size_t count);
 
         /** Get absolute maximum: result = max { abs(src[i]) }
          *
@@ -36,7 +38,8 @@ namespace lsp
          * @param count number of elements
          * @return result
          */
-        extern float (* abs_max)(const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        float (* abs_max)(const float *src, size_t count);
 
         /** Get absolute minimum: result = min { abs(src[i]) }
          *
@@ -44,7 +47,8 @@ namespace lsp
          * @param count number of elements
          * @return result
          */
-        extern float (* abs_min)(const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        float (* abs_min)(const float *src, size_t count);
 
         /** Calculate min { src }, max { src }
          *
@@ -52,7 +56,8 @@ namespace lsp
          * @param count number of elements
          * @return maximum value
          */
-        extern void (* minmax)(const float *src, size_t count, float *min, float *max);
+        LSP_DSP_LIB_IMPORT
+        void (* minmax)(const float *src, size_t count, float *min, float *max);
 
         /** Calculate min { abs(src) }, max { abs(src) }
          *
@@ -60,7 +65,8 @@ namespace lsp
          * @param count number of elements
          * @return maximum value
          */
-        extern void (* abs_minmax)(const float *src, size_t count, float *min, float *max);
+        LSP_DSP_LIB_IMPORT
+        void (* abs_minmax)(const float *src, size_t count, float *min, float *max);
     }
 }
 

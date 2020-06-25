@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_COMPLEX_H_
 #define LSP_PLUG_IN_DSP_COMMON_COMPLEX_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -24,7 +24,8 @@ namespace lsp
          * @param src2_im source 2 imaginary part
          * @param count number of multiplications
          */
-        extern void (* complex_mul3)(
+        LSP_DSP_LIB_IMPORT
+        void (* complex_mul3)(
                 float *dst_re, float *dst_im,
                 const float *src1_re, const float *src1_im,
                 const float *src2_re, const float *src2_im,
@@ -39,7 +40,8 @@ namespace lsp
          * @param src_im source imaginary part
          * @param count number of multiplications
          */
-        extern void (* complex_mul2)(
+        LSP_DSP_LIB_IMPORT
+        void (* complex_mul2)(
                 float *dst_re, float *dst_im,
                 const float *src_re, const float *src_im,
                 size_t count
@@ -55,7 +57,8 @@ namespace lsp
          * @param src_im bottom imaginary part
          * @param count number of divisions
          */
-        extern void (* complex_div2)(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* complex_div2)(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
 
         /**
          * Divide complex numbers:
@@ -67,7 +70,8 @@ namespace lsp
          * @param src_im top imaginary part
          * @param count number of divisions
          */
-        extern void (* complex_rdiv2)(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* complex_rdiv2)(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
 
         /**
          * Divide complex numbers:
@@ -81,7 +85,8 @@ namespace lsp
          * @param b_im bottom imaginary part
          * @param count number of divisions
          */
-        extern void (* complex_div3)(float *dst_re, float *dst_im, const float *t_re, const float *t_im, const float *b_re, const float *b_im, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* complex_div3)(float *dst_re, float *dst_im, const float *t_re, const float *t_im, const float *b_re, const float *b_im, size_t count);
 
         /** Calculate complex reciprocal: 1 / (re + j * im)
          *
@@ -89,7 +94,8 @@ namespace lsp
          * @param dst_im source, destination imaginary part
          * @param count number of multiplications
          */
-        extern void (* complex_rcp1)(
+        LSP_DSP_LIB_IMPORT
+        void (* complex_rcp1)(
                 float *dst_re, float *dst_im,
                 size_t count
             );
@@ -102,7 +108,8 @@ namespace lsp
          * @param src_im source imaginary part
          * @param count number of multiplications
          */
-        extern void (* complex_rcp2)(
+        LSP_DSP_LIB_IMPORT
+        void (* complex_rcp2)(
                 float *dst_re, float *dst_im,
                 const float *src_re, const float *src_im,
                 size_t count
@@ -116,7 +123,8 @@ namespace lsp
          * @param src_im imaginary part of complex number
          * @param count number of elements to process
          */
-        extern void (* complex_cvt2modarg)(
+        LSP_DSP_LIB_IMPORT
+        void (* complex_cvt2modarg)(
                 float *dst_mod, float *dst_arg,
                 const float *src_re, const float *src_im,
                 size_t count
@@ -129,7 +137,8 @@ namespace lsp
          * @param src_im imaginary part of complex number
          * @param count number of elements to process
          */
-        extern void (* complex_mod)(
+        LSP_DSP_LIB_IMPORT
+        void (* complex_mod)(
                 float *dst_mod,
                 const float *src_re, const float *src_im,
                 size_t count
@@ -141,7 +150,8 @@ namespace lsp
          * @param src packed complex number data
          * @param count count number of elements to process
          */
-        extern void (* complex_arg)(float *dst, const float *re, const float *im, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* complex_arg)(float *dst, const float *re, const float *im, size_t count);
 
         /** Get module for complex numbers
          *
@@ -149,7 +159,8 @@ namespace lsp
          * @param src packed complex number data
          * @param count count number of elements to process
          */
-        extern void (* pcomplex_mod)(float *dst_mod, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* pcomplex_mod)(float *dst_mod, const float *src, size_t count);
 
         /** Convert packed complex number to polar form
          *
@@ -158,7 +169,8 @@ namespace lsp
          * @param src packed complex number data
          * @param count number of elements to process
          */
-        extern void (* pcomplex_modarg)(float *mod, float *arg, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* pcomplex_modarg)(float *mod, float *arg, const float *src, size_t count);
 
         /** Get argument for complex numbers in range of [-PI; +PI]
          *
@@ -166,7 +178,8 @@ namespace lsp
          * @param src packed complex number data
          * @param count count number of elements to process
          */
-        extern void (* pcomplex_arg)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* pcomplex_arg)(float *dst, const float *src, size_t count);
 
         /** Convert polar-form of complex number to real+imaginary
          *
@@ -176,7 +189,8 @@ namespace lsp
          * @param src_arg argument of the complex number
          * @param count number of elements to process
          */
-        extern void (* complex_cvt2reim)(
+        LSP_DSP_LIB_IMPORT
+        void (* complex_cvt2reim)(
                 float *dst_re, float *dst_im,
                 const float *src_mod, const float *src_arg,
                 size_t count

@@ -31,6 +31,29 @@ Current set of functions provided:
   * Resampling functions based on Lanczos filter;
   * Some set of function to work with 3D mathematics.
 
+Supported platforms
+======
+
+The build and correct unit test execution has been confirmed for following platforms:
+* FreeBSD
+* GNU/Linux
+* OpenBSD
+* Windows 32-bit
+* Windows 64-bit
+
+Supported architectures
+======
+
+The support of following list of hardware architectures has been implemented:
+* i386 (32-bit) - full support.
+* x86_64 (64-bit) - full support.
+* ARMv6A - full support.
+* ARMv7A - full support.
+* AArch64 - most functions.
+
+For all other architectures the generic implementation of algorithms is used, without any
+architecture-specific optimizations. 
+
 Requirements
 ======
 

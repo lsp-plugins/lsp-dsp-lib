@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_SEARCH_H_
 #define LSP_PLUG_IN_DSP_COMMON_SEARCH_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 #include <lsp-plug.in/dsp/common/search/iminmax.h>
 #include <lsp-plug.in/dsp/common/search/minmax.h>

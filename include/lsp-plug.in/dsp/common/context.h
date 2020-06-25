@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_CONTEXT_H_
 #define LSP_PLUG_IN_DSP_COMMON_CONTEXT_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -46,20 +46,23 @@ namespace lsp
          *
          * @param ctx structure to save context
          */
-        extern void (* start)(context_t *ctx);
+        LSP_DSP_LIB_IMPORT
+        void (* start)(context_t *ctx);
 
         /** Finish DSP processing, restore machine context
          *
          * @param ctx structure to restore context
          */
-        extern void (* finish)(context_t *ctx);
+        LSP_DSP_LIB_IMPORT
+        void (* finish)(context_t *ctx);
 
         /**
          * Get DSP information, returns pointer to dsp::info_t structure
          * that can be freed by free()
          * @return pointer to dsp::info_t structure
          */
-        extern info_t * (*info)();
+        LSP_DSP_LIB_IMPORT
+        info_t * (*info)();
     }
 }
 

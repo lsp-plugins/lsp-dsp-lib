@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_3DMATH_TYPES_H_
 #define LSP_PLUG_IN_DSP_COMMON_3DMATH_TYPES_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 #define DSP_3D_TOLERANCE        1e-5f
 #define DSP_3D_SQR_TOLERANCE    0.00316227766017f

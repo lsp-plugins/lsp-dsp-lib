@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_COPY_H_
 #define LSP_PLUG_IN_DSP_COMMON_COPY_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -20,7 +20,8 @@ namespace lsp
          * @param src source pointer
          * @param count number of elements
          */
-        extern void (*copy)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (*copy)(float *dst, const float *src, size_t count);
 
         /** Move data: dst[i] = src[i]
          *
@@ -28,7 +29,8 @@ namespace lsp
          * @param src source pointer
          * @param count number of elements
          */
-        extern void (* move)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* move)(float *dst, const float *src, size_t count);
 
         /** Fill data: dst[i] = value
          *
@@ -36,35 +38,40 @@ namespace lsp
          * @param value filling value
          * @param count number of elements
          */
-        extern void (* fill)(float *dst, float value, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fill)(float *dst, float value, size_t count);
 
         /** Fill data with zeros: dst[i] = 0.0f
          *
          * @param dst destination pointer
          * @param count number of elements
          */
-        extern void (* fill_zero)(float *dst, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fill_zero)(float *dst, size_t count);
 
         /** Fill data with ones: dst[i] = 1.0f
          *
          * @param dst destination pointer
          * @param count number of elements
          */
-        extern void (* fill_one)(float *dst, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fill_one)(float *dst, size_t count);
 
         /** Fill data with negative ones: dst[i] = -1.0f
          *
          * @param dst destination pointer
          * @param count number of elements
          */
-        extern void (* fill_minus_one)(float *dst, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* fill_minus_one)(float *dst, size_t count);
 
         /** Reverse the order of samples: dst[i] <=> dst[count - i - 1]
          *
          * @param dst the buffer to reverse
          * @param count number of samples in buffer
          */
-        extern void (* reverse1)(float *dst, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* reverse1)(float *dst, size_t count);
 
         /** Reverse the order of samples: dst[i] <=> src[count - i - 1]
          *
@@ -72,7 +79,8 @@ namespace lsp
          * @param src source buffer to reverse
          * @param count number of samples in buffer
          */
-        extern void (* reverse2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* reverse2)(float *dst, const float *src, size_t count);
     }
 }
 

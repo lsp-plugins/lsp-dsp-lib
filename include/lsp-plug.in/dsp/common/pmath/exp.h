@@ -8,7 +8,7 @@
 #ifndef LSP_PLUG_IN_DSP_COMMON_PMATH_EXP_H_
 #define LSP_PLUG_IN_DSP_COMMON_PMATH_EXP_H_
 
-#include <lsp-plug.in/dsp/types.h>
+#include <lsp-plug.in/dsp/common/types.h>
 
 namespace lsp
 {
@@ -19,7 +19,8 @@ namespace lsp
          * @param dst destination
          * @param count number of elements in destination
          */
-        extern void (* exp1)(float *dst, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* exp1)(float *dst, size_t count);
 
         /**
          * Compute dst[i] = exp(src[i])
@@ -27,7 +28,8 @@ namespace lsp
          * @param src source
          * @param count number of elements in source
          */
-        extern void (* exp2)(float *dst, const float *src, size_t count);
+        LSP_DSP_LIB_IMPORT
+        void (* exp2)(float *dst, const float *src, size_t count);
     }
 }
 
