@@ -95,7 +95,7 @@ CFLAGS             := \
 CXXFLAGS           := \
   $(CXXFLAGS_EXT) \
   -std=c++98 \
-  -exceptions \
+  -fno-exceptions \
   -fno-rtti \
   -fdata-sections \
   -ffunction-sections \
