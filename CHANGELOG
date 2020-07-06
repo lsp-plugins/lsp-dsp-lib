@@ -3,6 +3,11 @@
 *******************************************************************************
 
 === 0.5.3 ===
+* Added pmin, pmax, psmin, psmax, pamin, pamax functions.
+* Added SSE optimizations for pmin, pmax, psmin, psmax, pamin, pamax functions.
+* Added AVX optimizations for pmin, pmax, psmin, psmax, pamin, pamax functions.
+* Added ARMv7 optimizations for pmin, pmax, psmin, psmax, pamin, pamax functions.
+* Added AArch64 optimizations for pmin, pmax, psmin, psmax, pamin, pamax functions.
 
 === 0.5.2 ===
 * Updated build system.

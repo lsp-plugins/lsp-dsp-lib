@@ -45,6 +45,7 @@
         #include <private/dsp/arch/aarch64/asimd/pmath/abs_vv.h>
         #include <private/dsp/arch/aarch64/asimd/pmath/log.h>
         #include <private/dsp/arch/aarch64/asimd/pmath/exp.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/minmax.h>
         #include <private/dsp/arch/aarch64/asimd/pmath/pow.h>
 
         #include <private/dsp/arch/aarch64/asimd/hmath/hsum.h>
@@ -164,6 +165,19 @@
                 EXPORT1(mul3);
                 EXPORT1(div3);
                 EXPORT1(mod3);
+
+                EXPORT1(pmin2);
+                EXPORT1(pmax2);
+                EXPORT1(psmin2);
+                EXPORT1(psmax2);
+                EXPORT1(pamin2);
+                EXPORT1(pamax2);
+                EXPORT1(pmin3);
+                EXPORT1(pmax3);
+                EXPORT1(psmin3);
+                EXPORT1(psmax3);
+                EXPORT1(pamin3);
+                EXPORT1(pamax3);
 
                 EXPORT1(fmadd_k3);
                 EXPORT1(fmsub_k3);

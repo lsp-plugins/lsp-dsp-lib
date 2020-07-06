@@ -34,6 +34,7 @@
         #include <private/dsp/arch/x86/sse/pmath/fmop_kx.h>
         #include <private/dsp/arch/x86/sse/pmath/fmop_vv.h>
         #include <private/dsp/arch/x86/sse/pmath/abs_vv.h>
+        #include <private/dsp/arch/x86/sse/pmath/minmax.h>
 
         #include <private/dsp/arch/x86/sse/hmath/hsum.h>
         #include <private/dsp/arch/x86/sse/hmath/hdotp.h>
@@ -177,6 +178,19 @@
                 EXPORT1(mul_k3);
                 EXPORT1(div_k3);
                 EXPORT1(rdiv_k3);
+
+                EXPORT1(pmin2);
+                EXPORT1(pmax2);
+                EXPORT1(psmin2);
+                EXPORT1(psmax2);
+                EXPORT1(pamin2);
+                EXPORT1(pamax2);
+                EXPORT1(pmin3);
+                EXPORT1(pmax3);
+                EXPORT1(psmin3);
+                EXPORT1(psmax3);
+                EXPORT1(pamin3);
+                EXPORT1(pamax3);
 
                 EXPORT1(h_sum);
                 EXPORT1(h_sqr_sum);
