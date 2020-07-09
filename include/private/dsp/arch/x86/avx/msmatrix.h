@@ -112,8 +112,8 @@ namespace lsp
                 __ASM_EMIT("vmovaps         %[X_HALF], %%ymm7") \
                 /*  32x blocks */ \
                 __ASM_EMIT("sub             $32, %[count]") \
-                __ASM_EMIT("jb              2f") \
                 __ASM_EMIT("vmovaps         %%ymm7, %%ymm6") \
+                __ASM_EMIT("jb              2f") \
                 __ASM_EMIT("1:") \
                 __ASM_EMIT("vmovups         0x00(%[" L "], %[off]), %%ymm0")                /*  ymm0 = l */ \
                 __ASM_EMIT("vmovups         0x20(%[" L "], %[off]), %%ymm1") \
