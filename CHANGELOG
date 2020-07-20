@@ -2,6 +2,15 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 0.5.3 ===
+* Added pmin, pmax, psmin, psmax, pamin, pamax functions.
+* Added SSE optimizations for pmin, pmax, psmin, psmax, pamin, pamax functions.
+* Added AVX optimizations for pmin, pmax, psmin, psmax, pamin, pamax functions.
+* Added ARMv7 optimizations for pmin, pmax, psmin, psmax, pamin, pamax functions.
+* Added AArch64 optimizations for pmin, pmax, psmin, psmax, pamin, pamax functions.
+* Fixed bugs in msmatrix conversion functions for AVX and SSE.
+* Fixed bugs in sse::bilinear_transform_x1 routine.
+
 === 0.5.2 ===
 * Updated build system.
 * Code refactoring.

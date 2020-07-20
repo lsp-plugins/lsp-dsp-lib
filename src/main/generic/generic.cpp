@@ -42,6 +42,7 @@ namespace lsp
     #include <private/dsp/arch/generic/pmath/abs_vv.h>
     #include <private/dsp/arch/generic/pmath/exp.h>
     #include <private/dsp/arch/generic/pmath/log.h>
+    #include <private/dsp/arch/generic/pmath/minmax.h>
     #include <private/dsp/arch/generic/pmath/pow.h>
 
     #include <private/dsp/arch/generic/hmath/hsum.h>
@@ -182,6 +183,19 @@ namespace lsp
             EXPORT1(mul3);
             EXPORT1(div3);
             EXPORT1(mod3);
+
+            EXPORT1(pmin2);
+            EXPORT1(pmax2);
+            EXPORT1(psmin2);
+            EXPORT1(psmax2);
+            EXPORT1(pamin2);
+            EXPORT1(pamax2);
+            EXPORT1(pmin3);
+            EXPORT1(pmax3);
+            EXPORT1(psmin3);
+            EXPORT1(psmax3);
+            EXPORT1(pamin3);
+            EXPORT1(pamax3);
 
             EXPORT1(h_sum);
             EXPORT1(h_sqr_sum);

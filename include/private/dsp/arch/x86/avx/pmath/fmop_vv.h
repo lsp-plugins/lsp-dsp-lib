@@ -16,7 +16,7 @@ namespace lsp
 {
     namespace avx
     {
-    #define OP_DSEL(a, b)   a
+        #define OP_DSEL(a, b)   a
         #define OP_RSEL(a, b)   b
 
         #define FMADDSUB_VV_CORE(DST, A, B, C, OP) \

@@ -145,6 +145,19 @@ namespace lsp
         LSP_DSP_LIB_EXPORT   void    (* powvx1)(float *v, const float *x, size_t count) = NULL;
         LSP_DSP_LIB_EXPORT   void    (* powvx2)(float *dst, const float *v, const float *x, size_t count) = NULL;
 
+        LSP_DSP_LIB_EXPORT   void    (* pmin2)(float *dst, const float *src, size_t count) = NULL;
+        LSP_DSP_LIB_EXPORT   void    (* psmin2)(float *dst, const float *src, size_t count) = NULL;
+        LSP_DSP_LIB_EXPORT   void    (* pamin2)(float *dst, const float *src, size_t count) = NULL;
+        LSP_DSP_LIB_EXPORT   void    (* pmax2)(float *dst, const float *src, size_t count) = NULL;
+        LSP_DSP_LIB_EXPORT   void    (* psmax2)(float *dst, const float *src, size_t count) = NULL;
+        LSP_DSP_LIB_EXPORT   void    (* pamax2)(float *dst, const float *src, size_t count) = NULL;
+        LSP_DSP_LIB_EXPORT   void    (* pmin3)(float *dst, const float *a, const float *b, size_t count) = NULL;
+        LSP_DSP_LIB_EXPORT   void    (* psmin3)(float *dst, const float *a, const float *b, size_t count) = NULL;
+        LSP_DSP_LIB_EXPORT   void    (* pamin3)(float *dst, const float *a, const float *b, size_t count) = NULL;
+        LSP_DSP_LIB_EXPORT   void    (* pmax3)(float *dst, const float *a, const float *b, size_t count) = NULL;
+        LSP_DSP_LIB_EXPORT   void    (* psmax3)(float *dst, const float *a, const float *b, size_t count) = NULL;
+        LSP_DSP_LIB_EXPORT   void    (* pamax3)(float *dst, const float *a, const float *b, size_t count) = NULL;
+
         LSP_DSP_LIB_EXPORT   float   (* h_sum)(const float *src, size_t count) = NULL;
         LSP_DSP_LIB_EXPORT   float   (* h_sqr_sum)(const float *src, size_t count) = NULL;
         LSP_DSP_LIB_EXPORT   float   (* h_abs_sum)(const float *src, size_t count) = NULL;

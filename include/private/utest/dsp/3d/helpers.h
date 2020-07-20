@@ -17,9 +17,9 @@ namespace lsp
     {
         bool point3d_ck(const dsp::point3d_t *p1, const dsp::point3d_t *p2);
         bool point3d_sck(const dsp::point3d_t *p1, const dsp::point3d_t *p2);
-        bool point3d_ack(const dsp::point3d_t *p1, const dsp::point3d_t *p2, float tolerance);
+        bool point3d_ack(const dsp::point3d_t *p1, const dsp::point3d_t *p2, float tolerance = DSP_3D_TOLERANCE);
         bool vector3d_sck(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2);
-        bool vector3d_ack(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2);
+        bool vector3d_ack(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, float tolerance = DSP_3D_TOLERANCE);
         bool matrix3d_ck(const dsp::matrix3d_t *m1, const dsp::matrix3d_t *m2);
 
         void dump_point(const char *text, const dsp::point3d_t *p);
