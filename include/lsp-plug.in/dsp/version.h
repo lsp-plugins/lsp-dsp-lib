@@ -21,8 +21,13 @@
     #define LSP_DSP_LIB_CEXPORT         __attribute__((visibility("default")))
 #endif
 
-#define LSP_DSP_LIB_CPPIMPORT       extern
-#define LSP_DSP_LIB_CIMPORT         extern "C"
+#ifdef __cplusplus
+    #define LSP_DSP_LIB_CPPIMPORT       extern
+    #define LSP_DSP_LIB_CIMPORT         extern "C"
+#else
+    #define LSP_DSP_LIB_CPPIMPORT
+    #define LSP_DSP_LIB_CIMPORT         extern
+#endif
 
 #define LSP_DSP_LIB_MANGLE(name)    lsp_dsp_ ## name
 

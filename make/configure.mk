@@ -1,5 +1,8 @@
 # Definitions
 PREFIX                     := /usr/local
+LIBDIR                     := $(PREFIX)/lib
+BINDIR                     := $(PREFIX)/bin
+INCDIR                     := $(PREFIX)/include
 BASEDIR                    := $(CURDIR)
 BUILDDIR                   := $(BASEDIR)/.build
 CONFIG                     := $(BASEDIR)/.config.mk

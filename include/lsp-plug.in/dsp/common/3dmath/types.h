@@ -72,7 +72,7 @@ namespace lsp
 
     #pragma pack(pop)
 
-        enum axis_orientation_t
+        typedef enum axis_orientation_t
         {
             AO3D_POS_X_FWD_POS_Y_UP,
             AO3D_POS_X_FWD_POS_Z_UP,
@@ -100,7 +100,7 @@ namespace lsp
             AO3D_NEG_Z_FWD_POS_Y_UP,
             AO3D_NEG_Z_FWD_NEG_X_UP,
             AO3D_NEG_Z_FWD_NEG_Y_UP
-        };
+        } axis_orientation_t;
 
 #ifdef __cplusplus
     }

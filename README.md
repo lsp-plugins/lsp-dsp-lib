@@ -101,7 +101,7 @@ make prune
 Usage
 ======
 
-Here's the code snippet of how the library can be initialized and used:
+Here's the code snippet of how the library can be initialized and used in C++:
 
 ```C++
 
@@ -145,5 +145,9 @@ int main(int argc, const char **argv)
 
 ```
 
+Also all functions can be accessed from pure C with ```lsp_dsp_``` prefix in the name:
+```C
+
+```
 
 
