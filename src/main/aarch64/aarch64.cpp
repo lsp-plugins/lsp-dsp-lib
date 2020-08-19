@@ -13,6 +13,13 @@
     #include <lsp-plug.in/stdlib/string.h>
     #include <lsp-plug.in/stdlib/math.h>
 
+    // Test framework
+    #ifdef LSP_TESTING
+        #include <lsp-plug.in/test-fw/test.h>
+    #else
+        #define TEST_EXPORT(...)
+    #endif /* LSP_TESTING */
+
     #include <stdio.h>
     #include <errno.h>
     #include <stdlib.h>
