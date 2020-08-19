@@ -5,6 +5,7 @@
  *      Author: sadko
  */
 
+#include <lsp-plug.in/common/types.h>
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/init.h>
 

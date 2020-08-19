@@ -10,10 +10,13 @@
 
 #include <lsp-plug.in/dsp/common/types.h>
 
+#ifdef __cplusplus
 namespace lsp
 {
     namespace dsp
     {
+#endif /* __cplusplus */
+
         #pragma pack(push, 1)
         /**
          * DSP context to store and restore machine state
@@ -37,33 +40,49 @@ namespace lsp
         typedef void (* start_t)(context_t *ctx);
         typedef void (* finish_t)(context_t *ctx);
 
+#ifdef __cplusplus
+    }
+}
+#endif /* __cplusplus */
+
+#ifdef __cplusplus
+namespace lsp
+{
+    namespace dsp
+    {
         /** Initialize DSP
          *
          */
+        LSP_DSP_LIB_CPPIMPORT
         void init();
-
-        /** Start DSP processing, save machine context
-         *
-         * @param ctx structure to save context
-         */
-        LSP_DSP_LIB_IMPORT
-        void (* start)(context_t *ctx);
-
-        /** Finish DSP processing, restore machine context
-         *
-         * @param ctx structure to restore context
-         */
-        LSP_DSP_LIB_IMPORT
-        void (* finish)(context_t *ctx);
-
-        /**
-         * Get DSP information, returns pointer to dsp::info_t structure
-         * that can be freed by free()
-         * @return pointer to dsp::info_t structure
-         */
-        LSP_DSP_LIB_IMPORT
-        info_t * (*info)();
     }
 }
+#else
+    /** Initialize DSP
+     *
+     */
+    LSP_DSP_LIB_CIMPORT
+    void LSP_DSP_LIB_MANGLE(init());
+#endif /* __cplusplus */
+
+
+/** Start DSP processing, save machine context
+ *
+ * @param ctx structure to save context
+ */
+LSP_DSP_LIB_SYMBOL(void, start, context_t *ctx);
+
+/** Finish DSP processing, restore machine context
+ *
+ * @param ctx structure to restore context
+ */
+LSP_DSP_LIB_SYMBOL(void, finish, context_t *ctx);
+
+/**
+ * Get DSP information, returns pointer to dsp::info_t structure
+ * that can be freed by free()
+ * @return pointer to dsp::info_t structure
+ */
+LSP_DSP_LIB_SYMBOL(info_t *, info, );
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_CONTEXT_H_ */

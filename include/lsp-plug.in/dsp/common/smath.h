@@ -10,28 +10,20 @@
 
 #include <lsp-plug.in/dsp/common/types.h>
 
-namespace lsp
-{
-    namespace dsp
-    {
-        /** Power of floating-point value by integer constant
-         *
-         * @param x value to power
-         * @param deg the power degree
-         * @return result of x^deg calculation
-         */
-        LSP_DSP_LIB_IMPORT
-        float (* ipowf)(float x, int deg);
+/** Power of floating-point value by integer constant
+ *
+ * @param x value to power
+ * @param deg the power degree
+ * @return result of x^deg calculation
+ */
+LSP_DSP_LIB_SYMBOL(float , ipowf, float x, int deg);
 
-        /** Calculate the integer root of value
-         *
-         * @param x the value to calculate
-         * @param deg the root degree, should be positive
-         * @return the deg'th root of x
-         */
-        LSP_DSP_LIB_IMPORT
-        float (* irootf)(float x, int deg);
-    }
-}
+/** Calculate the integer root of value
+ *
+ * @param x the value to calculate
+ * @param deg the root degree, should be positive
+ * @return the deg'th root of x
+ */
+LSP_DSP_LIB_SYMBOL(float , irootf, float x, int deg);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_SMATH_H_ */

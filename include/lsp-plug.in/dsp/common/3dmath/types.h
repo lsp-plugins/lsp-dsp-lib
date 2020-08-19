@@ -15,11 +15,14 @@
 #define DSP_3D_MAXVALUE         1e+20f
 #define DSP_3D_MAXISECT         8
 
+#ifdef __cplusplus
 namespace lsp
 {
     namespace dsp
     {
-        #pragma pack(push, 1)
+#endif /* __cplusplus */
+
+    #pragma pack(push, 1)
         typedef struct point3d_t
         {
             float       x, y, z, w;
@@ -67,7 +70,7 @@ namespace lsp
             point3d_t   v[3];
         } raw_triangle_t;
 
-        #pragma pack(pop)
+    #pragma pack(pop)
 
         enum axis_orientation_t
         {
@@ -99,7 +102,9 @@ namespace lsp
             AO3D_NEG_Z_FWD_NEG_Y_UP
         };
 
+#ifdef __cplusplus
     }
 }
+#endif /* __cplusplus */
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_3DMATH_TYPES_H_ */

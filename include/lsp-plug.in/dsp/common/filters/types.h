@@ -180,11 +180,14 @@
 #define LSP_DSP_BIQUAD_ALIGN            0x40
 #define LSP_DSP_BIQUAD_D_ITEMS          16
 
+#ifdef __cplusplus
 namespace lsp
 {
     namespace dsp
     {
-        #pragma pack(push, 1)
+#endif /* __cplusplus */
+
+    #pragma pack(push, 1)
 
         /**
          * Analog filter cascade transfer function:
@@ -267,8 +270,11 @@ namespace lsp
             float   __pad[8];
         } __lsp_aligned(LSP_DSP_BIQUAD_ALIGN) biquad_t;
 
-        #pragma pack(pop)
+    #pragma pack(pop)
+
+#ifdef __cplusplus
     }
 }
+#endif /* __cplusplus */
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_FILTERS_TYPES_H_ */
