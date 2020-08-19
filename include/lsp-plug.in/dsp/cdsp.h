@@ -1,5 +1,5 @@
 /*
- * dsp_c.h
+ * cdsp.h
  *
  *  Created on: 19 Aug 2020.
  *      Author: Alexandros Theodotou

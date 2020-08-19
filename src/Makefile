@@ -6,7 +6,7 @@ include $(CURDIR)/../project.mk
 rwildcard               = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
 CXX_SRCMAIN             =
-CXX_SRCEXT              = main/dsp.cpp main/dsp_c.cpp main/generic/generic.cpp
+CXX_SRCEXT              = main/dsp.cpp main/cdsp.cpp main/generic/generic.cpp
 CXX_SRCALL              = $(call rwildcard, main, *.cpp)
 CXX_SRCTEST             = $(call rwildcard, test, *.cpp)
 CXX_SRC                 = $(CXX_SRCMAIN)

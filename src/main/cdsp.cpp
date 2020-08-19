@@ -8,7 +8,7 @@
 #include <cstdlib>
 
 #include <lsp-plug.in/dsp/dsp.h>
-#include <lsp-plug.in/dsp/dsp_c.h>
+#include <lsp-plug.in/dsp/cdsp.h>
 
 extern "C"
 {
