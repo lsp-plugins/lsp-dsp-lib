@@ -107,7 +107,7 @@ Here's the code snippet of how the library can be initialized and used in C++:
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <stdio.h>
-
+#include <stdlib.h>
 
 int main(int argc, const char **argv)
 {
@@ -147,6 +147,43 @@ int main(int argc, const char **argv)
 
 Also all functions can be accessed from pure C with ```lsp_dsp_``` prefix in the name:
 ```C
+
+#include <lsp-plug.in/dsp/dsp.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, const char **argv)
+{
+    // Initialize DSP
+    lsp_dsp_init();
+
+    // Optionally: output information about the system
+    info_t *info = lsp_dsp_info();
+    if (info != NULL)
+    {
+        printf("Architecture:   %s\n", info->arch);
+        printf("Processor:      %s\n", info->cpu);
+        printf("Model:          %s\n", info->model);
+        printf("Features:       %s\n", info->features);
+
+        free(info);
+    }
+    
+    // For faster computing we can tune CPU by updating thread context.
+    // This will enable Flush-to-Zero and Denormals-are-Zero flags on
+    // CPUs that support them
+    context_t ctx;
+    lsp_dsp_start(&ctx);
+    
+    // Here we call some dsp functions, for example dsp::fill_zero
+    float v[0x1000];
+    lsp_dsp_fill_zero(v, sizeof(v)/sizeof(float));
+    
+    // At the end, we need to restore the context
+    lsp_dsp_finish(&ctx);
+    
+    return 0;
+}
 
 ```
 
