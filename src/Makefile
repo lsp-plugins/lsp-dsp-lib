@@ -16,11 +16,13 @@ CXX_OBJEXT              = $(patsubst %.cpp, $($(ARTIFACT_VARS)_BIN)/%.o, $(CXX_S
 
 ALL_HEADERS             = $(call rwildcard, $($(ARTIFACT_VARS)_INC), *.h)
 CXX_FILE                = $(patsubst $($(ARTIFACT_VARS)_BIN)/%.o,%.cpp, $(@))
-CXX_HEADERS             = $(foreach hdr,$(ARTIFACT_HEADERS),$(call rwildcard, $($(ARTIFACT_VARS)_INC)/$(hdr), *.h)
+CXX_HEADERS             = $(foreach hdr,$(ARTIFACT_HEADERS),$(call rwildcard, $($(ARTIFACT_VARS)_INC)/$(hdr), *.h))
 CXX_INSTHEADERS         = $(patsubst $($(ARTIFACT_VARS)_INC)/%,$(DESTDIR)$(PREFIX)/include/%,$(CXX_HEADERS))
 
 ARTIFACT_BIN            = $($(ARTIFACT_VARS)_BIN)
 ARTIFACT_LIB            = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)-$($(ARTIFACT_VARS)_VERSION)$(LIBRARY_EXT)
+ARTIFACT_SYMLINK        = $($(ARTIFACT_VARS)_NAME)$(LIBRARY_EXT)
+ARTIFACT_PC             = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)$(PKGCONFIG_EXT)
 ARTIFACT_TESTBIN        = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)-test$(EXECUTABLE_EXT)
 ARTIFACT_OBJ            = $($(ARTIFACT_VARS)_OBJ)
 ARTIFACT_MFLAGS         = $($(ARTIFACT_VARS)_MFLAGS) $(foreach dep,$(DEPENDENCIES),-DUSE_$(dep))
@@ -29,7 +31,7 @@ CFLAGS_DEPS             = $(foreach dep, $(DEPENDENCIES) $(ARTIFACT_VARS), $(if 
 BUILD_DEPS              = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_OBJ), $(dep)))
 LINKER_DEPS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_LDFLAGS), $($(dep)_LDFLAGS)))
 LINKER_OBJS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_OBJ), $($(dep)_OBJ)))
-BUILD_ALL               = $(ARTIFACT_LIB)
+BUILD_ALL               = $(ARTIFACT_LIB) $(ARTIFACT_PC)
 
 ifeq ($(TEST), 1)
   ifeq ($($(ARTIFACT_VARS)_TESTING),1)
@@ -137,20 +139,34 @@ $(CXX_OBJ) $(CXX_OBJEXT):
 	@mkdir -p $(dir $@)
 	@$(CXX) -o $(@) -c $(CXX_FILE) -fPIC $(CXXFLAGS) $(ARTIFACT_MFLAGS) $(EXT_FLAGS) $(INCLUDE) $(CFLAGS_DEPS)
 
+$(ARTIFACT_PC):
+	@echo "prefix=$(PREFIX)" > "$(ARTIFACT_PC)"
+	@echo "exec_prefix=\$${prefix}/bin" >> "$(ARTIFACT_PC)"
+	@echo "includedir=\$${prefix}/include" >> "$(ARTIFACT_PC)"
+	@echo "libdir=\$${prefix}/lib" >> "$(ARTIFACT_PC)"
+	@echo "" >> $(ARTIFACT_PC) >> "$(ARTIFACT_PC)"
+	@echo "Name: $($(ARTIFACT_VARS)_NAME)" >> "$(ARTIFACT_PC)"
+	@echo "Description: $($(ARTIFACT_VARS)_DESC)" >> "$(ARTIFACT_PC)"
+	@echo "Version: $($(ARTIFACT_VARS)_VERSION)" >> "$(ARTIFACT_PC)"
+	@echo "Cflags: -I\$${includedir}" >> "$(ARTIFACT_PC)"
+	@echo "Libs: -L\$${libdir} -l$($(ARTIFACT_VARS)_NAME)" >> "$(ARTIFACT_PC)"
+
 install: all
 	@echo "Installing $($(ARTIFACT_VARS)_NAME)"
 	@mkdir -p "$(DESTDIR)$(PREFIX)/include"
-	@mkdir -p "$(DESTDIR)$(PREFIX)/lib"
+	@mkdir -p "$(DESTDIR)$(PREFIX)/lib/pkgconfig"
 	@cp -r $($(ARTIFACT_VARS)_INC)/* "$(DESTDIR)$(PREFIX)/include/"
+	@cp $(ARTIFACT_PC) "$(DESTDIR)$(PREFIX)/lib/pkgconfig/"
 	@echo $(INSTALL) $(ARTIFACT_LIB) -t "$(DESTDIR)$(PREFIX)/lib"
 	@$(INSTALL) $(ARTIFACT_LIB) -t "$(DESTDIR)$(PREFIX)/lib"
-	@ln -sf $(notdir $(ARTIFACT_LIB)) "$(DESTDIR)$(PREFIX)/lib/$($(ARTIFACT_VARS)_NAME)$(LIBRARY_EXT)"
+	@ln -sf $(notdir $(ARTIFACT_LIB)) "$(DESTDIR)$(PREFIX)/lib/$(ARTIFACT_SYMLINK)"
 	@echo "Install OK"
 
 uninstall:
 	@echo "Uninstalling $($(ARTIFACT_VARS)_NAME)"
 	@-rm -f "$(DESTDIR)$(PREFIX)/lib/$(notdir $(ARTIFACT_LIB))"
-	@-rm -f "$(DESTDIR)$(PREFIX)/lib/$($(ARTIFACT_VARS)_NAME)$(LIBRARY_EXT)"
+	@-rm -f "$(DESTDIR)$(PREFIX)/lib/$(ARTIFACT_SYMLINK)"
+	@-rm -f "$(DESTDIR)$(PREFIX)/lib/pkgconfig/$(notdir $(ARTIFACT_PC))"
 	@echo rm -f $(CXX_INSTHEADERS)
 	@-rm -f $(CXX_INSTHEADERS)
 	@echo "Uninstall OK"

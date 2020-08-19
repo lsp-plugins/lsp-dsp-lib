@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 0.5.4 ===
+* Added pkg-config file generation.
 
 === 0.5.3 ===
 * Added pmin, pmax, psmin, psmax, pamin, pamax functions.

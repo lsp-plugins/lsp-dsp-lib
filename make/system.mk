@@ -73,6 +73,11 @@ ifndef EXECUTABLE_EXT
   endif
 endif
 
+# Extension of pkgconfig files
+ifndef PKGCONFIG_EXT
+  PKGCONFIG_EXT            := .pc
+endif
+
 # Installation prefix
 ifndef PREFIX
   ifeq ($(PLATFORM),Windows)
@@ -99,6 +104,7 @@ COMMON_VARS = \
 	ARCHITECTURE \
 	LIBRARY_EXT \
 	EXECUTABLE_EXT \
+	PKGCONFIG_EXT \
 	PREFIX \
 	TEMPDIR \
 	TEST \
@@ -114,6 +120,7 @@ sysvars:
 	@echo "  DEBUG                     build with debug options"
 	@echo "  EXECUTABLE_EXT            file extension for executable files"
 	@echo "  LIBRARY_EXT               file extension for library files"
+	@echo "  PKGCONFIG_EXT             file extension for pkgconfig files"
 	@echo "  PLATFORM                  target software platform to perform build"
 	@echo "  PREFIX                    installation prefix for binary files"
 	@echo "  PROFILE                   build with profile options"
