@@ -265,6 +265,16 @@ void
 lsp_dsp_finish (
   lsp_dsp_context_t * c_ctx);
 
+/* --- convolution --- */
+
+void
+lsp_dsp_convolve (
+  float *       dst,
+  const float * src,
+  const float * conv,
+  size_t        length,
+  size_t        count);
+
 /* --- copy --- */
 
 void
@@ -310,6 +320,102 @@ lsp_dsp_reverse2 (
   float *       dst,
   const float * src,
   size_t        count);
+
+/* --- fastconv --- */
+
+void
+lsp_dsp_fastconv_parse (
+  float *       dest,
+  const float * src,
+  size_t        rank);
+
+void
+lsp_dsp_fastconv_parse_apply (
+  float *       dest,
+  float *       tmp,
+  const float * c,
+  const float * src,
+  size_t        rank);
+
+void
+lsp_dsp_fastconv_restore (
+  float * dest,
+  float * src,
+  size_t  rank);
+
+void
+lsp_dsp_fastconv_apply (
+  float *       dest,
+  float *       tmp,
+  const float * c1,
+  const float * c2,
+  size_t        rank);
+
+/* --- fft --- */
+
+void
+lsp_dsp_direct_fft (
+  float *       dst_re,
+  float *       dst_im,
+  const float * src_re,
+  const float * src_im,
+  size_t        rank);
+
+void
+lsp_dsp_packed_direct_fft (
+  float *       dest,
+  float *       src,
+  size_t        rank);
+
+void
+lsp_dsp_reverse_fft (
+  float *       dst_re,
+  float *       dst_im,
+  const float * src_re,
+  const float * src_im,
+  size_t        rank);
+
+void
+lsp_dsp_packed_reverse_fft (
+  float *       dest,
+  float *       src,
+  size_t        rank);
+
+void
+lsp_dsp_normalize_fft3 (
+  float *       dst_re,
+  float *       dst_im,
+  const float * src_re,
+  const float * src_im,
+  size_t        rank);
+
+void
+lsp_dsp_normalize_fft2 (
+  float *       re,
+  float *       im,
+  size_t        rank);
+
+void
+lsp_dsp_center_fft (
+  float *       dst_re,
+  float *       dst_im,
+  const float * src_re,
+  const float * src_im,
+  size_t        rank);
+
+void
+lsp_dsp_combine_fft (
+  float *       dst_re,
+  float *       dst_im,
+  const float * src_re,
+  const float * src_im,
+  size_t        rank);
+
+void
+lsp_dsp_packed_combine_fft (
+  float *       dest,
+  float *       src,
+  size_t        rank);
 
 /* --- mix --- */
 

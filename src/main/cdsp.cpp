@@ -307,6 +307,20 @@ lsp_dsp_finish (
   lsp::dsp::finish (ctx);
 }
 
+/* --- convolution --- */
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_convolve (
+  float *       dst,
+  const float * src,
+  const float * conv,
+  size_t        length,
+  size_t        count)
+{
+  lsp::dsp::convolve (dst, src, conv, length, count);
+}
+
 /* --- copy --- */
 
 LSP_DSP_LIB_EXPORT
@@ -383,6 +397,159 @@ lsp_dsp_reverse2 (
   size_t        count)
 {
   lsp::dsp::reverse2 (dst, src, count);
+}
+
+/* --- fastconv --- */
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_fastconv_parse (
+  float *       dest,
+  const float * src,
+  size_t        rank)
+{
+  lsp::dsp::fastconv_parse (dest, src, rank);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_fastconv_parse_apply (
+  float *       dest,
+  float *       tmp,
+  const float * c,
+  const float * src,
+  size_t        rank)
+{
+  lsp::dsp::fastconv_parse_apply (dest, tmp, c, src, rank);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_fastconv_restore (
+  float * dest,
+  float * src,
+  size_t  rank)
+{
+  lsp::dsp::fastconv_restore (dest, src, rank);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_fastconv_apply (
+  float *       dest,
+  float *       tmp,
+  const float * c1,
+  const float * c2,
+  size_t        rank)
+{
+  lsp::dsp::fastconv_apply (dest, tmp, c1, c2, rank);
+}
+
+/* --- fft --- */
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_direct_fft (
+  float *       dst_re,
+  float *       dst_im,
+  const float * src_re,
+  const float * src_im,
+  size_t        rank)
+{
+  lsp::dsp::direct_fft (
+    dst_re, dst_im, src_re, src_im, rank);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_packed_direct_fft (
+  float *       dest,
+  float *       src,
+  size_t        rank)
+{
+  lsp::dsp::packed_direct_fft (dest, src, rank);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_reverse_fft (
+  float *       dst_re,
+  float *       dst_im,
+  const float * src_re,
+  const float * src_im,
+  size_t        rank)
+{
+  lsp::dsp::reverse_fft (
+    dst_re, dst_im, src_re, src_im, rank);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_packed_reverse_fft (
+  float *       dest,
+  float *       src,
+  size_t        rank)
+{
+  lsp::dsp::packed_reverse_fft (dest, src, rank);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_normalize_fft3 (
+  float *       dst_re,
+  float *       dst_im,
+  const float * src_re,
+  const float * src_im,
+  size_t        rank)
+{
+  lsp::dsp::normalize_fft3 (
+    dst_re, dst_im, src_re, src_im, rank);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_normalize_fft2 (
+  float *       re,
+  float *       im,
+  size_t        rank)
+{
+  lsp::dsp::normalize_fft2 (re, im, rank);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_center_fft (
+  float *       dst_re,
+  float *       dst_im,
+  const float * src_re,
+  const float * src_im,
+  size_t        rank)
+{
+  lsp::dsp::center_fft (
+    dst_re, dst_im, src_re, src_im, rank);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_combine_fft (
+  float *       dst_re,
+  float *       dst_im,
+  const float * src_re,
+  const float * src_im,
+  size_t        rank)
+{
+  lsp::dsp::combine_fft (
+    dst_re, dst_im, src_re, src_im, rank);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_packed_combine_fft (
+  float *       dest,
+  float *       src,
+  size_t        rank)
+{
+  lsp::dsp::packed_combine_fft (dest, src, rank);
 }
 
 /* --- mix --- */
