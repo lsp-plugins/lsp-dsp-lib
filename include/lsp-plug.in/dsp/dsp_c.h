@@ -41,6 +41,14 @@ void
 lsp_dsp_lib_dsp_info_free (
   lsp_dsp_lib_info_t * info);
 
+void
+lsp_dsp_lib_dsp_start (
+  lsp_dsp_lib_context_t * c_ctx);
+
+void
+lsp_dsp_lib_dsp_finish (
+  lsp_dsp_lib_context_t * c_ctx);
+
 #ifdef __cplusplus
 }
 #endif

@@ -45,4 +45,13 @@ lsp_dsp_lib_dsp_start (
   lsp::dsp::start (ctx);
 }
 
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_lib_dsp_finish (
+  lsp_dsp_lib_context_t * c_ctx)
+{
+  lsp::dsp::context_t * ctx = (lsp::dsp::context_t *) c_ctx;
+  lsp::dsp::finish (ctx);
+}
+
 } /* extern "C" */
