@@ -59,6 +59,7 @@ define srcconfig =
   $(eval name=$(1))
   $(eval builtin=$(patsubst $(ARTIFACT_NAME),,$($(name)_NAME)))
   $(if $($(name)_PATH),,    $(eval $(name)_PATH    := $(MODULES)/$($(name)_NAME)))
+  $(if $($(name)_DESC),,    $(eval $(name)_DESC    := $($(name)_DESC)))
   $(if $($(name)_INC),,     $(eval $(name)_INC     := $($(name)_PATH)/include))
   $(if $($(name)_SRC),,     $(eval $(name)_SRC     := $($(name)_PATH)/src))
   $(if $($(name)_TEST),,    $(eval $(name)_TEST    := $($(name)_PATH)/test))
@@ -74,6 +75,7 @@ define hdrconfig =
   $(eval name=$(1))
   $(eval builtin=$(patsubst $(ARTIFACT_NAME),,$($(name)_NAME)))
   $(if $($(name)_PATH),,    $(eval $(name)_PATH    := $(MODULES)/$($(name)_NAME)))
+  $(if $($(name)_DESC),,    $(eval $(name)_DESC    := $($(name)_DESC)))
   $(if $($(name)_INC),,     $(eval $(name)_INC     := $($(name)_PATH)/include))
   $(if $($(name)_TESTING),, $(eval $(name)_TESTING := 0))
   $(if $($(name)_CFLAGS),,  $(eval $(name)_CFLAGS  := "-I\"$($(name)_INC)\"" $(if $(builtin),"-D$(name)_BUILTIN")))
@@ -94,6 +96,9 @@ endef
 ifndef $(ARTIFACT_VARS)_NAME
   $(ARTIFACT_VARS)_NAME      := $(ARTIFACT_NAME)
 endif
+ifndef $(ARTIFACT_VARS)_DESC
+  $(ARTIFACT_VARS)_DESC      := $(ARTIFACT_DESC)
+endif
 ifndef $(ARTIFACT_VARS)_VERSION 
   $(ARTIFACT_VARS)_VERSION   := $(ARTIFACT_VERSION)
 endif
@@ -112,6 +117,7 @@ CONFIG_VARS = \
   $(TOOL_VARS) \
   $(foreach name, $(OVERALL_DEPS), \
     $(name)_NAME \
+    $(name)_DESC \
     $(name)_VERSION \
     $(name)_TYPE \
     $(name)_BRANCH \
@@ -148,6 +154,7 @@ help: | toolvars sysvars
 	@echo "  <ARTIFACT>_BIN            location to put all binaries when building artifact"
 	@echo "  <ARTIFACT>_BRANCH         git branch used to checkout source code"
 	@echo "  <ARTIFACT>_CFLAGS         C/C++ flags to access headers of the artifact"
+	@echo "  <ARTIFACT>_DESC           Full description of the artifact"
 	@echo "  <ARTIFACT>_INC            path to include files of the artifact"
 	@echo "  <ARTIFACT>_LDFLAGS        linker flags to link with artifact"
 	@echo "  <ARTIFACT>_MFLAGS         artifact-specific compilation flags"
