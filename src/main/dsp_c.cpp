@@ -54,4 +54,69 @@ lsp_dsp_lib_dsp_finish (
   lsp::dsp::finish (ctx);
 }
 
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_lib_dsp_copy (
+  float *       dst,
+  const float * src,
+  size_t        count)
+{
+  lsp::dsp::copy (dst, src, count);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_lib_dsp_move (
+  float *       dst,
+  const float * src,
+  size_t        count)
+{
+  lsp::dsp::move (dst, src, count);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_lib_dsp_fill (
+  float * dst,
+  float   value,
+  size_t  count)
+{
+  lsp::dsp::fill (dst, value, count);
+}
+
+#define FILL_FUNC(val) \
+LSP_DSP_LIB_EXPORT \
+void \
+lsp_dsp_lib_dsp_fill_##val ( \
+  float * dst, \
+  size_t  count) \
+{ \
+  lsp::dsp::fill_##val (dst, count); \
+}
+
+FILL_FUNC (zero)
+FILL_FUNC (one)
+FILL_FUNC (minus_one)
+
+#undef FILL_FUNC
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_lib_dsp_reverse1 (
+  float * dst,
+  size_t  count)
+{
+  lsp::dsp::reverse1 (dst, count);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_lib_dsp_reverse2 (
+  float *       dst,
+  const float * src,
+  size_t        count)
+{
+  lsp::dsp::reverse2 (dst, src, count);
+}
+
 } /* extern "C" */

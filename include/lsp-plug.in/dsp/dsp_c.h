@@ -49,6 +49,52 @@ void
 lsp_dsp_lib_dsp_finish (
   lsp_dsp_lib_context_t * c_ctx);
 
+/* ---- copy ---- */
+
+void
+lsp_dsp_lib_dsp_copy (
+  float *       dst,
+  const float * src,
+  size_t        count);
+
+void
+lsp_dsp_lib_dsp_move (
+  float *       dst,
+  const float * src,
+  size_t        count);
+
+void
+lsp_dsp_lib_dsp_fill (
+  float * dst,
+  float   value,
+  size_t  count);
+
+void
+lsp_dsp_lib_dsp_fill_zero (
+  float * dst,
+  size_t  count);
+
+void
+lsp_dsp_lib_dsp_fill_one (
+  float * dst,
+  size_t  count);
+
+void
+lsp_dsp_lib_dsp_fill_minus_one (
+  float * dst,
+  size_t  count);
+
+void
+lsp_dsp_lib_dsp_reverse1 (
+  float * dst,
+  size_t  count);
+
+void
+lsp_dsp_lib_dsp_reverse2 (
+  float *       dst,
+  const float * src,
+  size_t        count);
+
 #ifdef __cplusplus
 }
 #endif
