@@ -86,21 +86,32 @@ lsp_dsp_fill (
   lsp::dsp::fill (dst, value, count);
 }
 
-#define FILL_FUNC(val) \
-LSP_DSP_LIB_EXPORT \
-void \
-lsp_dsp_fill_##val ( \
-  float * dst, \
-  size_t  count) \
-{ \
-  lsp::dsp::fill_##val (dst, count); \
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_fill_zero (
+  float * dst,
+  size_t  count)
+{
+  lsp::dsp::fill_zero (dst, count);
 }
 
-FILL_FUNC (zero)
-FILL_FUNC (one)
-FILL_FUNC (minus_one)
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_fill_one (
+  float * dst,
+  size_t  count)
+{
+  lsp::dsp::fill_one (dst, count);
+}
 
-#undef FILL_FUNC
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_fill_minus_one (
+  float * dst,
+  size_t  count)
+{
+  lsp::dsp::fill_minus_one (dst, count);
+}
 
 LSP_DSP_LIB_EXPORT
 void
