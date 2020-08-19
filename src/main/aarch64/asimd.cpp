@@ -8,6 +8,7 @@
 #include <lsp-plug.in/common/types.h>
 
 #ifdef ARCH_AARCH64
+    #include <private/dsp/exports.h>
     #include <lsp-plug.in/dsp/dsp.h>
     #include <lsp-plug.in/stdlib/math.h>
 
@@ -71,7 +72,12 @@
         #include <private/dsp/arch/aarch64/asimd/filters/transform.h>
     #undef PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL
 
-    #define EXPORT2(function, export)           dsp::function = asimd::export; TEST_EXPORT(asimd::export);
+    #define EXPORT2(function, export) \
+    { \
+        dsp::function                       = asimd::export; \
+        dsp::LSP_DSP_LIB_MANGLE(function)   = asimd::export; \
+        TEST_EXPORT(asimd::export); \
+    }
     #define EXPORT1(function)                   EXPORT2(function, function)
 
     #undef DSP_ARCH_AARCH64_ASIMD_IMPL
