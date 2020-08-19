@@ -15,31 +15,31 @@ extern "C"
 
 LSP_DSP_LIB_EXPORT
 void
-lsp_dsp_lib_dsp_init (void)
+lsp_dsp_init (void)
 {
   lsp::dsp::init ();
 }
 
 LSP_DSP_LIB_EXPORT
-lsp_dsp_lib_info_t *
-lsp_dsp_lib_dsp_info_new (void)
+lsp_dsp_info_t *
+lsp_dsp_info_new (void)
 {
   lsp::dsp::info_t * info = lsp::dsp::info ();
-  return (lsp_dsp_lib_info_t *) info;
+  return (lsp_dsp_info_t *) info;
 }
 
 LSP_DSP_LIB_EXPORT
 void
-lsp_dsp_lib_dsp_info_free (
-  lsp_dsp_lib_info_t * info)
+lsp_dsp_info_free (
+  lsp_dsp_info_t * info)
 {
   ::free ((lsp::dsp::info_t *) info);
 }
 
 LSP_DSP_LIB_EXPORT
 void
-lsp_dsp_lib_dsp_start (
-  lsp_dsp_lib_context_t * c_ctx)
+lsp_dsp_start (
+  lsp_dsp_context_t * c_ctx)
 {
   lsp::dsp::context_t * ctx = (lsp::dsp::context_t *) c_ctx;
   lsp::dsp::start (ctx);
@@ -47,8 +47,8 @@ lsp_dsp_lib_dsp_start (
 
 LSP_DSP_LIB_EXPORT
 void
-lsp_dsp_lib_dsp_finish (
-  lsp_dsp_lib_context_t * c_ctx)
+lsp_dsp_finish (
+  lsp_dsp_context_t * c_ctx)
 {
   lsp::dsp::context_t * ctx = (lsp::dsp::context_t *) c_ctx;
   lsp::dsp::finish (ctx);
@@ -56,7 +56,7 @@ lsp_dsp_lib_dsp_finish (
 
 LSP_DSP_LIB_EXPORT
 void
-lsp_dsp_lib_dsp_copy (
+lsp_dsp_copy (
   float *       dst,
   const float * src,
   size_t        count)
@@ -66,7 +66,7 @@ lsp_dsp_lib_dsp_copy (
 
 LSP_DSP_LIB_EXPORT
 void
-lsp_dsp_lib_dsp_move (
+lsp_dsp_move (
   float *       dst,
   const float * src,
   size_t        count)
@@ -76,7 +76,7 @@ lsp_dsp_lib_dsp_move (
 
 LSP_DSP_LIB_EXPORT
 void
-lsp_dsp_lib_dsp_fill (
+lsp_dsp_fill (
   float * dst,
   float   value,
   size_t  count)
@@ -87,7 +87,7 @@ lsp_dsp_lib_dsp_fill (
 #define FILL_FUNC(val) \
 LSP_DSP_LIB_EXPORT \
 void \
-lsp_dsp_lib_dsp_fill_##val ( \
+lsp_dsp_fill_##val ( \
   float * dst, \
   size_t  count) \
 { \
@@ -102,7 +102,7 @@ FILL_FUNC (minus_one)
 
 LSP_DSP_LIB_EXPORT
 void
-lsp_dsp_lib_dsp_reverse1 (
+lsp_dsp_reverse1 (
   float * dst,
   size_t  count)
 {
@@ -111,7 +111,7 @@ lsp_dsp_lib_dsp_reverse1 (
 
 LSP_DSP_LIB_EXPORT
 void
-lsp_dsp_lib_dsp_reverse2 (
+lsp_dsp_reverse2 (
   float *       dst,
   const float * src,
   size_t        count)
