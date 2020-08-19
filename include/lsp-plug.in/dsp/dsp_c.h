@@ -14,8 +14,32 @@ extern "C" {
 
 #include <lsp-plug.in/dsp/version.h>
 
+typedef struct lsp_dsp_lib_info_t
+{
+    const char     *arch;       /* Architecture information */
+    const char     *cpu;        /* CPU information */
+    const char     *model;      /* CPU model information */
+    const char     *features;   /* CPU features */
+} lsp_dsp_lib_info_t;
+
+/**
+ * DSP context to store and restore machine state
+ */
+typedef struct lsp_dsp_lib_context_t
+{
+    uint32_t        top;
+    uint32_t        data[15];
+} lsp_dsp_lib_context_t;
+
 void
 lsp_dsp_lib_dsp_init (void);
+
+lsp_dsp_lib_info_t *
+lsp_dsp_lib_dsp_info_new (void);
+
+void
+lsp_dsp_lib_dsp_info_free (
+  lsp_dsp_lib_info_t * info);
 
 #ifdef __cplusplus
 }
