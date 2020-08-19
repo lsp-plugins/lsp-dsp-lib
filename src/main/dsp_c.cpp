@@ -54,6 +54,8 @@ lsp_dsp_finish (
   lsp::dsp::finish (ctx);
 }
 
+/* --- copy --- */
+
 LSP_DSP_LIB_EXPORT
 void
 lsp_dsp_copy (
@@ -117,6 +119,145 @@ lsp_dsp_reverse2 (
   size_t        count)
 {
   lsp::dsp::reverse2 (dst, src, count);
+}
+
+/* --- mix --- */
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_mix2 (
+  float *       dst,
+  const float * src,
+  float         k1,
+  float         k2,
+  size_t        count)
+{
+  lsp::dsp::mix2 (dst, src, k1, k2, count);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_mix_copy2 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  float         k1,
+  float         k2,
+  size_t        count)
+{
+  lsp::dsp::mix_copy2 (dst, src1, src2, k1, k2, count);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_mix_add2 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  float         k1,
+  float         k2,
+  size_t        count)
+{
+  lsp::dsp::mix_add2 (dst, src1, src2, k1, k2, count);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_mix3 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  float         k1,
+  float         k2,
+  float         k3,
+  size_t        count)
+{
+  lsp::dsp::mix3 (dst, src1, src2, k1, k2, k3, count);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_mix_copy3 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  const float * src3,
+  float         k1,
+  float         k2,
+  float         k3,
+  size_t        count)
+{
+  lsp::dsp::mix_copy3 (
+    dst, src1, src2, src3, k1, k2, k3, count);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_mix_add3 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  const float * src3,
+  float         k1,
+  float         k2,
+  float         k3,
+  size_t        count)
+{
+  lsp::dsp::mix_add3 (
+    dst, src1, src2, src3, k1, k2, k3, count);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_mix4 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  const float * src3,
+  float         k1,
+  float         k2,
+  float         k3,
+  float         k4,
+  size_t        count)
+{
+  lsp::dsp::mix4 (
+    dst, src1, src2, src3, k1, k2, k3, k4, count);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_mix_copy4 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  const float * src3,
+  const float * src4,
+  float         k1,
+  float         k2,
+  float         k3,
+  float         k4,
+  size_t        count)
+{
+  lsp::dsp::mix_copy4 (
+    dst, src1, src2, src3, src4, k1, k2, k3, k4, count);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_mix_add4 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  const float * src3,
+  const float * src4,
+  float         k1,
+  float         k2,
+  float         k3,
+  float         k4,
+  size_t        count)
+{
+  lsp::dsp::mix_add4 (
+    dst, src1, src2, src3, src4, k1, k2, k3, k4, count);
 }
 
 } /* extern "C" */

@@ -49,7 +49,7 @@ void
 lsp_dsp_finish (
   lsp_dsp_context_t * c_ctx);
 
-/* ---- copy ---- */
+/* --- copy --- */
 
 void
 lsp_dsp_copy (
@@ -93,6 +93,104 @@ void
 lsp_dsp_reverse2 (
   float *       dst,
   const float * src,
+  size_t        count);
+
+/* --- mix --- */
+
+void
+lsp_dsp_mix2 (
+  float *       dst,
+  const float * src,
+  float         k1,
+  float         k2,
+  size_t        count);
+
+void
+lsp_dsp_mix_copy2 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  float         k1,
+  float         k2,
+  size_t        count);
+
+void
+lsp_dsp_mix_add2 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  float         k1,
+  float         k2,
+  size_t        count);
+
+void
+lsp_dsp_mix3 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  float         k1,
+  float         k2,
+  float         k3,
+  size_t        count);
+
+void
+lsp_dsp_mix_copy3 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  const float * src3,
+  float         k1,
+  float         k2,
+  float         k3,
+  size_t        count);
+
+void
+lsp_dsp_mix_add3 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  const float * src3,
+  float         k1,
+  float         k2,
+  float         k3,
+  size_t        count);
+
+void
+lsp_dsp_mix4 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  const float * src3,
+  float         k1,
+  float         k2,
+  float         k3,
+  float         k4,
+  size_t        count);
+
+void
+lsp_dsp_mix_copy4 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  const float * src3,
+  const float * src4,
+  float         k1,
+  float         k2,
+  float         k3,
+  float         k4,
+  size_t        count);
+
+void
+lsp_dsp_mix_add4 (
+  float *       dst,
+  const float * src1,
+  const float * src2,
+  const float * src3,
+  const float * src4,
+  float         k1,
+  float         k2,
+  float         k3,
+  float         k4,
   size_t        count);
 
 #ifdef __cplusplus
