@@ -13,6 +13,259 @@
 extern "C"
 {
 
+/* --- 3dmath --- */
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_init_point_xyz (
+  lsp_dsp_point3d_t * p,
+  float               x,
+  float               y,
+  float               z)
+{
+  lsp::dsp::init_point_xyz (
+    (lsp::dsp::point3d_t *) p, x, y, z);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_init_point (
+  lsp_dsp_point3d_t * p,
+  lsp_dsp_point3d_t * s)
+{
+  lsp::dsp::init_point (
+    (lsp::dsp::point3d_t *) p,
+    (lsp::dsp::point3d_t *) s);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_normalize_point (
+  lsp_dsp_point3d_t * p)
+{
+  lsp::dsp::normalize_point (
+    (lsp::dsp::point3d_t *) p);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_scale_point1 (
+  lsp_dsp_point3d_t * p,
+  float               r)
+{
+  lsp::dsp::scale_point1 (
+    (lsp::dsp::point3d_t *) p, r);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_scale_point2 (
+  lsp_dsp_point3d_t * p,
+  lsp_dsp_point3d_t * s,
+  float               r)
+{
+  lsp::dsp::scale_point2 (
+    (lsp::dsp::point3d_t *) p,
+    (lsp::dsp::point3d_t *) s, r);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_init_vector_dxyz (
+  lsp_dsp_vector3d_t * v,
+  float                dx,
+  float                dy,
+  float                dz)
+{
+  lsp::dsp::init_vector_dxyz (
+    (lsp::dsp::vector3d_t *) v, dx, dy, dz);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_init_vector (
+  lsp_dsp_vector3d_t * v,
+  lsp_dsp_vector3d_t * s)
+{
+  lsp::dsp::init_vector (
+    (lsp::dsp::vector3d_t *) v,
+    (lsp::dsp::vector3d_t *) s);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_init_vector_p2 (
+  lsp_dsp_vector3d_t * v,
+  lsp_dsp_point3d_t *  p1,
+  lsp_dsp_point3d_t *  p2)
+{
+  lsp::dsp::init_vector_p2 (
+    (lsp::dsp::vector3d_t *) v,
+    (lsp::dsp::point3d_t *) p1,
+    (lsp::dsp::point3d_t *) p2);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_init_vector_pv (
+  lsp_dsp_vector3d_t * v,
+  lsp_dsp_point3d_t *  pv)
+{
+  lsp::dsp::init_vector_pv (
+    (lsp::dsp::vector3d_t *) v,
+    (lsp::dsp::point3d_t *) pv);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_init_normal3d_xyz (
+  lsp_dsp_vector3d_t * v,
+  float                x1,
+  float                y1,
+  float                z1,
+  float                x2,
+  float                y2,
+  float                z2)
+{
+  lsp::dsp::init_normal3d_xyz (
+    (lsp::dsp::vector3d_t *) v, x1, y1, z1, x2, y2, z2);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_init_normal3d_dxyz (
+  lsp_dsp_vector3d_t * v,
+  float                dx,
+  float                dy,
+  float                dz)
+{
+  lsp::dsp::init_normal3d_dxyz (
+    (lsp::dsp::vector3d_t *) v, dx, dy, dz);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_init_normal3d (
+  lsp_dsp_vector3d_t * p,
+  lsp_dsp_vector3d_t * s)
+{
+  lsp::dsp::init_normal3d (
+    (lsp::dsp::vector3d_t *) p,
+    (lsp::dsp::vector3d_t *) s);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_normalize_vector (
+  lsp_dsp_vector3d_t * m)
+{
+  lsp::dsp::normalize_vector (
+    (lsp::dsp::vector3d_t *) m);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_normalize_vector2 (
+  lsp_dsp_vector3d_t * v,
+  lsp_dsp_vector3d_t * src)
+{
+  lsp::dsp::normalize_vector2 (
+    (lsp::dsp::vector3d_t *) v,
+    (lsp::dsp::vector3d_t *) src);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_flip_vector_v1 (
+  lsp_dsp_vector3d_t * v)
+{
+  lsp::dsp::flip_vector_v1 (
+    (lsp::dsp::vector3d_t *) v);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_flip_vector_v2 (
+  lsp_dsp_vector3d_t * v,
+  lsp_dsp_vector3d_t * sv)
+{
+  lsp::dsp::flip_vector_v2 (
+    (lsp::dsp::vector3d_t *) v,
+    (lsp::dsp::vector3d_t *) sv);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_scale_vector1 (
+  lsp_dsp_vector3d_t * v,
+  float                r)
+{
+  lsp::dsp::scale_vector1 (
+    (lsp::dsp::vector3d_t *) v, r);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_scale_vector2 (
+  lsp_dsp_vector3d_t * v,
+  lsp_dsp_vector3d_t * s,
+  float                r)
+{
+  lsp::dsp::scale_vector2 (
+    (lsp::dsp::vector3d_t *) v,
+    (lsp::dsp::vector3d_t *) s, r);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_vector_mul_v2 (
+  lsp_dsp_vector3d_t * r,
+  lsp_dsp_vector3d_t * v1,
+  lsp_dsp_vector3d_t * v2)
+{
+  lsp::dsp::vector_mul_v2 (
+    (lsp::dsp::vector3d_t *) r,
+    (lsp::dsp::vector3d_t *) v1,
+    (lsp::dsp::vector3d_t *) v2);
+}
+
+LSP_DSP_LIB_EXPORT
+void
+lsp_dsp_vector_mul_vv (
+  lsp_dsp_vector3d_t * r,
+  lsp_dsp_vector3d_t * vv)
+{
+  lsp::dsp::vector_mul_vv (
+    (lsp::dsp::vector3d_t *) r,
+    (lsp::dsp::vector3d_t *) vv);
+}
+
+/* --- coding --- */
+
+LSP_DSP_LIB_EXPORT
+size_t
+lsp_dsp_base64_enc (
+  void *       dst,
+  size_t *     dst_left,
+  const void * src,
+  size_t *     src_left)
+{
+  return lsp::dsp::base64_enc (dst, dst_left, src, src_left);
+}
+
+LSP_DSP_LIB_EXPORT
+ssize_t
+lsp_dsp_base64_dec (
+  void *       dst,
+  size_t *     dst_left,
+  const void * src,
+  size_t *     src_left)
+{
+  return lsp::dsp::base64_dec (dst, dst_left, src, src_left);
+}
+
+/* --- context --- */
+
 LSP_DSP_LIB_EXPORT
 void
 lsp_dsp_init (void)
