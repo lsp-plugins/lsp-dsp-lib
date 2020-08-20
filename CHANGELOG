@@ -3,6 +3,9 @@
 *******************************************************************************
 
 === 0.5.5 ===
+* Provided C-compatible function interface and symbol exports. All C functions and
+  types are prefixed with lsp_dsp_ prefix to not to clash with other types. C++
+  interface has not changed, all functions and data types are still in lsp::dsp namespace.
 
 === 0.5.4 ===
 * Added pkg-config file generation.

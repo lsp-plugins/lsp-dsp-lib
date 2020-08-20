@@ -21,7 +21,7 @@
  * @param kf frequency shift coefficient
  * @param count number of cascades  to process
  */
-LSP_DSP_LIB_SYMBOL(void , bilinear_transform_x1, biquad_x1_t *bf, const f_cascade_t *bc, float kf, size_t count);
+LSP_DSP_LIB_SYMBOL(void, bilinear_transform_x1, LSP_DSP_LIB_TYPE(biquad_x1_t) *bf, const LSP_DSP_LIB_TYPE(f_cascade_t) *bc, float kf, size_t count);
 
 /** Perform bilinear transformation of two filter banks
  *
@@ -30,7 +30,7 @@ LSP_DSP_LIB_SYMBOL(void , bilinear_transform_x1, biquad_x1_t *bf, const f_cascad
  * @param kf frequency shift coefficient
  * @param count number of matrix rows to process
  */
-LSP_DSP_LIB_SYMBOL(void , bilinear_transform_x2, biquad_x2_t *bf, const f_cascade_t *bc, float kf, size_t count);
+LSP_DSP_LIB_SYMBOL(void, bilinear_transform_x2, LSP_DSP_LIB_TYPE(biquad_x2_t) *bf, const LSP_DSP_LIB_TYPE(f_cascade_t) *bc, float kf, size_t count);
 
 /** Perform bilinear transformation of four filter banks
  *
@@ -39,7 +39,7 @@ LSP_DSP_LIB_SYMBOL(void , bilinear_transform_x2, biquad_x2_t *bf, const f_cascad
  * @param kf frequency shift coefficient
  * @param count number of matrix rows to process
  */
-LSP_DSP_LIB_SYMBOL(void , bilinear_transform_x4, biquad_x4_t *bf, const f_cascade_t *bc, float kf, size_t count);
+LSP_DSP_LIB_SYMBOL(void, bilinear_transform_x4, LSP_DSP_LIB_TYPE(biquad_x4_t) *bf, const LSP_DSP_LIB_TYPE(f_cascade_t) *bc, float kf, size_t count);
 
 /** Perform bilinear transformation of eight filter banks
  *
@@ -48,7 +48,7 @@ LSP_DSP_LIB_SYMBOL(void , bilinear_transform_x4, biquad_x4_t *bf, const f_cascad
  * @param kf frequency shift coefficient
  * @param count number of matrix rows to process
  */
-LSP_DSP_LIB_SYMBOL(void , bilinear_transform_x8, biquad_x8_t *bf, const f_cascade_t *bc, float kf, size_t count);
+LSP_DSP_LIB_SYMBOL(void, bilinear_transform_x8, LSP_DSP_LIB_TYPE(biquad_x8_t) *bf, const LSP_DSP_LIB_TYPE(f_cascade_t) *bc, float kf, size_t count);
 
 //---------------------------------------------------------------------------------------
 // Matched Z transformation of dynamic filters
@@ -62,7 +62,7 @@ LSP_DSP_LIB_SYMBOL(void , bilinear_transform_x8, biquad_x8_t *bf, const f_cascad
  * @param td tranformation coefficient (2 * pi / sample rate)
  * @param count number of cascades  to process
  */
-LSP_DSP_LIB_SYMBOL(void , matched_transform_x1, biquad_x1_t *bf, f_cascade_t *bc, float kf, float td, size_t count);
+LSP_DSP_LIB_SYMBOL(void, matched_transform_x1, LSP_DSP_LIB_TYPE(biquad_x1_t) *bf, LSP_DSP_LIB_TYPE(f_cascade_t) *bc, float kf, float td, size_t count);
 
 /** Perform matched Z transformation of two filter banks,
  * function modifies contents of the bc memory chunk
@@ -73,7 +73,7 @@ LSP_DSP_LIB_SYMBOL(void , matched_transform_x1, biquad_x1_t *bf, f_cascade_t *bc
  * @param td tranformation coefficient (2 * pi / sample rate)
  * @param count number of cascades  to process
  */
-LSP_DSP_LIB_SYMBOL(void , matched_transform_x2, biquad_x2_t *bf, f_cascade_t *bc, float kf, float td, size_t count);
+LSP_DSP_LIB_SYMBOL(void, matched_transform_x2, LSP_DSP_LIB_TYPE(biquad_x2_t) *bf, LSP_DSP_LIB_TYPE(f_cascade_t) *bc, float kf, float td, size_t count);
 
 /** Perform matched Z transformation of four filter banks,
  * function modifies contents of the bc memory chunk
@@ -84,7 +84,7 @@ LSP_DSP_LIB_SYMBOL(void , matched_transform_x2, biquad_x2_t *bf, f_cascade_t *bc
  * @param td tranformation coefficient (2 * pi / sample rate)
  * @param count number of cascades  to process
  */
-LSP_DSP_LIB_SYMBOL(void , matched_transform_x4, biquad_x4_t *bf, f_cascade_t *bc, float kf, float td, size_t count);
+LSP_DSP_LIB_SYMBOL(void, matched_transform_x4, LSP_DSP_LIB_TYPE(biquad_x4_t) *bf, LSP_DSP_LIB_TYPE(f_cascade_t) *bc, float kf, float td, size_t count);
 
 /** Perform matched Z transformation of eight filter banks,
  * function modifies contents of the bc memory chunk
@@ -95,6 +95,6 @@ LSP_DSP_LIB_SYMBOL(void , matched_transform_x4, biquad_x4_t *bf, f_cascade_t *bc
  * @param td tranformation coefficient (2 * pi / sample rate)
  * @param count number of cascades  to process
  */
-LSP_DSP_LIB_SYMBOL(void , matched_transform_x8, biquad_x8_t *bf, f_cascade_t *bc, float kf, float td, size_t count);
+LSP_DSP_LIB_SYMBOL(void, matched_transform_x8, LSP_DSP_LIB_TYPE(biquad_x8_t) *bf, LSP_DSP_LIB_TYPE(f_cascade_t) *bc, float kf, float td, size_t count);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_FILTERS_TRANSFORM_H_ */

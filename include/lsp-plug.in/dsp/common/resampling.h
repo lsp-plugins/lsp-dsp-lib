@@ -26,7 +26,7 @@ namespace lsp
          * @param src source buffer
          * @param count number of samples to process
          */
-        typedef void (* resampling_function_t)(float *dst, const float *src, size_t count);
+        typedef void (* LSP_DSP_LIB_TYPE(resampling_function_t))(float *dst, const float *src, size_t count);
 
 #ifdef __cplusplus
     }

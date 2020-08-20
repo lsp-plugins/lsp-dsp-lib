@@ -21,24 +21,24 @@ namespace lsp
         /**
          * DSP context to store and restore machine state
          */
-        typedef struct context_t
+        typedef struct LSP_DSP_LIB_TYPE(context_t)
         {
             uint32_t        top;
             uint32_t        data[15];
-        } context_t;
+        } LSP_DSP_LIB_TYPE(context_t);
         #pragma pack(pop)
 
-        typedef struct info_t
+        typedef struct LSP_DSP_LIB_TYPE(info_t)
         {
             const char     *arch;       /* Architecture information */
             const char     *cpu;        /* CPU information */
             const char     *model;      /* CPU model information */
             const char     *features;   /* CPU features */
-        } info_t;
+        } LSP_DSP_LIB_TYPE(info_t);
 
         // Start and finish types
-        typedef void (* start_t)(context_t *ctx);
-        typedef void (* finish_t)(context_t *ctx);
+        typedef void (* LSP_DSP_LIB_TYPE(start_t))(LSP_DSP_LIB_TYPE(context_t) *ctx);
+        typedef void (* LSP_DSP_LIB_TYPE(finish_t))(LSP_DSP_LIB_TYPE(context_t) *ctx);
 
 #ifdef __cplusplus
     }
@@ -70,19 +70,19 @@ namespace lsp
  *
  * @param ctx structure to save context
  */
-LSP_DSP_LIB_SYMBOL(void, start, context_t *ctx);
+LSP_DSP_LIB_SYMBOL(void, start, LSP_DSP_LIB_TYPE(context_t) *ctx);
 
 /** Finish DSP processing, restore machine context
  *
  * @param ctx structure to restore context
  */
-LSP_DSP_LIB_SYMBOL(void, finish, context_t *ctx);
+LSP_DSP_LIB_SYMBOL(void, finish, LSP_DSP_LIB_TYPE(context_t) *ctx);
 
 /**
  * Get DSP information, returns pointer to dsp::info_t structure
  * that can be freed by free()
  * @return pointer to dsp::info_t structure
  */
-LSP_DSP_LIB_SYMBOL(info_t *, info, );
+LSP_DSP_LIB_SYMBOL(LSP_DSP_LIB_TYPE(info_t) *, info, );
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_CONTEXT_H_ */

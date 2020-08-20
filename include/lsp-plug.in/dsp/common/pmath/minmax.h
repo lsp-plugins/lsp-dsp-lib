@@ -17,7 +17,7 @@
  * @param src source array
  * @param count number of elements in each array
  */
-LSP_DSP_LIB_SYMBOL(void , pmin2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, pmin2, float *dst, const float *src, size_t count);
 
 /**
  * Compute minimum values between two arrays with disregarded sign:
@@ -26,7 +26,7 @@ LSP_DSP_LIB_SYMBOL(void , pmin2, float *dst, const float *src, size_t count);
  * @param src source array
  * @param count number of elements in each array
  */
-LSP_DSP_LIB_SYMBOL(void , psmin2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, psmin2, float *dst, const float *src, size_t count);
 
 /**
  * Compute absolute minimum values between two arrays:
@@ -35,7 +35,7 @@ LSP_DSP_LIB_SYMBOL(void , psmin2, float *dst, const float *src, size_t count);
  * @param src source array
  * @param count number of elements in each array
  */
-LSP_DSP_LIB_SYMBOL(void , pamin2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, pamin2, float *dst, const float *src, size_t count);
 
 /**
  * Compute maximum values between two arrays:
@@ -44,7 +44,7 @@ LSP_DSP_LIB_SYMBOL(void , pamin2, float *dst, const float *src, size_t count);
  * @param src source array
  * @param count number of elements in each array
  */
-LSP_DSP_LIB_SYMBOL(void , pmax2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, pmax2, float *dst, const float *src, size_t count);
 
 /**
  * Compute maximum values between two arrays with disregarded sign:
@@ -53,7 +53,7 @@ LSP_DSP_LIB_SYMBOL(void , pmax2, float *dst, const float *src, size_t count);
  * @param src source array
  * @param count number of elements in each array
  */
-LSP_DSP_LIB_SYMBOL(void , psmax2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, psmax2, float *dst, const float *src, size_t count);
 
 /**
  * Compute absolute maximum values between two arrays:
@@ -62,7 +62,7 @@ LSP_DSP_LIB_SYMBOL(void , psmax2, float *dst, const float *src, size_t count);
  * @param src source array
  * @param count number of elements in each array
  */
-LSP_DSP_LIB_SYMBOL(void , pamax2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, pamax2, float *dst, const float *src, size_t count);
 
 /**
  * Compute minimum values between two arrays:
@@ -71,7 +71,7 @@ LSP_DSP_LIB_SYMBOL(void , pamax2, float *dst, const float *src, size_t count);
  * @param src source array
  * @param count number of elements in each array
  */
-LSP_DSP_LIB_SYMBOL(void , pmin3, float *dst, const float *a, const float *b, size_t count);
+LSP_DSP_LIB_SYMBOL(void, pmin3, float *dst, const float *a, const float *b, size_t count);
 
 /**
  * Compute minimum values between two arrays with disregarded sign:
@@ -80,7 +80,7 @@ LSP_DSP_LIB_SYMBOL(void , pmin3, float *dst, const float *a, const float *b, siz
  * @param src source array
  * @param count number of elements in each array
  */
-LSP_DSP_LIB_SYMBOL(void , psmin3, float *dst, const float *a, const float *b, size_t count);
+LSP_DSP_LIB_SYMBOL(void, psmin3, float *dst, const float *a, const float *b, size_t count);
 
 /**
  * Compute absolute minimum values between two arrays:
@@ -89,7 +89,7 @@ LSP_DSP_LIB_SYMBOL(void , psmin3, float *dst, const float *a, const float *b, si
  * @param src source array
  * @param count number of elements in each array
  */
-LSP_DSP_LIB_SYMBOL(void , pamin3, float *dst, const float *a, const float *b, size_t count);
+LSP_DSP_LIB_SYMBOL(void, pamin3, float *dst, const float *a, const float *b, size_t count);
 
 /**
  * Compute maximum values between two arrays:
@@ -98,7 +98,7 @@ LSP_DSP_LIB_SYMBOL(void , pamin3, float *dst, const float *a, const float *b, si
  * @param src source array
  * @param count number of elements in each array
  */
-LSP_DSP_LIB_SYMBOL(void , pmax3, float *dst, const float *a, const float *b, size_t count);
+LSP_DSP_LIB_SYMBOL(void, pmax3, float *dst, const float *a, const float *b, size_t count);
 
 /**
  * Compute maximum values between two arrays with disregarded sign:
@@ -107,7 +107,7 @@ LSP_DSP_LIB_SYMBOL(void , pmax3, float *dst, const float *a, const float *b, siz
  * @param src source array
  * @param count number of elements in each array
  */
-LSP_DSP_LIB_SYMBOL(void , psmax3, float *dst, const float *a, const float *b, size_t count);
+LSP_DSP_LIB_SYMBOL(void, psmax3, float *dst, const float *a, const float *b, size_t count);
 
 /**
  * Compute absolute minimum values between two arrays:
@@ -116,6 +116,6 @@ LSP_DSP_LIB_SYMBOL(void , psmax3, float *dst, const float *a, const float *b, si
  * @param src source array
  * @param count number of elements in each array
  */
-LSP_DSP_LIB_SYMBOL(void , pamax3, float *dst, const float *a, const float *b, size_t count);
+LSP_DSP_LIB_SYMBOL(void, pamax3, float *dst, const float *a, const float *b, size_t count);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_PMATH_MINMAX_H_ */

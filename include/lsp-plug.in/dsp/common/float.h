@@ -18,7 +18,7 @@
  * @param src source pointer
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , copy_saturated, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, copy_saturated, float *dst, const float *src, size_t count);
 
 /** Saturate floating-point data in buffer
  * Avoid +Inf, -Inf values by replacing with large values
@@ -27,7 +27,7 @@ LSP_DSP_LIB_SYMBOL(void , copy_saturated, float *dst, const float *src, size_t c
  * @param dst destination pointer
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , saturate, float *dst, size_t count);
+LSP_DSP_LIB_SYMBOL(void, saturate, float *dst, size_t count);
 
 /** Limit floating-point data in buffer
  * Avoid +Inf, -Inf values by replacing with 1.0 and -1.0
@@ -39,7 +39,7 @@ LSP_DSP_LIB_SYMBOL(void , saturate, float *dst, size_t count);
  * @param src source pointer
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , limit_saturate1, float *dst, size_t count);
+LSP_DSP_LIB_SYMBOL(void, limit_saturate1, float *dst, size_t count);
 
 /** Limit floating-point data in buffer and copy do destination
  * Avoid +Inf, -Inf values by replacing with 1.0 and -1.0
@@ -51,7 +51,7 @@ LSP_DSP_LIB_SYMBOL(void , limit_saturate1, float *dst, size_t count);
  * @param src source pointer
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , limit_saturate2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, limit_saturate2, float *dst, const float *src, size_t count);
 
 /**
  * Limit floating-point data in buffer
@@ -64,7 +64,7 @@ LSP_DSP_LIB_SYMBOL(void , limit_saturate2, float *dst, const float *src, size_t 
  * @param max maximum value
  * @param count number of samples
  */
-LSP_DSP_LIB_SYMBOL(void , limit1, float *dst, float min, float max, size_t count);
+LSP_DSP_LIB_SYMBOL(void, limit1, float *dst, float min, float max, size_t count);
 
 /**
  * Limit floating-point data in buffer
@@ -78,7 +78,7 @@ LSP_DSP_LIB_SYMBOL(void , limit1, float *dst, float min, float max, size_t count
  * @param max maximum value
  * @param count number of samples
  */
-LSP_DSP_LIB_SYMBOL(void , limit2, float *dst, const float *src, float min, float max, size_t count);
+LSP_DSP_LIB_SYMBOL(void, limit2, float *dst, const float *src, float min, float max, size_t count);
 
 /**
  * Sanitize floating-point samples from NaN's, Inf's and denormal values
@@ -87,7 +87,7 @@ LSP_DSP_LIB_SYMBOL(void , limit2, float *dst, const float *src, float min, float
  * @param dst destination buffer to sanitize
  * @param count number of samples
  */
-LSP_DSP_LIB_SYMBOL(void , sanitize1, float *dst, size_t count);
+LSP_DSP_LIB_SYMBOL(void, sanitize1, float *dst, size_t count);
 
 /**
  * Sanitize floating-point samples from NaN's, Inf's and denormal values
@@ -96,6 +96,6 @@ LSP_DSP_LIB_SYMBOL(void , sanitize1, float *dst, size_t count);
  * @param dst destination buffer to sanitize
  * @param count number of samples
  */
-LSP_DSP_LIB_SYMBOL(void , sanitize2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, sanitize2, float *dst, const float *src, size_t count);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_FLOAT_H_ */

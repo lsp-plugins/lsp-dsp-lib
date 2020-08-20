@@ -17,7 +17,7 @@
  * @param count number of elements
  * @return scalar multiplication
  */
-LSP_DSP_LIB_SYMBOL(float , h_dotp, const float *a, const float *b, size_t count);
+LSP_DSP_LIB_SYMBOL(float, h_dotp, const float *a, const float *b, size_t count);
 
 /** Calculate dot product of squares: sum {from 0 to count-1} (sqr(a[i]) * sqr(b[i]))
  *
@@ -26,7 +26,7 @@ LSP_DSP_LIB_SYMBOL(float , h_dotp, const float *a, const float *b, size_t count)
  * @param count number of elements
  * @return scalar multiplication
  */
-LSP_DSP_LIB_SYMBOL(float , h_sqr_dotp, const float *a, const float *b, size_t count);
+LSP_DSP_LIB_SYMBOL(float, h_sqr_dotp, const float *a, const float *b, size_t count);
 
 /** Calculate dot product of absolute values: sum {from 0 to count-1} (abs(a[i]) * abs(b[i]))
  *
@@ -35,6 +35,6 @@ LSP_DSP_LIB_SYMBOL(float , h_sqr_dotp, const float *a, const float *b, size_t co
  * @param count number of elements
  * @return scalar multiplication
  */
-LSP_DSP_LIB_SYMBOL(float , h_abs_dotp, const float *a, const float *b, size_t count);
+LSP_DSP_LIB_SYMBOL(float, h_abs_dotp, const float *a, const float *b, size_t count);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_HMATH_HDOTP_H_ */

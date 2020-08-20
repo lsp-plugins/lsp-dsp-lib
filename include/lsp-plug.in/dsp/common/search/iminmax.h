@@ -16,7 +16,7 @@
  * @param count number of elements
  * @return minimum value index
  */
-LSP_DSP_LIB_SYMBOL(size_t , min_index, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(size_t, min_index, const float *src, size_t count);
 
 /** Calculate @ max { src }
  *
@@ -24,7 +24,7 @@ LSP_DSP_LIB_SYMBOL(size_t , min_index, const float *src, size_t count);
  * @param count number of elements
  * @return maximum value
  */
-LSP_DSP_LIB_SYMBOL(size_t , max_index, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(size_t, max_index, const float *src, size_t count);
 
 /** Calculate @ minmax { src }
  *
@@ -33,7 +33,7 @@ LSP_DSP_LIB_SYMBOL(size_t , max_index, const float *src, size_t count);
  * @param min pointer to store minimum value index
  * @param max pointer to store maximum value index
  */
-LSP_DSP_LIB_SYMBOL(void , minmax_index, const float *src, size_t count, size_t *min, size_t *max);
+LSP_DSP_LIB_SYMBOL(void, minmax_index, const float *src, size_t count, size_t *min, size_t *max);
 
 /** Calculate @ max { abs(src) }
  *
@@ -41,7 +41,7 @@ LSP_DSP_LIB_SYMBOL(void , minmax_index, const float *src, size_t count, size_t *
  * @param count number of samples
  * @return index of maximum element
  */
-LSP_DSP_LIB_SYMBOL(size_t  , abs_max_index, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(size_t, abs_max_index, const float *src, size_t count);
 
 /** Calculate @ min { abs(src) }
  *
@@ -49,7 +49,7 @@ LSP_DSP_LIB_SYMBOL(size_t  , abs_max_index, const float *src, size_t count);
  * @param count number of samples
  * @return index of maximum element
  */
-LSP_DSP_LIB_SYMBOL(size_t  , abs_min_index, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(size_t, abs_min_index, const float *src, size_t count);
 
 /** Calculate @ minmax { abs(src) }
  *
@@ -58,6 +58,6 @@ LSP_DSP_LIB_SYMBOL(size_t  , abs_min_index, const float *src, size_t count);
  * @param min pointer to store absolute minimum value index
  * @param max pointer to store absolute maximum value index
  */
-LSP_DSP_LIB_SYMBOL(void , abs_minmax_index, const float *src, size_t count, size_t *min, size_t *max);
+LSP_DSP_LIB_SYMBOL(void, abs_minmax_index, const float *src, size_t count, size_t *min, size_t *max);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_SEARCH_IMINMAX_H_ */

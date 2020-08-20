@@ -16,7 +16,7 @@
  * @param src source vector
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_normalized, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_normalized, float *dst, const float *src, size_t count);
 
 /** Calculate normalized values: dst[i] = src[i] / (max { abs(src) })
  *
@@ -24,6 +24,6 @@ LSP_DSP_LIB_SYMBOL(void , abs_normalized, float *dst, const float *src, size_t c
  * @param src source vector
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , normalize, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, normalize, float *dst, const float *src, size_t count);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_MISC_H_ */

@@ -17,7 +17,7 @@
  * @param k multiplier
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmadd_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmadd_k3, float *dst, const float *src, float k, size_t count);
 
 /** Calculate dst[i] = dst[i] - src[i] * k
  *
@@ -26,7 +26,7 @@ LSP_DSP_LIB_SYMBOL(void , fmadd_k3, float *dst, const float *src, float k, size_
  * @param k multiplier
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmsub_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmsub_k3, float *dst, const float *src, float k, size_t count);
 
 /** Calculate dst[i] = src[i] * k - dst[i]
  *
@@ -35,7 +35,7 @@ LSP_DSP_LIB_SYMBOL(void , fmsub_k3, float *dst, const float *src, float k, size_
  * @param k multiplier
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmrsub_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmrsub_k3, float *dst, const float *src, float k, size_t count);
 
 /** Calculate dst[i] = dst[i] * src[i] * k
  *
@@ -44,7 +44,7 @@ LSP_DSP_LIB_SYMBOL(void , fmrsub_k3, float *dst, const float *src, float k, size
  * @param k multiplier
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmmul_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmmul_k3, float *dst, const float *src, float k, size_t count);
 
 /** Calculate dst[i] = dst[i] / (src[i] * k)
  *
@@ -53,7 +53,7 @@ LSP_DSP_LIB_SYMBOL(void , fmmul_k3, float *dst, const float *src, float k, size_
  * @param k multiplier
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmdiv_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmdiv_k3, float *dst, const float *src, float k, size_t count);
 
 /** Calculate dst[i] = (src[i] * k) / dst[i]
  *
@@ -62,7 +62,7 @@ LSP_DSP_LIB_SYMBOL(void , fmdiv_k3, float *dst, const float *src, float k, size_
  * @param k multiplier
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmrdiv_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmrdiv_k3, float *dst, const float *src, float k, size_t count);
 
 /** Calculate remainder: dst[i] = dst[i] - (src[i]*k)*int(dst[i]/(src[i]*k))
  *
@@ -71,7 +71,7 @@ LSP_DSP_LIB_SYMBOL(void , fmrdiv_k3, float *dst, const float *src, float k, size
  * @param k multiplier
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmmod_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmmod_k3, float *dst, const float *src, float k, size_t count);
 
 /** Calculate reverse remainder: dst[i] = src[i] - (dst[i]*k)*int(src[i]/(dst[i]*k))
  *
@@ -80,7 +80,7 @@ LSP_DSP_LIB_SYMBOL(void , fmmod_k3, float *dst, const float *src, float k, size_
  * @param k multiplier
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmrmod_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmrmod_k3, float *dst, const float *src, float k, size_t count);
 
 /** Calculate dst[i] = src1[i] + src2[i] * k
  *
@@ -90,7 +90,7 @@ LSP_DSP_LIB_SYMBOL(void , fmrmod_k3, float *dst, const float *src, float k, size
  * @param k multiplier for elements of array 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmadd_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmadd_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
 
 /** Calculate dst[i] = src1[i] - src2[i] * k
  *
@@ -100,7 +100,7 @@ LSP_DSP_LIB_SYMBOL(void , fmadd_k4, float *dst, const float *src1, const float *
  * @param k multiplier for elements of array 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmsub_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmsub_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
 
 /** Calculate dst[i] = src2[i] * k - src1[i]
  *
@@ -110,7 +110,7 @@ LSP_DSP_LIB_SYMBOL(void , fmsub_k4, float *dst, const float *src1, const float *
  * @param k multiplier for elements of array 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmrsub_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmrsub_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
 
 /** Calculate dst[i] = src1[i] * src2[i] * k
  *
@@ -120,7 +120,7 @@ LSP_DSP_LIB_SYMBOL(void , fmrsub_k4, float *dst, const float *src1, const float 
  * @param k multiplier for elements of array 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmmul_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmmul_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
 
 /** Calculate dst[i] = src1[i] / (src2[i] * k)
  *
@@ -130,7 +130,7 @@ LSP_DSP_LIB_SYMBOL(void , fmmul_k4, float *dst, const float *src1, const float *
  * @param k multiplier for elements of array 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmdiv_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmdiv_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
 
 /** Calculate dst[i] = (src2[i] * k) / src1[i]
  *
@@ -140,7 +140,7 @@ LSP_DSP_LIB_SYMBOL(void , fmdiv_k4, float *dst, const float *src1, const float *
  * @param k multiplier for elements of array 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmrdiv_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmrdiv_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
 
 /** Calculate remainder: dst[i] = src1[i] - (src2[i]*k)*int(src1[i]/(src2[i]*k))
  *
@@ -150,7 +150,7 @@ LSP_DSP_LIB_SYMBOL(void , fmrdiv_k4, float *dst, const float *src1, const float 
  * @param k multiplier for elements of array 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmmod_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmmod_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
 
 /** Calculate reverse remainder: dst[i] = src2[i]*k - src1[i]*int((src2[i]*k)/src1[i])
  *
@@ -160,6 +160,6 @@ LSP_DSP_LIB_SYMBOL(void , fmmod_k4, float *dst, const float *src1, const float *
  * @param k multiplier for elements of array 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , fmrmod_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, fmrmod_k4, float *dst, const float *src1, const float *src2, float k, size_t count);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_PMATH_FMOP_KX_H_ */

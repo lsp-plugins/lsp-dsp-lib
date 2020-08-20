@@ -24,9 +24,11 @@
 #ifdef __cplusplus
     #define LSP_DSP_LIB_CPPIMPORT       extern
     #define LSP_DSP_LIB_CIMPORT         extern "C"
+    #define LSP_DSP_LIB_TYPE(name)      name
 #else
     #define LSP_DSP_LIB_CPPIMPORT
     #define LSP_DSP_LIB_CIMPORT         extern
+    #define LSP_DSP_LIB_TYPE(name)      lsp_dsp_ ## name
 #endif
 
 #define LSP_DSP_LIB_MANGLE(name)    lsp_dsp_ ## name

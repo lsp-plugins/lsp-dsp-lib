@@ -20,7 +20,7 @@
  * @param src_left number of bytes left in source buffer
  * @return number of bytes of source buffer processed
  */
-LSP_DSP_LIB_SYMBOL(size_t , base64_enc, void *dst, size_t *dst_left, const void *src, size_t *src_left);
+LSP_DSP_LIB_SYMBOL(size_t, base64_enc, void *dst, size_t *dst_left, const void *src, size_t *src_left);
 
 /**
  * Decode base-64 value, the function treats '=' characters as error (for optimization purposes)
@@ -32,6 +32,6 @@ LSP_DSP_LIB_SYMBOL(size_t , base64_enc, void *dst, size_t *dst_left, const void 
  * @param src_left number of bytes left in source buffer
  * @return number of bytes decoded into destination buffer, negative value on illegal character in sequence
  */
-LSP_DSP_LIB_SYMBOL(ssize_t , base64_dec, void *dst, size_t *dst_left, const void *src, size_t *src_left);
+LSP_DSP_LIB_SYMBOL(ssize_t, base64_dec, void *dst, size_t *dst_left, const void *src, size_t *src_left);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_CODING_H_ */

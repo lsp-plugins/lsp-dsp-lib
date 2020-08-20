@@ -16,7 +16,7 @@
  * @param k constant value to add
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , add_k2, float *dst, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, add_k2, float *dst, float k, size_t count);
 
 /**
  * Subtract constant value from the data
@@ -24,7 +24,7 @@ LSP_DSP_LIB_SYMBOL(void , add_k2, float *dst, float k, size_t count);
  * @param k constant value to subtract
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , sub_k2, float *dst, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, sub_k2, float *dst, float k, size_t count);
 
 /**
  * Subtract data from constant value
@@ -32,7 +32,7 @@ LSP_DSP_LIB_SYMBOL(void , sub_k2, float *dst, float k, size_t count);
  * @param k constant value to subtract
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , rsub_k2, float *dst, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, rsub_k2, float *dst, float k, size_t count);
 
 /**
  * Divide data by constant value
@@ -40,7 +40,7 @@ LSP_DSP_LIB_SYMBOL(void , rsub_k2, float *dst, float k, size_t count);
  * @param k constant value to use as divisor
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , div_k2, float *dst, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, div_k2, float *dst, float k, size_t count);
 
 /**
  * Divide constant value by data
@@ -48,7 +48,7 @@ LSP_DSP_LIB_SYMBOL(void , div_k2, float *dst, float k, size_t count);
  * @param k constant value to use as divisor
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , rdiv_k2, float *dst, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, rdiv_k2, float *dst, float k, size_t count);
 
 /**
  * Compute remainder of dst/k: dst = dst - k * int(dst/k)
@@ -56,7 +56,7 @@ LSP_DSP_LIB_SYMBOL(void , rdiv_k2, float *dst, float k, size_t count);
  * @param k constant value to use as divisor
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , mod_k2, float *dst, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, mod_k2, float *dst, float k, size_t count);
 
 /**
  * Compute remainder of k/dst: dst = k - dst * int(k/dst)
@@ -64,7 +64,7 @@ LSP_DSP_LIB_SYMBOL(void , mod_k2, float *dst, float k, size_t count);
  * @param k constant value to use as divident
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , rmod_k2, float *dst, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, rmod_k2, float *dst, float k, size_t count);
 
 /** Scale: dst[i] = dst[i] * k
  *
@@ -72,7 +72,7 @@ LSP_DSP_LIB_SYMBOL(void , rmod_k2, float *dst, float k, size_t count);
  * @param k multiplier
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , mul_k2, float *dst, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, mul_k2, float *dst, float k, size_t count);
 
 /**
  * Add constant value to the data
@@ -81,7 +81,7 @@ LSP_DSP_LIB_SYMBOL(void , mul_k2, float *dst, float k, size_t count);
  * @param k constant value to add
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , add_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, add_k3, float *dst, const float *src, float k, size_t count);
 
 /**
  * Subtract constant value from the data
@@ -90,7 +90,7 @@ LSP_DSP_LIB_SYMBOL(void , add_k3, float *dst, const float *src, float k, size_t 
  * @param k constant value to subtract
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , sub_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, sub_k3, float *dst, const float *src, float k, size_t count);
 
 /**
  * Subtract value data from constant value
@@ -99,7 +99,7 @@ LSP_DSP_LIB_SYMBOL(void , sub_k3, float *dst, const float *src, float k, size_t 
  * @param k constant value to subtract
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , rsub_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, rsub_k3, float *dst, const float *src, float k, size_t count);
 
 /**
  * Divide data by constant value
@@ -108,7 +108,7 @@ LSP_DSP_LIB_SYMBOL(void , rsub_k3, float *dst, const float *src, float k, size_t
  * @param k constant value to use as divisor
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , div_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, div_k3, float *dst, const float *src, float k, size_t count);
 
 /**
  * Divide constant value by data
@@ -116,7 +116,7 @@ LSP_DSP_LIB_SYMBOL(void , div_k3, float *dst, const float *src, float k, size_t 
  * @param k constant value to use as divisor
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , rdiv_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, rdiv_k3, float *dst, const float *src, float k, size_t count);
 
 /**
  * Compute remainder of src/k: dst = src - k * int(src/k)
@@ -124,7 +124,7 @@ LSP_DSP_LIB_SYMBOL(void , rdiv_k3, float *dst, const float *src, float k, size_t
  * @param k constant value to use as divisor
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , mod_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, mod_k3, float *dst, const float *src, float k, size_t count);
 
 /**
  * Compute remainder of k/src: dst = k - src * int(k/src)
@@ -132,7 +132,7 @@ LSP_DSP_LIB_SYMBOL(void , mod_k3, float *dst, const float *src, float k, size_t 
  * @param k constant value to use as divisor
  * @param count number of elements of destination to modify
  */
-LSP_DSP_LIB_SYMBOL(void , rmod_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, rmod_k3, float *dst, const float *src, float k, size_t count);
 
 /** Scale: dst[i] = src[i] * k
  *
@@ -141,6 +141,6 @@ LSP_DSP_LIB_SYMBOL(void , rmod_k3, float *dst, const float *src, float k, size_t
  * @param k multiplier
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , mul_k3, float *dst, const float *src, float k, size_t count);
+LSP_DSP_LIB_SYMBOL(void, mul_k3, float *dst, const float *src, float k, size_t count);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_PMATH_OP_KX_H_ */

@@ -18,7 +18,7 @@
  * @param count number of samples to process
  * @param f bi-quadratic filter structure
  */
-LSP_DSP_LIB_SYMBOL(void, biquad_process_x1, float *dst, const float *src, size_t count, biquad_t *f);
+LSP_DSP_LIB_SYMBOL(void, biquad_process_x1, float *dst, const float *src, size_t count, LSP_DSP_LIB_TYPE(biquad_t) *f);
 
 /** Process two bi-quadratic filters for multiple samples simultaneously
  *
@@ -27,7 +27,7 @@ LSP_DSP_LIB_SYMBOL(void, biquad_process_x1, float *dst, const float *src, size_t
  * @param count number of samples to process
  * @param f bi-quadratic filter structure
  */
-LSP_DSP_LIB_SYMBOL(void, biquad_process_x2, float *dst, const float *src, size_t count, biquad_t *f);
+LSP_DSP_LIB_SYMBOL(void, biquad_process_x2, float *dst, const float *src, size_t count, LSP_DSP_LIB_TYPE(biquad_t) *f);
 
 /** Process four bi-quadratic filters for multiple samples simultaneously
  *
@@ -36,7 +36,7 @@ LSP_DSP_LIB_SYMBOL(void, biquad_process_x2, float *dst, const float *src, size_t
  * @param count number of samples to process
  * @param f bi-quadratic filter structure
  */
-LSP_DSP_LIB_SYMBOL(void, biquad_process_x4, float *dst, const float *src, size_t count, biquad_t *f);
+LSP_DSP_LIB_SYMBOL(void, biquad_process_x4, float *dst, const float *src, size_t count, LSP_DSP_LIB_TYPE(biquad_t) *f);
 
 /** Process eight bi-quadratic filters for multiple samples simultaneously
  *
@@ -45,6 +45,6 @@ LSP_DSP_LIB_SYMBOL(void, biquad_process_x4, float *dst, const float *src, size_t
  * @param count number of samples to process
  * @param f bi-quadratic filter structure
  */
-LSP_DSP_LIB_SYMBOL(void, biquad_process_x8, float *dst, const float *src, size_t count, biquad_t *f);
+LSP_DSP_LIB_SYMBOL(void, biquad_process_x8, float *dst, const float *src, size_t count, LSP_DSP_LIB_TYPE(biquad_t) *f);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_FILTERS_STATIC_H_ */

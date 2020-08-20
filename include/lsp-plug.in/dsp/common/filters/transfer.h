@@ -19,7 +19,7 @@
  * @param freq normalized frequency array
  * @param count size of frequency array
  */
-LSP_DSP_LIB_SYMBOL(void , filter_transfer_calc_ri, float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
+LSP_DSP_LIB_SYMBOL(void, filter_transfer_calc_ri, float *re, float *im, const LSP_DSP_LIB_TYPE(f_cascade_t) *c, const float *freq, size_t count);
 
 /**
  * Apply filter transfer function, computes complex dst = dst * H(f)
@@ -29,7 +29,7 @@ LSP_DSP_LIB_SYMBOL(void , filter_transfer_calc_ri, float *re, float *im, const f
  * @param freq normalized frequency array
  * @param count size of frequency array
  */
-LSP_DSP_LIB_SYMBOL(void , filter_transfer_apply_ri, float *re, float *im, const f_cascade_t *c, const float *freq, size_t count);
+LSP_DSP_LIB_SYMBOL(void, filter_transfer_apply_ri, float *re, float *im, const LSP_DSP_LIB_TYPE(f_cascade_t) *c, const float *freq, size_t count);
 
 /**
  * Compute filter transfer function, computes complex dst = H(f)
@@ -38,7 +38,7 @@ LSP_DSP_LIB_SYMBOL(void , filter_transfer_apply_ri, float *re, float *im, const 
  * @param freq normalized frequency array
  * @param count size of frequency array
  */
-LSP_DSP_LIB_SYMBOL(void , filter_transfer_calc_pc, float *dst, const f_cascade_t *c, const float *freq, size_t count);
+LSP_DSP_LIB_SYMBOL(void, filter_transfer_calc_pc, float *dst, const LSP_DSP_LIB_TYPE(f_cascade_t) *c, const float *freq, size_t count);
 
 /**
  * Apply filter transfer function, computes complex dst = dst * H(f)
@@ -47,7 +47,7 @@ LSP_DSP_LIB_SYMBOL(void , filter_transfer_calc_pc, float *dst, const f_cascade_t
  * @param freq normalized frequency array
  * @param count size of frequency array
  */
-LSP_DSP_LIB_SYMBOL(void , filter_transfer_apply_pc, float *dst, const f_cascade_t *c, const float *freq, size_t count);
+LSP_DSP_LIB_SYMBOL(void, filter_transfer_apply_pc, float *dst, const LSP_DSP_LIB_TYPE(f_cascade_t) *c, const float *freq, size_t count);
 
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_FILTERS_TRANSFER_H_ */

@@ -15,7 +15,7 @@
  * @param dst destination vector
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs1, float *dst, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs1, float *dst, size_t count);
 
 /** Calculate absolute values: dst[i] = abs(src[i])
  *
@@ -23,7 +23,7 @@ LSP_DSP_LIB_SYMBOL(void , abs1, float *dst, size_t count);
  * @param src source vector
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs2, float *dst, const float *src, size_t count);
 
 /** Calculate absolute values: dst[i] = dst[i] + abs(src[i])
  *
@@ -31,7 +31,7 @@ LSP_DSP_LIB_SYMBOL(void , abs2, float *dst, const float *src, size_t count);
  * @param src source vector
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_add2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_add2, float *dst, const float *src, size_t count);
 
 /** Calculate absolute values: dst[i] = dst[i] - abs(src[i])
  *
@@ -39,7 +39,7 @@ LSP_DSP_LIB_SYMBOL(void , abs_add2, float *dst, const float *src, size_t count);
  * @param src source vector
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_sub2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_sub2, float *dst, const float *src, size_t count);
 
 /** Calculate absolute values: dst[i] = abs(src[i]) - dst[i]
  *
@@ -47,7 +47,7 @@ LSP_DSP_LIB_SYMBOL(void , abs_sub2, float *dst, const float *src, size_t count);
  * @param src source vector
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_rsub2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_rsub2, float *dst, const float *src, size_t count);
 
 /** Calculate absolute values: dst[i] = dst[i] * abs(src[i])
  *
@@ -55,7 +55,7 @@ LSP_DSP_LIB_SYMBOL(void , abs_rsub2, float *dst, const float *src, size_t count)
  * @param src source vector
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_mul2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_mul2, float *dst, const float *src, size_t count);
 
 /** Calculate absolute values: dst[i] = dst[i] / abs(src[i])
  *
@@ -63,7 +63,7 @@ LSP_DSP_LIB_SYMBOL(void , abs_mul2, float *dst, const float *src, size_t count);
  * @param src source vector
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_div2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_div2, float *dst, const float *src, size_t count);
 
 /** Calculate absolute values: dst[i] = abs(src[i]) / dst[i]
  *
@@ -71,7 +71,7 @@ LSP_DSP_LIB_SYMBOL(void , abs_div2, float *dst, const float *src, size_t count);
  * @param src source vector
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_rdiv2, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_rdiv2, float *dst, const float *src, size_t count);
 
 /** Calculate absolute values: dst[i] = src1[i] + abs(src2[i])
  *
@@ -80,7 +80,7 @@ LSP_DSP_LIB_SYMBOL(void , abs_rdiv2, float *dst, const float *src, size_t count)
  * @param src2 source vector 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_add3, float *dst, const float *src1, const float *src2, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_add3, float *dst, const float *src1, const float *src2, size_t count);
 
 /** Calculate absolute values: dst[i] = src1[i] - abs(src2[i])
  *
@@ -89,7 +89,7 @@ LSP_DSP_LIB_SYMBOL(void , abs_add3, float *dst, const float *src1, const float *
  * @param src2 source vector 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_sub3, float *dst, const float *src1, const float *src2, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_sub3, float *dst, const float *src1, const float *src2, size_t count);
 
 /** Calculate absolute values: dst[i] = abs(src2[i]) - src1[i]
  *
@@ -98,7 +98,7 @@ LSP_DSP_LIB_SYMBOL(void , abs_sub3, float *dst, const float *src1, const float *
  * @param src2 source vector 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_rsub3, float *dst, const float *src1, const float *src2, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_rsub3, float *dst, const float *src1, const float *src2, size_t count);
 
 /** Calculate absolute values: dst[i] = src1[i] * abs(src2[i])
  *
@@ -107,7 +107,7 @@ LSP_DSP_LIB_SYMBOL(void , abs_rsub3, float *dst, const float *src1, const float 
  * @param src2 source vector 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_mul3, float *dst, const float *src1, const float *src2, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_mul3, float *dst, const float *src1, const float *src2, size_t count);
 
 /** Calculate absolute values: dst[i] = src1[i] / abs(src2[i])
  *
@@ -116,7 +116,7 @@ LSP_DSP_LIB_SYMBOL(void , abs_mul3, float *dst, const float *src1, const float *
  * @param src2 source vector 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_div3, float *dst, const float *src1, const float *src2, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_div3, float *dst, const float *src1, const float *src2, size_t count);
 
 /** Calculate absolute values: dst[i] = abs(src2[i]) / src1[i]
  *
@@ -125,6 +125,6 @@ LSP_DSP_LIB_SYMBOL(void , abs_div3, float *dst, const float *src1, const float *
  * @param src2 source vector 2
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void , abs_rdiv3, float *dst, const float *src1, const float *src2, size_t count);
+LSP_DSP_LIB_SYMBOL(void, abs_rdiv3, float *dst, const float *src1, const float *src2, size_t count);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_PMATH_ABS_VV_H_ */

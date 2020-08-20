@@ -20,7 +20,7 @@
  * @param src2_im source 2 imaginary part
  * @param count number of multiplications
  */
-LSP_DSP_LIB_SYMBOL(void , complex_mul3,
+LSP_DSP_LIB_SYMBOL(void, complex_mul3,
         float *dst_re, float *dst_im,
         const float *src1_re, const float *src1_im,
         const float *src2_re, const float *src2_im,
@@ -35,7 +35,7 @@ LSP_DSP_LIB_SYMBOL(void , complex_mul3,
  * @param src_im source imaginary part
  * @param count number of multiplications
  */
-LSP_DSP_LIB_SYMBOL(void , complex_mul2,
+LSP_DSP_LIB_SYMBOL(void, complex_mul2,
         float *dst_re, float *dst_im,
         const float *src_re, const float *src_im,
         size_t count
@@ -51,7 +51,7 @@ LSP_DSP_LIB_SYMBOL(void , complex_mul2,
  * @param src_im bottom imaginary part
  * @param count number of divisions
  */
-LSP_DSP_LIB_SYMBOL(void , complex_div2, float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+LSP_DSP_LIB_SYMBOL(void, complex_div2, float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
 
 /**
  * Divide complex numbers:
@@ -63,7 +63,7 @@ LSP_DSP_LIB_SYMBOL(void , complex_div2, float *dst_re, float *dst_im, const floa
  * @param src_im top imaginary part
  * @param count number of divisions
  */
-LSP_DSP_LIB_SYMBOL(void , complex_rdiv2, float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+LSP_DSP_LIB_SYMBOL(void, complex_rdiv2, float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
 
 /**
  * Divide complex numbers:
@@ -77,7 +77,7 @@ LSP_DSP_LIB_SYMBOL(void , complex_rdiv2, float *dst_re, float *dst_im, const flo
  * @param b_im bottom imaginary part
  * @param count number of divisions
  */
-LSP_DSP_LIB_SYMBOL(void , complex_div3, float *dst_re, float *dst_im, const float *t_re, const float *t_im, const float *b_re, const float *b_im, size_t count);
+LSP_DSP_LIB_SYMBOL(void, complex_div3, float *dst_re, float *dst_im, const float *t_re, const float *t_im, const float *b_re, const float *b_im, size_t count);
 
 /** Calculate complex reciprocal: 1 / (re + j * im)
  *
@@ -85,7 +85,7 @@ LSP_DSP_LIB_SYMBOL(void , complex_div3, float *dst_re, float *dst_im, const floa
  * @param dst_im source, destination imaginary part
  * @param count number of multiplications
  */
-LSP_DSP_LIB_SYMBOL(void , complex_rcp1,
+LSP_DSP_LIB_SYMBOL(void, complex_rcp1,
         float *dst_re, float *dst_im,
         size_t count
     );
@@ -98,7 +98,7 @@ LSP_DSP_LIB_SYMBOL(void , complex_rcp1,
  * @param src_im source imaginary part
  * @param count number of multiplications
  */
-LSP_DSP_LIB_SYMBOL(void , complex_rcp2,
+LSP_DSP_LIB_SYMBOL(void, complex_rcp2,
         float *dst_re, float *dst_im,
         const float *src_re, const float *src_im,
         size_t count
@@ -112,7 +112,7 @@ LSP_DSP_LIB_SYMBOL(void , complex_rcp2,
  * @param src_im imaginary part of complex number
  * @param count number of elements to process
  */
-LSP_DSP_LIB_SYMBOL(void , complex_cvt2modarg,
+LSP_DSP_LIB_SYMBOL(void, complex_cvt2modarg,
         float *dst_mod, float *dst_arg,
         const float *src_re, const float *src_im,
         size_t count
@@ -125,7 +125,7 @@ LSP_DSP_LIB_SYMBOL(void , complex_cvt2modarg,
  * @param src_im imaginary part of complex number
  * @param count number of elements to process
  */
-LSP_DSP_LIB_SYMBOL(void , complex_mod,
+LSP_DSP_LIB_SYMBOL(void, complex_mod,
         float *dst_mod,
         const float *src_re, const float *src_im,
         size_t count
@@ -137,7 +137,7 @@ LSP_DSP_LIB_SYMBOL(void , complex_mod,
  * @param src packed complex number data
  * @param count count number of elements to process
  */
-LSP_DSP_LIB_SYMBOL(void , complex_arg, float *dst, const float *re, const float *im, size_t count);
+LSP_DSP_LIB_SYMBOL(void, complex_arg, float *dst, const float *re, const float *im, size_t count);
 
 /** Convert polar-form of complex number to real+imaginary
  *
