@@ -8,6 +8,7 @@
 #include <lsp-plug.in/common/types.h>
 
 #ifdef ARCH_X86
+    #include <private/dsp/exports.h>
     #include <lsp-plug.in/dsp/dsp.h>
     #include <lsp-plug.in/common/bits.h>
     #include <lsp-plug.in/stdlib/math.h>
@@ -47,7 +48,12 @@
         {
             using namespace x86;
 
-            #define EXPORT2(function, export)               { dsp::function = avx2::export; TEST_EXPORT(avx2::export); }
+            #define EXPORT2(function, export) \
+            { \
+                dsp::function                       = avx2::export; \
+                dsp::LSP_DSP_LIB_MANGLE(function)   = avx2::export; \
+                TEST_EXPORT(avx2::export); \
+            }
             #define EXPORT1(function)                       EXPORT2(function, function)
 
             #define EXPORT2_X64(function, export)           IF_ARCH_X86_64(EXPORT2(function, export));

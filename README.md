@@ -101,13 +101,12 @@ make prune
 Usage
 ======
 
-Here's the code snippet of how the library can be initialized and used:
+Here's the code snippet of how the library can be initialized and used in C++:
 
 ```C++
-
 #include <lsp-plug.in/dsp/dsp.h>
 #include <stdio.h>
-
+#include <stdlib.h>
 
 int main(int argc, const char **argv)
 {
@@ -128,7 +127,8 @@ int main(int argc, const char **argv)
     
     // For faster computing we can tune CPU by updating thread context.
     // This will enable Flush-to-Zero and Denormals-are-Zero flags on
-    // CPUs that support them
+    // CPUs that support them. This is thread-local change and should
+    // be called in each individual processing thread
     dsp::context_t ctx;
     dsp::start(&ctx);
     
@@ -136,7 +136,7 @@ int main(int argc, const char **argv)
     float v[0x1000];
     dsp::fill_zero(v, sizeof(v)/sizeof(float));
     
-    // At the end, we need to restore the context
+    // At the end, we need to restore the context and reset CPU settings to defaults
     dsp::finish(&ctx);
     
     return 0;
@@ -145,5 +145,48 @@ int main(int argc, const char **argv)
 
 ```
 
+Also all functions can be accessed from pure C with ```lsp_dsp_``` prefix in the funcion and type names:
+
+```C
+#include <lsp-plug.in/dsp/dsp.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, const char **argv)
+{
+    // Initialize DSP
+    lsp_dsp_init();
+
+    // Optionally: output information about the system
+    lsp_dsp_info_t *info = lsp_dsp_info();
+    if (info != NULL)
+    {
+        printf("Architecture:   %s\n", info->arch);
+        printf("Processor:      %s\n", info->cpu);
+        printf("Model:          %s\n", info->model);
+        printf("Features:       %s\n", info->features);
+
+        free(info);
+    }
+    
+    // For faster computing we can tune CPU by updating thread context.
+    // This will enable Flush-to-Zero and Denormals-are-Zero flags on
+    // CPUs that support them. This is thread-local change and should
+    // be called in each individual processing thread
+    lsp_dsp_context_t ctx;
+    lsp_dsp_start(&ctx);
+    
+    // Here we call some dsp functions, for example lsp_dsp_fill_zero
+    float v[0x1000];
+    lsp_dsp_fill_zero(v, sizeof(v)/sizeof(float));
+    
+    // At the end, we need to restore the context and reset CPU settings to defaults
+    lsp_dsp_finish(&ctx);
+    
+    return 0;
+}
+
+
+```
 
 

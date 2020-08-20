@@ -87,6 +87,21 @@ ifndef PREFIX
   endif
 endif
 
+# Library prefix
+ifndef LIBDIR
+  LIBDIR                   := $(PREFIX)/lib
+endif
+
+# Binaries prefix
+ifndef BINDIR
+  BINDIR                   := $(PREFIX)/bin
+endif
+
+# Binaries prefix
+ifndef INCDIR
+  INCDIR                   := $(PREFIX)/include
+endif
+
 # Temporary directory
 ifndef TEMPDIR
   ifeq ($(PLATFORM),Windows)
@@ -106,6 +121,9 @@ COMMON_VARS = \
 	EXECUTABLE_EXT \
 	PKGCONFIG_EXT \
 	PREFIX \
+	LIBDIR \
+	BINDIR \
+	INCDIR \
 	TEMPDIR \
 	TEST \
 	DEBUG \
@@ -117,8 +135,11 @@ COMMON_VARS = \
 sysvars:
 	@echo "List of available system variables:"
 	@echo "  ARCHITECTURE              target architecture to perform build"
+	@echo "  BINDIR                    location of the binaries"
 	@echo "  DEBUG                     build with debug options"
 	@echo "  EXECUTABLE_EXT            file extension for executable files"
+	@echo "  INCDIR                    location of the header files"
+	@echo "  LIBDIR                    location of the library"
 	@echo "  LIBRARY_EXT               file extension for library files"
 	@echo "  PKGCONFIG_EXT             file extension for pkgconfig files"
 	@echo "  PLATFORM                  target software platform to perform build"

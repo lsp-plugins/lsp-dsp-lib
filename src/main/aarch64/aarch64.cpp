@@ -8,9 +8,17 @@
 #include <lsp-plug.in/common/types.h>
 
 #ifdef ARCH_AARCH64
+    #include <private/dsp/exports.h>
     #include <lsp-plug.in/dsp/dsp.h>
     #include <lsp-plug.in/stdlib/string.h>
     #include <lsp-plug.in/stdlib/math.h>
+
+    // Test framework
+    #ifdef LSP_TESTING
+        #include <lsp-plug.in/test-fw/test.h>
+    #else
+        #define TEST_EXPORT(...)
+    #endif /* LSP_TESTING */
 
     #include <stdio.h>
     #include <errno.h>
@@ -287,8 +295,13 @@ namespace lsp
             return res;
         }
 
-    #define EXPORT2(function, export)           dsp::function = aarch64::export;
-    #define EXPORT1(function)                   EXPORT2(function, function)
+        #define EXPORT2(function, export) \
+        { \
+            dsp::function                       = aarch64::export; \
+            dsp::LSP_DSP_LIB_MANGLE(function)   = aarch64::export; \
+            TEST_EXPORT(aarch64::export); \
+        }
+        #define EXPORT1(function)                   EXPORT2(function, function)
 
         void dsp_init()
         {

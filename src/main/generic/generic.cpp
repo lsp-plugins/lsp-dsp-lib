@@ -5,6 +5,7 @@
  *      Author: sadko
  */
 
+#include <private/dsp/exports.h>
 #include <lsp-plug.in/common/bits.h>
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/stdlib/math.h>
@@ -74,7 +75,12 @@ namespace lsp
 {
     namespace generic
     {
-        #define EXPORT1(function)            dsp::function = generic::function; TEST_EXPORT(generic::function);
+        #define EXPORT1(function) \
+        { \
+            dsp::function                       = generic::function; \
+            dsp::LSP_DSP_LIB_MANGLE(function)   = generic::function; \
+            TEST_EXPORT(generic::function); \
+        }
 
         void dsp_init()
         {

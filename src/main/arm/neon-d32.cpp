@@ -8,6 +8,7 @@
 #include <lsp-plug.in/common/types.h>
 
 #ifdef ARCH_ARM
+    #include <private/dsp/exports.h>
     #include <lsp-plug.in/dsp/dsp.h>
     #include <lsp-plug.in/stdlib/math.h>
 
@@ -72,7 +73,12 @@
     #undef PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL
 
 
-    #define EXPORT2(function, export)           dsp::function = neon_d32::export; TEST_EXPORT(neon_d32::export);
+    #define EXPORT2(function, export) \
+    { \
+        dsp::function                       = neon_d32::export; \
+        dsp::LSP_DSP_LIB_MANGLE(function)   = neon_d32::export; \
+        TEST_EXPORT(neon_d32::export); \
+    }
     #define EXPORT1(function)                   EXPORT2(function, function)
 
     namespace lsp

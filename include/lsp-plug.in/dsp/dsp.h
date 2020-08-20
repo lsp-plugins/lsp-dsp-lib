@@ -10,6 +10,20 @@
 
 #include <lsp-plug.in/dsp/version.h>
 
+#ifndef LSP_DSP_LIB_SYMBOL
+    #ifdef __cplusplus
+        #define LSP_DSP_LIB_SYMBOL(ret, name, ...) \
+            namespace lsp { \
+                namespace dsp { \
+                    LSP_DSP_LIB_CPPIMPORT ret (* name)(__VA_ARGS__); \
+                } \
+            }
+    #else
+        #define LSP_DSP_LIB_SYMBOL(ret, name, ...) \
+            LSP_DSP_LIB_CIMPORT ret (* LSP_DSP_LIB_MANGLE(name))(__VA_ARGS__);
+    #endif /* __cplusplus */
+#endif /* LSP_DSP_LIB_SYMBOL */
+
 // Include all partial definitions
 #include <lsp-plug.in/dsp/common/types.h>
 #include <lsp-plug.in/dsp/common/3dmath.h>
@@ -32,5 +46,7 @@
 #include <lsp-plug.in/dsp/common/resampling.h>
 #include <lsp-plug.in/dsp/common/search.h>
 #include <lsp-plug.in/dsp/common/smath.h>
+
+#undef LSP_DSP_LIB_CXX_IFACE
 
 #endif /* LSP_PLUG_IN_DSP_DSP_H_ */
