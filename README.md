@@ -136,7 +136,7 @@ int main(int argc, const char **argv)
     float v[0x1000];
     dsp::fill_zero(v, sizeof(v)/sizeof(float));
     
-    // At the end, we need to restore the context
+    // At the end, we need to restore the context and reset CPU settings to defaults
     dsp::finish(&ctx);
     
     return 0;
@@ -180,7 +180,7 @@ int main(int argc, const char **argv)
     float v[0x1000];
     lsp_dsp_fill_zero(v, sizeof(v)/sizeof(float));
     
-    // At the end, we need to restore the context
+    // At the end, we need to restore the context and reset CPU settings to defaults
     lsp_dsp_finish(&ctx);
     
     return 0;
