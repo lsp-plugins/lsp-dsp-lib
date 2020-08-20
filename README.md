@@ -128,7 +128,8 @@ int main(int argc, const char **argv)
     
     // For faster computing we can tune CPU by updating thread context.
     // This will enable Flush-to-Zero and Denormals-are-Zero flags on
-    // CPUs that support them
+    // CPUs that support them. This is thread-local change and should
+    // be called in each individual processing thread
     dsp::context_t ctx;
     dsp::start(&ctx);
     
@@ -171,15 +172,16 @@ int main(int argc, const char **argv)
     
     // For faster computing we can tune CPU by updating thread context.
     // This will enable Flush-to-Zero and Denormals-are-Zero flags on
-    // CPUs that support them
+    // CPUs that support them. This is thread-local change and should
+    // be called in each individual processing thread
     context_t ctx;
     lsp_dsp_start(&ctx);
     
-    // Here we call some dsp functions, for example dsp::fill_zero
+    // Here we call some dsp functions, for example lsp_dsp_fill_zero
     float v[0x1000];
     lsp_dsp_fill_zero(v, sizeof(v)/sizeof(float));
     
-    // At the end, we need to restore the context
+    // At the end, we need to restore the context and reset CPU settings to defaults
     lsp_dsp_finish(&ctx);
     
     return 0;
