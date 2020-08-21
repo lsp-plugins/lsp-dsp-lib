@@ -73,6 +73,11 @@ ifndef EXECUTABLE_EXT
   endif
 endif
 
+# Extension of executables
+ifndef STATICLIB_EXT
+  STATICLIB_EXT            := .a
+endif
+
 # Extension of pkgconfig files
 ifndef PKGCONFIG_EXT
   PKGCONFIG_EXT            := .pc
@@ -118,6 +123,7 @@ COMMON_VARS = \
 	PLATFORM \
 	ARCHITECTURE \
 	LIBRARY_EXT \
+	STATICLIB_EXT \
 	EXECUTABLE_EXT \
 	PKGCONFIG_EXT \
 	PREFIX \
@@ -145,6 +151,7 @@ sysvars:
 	@echo "  PLATFORM                  target software platform to perform build"
 	@echo "  PREFIX                    installation prefix for binary files"
 	@echo "  PROFILE                   build with profile options"
+	@echo "  STATICLIB_EXT             file extension for static library files"
 	@echo "  TEMPDIR                   location of temporary directory"
 	@echo "  TEST                      use test build"
 	@echo "  TRACE                     compile with additional trace information output"

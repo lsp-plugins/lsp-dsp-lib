@@ -21,7 +21,9 @@ CXX_INSTHEADERS         = $(patsubst $($(ARTIFACT_VARS)_INC)/%,$(DESTDIR)$(INCDI
 
 ARTIFACT_BIN            = $($(ARTIFACT_VARS)_BIN)
 ARTIFACT_LIB            = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)-$($(ARTIFACT_VARS)_VERSION)$(LIBRARY_EXT)
-ARTIFACT_SYMLINK        = $($(ARTIFACT_VARS)_NAME)$(LIBRARY_EXT)
+ARTIFACT_STATICLIB      = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)-$($(ARTIFACT_VARS)_VERSION)$(STATICLIB_EXT)
+ARTIFACT_LIBLINK        = $($(ARTIFACT_VARS)_NAME)$(LIBRARY_EXT)
+ARTIFACT_SLIBLINK     = $($(ARTIFACT_VARS)_NAME)$(STATICLIB_EXT)
 ARTIFACT_PC             = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)$(PKGCONFIG_EXT)
 ARTIFACT_TESTBIN        = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)-test$(EXECUTABLE_EXT)
 ARTIFACT_OBJ            = $($(ARTIFACT_VARS)_OBJ)
@@ -31,7 +33,7 @@ CFLAGS_DEPS             = $(foreach dep, $(DEPENDENCIES) $(ARTIFACT_VARS), $(if 
 BUILD_DEPS              = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_OBJ), $(dep)))
 LINKER_DEPS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_LDFLAGS), $($(dep)_LDFLAGS)))
 LINKER_OBJS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_OBJ), $($(dep)_OBJ)))
-BUILD_ALL               = $(ARTIFACT_LIB) $(ARTIFACT_PC)
+BUILD_ALL               = $(ARTIFACT_LIB) $(ARTIFACT_STATICLIB) $(ARTIFACT_PC)
 
 ifeq ($(TEST), 1)
   ifeq ($($(ARTIFACT_VARS)_TESTING),1)
@@ -129,6 +131,10 @@ $(ARTIFACT_OBJ): $(BUILD_DEPS) $(CXX_OBJ) $(CXX_OBJEXT)
 $(ARTIFACT_LIB): $(ARTIFACT_OBJ)
 	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_LIB))"
 	@$(CXX) -o $(ARTIFACT_LIB) $(LINKER_OBJS) $(ARTIFACT_OBJ) $(SO_FLAGS) $(LINKER_DEPS)
+	
+$(ARTIFACT_STATICLIB): $(ARTIFACT_OBJ)
+	@echo "  $(AR)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_STATICLIB))"
+	@$(AR) rcs $(ARTIFACT_STATICLIB) $(LINKER_OBJS) $(ARTIFACT_OBJ)
 
 $(ARTIFACT_TESTBIN): $(ARTIFACT_OBJ)
 	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_TESTBIN))"
@@ -149,7 +155,7 @@ $(ARTIFACT_PC):
 	@echo "Description: $($(ARTIFACT_VARS)_DESC)" >> "$(ARTIFACT_PC)"
 	@echo "Version: $($(ARTIFACT_VARS)_VERSION)" >> "$(ARTIFACT_PC)"
 	@echo "Cflags: -I\$${includedir}" >> "$(ARTIFACT_PC)"
-	@echo "Libs: -L\$${libdir} -l:$(notdir $(ARTIFACT_SYMLINK))" >> "$(ARTIFACT_PC)"
+	@echo "Libs: -L\$${libdir} -l:$(notdir $(ARTIFACT_LIBLINK))" >> "$(ARTIFACT_PC)"
 
 install: all
 	@echo "Installing $($(ARTIFACT_VARS)_NAME)"
@@ -157,15 +163,17 @@ install: all
 	@mkdir -p "$(DESTDIR)$(LIBDIR)/pkgconfig"
 	@cp -r $($(ARTIFACT_VARS)_INC)/* "$(DESTDIR)$(INCDIR)/"
 	@cp $(ARTIFACT_PC) "$(DESTDIR)$(LIBDIR)/pkgconfig/"
-	@echo $(INSTALL) $(ARTIFACT_LIB) -t "$(DESTDIR)$(LIBDIR)"
-	@$(INSTALL) $(ARTIFACT_LIB) -t "$(DESTDIR)$(LIBDIR)"
-	@ln -sf $(notdir $(ARTIFACT_LIB)) "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_SYMLINK)"
+	@echo $(INSTALL) $(ARTIFACT_LIB) $(ARTIFACT_STATICLIB) -t "$(DESTDIR)$(LIBDIR)"
+	@$(INSTALL) $(ARTIFACT_LIB) $(ARTIFACT_STATICLIB) -t "$(DESTDIR)$(LIBDIR)"
+	@ln -sf $(notdir $(ARTIFACT_LIB)) "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_LIBLINK)"
+	@ln -sf $(notdir $(ARTIFACT_STATICLIB)) "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_SLIBLINK)"
 	@echo "Install OK"
 
 uninstall:
 	@echo "Uninstalling $($(ARTIFACT_VARS)_NAME)"
 	@-rm -f "$(DESTDIR)$(LIBDIR)/$(notdir $(ARTIFACT_LIB))"
-	@-rm -f "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_SYMLINK)"
+	@-rm -f "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_LIBLINK)"
+	@-rm -f "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_SLIBLINK)"
 	@-rm -f "$(DESTDIR)$(LIBDIR)/pkgconfig/$(notdir $(ARTIFACT_PC))"
 	@echo rm -f $(CXX_INSTHEADERS)
 	@-rm -f $(CXX_INSTHEADERS)

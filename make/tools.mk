@@ -3,16 +3,19 @@ ifeq ($(PLATFORM),OpenBSD)
   X_CC_TOOL          := egcc
   X_CXX_TOOL         := eg++
   X_AS_TOOL          := gas
+  X_AR_TOOL          := ar
 else
   X_CC_TOOL          := gcc
   X_CXX_TOOL         := g++
   X_AS_TOOL          := as
+  X_AR_TOOL          := ar
 endif
 
 # Define tool variables
 CC                 := $(X_CC_TOOL)
 CXX                := $(X_CXX_TOOL)
 AS                 := $(X_AS_TOOL)
+AR                 := $(X_AR_TOOL)
 LD                 := ld
 GIT                := git
 INSTALL            := install
@@ -116,6 +119,7 @@ TOOL_VARS := \
 .PHONY: toolvars
 toolvars:
 	@echo "List of tool variables:"
+	@echo "  AR                        Archiver tool"
 	@echo "  AS                        Assembler tool"
 	@echo "  CC                        C compiler execution command line"
 	@echo "  CFLAGS                    C compiler build flags"
