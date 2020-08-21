@@ -84,6 +84,15 @@ ifndef LIBRARY_EXT
   endif
 endif
 
+# Extension of libraries
+ifndef LIBRARY_PREFIX
+  ifeq ($(PLATFORM),Windows)
+    LIBRARY_PREFIX           :=
+  else
+    LIBRARY_PREFIX           := lib
+  endif
+endif
+
 # Extension of executables
 ifndef EXECUTABLE_EXT
   ifeq ($(PLATFORM),Windows)
@@ -143,6 +152,7 @@ COMMON_VARS = \
 	PLATFORM \
 	ARCHITECTURE \
 	LIBRARY_EXT \
+	LIBRARY_PREFIX \
 	STATICLIB_EXT \
 	EXECUTABLE_EXT \
 	PKGCONFIG_EXT \
@@ -167,6 +177,7 @@ sysvars:
 	@echo "  INCDIR                    location of the header files"
 	@echo "  LIBDIR                    location of the library"
 	@echo "  LIBRARY_EXT               file extension for library files"
+	@echo "  LIBRARY_PREFIX            prefix used for library file"
 	@echo "  PKGCONFIG_EXT             file extension for pkgconfig files"
 	@echo "  PLATFORM                  target software platform to perform build"
 	@echo "  PREFIX                    installation prefix for binary files"
