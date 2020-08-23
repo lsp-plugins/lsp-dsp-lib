@@ -25,6 +25,20 @@ MODULES                    := $(BASEDIR)/modules
 BUILDDIR                   := $(BASEDIR)/.build
 CONFIG                     := $(BASEDIR)/.config.mk
 
+# Prerequisites
+MAKE_VERSION_REQUIRED      := 4.0
+MAKE_VERSION_CHECK         := $(filter $(MAKE_VERSION_REQUIRED), $(firstword $(sort $(MAKE_VERSION) $(MAKE_VERSION_REQUIRED))))
+ifeq ("$(MAKE_VERSION_CHECK)", "")
+$(error make is too old, at least version $(MAKE_VERSION_REQUIRED) is required.)
+endif
+
+GCC_VERSION_REQUIRED       := 4.9
+GCC_VERSION                := $(shell gcc -dumpversion)
+GCC_VERSION_CHECK          := $(filter $(GCC_VERSION_REQUIRED), $(firstword $(sort $(GCC_VERSION) $(GCC_VERSION_REQUIRED))))
+ifeq ("$(GCC_VERSION_CHECK)", "")
+$(error gcc is too old, at least version $(GCC_VERSION_REQUIRED) is required.)
+endif
+
 # Basic initialization
 # Checks
 ifeq ("$(wildcard $(CONFIG))", "")
