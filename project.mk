@@ -26,10 +26,15 @@ ARTIFACT_HEADERS            = lsp-plug.in
 ARTIFACT_VERSION            = 0.5.7-devel
 
 # List of dependencies
+DEPENDENCIES = \
+  STDLIB \
+  LSP_COMMON_LIB
+
 TEST_DEPENDENCIES = \
   TEST_STDLIB \
   LSP_TEST_FW
 
-DEPENDENCIES = \
-  STDLIB \
-  LSP_COMMON_LIB
+# All possible dependencies
+ALL_DEPENDENCIES = \
+  $(DEPENDENCIES) \
+  $(TEST_DEPENDENCIES)

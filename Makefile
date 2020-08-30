@@ -39,7 +39,7 @@ include $(BASEDIR)/project.mk
 CHK_CONFIG                  = test -f "$(CONFIG)" || (echo "System not properly configured. Please launch 'make config' first" && exit 1)
 
 .DEFAULT_GOAL              := all
-.PHONY: all compile install uninstall depend clean
+.PHONY: all compile install uninstall depend clean chkconfig
 
 compile all install uninstall depend:
 	@$(CHK_CONFIG)
@@ -51,15 +51,22 @@ clean:
 	@echo "Clean OK"
 	
 # Module-related tasks
-.PHONY: fetch prune
+.PHONY: fetch tree prune
 fetch:
-	@echo "Fetching source code dependencies"
+	@$(CHK_CONFIG)
+	@echo "Fetching desired source code dependencies"
 	@$(MAKE) -s -f "make/modules.mk" $(@) BASEDIR="$(BASEDIR)" CONFIG="$(CONFIG)"
+	@echo "Fetch OK"
+	
+tree:
+	@echo "Fetching all possible source code dependencies"
+	@$(MAKE) -s -f "make/modules.mk" $(@) BASEDIR="$(BASEDIR)" CONFIG="$(CONFIG)" TREE="1"
 	@echo "Fetch OK"
 
 prune: clean
 	@echo "Pruning the whole project tree"
 	@$(MAKE) -s -f "make/modules.mk" prune BASEDIR="$(BASEDIR)" CONFIG="$(CONFIG)"
+	@$(MAKE) -s -f "make/modules.mk" prune BASEDIR="$(BASEDIR)" TREE="1"
 	@-rm -rf "$(CONFIG)"
 	@echo "Prune OK"
 
@@ -78,10 +85,13 @@ help:
 	@echo "  clean                     Clean all build files and configuration file"
 	@echo "  config                    Configure build"
 	@echo "  depend                    Update build dependencies for current project"
-	@echo "  fetch                     Fetch all source code dependencies from git"
+	@echo "  fetch                     Fetch all desired source code dependencies from git"
 	@echo "  help                      Print this help message"
 	@echo "  info                      Output build configuration"
 	@echo "  install                   Install all binaries into the system"
+	@echo "  prune                     Cleanup build and all fetched dependencies from git"
+	@echo "  tree                      Fetch all possible source code dependencies from git"
+	@echo "                            to make source code portable between machines"
 	@echo "  uninstall                 Uninstall binaries"
 	@echo ""
 	@$(MAKE) -s -f "$(BASEDIR)/make/configure.mk" $(@)

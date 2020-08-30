@@ -98,6 +98,13 @@ To clean the whole project tree including configuration files, run:
 make prune
 ```
 
+To fetch all possible dependencies and make the source code tree portable between
+different architectures and platforms, run:
+
+```bash
+make tree
+```
+
 Usage
 ======
 
