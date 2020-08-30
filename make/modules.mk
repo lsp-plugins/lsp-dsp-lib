@@ -21,20 +21,42 @@
 BASEDIR            := $(CURDIR)
 CONFIG             := $(CURDIR)/.config.mk
 
-include $(CONFIG)
+include $(BASEDIR)/dependencies.mk
+-include $(CONFIG)
 include $(BASEDIR)/project.mk
 
-DEPENDENCIES       += $(TEST_DEPENDENCIES)
+SYS_DEPENDENCIES    = $(DEPENDENCIES) $(TEST_DEPENDENCIES)
+
+# Find the proper branch of the GIT repository
+ifeq ($(TREE),1)
+  MODULES            := $(BASEDIR)/modules
+  GIT                := git
+  
+  ifeq ($(findstring -devel,$(ARTIFACT_VERSION)),-devel)
+    $(foreach dep, $(ALL_DEPENDENCIES), \
+      $(eval $(dep)_BRANCH=devel) \
+      $(eval $(dep)_PATH=$(MODULES)/$($(dep)_NAME)) \
+    )
+  else
+    $(foreach dep, $(ALL_DEPENDENCIES), \
+      $(eval $(dep)_BRANCH="$($(dep)_NAME)-$($(dep)_VERSION)") \
+      $(eval $(dep)_PATH=$(MODULES)/$($(dep)_NAME)) \
+    )
+  endif
+endif
 
 # Form list of modules, exclude all modules that have 'system' version
-SRC_MODULES         = $(foreach dep, $(DEPENDENCIES), $(if $(findstring src,$($(dep)_TYPE)),$(dep)))
-HDR_MODULES         = $(foreach dep, $(DEPENDENCIES), $(if $(findstring hdr,$($(dep)_TYPE)),$(dep)))
+SRC_MODULES         = $(foreach dep, $(SYS_DEPENDENCIES), $(if $(findstring src,$($(dep)_TYPE)),$(dep)))
+HDR_MODULES         = $(foreach dep, $(SYS_DEPENDENCIES), $(if $(findstring hdr,$($(dep)_TYPE)),$(dep)))
+ALL_SRC_MODULES     = $(foreach dep, $(ALL_DEPENDENCIES), $(if $(findstring src,$($(dep)_TYPE)),$(dep)))
+ALL_HDR_MODULES     = $(foreach dep, $(ALL_DEPENDENCIES), $(if $(findstring hdr,$($(dep)_TYPE)),$(dep)))
+ALL_PATHS           = $(foreach dep, $(ALL_SRC_MODULES) $(ALL_HDR_MODULES), $($(dep)_PATH))
 
 # Branches
-.PHONY: $(SRC_MODULES) $(HDR_MODULES)
+.PHONY: $(ALL_SRC_MODULES) $(ALL_HDR_MODULES) $(ALL_PATHS)
 .PHONY: fetch prune clean
 
-$(SRC_MODULES) $(HDR_MODULES):
+$(ALL_SRC_MODULES) $(ALL_HDR_MODULES):
 	@echo "Cloning $($(@)_URL) -> $($(@)_PATH) [$($(@)_BRANCH)]"
 	@test -f "$($(@)_PATH)/.git/config" || $(GIT) clone "$($(@)_URL)" "$($(@)_PATH)"
 	@$(GIT) -C "$($(@)_PATH)" reset --hard
@@ -43,12 +65,17 @@ $(SRC_MODULES) $(HDR_MODULES):
 	@$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout origin/$($(@)_BRANCH) || \
 	 $(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout refs/tags/$($(@)_BRANCH)
 
+$(ALL_PATHS):
+	@echo "Removing $(notdir $(@))"
+	@-rm -rf $(@)
+
 fetch: $(SRC_MODULES) $(HDR_MODULES)
+
+tree: $(ALL_SRC_MODULES) $(ALL_HDR_MODULES)
 
 clean:
 	@echo rm -rf "$($(ARTIFACT_VARS)_BIN)/$(ARTIFACT_NAME)"
 	@-rm -rf "$($(ARTIFACT_VARS)_BIN)/$(ARTIFACT_NAME)"
 
-prune:
-	@-find 'modules' -mindepth 1 -maxdepth 1 -type d -exec rm -rf '{}' \;
+prune: $(ALL_PATHS)
 
