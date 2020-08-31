@@ -4,6 +4,7 @@
 
 === 0.5.8 ===
 * Fixed excessive header installation with proper one.
+* Fixed installation and deinstallation of shared object and library files.
 
 === 0.5.7 ===
 * Updated makefiles: added `make tree` target.
