@@ -37,7 +37,7 @@ include $(BASEDIR)/project.mk
 
 # Setup paths
 CHK_CONFIG                  = test -f "$(CONFIG)" || (echo "System not properly configured. Please launch 'make config' first" && exit 1)
-DISTSRC_PATH                = $(BUILDDIR)/distsrc
+DISTSRC_PATH                = $(BUILDDIR)/.distsrc
 DISTSRC                     = $(DISTSRC_PATH)/$(ARTIFACT_NAME)
 
 .DEFAULT_GOAL              := all
@@ -91,9 +91,12 @@ distsrc:
 	@cp $(BASEDIR)/CHANGELOG $(BASEDIR)/COPYING* $(BASEDIR)/Makefile $(BASEDIR)/*.mk "$(DISTSRC)/"
 	@find "$(DISTSRC)" -iname '.git' | xargs -exec rm -rf {}
 	@find "$(DISTSRC)" -iname '.gitignore' | xargs -exec rm -rf {}
-	@tar -C $(DISTSRC_PATH) -czf "$(BUILDDIR)/$(ARTIFACT_NAME)-src.tar.gz" "$(ARTIFACT_NAME)"
+	@tar -C $(DISTSRC_PATH) -czf "$(BUILDDIR)/$(ARTIFACT_NAME)-$(ARTIFACT_VERSION)-src.tar.gz" "$(ARTIFACT_NAME)"
+	@echo "Created archive: $(BUILDDIR)/$(ARTIFACT_NAME)-$(ARTIFACT_VERSION)-src.tar.gz"
+	@ln -sf "$(ARTIFACT_NAME)-$(ARTIFACT_VERSION)-src.tar.gz" "$(BUILDDIR)/$(ARTIFACT_NAME)-src.tar.gz"
+	@echo "Created symlink: $(BUILDDIR)/$(ARTIFACT_NAME)-src.tar.gz"
 	@rm -rf $(DISTSRC_PATH)
-	@echo "Created archive: $(BUILDDIR)/$(ARTIFACT_NAME)-src.tar.gz"
+	@echo "Build OK"
 
 # Help
 help:
