@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 0.5.8 ===
+* Fixed excessive header installation with proper one.
 
 === 0.5.7 ===
 * Updated makefiles: added `make tree` target.
