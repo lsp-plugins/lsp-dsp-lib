@@ -23,7 +23,7 @@ CONFIG             := $(CURDIR)/.config.mk
 
 include $(BASEDIR)/dependencies.mk
 ifneq ($(TREE),1)
-  include $(CONFIG)
+  -include $(CONFIG)
 endif
 include $(BASEDIR)/project.mk
 
