@@ -36,7 +36,8 @@ CXX_OBJEXT              = $(patsubst %.cpp, $($(ARTIFACT_VARS)_BIN)/%.o, $(CXX_S
 
 ALL_HEADERS             = $(call rwildcard, $($(ARTIFACT_VARS)_INC), *.h)
 CXX_FILE                = $(patsubst $($(ARTIFACT_VARS)_BIN)/%.o,%.cpp, $(@))
-CXX_HEADERS             = $(foreach hdr,$(ARTIFACT_HEADERS),$(call rwildcard, $($(ARTIFACT_VARS)_INC)/$(hdr), *.h))
+CXX_HDR_PATHS           = $(foreach hdr,$(ARTIFACT_HEADERS),$($(ARTIFACT_VARS)_INC)/$(hdr))
+CXX_HEADERS             = $(foreach path,$(CXX_HDR_PATHS),$(call rwildcard, $(path), *.h))
 CXX_INSTHEADERS         = $(patsubst $($(ARTIFACT_VARS)_INC)/%,$(DESTDIR)$(INCDIR)/%,$(CXX_HEADERS))
 
 ARTIFACT_BIN            = $($(ARTIFACT_VARS)_BIN)
@@ -181,7 +182,7 @@ install: all
 	@echo "Installing $($(ARTIFACT_VARS)_NAME)"
 	@mkdir -p "$(DESTDIR)$(INCDIR)"
 	@mkdir -p "$(DESTDIR)$(LIBDIR)/pkgconfig"
-	@cp -r $($(ARTIFACT_VARS)_INC)/* "$(DESTDIR)$(INCDIR)/"
+	@cp -r "$(CXX_HDR_PATHS)" "$(DESTDIR)$(INCDIR)/"
 	@cp $(ARTIFACT_PC) "$(DESTDIR)$(LIBDIR)/pkgconfig/"
 	@echo $(INSTALL) $(ARTIFACT_LIB) $(ARTIFACT_SLIB) -t "$(DESTDIR)$(LIBDIR)"
 	@$(INSTALL) $(ARTIFACT_LIB) $(ARTIFACT_SLIB) -t "$(DESTDIR)$(LIBDIR)"
@@ -195,7 +196,6 @@ uninstall:
 	@-rm -f "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_LIBLINK)"
 	@-rm -f "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_SLIBLINK)"
 	@-rm -f "$(DESTDIR)$(LIBDIR)/pkgconfig/$(notdir $(ARTIFACT_PC))"
-	@echo rm -f $(CXX_INSTHEADERS)
 	@-rm -f $(CXX_INSTHEADERS)
 	@echo "Uninstall OK"
 
