@@ -37,9 +37,11 @@ include $(BASEDIR)/project.mk
 
 # Setup paths
 CHK_CONFIG                  = test -f "$(CONFIG)" || (echo "System not properly configured. Please launch 'make config' first" && exit 1)
+DISTSRC_PATH                = $(BUILDDIR)/.distsrc
+DISTSRC                     = $(DISTSRC_PATH)/$(ARTIFACT_NAME)
 
 .DEFAULT_GOAL              := all
-.PHONY: all compile install uninstall depend clean chkconfig
+.PHONY: all compile install uninstall depend clean
 
 compile all install uninstall depend:
 	@$(CHK_CONFIG)
@@ -60,7 +62,7 @@ fetch:
 	
 tree:
 	@echo "Fetching all possible source code dependencies"
-	@$(MAKE) -s -f "make/modules.mk" $(@) BASEDIR="$(BASEDIR)" CONFIG="$(CONFIG)" TREE="1"
+	@$(MAKE) -s -f "make/modules.mk" $(@) BASEDIR="$(BASEDIR)" TREE="1"
 	@echo "Fetch OK"
 
 prune: clean
@@ -71,7 +73,7 @@ prune: clean
 	@echo "Prune OK"
 
 # Configuration-related targets
-.PHONY: config help
+.PHONY: config help chkconfig
 
 testconfig:
 	@$(MAKE) -s -f "$(BASEDIR)/make/configure.mk" $(@) CONFIG="$(CONFIG)" TEST="1" $(MAKEFLAGS)
@@ -79,12 +81,31 @@ testconfig:
 config:
 	@$(MAKE) -s -f "$(BASEDIR)/make/configure.mk" $(@) CONFIG="$(CONFIG)" $(MAKEFLAGS)
 
+# Release-related targets
+.PHONY: distsrc
+distsrc:
+	@echo "Building source code archive"
+	@mkdir -p "$(DISTSRC)/modules"
+	@$(MAKE) -s -f "make/modules.mk" tree BASEDIR="$(BASEDIR)" MODULES="$(DISTSRC)/modules" TREE="1"
+	@cp -R $(BASEDIR)/include $(BASEDIR)/make $(BASEDIR)/src "$(DISTSRC)/"
+	@cp $(BASEDIR)/CHANGELOG $(BASEDIR)/COPYING* $(BASEDIR)/Makefile $(BASEDIR)/*.mk "$(DISTSRC)/"
+	@find "$(DISTSRC)" -iname '.git' | xargs -exec rm -rf {}
+	@find "$(DISTSRC)" -iname '.gitignore' | xargs -exec rm -rf {}
+	@tar -C $(DISTSRC_PATH) -czf "$(BUILDDIR)/$(ARTIFACT_NAME)-$(ARTIFACT_VERSION)-src.tar.gz" "$(ARTIFACT_NAME)"
+	@echo "Created archive: $(BUILDDIR)/$(ARTIFACT_NAME)-$(ARTIFACT_VERSION)-src.tar.gz"
+	@ln -sf "$(ARTIFACT_NAME)-$(ARTIFACT_VERSION)-src.tar.gz" "$(BUILDDIR)/$(ARTIFACT_NAME)-src.tar.gz"
+	@echo "Created symlink: $(BUILDDIR)/$(ARTIFACT_NAME)-src.tar.gz"
+	@rm -rf $(DISTSRC_PATH)
+	@echo "Build OK"
+
+# Help
 help:
 	@echo "Available targets:"
 	@echo "  all                       Build all binaries"
 	@echo "  clean                     Clean all build files and configuration file"
 	@echo "  config                    Configure build"
 	@echo "  depend                    Update build dependencies for current project"
+	@echo "  distsrc                   Make tarball with source code for packagers"
 	@echo "  fetch                     Fetch all desired source code dependencies from git"
 	@echo "  help                      Print this help message"
 	@echo "  info                      Output build configuration"
