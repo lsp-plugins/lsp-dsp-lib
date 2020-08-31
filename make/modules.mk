@@ -22,7 +22,9 @@ BASEDIR            := $(CURDIR)
 CONFIG             := $(CURDIR)/.config.mk
 
 include $(BASEDIR)/dependencies.mk
--include $(CONFIG)
+ifneq ($(TREE),1)
+  include $(CONFIG)
+endif
 include $(BASEDIR)/project.mk
 
 SYS_DEPENDENCIES    = $(DEPENDENCIES) $(TEST_DEPENDENCIES)

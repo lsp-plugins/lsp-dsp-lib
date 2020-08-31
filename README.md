@@ -105,6 +105,12 @@ different architectures and platforms, run:
 make tree
 ```
 
+To build source code archive with all possible dependencies, run:
+
+```bash
+make distsrc
+```
+
 Usage
 ======
 
