@@ -49,7 +49,7 @@ ifeq ($(findstring -devel,$(ARTIFACT_VERSION)),-devel)
 else
   $(foreach dep, $(DEPENDENCIES), \
     $(eval \
-      $(dep)_BRANCH="$($(dep)_NAME)-$($(dep)_VERSION)" \
+      $(dep)_BRANCH="$($(dep)_VERSION)" \
     ) \
   )
 endif

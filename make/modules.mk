@@ -41,7 +41,7 @@ ifeq ($(TREE),1)
     )
   else
     $(foreach dep, $(ALL_DEPENDENCIES), \
-      $(eval $(dep)_BRANCH="$($(dep)_NAME)-$($(dep)_VERSION)") \
+      $(eval $(dep)_BRANCH="$($(dep)_VERSION)") \
       $(eval $(dep)_PATH=$(MODULES)/$($(dep)_NAME)) \
     )
   endif
@@ -65,7 +65,9 @@ $(ALL_SRC_MODULES) $(ALL_HDR_MODULES):
 	@$(GIT) -C "$($(@)_PATH)" fetch origin --force
 	@$(GIT) -C "$($(@)_PATH)" fetch origin '+refs/heads/*:refs/tags/*' --force
 	@$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout origin/$($(@)_BRANCH) || \
-	 $(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout refs/tags/$($(@)_BRANCH)
+	 $(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout refs/tags/$($(@)_BRANCH) || \
+	 $(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout origin/$($(@)_NAME)-$($(@)_BRANCH) || \
+	 $(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout refs/tags/$($(@)_NAME)-$($(@)_BRANCH)
 
 $(ALL_PATHS):
 	@echo "Removing $(notdir $(@))"
