@@ -8,6 +8,7 @@
 * Submitted x86/x86_64 SSE2-optimized function abgr32_to_bgrff.
 * Submitted x86/x86_64 AVX2-optimized function abgr32_to_bgrff.
 * Submitted ARMv7 NEON-optimized function abgr32_to_bgrff.
+* Submitted AArch64 ASIMD-optimized function abgr32_to_bgrff.
 * Fixed lacking export for SSE2-optimized functions support: fmmod3, fmrmod3, fmmod4, fmrmod4.
 * Added support of AMD Zen 2 architecture for CPU tuning.
 
