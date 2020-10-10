@@ -198,12 +198,14 @@
 
                     if (f->features & CPU_OPTION_OSXSAVE)
                     {
+                        // Additional check for AVX2 support
                         if ((xcr0 & XCR_FLAGS_AVX) == XCR_FLAGS_AVX)
                         {
                             if (info.ebx & X86_CPUID7_INTEL_EBX_AVX2)
                                 f->features     |= CPU_OPTION_AVX2;
                         }
 
+                        // Additional check for AVX512 support
                         if ((xcr0 & XCR_FLAGS_AVX512) == XCR_FLAGS_AVX512)
                         {
                             if (info.ebx & X86_CPUID7_INTEL_EBX_AVX512F)
@@ -285,8 +287,12 @@
                 {
                     cpuid(&info, 7, 0);
 
-                    if (info.ebx & X86_CPUID7_AMD_EBX_AVX2)
-                        f->features     |= CPU_OPTION_AVX2;
+                    // Additional check for AVX2 support
+                    if ((xcr0 & XCR_FLAGS_AVX) == XCR_FLAGS_AVX)
+                    {
+                        if (info.ebx & X86_CPUID7_AMD_EBX_AVX2)
+                            f->features     |= CPU_OPTION_AVX2;
+                    }
                 }
 
                 // FUNCTION 0x80000001
@@ -306,6 +312,7 @@
 
                     if (f->features & CPU_OPTION_OSXSAVE)
                     {
+                        // Additional check for FMA4 support
                         if ((xcr0 & XCR_FLAGS_AVX) == XCR_FLAGS_AVX)
                         {
                             if (info.ecx & X86_XCPUID1_AMD_ECX_FMA4)
