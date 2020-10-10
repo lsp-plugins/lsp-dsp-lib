@@ -147,6 +147,9 @@ namespace lsp
         IF_ARCH_ARM(
             static const uint32_t abgr32_to_bgrff32_const[] __lsp_aligned32 =
             {
+                LSP_DSP_VEC8(0xff000000),
+                LSP_DSP_VEC8(0xff000000),
+                LSP_DSP_VEC8(0xff000000),
                 LSP_DSP_VEC8(0xff000000)
             };
         );
@@ -155,76 +158,60 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("vldm        %[MASK], {q8-q9}")
+                __ASM_EMIT("vldm        %[MASK], {q8-q15}")
                 __ASM_EMIT("subs        %[count], $32")
                 __ASM_EMIT("blo         2f")
                 // 32x blocks
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm        %[src]!, {q0-q7}")
-                __ASM_EMIT("vshr.u32    q0, q0, $8")
-                __ASM_EMIT("vshr.u32    q1, q1, $8")
-                __ASM_EMIT("vshr.u32    q2, q2, $8")
-                __ASM_EMIT("vshr.u32    q3, q3, $8")
-                __ASM_EMIT("vshr.u32    q4, q4, $8")
-                __ASM_EMIT("vshr.u32    q5, q5, $8")
-                __ASM_EMIT("vshr.u32    q6, q6, $8")
-                __ASM_EMIT("vshr.u32    q7, q7, $8")
-                __ASM_EMIT("vorr        q0, q0, q8")
-                __ASM_EMIT("vorr        q1, q1, q9")
-                __ASM_EMIT("vorr        q2, q2, q8")
-                __ASM_EMIT("vorr        q3, q3, q9")
-                __ASM_EMIT("vorr        q4, q4, q8")
-                __ASM_EMIT("vorr        q5, q5, q9")
-                __ASM_EMIT("vorr        q6, q6, q8")
-                __ASM_EMIT("vorr        q7, q7, q9")
+                __ASM_EMIT("vsri.32     q8, q0, $8")
+                __ASM_EMIT("vsri.32     q9, q1, $8")
+                __ASM_EMIT("vsri.32     q10, q2, $8")
+                __ASM_EMIT("vsri.32     q11, q3, $8")
+                __ASM_EMIT("vsri.32     q12, q4, $8")
+                __ASM_EMIT("vsri.32     q13, q5, $8")
+                __ASM_EMIT("vsri.32     q14, q6, $8")
+                __ASM_EMIT("vsri.32     q15, q7, $8")
                 __ASM_EMIT("subs        %[count], $32")
-                __ASM_EMIT("vstm        %[dst]!, {q0-q7}")
+                __ASM_EMIT("vstm        %[dst]!, {q8-q15}")
                 __ASM_EMIT("bhs         1b")
                 // 16x block
                 __ASM_EMIT("2:")
                 __ASM_EMIT("adds        %[count], $16")
                 __ASM_EMIT("blt         4f")
                 __ASM_EMIT("vldm        %[src]!, {q0-q3}")
-                __ASM_EMIT("vshr.u32    q0, q0, $8")
-                __ASM_EMIT("vshr.u32    q1, q1, $8")
-                __ASM_EMIT("vshr.u32    q2, q2, $8")
-                __ASM_EMIT("vshr.u32    q3, q3, $8")
-                __ASM_EMIT("vorr        q0, q0, q8")
-                __ASM_EMIT("vorr        q1, q1, q9")
-                __ASM_EMIT("vorr        q2, q2, q8")
-                __ASM_EMIT("vorr        q3, q3, q9")
+                __ASM_EMIT("vsri.32     q8, q0, $8")
+                __ASM_EMIT("vsri.32     q9, q1, $8")
+                __ASM_EMIT("vsri.32     q10, q2, $8")
+                __ASM_EMIT("vsri.32     q11, q3, $8")
                 __ASM_EMIT("sub         %[count], $16")
-                __ASM_EMIT("vstm        %[dst]!, {q0-q3}")
+                __ASM_EMIT("vstm        %[dst]!, {q8-q11}")
                 // 8x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("adds        %[count], $8")
                 __ASM_EMIT("blt         6f")
                 __ASM_EMIT("vldm        %[src]!, {q0-q1}")
-                __ASM_EMIT("vshr.u32    q0, q0, $8")
-                __ASM_EMIT("vshr.u32    q1, q1, $8")
-                __ASM_EMIT("vorr        q0, q0, q8")
-                __ASM_EMIT("vorr        q1, q1, q9")
+                __ASM_EMIT("vsri.32     q8, q0, $8")
+                __ASM_EMIT("vsri.32     q9, q1, $8")
                 __ASM_EMIT("sub         %[count], $8")
-                __ASM_EMIT("vstm        %[dst]!, {q0-q1}")
+                __ASM_EMIT("vstm        %[dst]!, {q8-q9}")
                 // 4x block
                 __ASM_EMIT("6:")
                 __ASM_EMIT("adds        %[count], $4")
                 __ASM_EMIT("blt         8f")
                 __ASM_EMIT("vldm        %[src]!, {q0}")
-                __ASM_EMIT("vshr.u32    q0, q0, $8")
-                __ASM_EMIT("vorr        q0, q0, q8")
+                __ASM_EMIT("vsri.32     q8, q0, $8")
                 __ASM_EMIT("sub         %[count], $4")
-                __ASM_EMIT("vstm        %[dst]!, {q0}")
+                __ASM_EMIT("vstm        %[dst]!, {q8}")
                 // 1x blocks
                 __ASM_EMIT("8:")
                 __ASM_EMIT("adds        %[count], $3")
                 __ASM_EMIT("blt         10f")
                 __ASM_EMIT("9:")
                 __ASM_EMIT("vld1.32     {d0[], d1[]}, [%[src]]!")
-                __ASM_EMIT("vshr.u32    q0, q0, $8")
-                __ASM_EMIT("vorr        q0, q0, q8")
+                __ASM_EMIT("vsri.32     q8, q0, $8")
                 __ASM_EMIT("subs        %[count], $1")
-                __ASM_EMIT("vst1.32     {d0[0]}, [%[dst]]!")
+                __ASM_EMIT("vst1.32     {d16[0]}, [%[dst]]!")
                 __ASM_EMIT("bge         9b")
                 __ASM_EMIT("10:")
 
@@ -234,7 +221,8 @@ namespace lsp
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
                   "q4", "q5", "q6", "q7",
-                  "q8", "q9"
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
             );
         }
 
