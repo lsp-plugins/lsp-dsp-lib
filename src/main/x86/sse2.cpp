@@ -133,6 +133,7 @@
                 EXPORT1(axis_apply_log1);
                 EXPORT1(axis_apply_log2);
                 EXPORT1(rgba32_to_bgra32);
+                EXPORT1(abgr32_to_bgrff32);
             }
 
             #undef EXPORT1

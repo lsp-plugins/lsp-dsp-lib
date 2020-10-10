@@ -3,6 +3,10 @@
 *******************************************************************************
 
 === 0.5.10 ===
+* Updated build scripts.
+* Reviewed generic abgr32_to_bgrff function implementation for Big endian platforms.
+* Submitted SSE2-optimized function abgr32_to_bgrff.
+* Submitted AVX2-optimized function abgr32_to_bgrff.
 
 === 0.5.9 ===
 * Updated build scripts that now use tags without prefixes first.
