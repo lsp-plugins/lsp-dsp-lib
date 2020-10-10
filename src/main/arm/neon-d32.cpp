@@ -138,7 +138,6 @@
 
                 EXPORT1(axis_apply_log1);
                 EXPORT1(axis_apply_log2);
-                EXPORT1(rgba32_to_bgra32);
                 EXPORT1(fill_rgba);
                 EXPORT1(fill_hsla);
                 EXPORT1(limit_saturate1);
@@ -150,6 +149,9 @@
                 EXPORT1(hsla_to_rgba);
                 EXPORT1(rgba_to_hsla);
                 EXPORT1(rgba_to_bgra32);
+
+                EXPORT1(rgba32_to_bgra32);
+                EXPORT1(abgr32_to_bgrff32);
 
                 EXPORT1(eff_hsla_hue);
                 EXPORT1(eff_hsla_sat);

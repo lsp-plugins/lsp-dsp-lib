@@ -45,6 +45,13 @@ namespace lsp
         }
     )
 
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void abgr32_to_bgrff32(void *dst, const void *src, size_t count);
+        }
+    )
+
     typedef void (* abgr32_to_bgrff32_t)(void *dst, const void *src, size_t count);
 }
 
@@ -87,6 +94,8 @@ PTEST_BEGIN("dsp.graphics", abgr32_to_bgrff32, 5, 5000)
             CALL(generic::abgr32_to_bgrff32);
             IF_ARCH_X86(CALL(sse2::abgr32_to_bgrff32));
             IF_ARCH_X86(CALL(avx2::abgr32_to_bgrff32));
+
+            IF_ARCH_ARM(CALL(neon_d32::abgr32_to_bgrff32));
 
             PTEST_SEPARATOR;
         }
