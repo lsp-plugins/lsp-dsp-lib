@@ -357,10 +357,10 @@
                 f->family           = (info.eax >> 8) & 0x0f;
                 f->model            = (info.eax >> 4) & 0x0f;
 
-                if (f->family == 0x0f)
-                    f->family           += (info.eax >> 20) & 0xff;
                 if ((f->family == 0x0f) || (f->family == 0x06))
                     f->model            += (info.eax >> 12) & 0xf0;
+                if (f->family == 0x0f)
+                    f->family           += (info.eax >> 20) & 0xff;
 
                 // Get maximum available extended CPUID
                 cpuid(&info, 0x80000000, 0);
@@ -515,12 +515,13 @@
                         if (f->vendor == CPU_VENDOR_INTEL) // Any Intel CPU is good enough with AVX
                             return true;
                         if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON))
-                            return (f->family >= AMD_FAMILY_ZEN); // Only starting with ZEN architecture AMD's implementation of AVX is fast enough
+                            return (f->family >= AMD_FAMILY_ZEN_1_2); // Only starting with ZEN 1 architecture AMD's implementation of AVX is fast enough
                         break;
                     case FEAT_FAST_FMA3:
                         if (f->vendor == CPU_VENDOR_INTEL) // Any Intel CPU is good enough with AVX
                             return true;
-                        // AMD: maybe once FMA3 will be faster
+                        if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON)) // Starting with ZEN 2 FMA3 operations are fast enough on AMD
+                            return (f->family >= AMD_FAMILY_ZEN_1_2) && (f->model >= AMD_MODEL_ZEN_2);
                         break;
                     default:
                         break;

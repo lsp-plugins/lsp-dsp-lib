@@ -98,6 +98,12 @@
                 EXPORT1(rmod2);
                 EXPORT1(mod3);
 
+                EXPORT1(fmmod3);
+                EXPORT1(fmrmod3);
+
+                EXPORT1(fmmod4);
+                EXPORT1(fmrmod4);
+
                 EXPORT1(exp1);
                 EXPORT1(exp2);
                 EXPORT1(logb1);
