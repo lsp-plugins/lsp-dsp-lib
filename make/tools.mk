@@ -51,22 +51,25 @@ else ifeq ($(PLATFORM),Windows)
   FLAG_STDLIB             =
 endif
 
+CFLAGS_EXT          =
+CXXFLAGS_EXT        =
+
 ifeq ($(DEBUG),1)
-  CFLAGS_EXT          = -O0 -g3 -DLSP_DEBUG
-  CXXFLAGS_EXT        = -O0 -g3 -DLSP_DEBUG
+  CFLAGS_EXT         += -O0 -g3 -DLSP_DEBUG
+  CXXFLAGS_EXT       += -O0 -g3 -DLSP_DEBUG
 else
-  CFLAGS_EXT          = -O2
-  CXXFLAGS_EXT        = -O2
+  CFLAGS_EXT         += -O2
+  CXXFLAGS_EXT       += -O2
 endif
 
 ifeq ($(PROFILE),1)
-  CFLAGS_EXT          = -pg -DLSP_PROFILE
-  CXXFLAGS_EXT        = -pg -DLSP_PROFILE
+  CFLAGS_EXT         += -pg -DLSP_PROFILE
+  CXXFLAGS_EXT       += -pg -DLSP_PROFILE
 endif
 
 ifeq ($(TRACE),1)
-  CFLAGS_EXT          = -DLSP_TRACE
-  CXXFLAGS_EXT        = -DLSP_TRACE
+  CFLAGS_EXT         += -DLSP_TRACE
+  CXXFLAGS_EXT       += -DLSP_TRACE
 endif
 
 ifeq ($(TEST),1)
