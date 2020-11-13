@@ -1353,13 +1353,13 @@ namespace lsp
         __ASM_EMIT("vmul.f32        q4, q6, q9")                /* q4 = D/X */ \
         __ASM_EMIT("veor            q5, q5")                    /* q5 = 0 */ \
         \
-        __ASM_EMIT("vclt.f32        q6, q1, q13")               /* q6 = [L < 1] */ \
+        __ASM_EMIT("vcle.f32        q6, q1, q14")               /* q6 = [L <= 0.5] */ \
         __ASM_EMIT("vceq.f32        q7, q1, q5")                /* q7 = [L == 0] */ \
-        __ASM_EMIT("vcgt.f32        q8, q1, q13")               /* q8 = [L > 1] */ \
-        __ASM_EMIT("vbit            q6, q5, q7")                /* q6 = [L < 1] & [L != 0] */ \
-        __ASM_EMIT("vand            q8, q8, q4")                /* q8 = D/X & [L > 1] */ \
-        __ASM_EMIT("vand            q6, q6, q2")                /* q6 = D/L & [L < 1] & [L != 0] */ \
-        __ASM_EMIT("vorr            q2, q8, q6")                /* q2 = S = (D/L & [L < 1] & [L != 0]) | (D/X & [L > 1]) */ \
+        __ASM_EMIT("vcgt.f32        q8, q1, q14")               /* q8 = [L > 0.5] */ \
+        __ASM_EMIT("vbit            q6, q5, q7")                /* q6 = [L <= 0.5] & [L != 0] */ \
+        __ASM_EMIT("vand            q8, q8, q4")                /* q8 = D/X & [L > 0.5] */ \
+        __ASM_EMIT("vand            q6, q6, q2")                /* q6 = D/L & [L <= 0.5] & [L != 0] */ \
+        __ASM_EMIT("vorr            q2, q8, q6")                /* q2 = S = (D/L & [L <= 0.5] & [L != 0]) | (D/X & [L > 0.5]) */ \
         __ASM_EMIT("vmul.f32        q0, q0, q15")               /* q0 = H * 1/6 */ \
         __ASM_EMIT("vmul.f32        q2, q2, q14")               /* q2 = S * 1/2 */ \
 
@@ -1385,7 +1385,7 @@ namespace lsp
             H = (R - G) / d + 4.0f;
 
         // Calculate saturation
-        if (L < 1.0f)
+        if (L < 0.5f)
             S = (L != 0.0f) ? d / L : 0.0f;
         else
             S = (L != 1.0f) ? d / (1.0f - L) : 0.0f;
