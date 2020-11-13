@@ -98,6 +98,12 @@
                 EXPORT1(rmod2);
                 EXPORT1(mod3);
 
+                EXPORT1(fmmod3);
+                EXPORT1(fmrmod3);
+
+                EXPORT1(fmmod4);
+                EXPORT1(fmrmod4);
+
                 EXPORT1(exp1);
                 EXPORT1(exp2);
                 EXPORT1(logb1);
@@ -133,6 +139,7 @@
                 EXPORT1(axis_apply_log1);
                 EXPORT1(axis_apply_log2);
                 EXPORT1(rgba32_to_bgra32);
+                EXPORT1(abgr32_to_bgrff32);
             }
 
             #undef EXPORT1

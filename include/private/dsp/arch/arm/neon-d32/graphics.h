@@ -26,6 +26,8 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL */
 
+#include <private/dsp/arch/arm/neon-d32/graphics/pixelfmt.h>
+
 namespace lsp
 {
     namespace neon_d32
@@ -966,120 +968,6 @@ namespace lsp
             );
         }
 
-        void rgba32_to_bgra32(void *dst, const void *src, size_t count)
-        {
-            IF_ARCH_ARM(
-                uint32_t mask;
-                uint32_t t1, t2;
-            );
-
-            ARCH_ARM_ASM(
-                // 64x blocks
-                __ASM_EMIT("subs        %[count], $64")
-                __ASM_EMIT("blo         2f")
-                __ASM_EMIT("1:")
-                __ASM_EMIT("vld4.8      {q0-q1}, [%[src]]!") // d0 = R, d1 = G, d2 = B, d3 = A
-                __ASM_EMIT("vld4.8      {q2-q3}, [%[src]]!")
-                __ASM_EMIT("vswp        d0, d2")
-                __ASM_EMIT("vld4.8      {q4-q5}, [%[src]]!")
-                __ASM_EMIT("vst4.8      {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("vswp        d4, d6")
-                __ASM_EMIT("vld4.8      {q6-q7}, [%[src]]!")
-                __ASM_EMIT("vst4.8      {q2-q3}, [%[dst]]!")
-                __ASM_EMIT("vswp        d8, d10")
-                __ASM_EMIT("vld4.8      {q8-q9}, [%[src]]!")
-                __ASM_EMIT("vst4.8      {q4-q5}, [%[dst]]!")
-                __ASM_EMIT("vswp        d12, d14")
-                __ASM_EMIT("vld4.8      {q10-q11}, [%[src]]!")
-                __ASM_EMIT("vst4.8      {q6-q7}, [%[dst]]!")
-                __ASM_EMIT("vswp        d16, d18")
-                __ASM_EMIT("vld4.8      {q12-q13}, [%[src]]!")
-                __ASM_EMIT("vst4.8      {q8-q9}, [%[dst]]!")
-                __ASM_EMIT("vswp        d20, d22")
-                __ASM_EMIT("vld4.8      {q14-q15}, [%[src]]!")
-                __ASM_EMIT("vst4.8      {q10-q11}, [%[dst]]!")
-                __ASM_EMIT("vswp        d24, d26")
-                __ASM_EMIT("vswp        d28, d30")
-                __ASM_EMIT("vst4.8      {q12-q13}, [%[dst]]!")
-                __ASM_EMIT("vst4.8      {q14-q15}, [%[dst]]!")
-                __ASM_EMIT("subs        %[count], $64")
-                __ASM_EMIT("bhs         1b")
-
-                // 32x blocks
-                __ASM_EMIT("2:")
-                __ASM_EMIT("adds        %[count], $32")
-                __ASM_EMIT("blt         4f")
-                __ASM_EMIT("vld4.8      {q0-q1}, [%[src]]!") // d0 = R, d1 = G, d2 = B, d3 = A
-                __ASM_EMIT("vld4.8      {q2-q3}, [%[src]]!")
-                __ASM_EMIT("vswp        d0, d2")
-                __ASM_EMIT("vld4.8      {q4-q5}, [%[src]]!")
-                __ASM_EMIT("vst4.8      {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("vswp        d4, d6")
-                __ASM_EMIT("vld4.8      {q6-q7}, [%[src]]!")
-                __ASM_EMIT("vst4.8      {q2-q3}, [%[dst]]!")
-                __ASM_EMIT("vswp        d8, d10")
-                __ASM_EMIT("vswp        d12, d14")
-                __ASM_EMIT("vst4.8      {q4-q5}, [%[dst]]!")
-                __ASM_EMIT("vst4.8      {q6-q7}, [%[dst]]!")
-                __ASM_EMIT("sub         %[count], $32")
-
-                // 16x blocks
-                __ASM_EMIT("4:")
-                __ASM_EMIT("adds        %[count], $16")
-                __ASM_EMIT("blt         6f")
-                __ASM_EMIT("vld4.8      {q0-q1}, [%[src]]!") // d0 = R, d1 = G, d2 = B, d3 = A
-                __ASM_EMIT("vld4.8      {q2-q3}, [%[src]]!")
-                __ASM_EMIT("vswp        d0, d2")
-                __ASM_EMIT("vswp        d4, d6")
-                __ASM_EMIT("vst4.8      {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("vst4.8      {q2-q3}, [%[dst]]!")
-                __ASM_EMIT("sub         %[count], $16")
-
-                // 8x blocks
-                __ASM_EMIT("6:")
-                __ASM_EMIT("adds        %[count], $8")
-                __ASM_EMIT("blt         8f")
-                __ASM_EMIT("vld4.8      {q0-q1}, [%[src]]!") // d0 = R, d1 = G, d2 = B, d3 = A
-                __ASM_EMIT("vswp        d0, d2")
-                __ASM_EMIT("vst4.8      {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("sub         %[count], $8")
-
-                // 4x blocks
-                __ASM_EMIT("8:")
-                __ASM_EMIT("adds        %[count], $4")
-                __ASM_EMIT("blt         10f")
-                __ASM_EMIT("vld2.8      {q0}, [%[src]]!") // d0 = RB, d1 = GA
-                __ASM_EMIT("vshl.i16    d2, d0, $8")
-                __ASM_EMIT("vshr.u16    d0, d0, $8")
-                __ASM_EMIT("vorr        d0, d2")
-                __ASM_EMIT("vst2.8      {q0}, [%[dst]]!")
-                __ASM_EMIT("sub         %[count], $4")
-
-                // 1x blocks
-                __ASM_EMIT("10:")
-                __ASM_EMIT("adds        %[count], $3")
-                __ASM_EMIT("blt         12f")
-                __ASM_EMIT("mov         %[mask], $0xff")
-                __ASM_EMIT("orr         %[mask], $0xff0000")           // mask = ff 00 ff 00
-                __ASM_EMIT("11:")
-                __ASM_EMIT("ldr         %[t1], [%[src]], $4")               // t1 = R G B A
-                __ASM_EMIT("and         %[t2], %[t1], %[mask]")             // t2 = R 0 B 0
-                __ASM_EMIT("and         %[t1], %[t1], %[mask], lsl $8")     // t1 = 0 G 0 A
-                __ASM_EMIT("orr         %[t1], %[t1], %[t2], ror $16")      // t1 = B G R A
-                __ASM_EMIT("str         %[t1], [%[dst]], $4")
-                __ASM_EMIT("subs        %[count], $1")
-                __ASM_EMIT("bge         11b")
-
-                __ASM_EMIT("12:")
-                : [src] "+r" (src), [dst] "+r" (dst), [count] "+r" (count),
-                  [t1] "=&r" (t1), [t2] "=&r" (t2), [mask] "=&r" (mask)
-                :
-                : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
-                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
-            );
-        }
-
     #define FILL4_CORE \
         __ASM_EMIT("vld1.32     {q0}, [%[c4]]")     /* q0 = c0 c1 c2 c3 */ \
         __ASM_EMIT("vmov        q1, q0")            /* q1 = c0 c1 c2 c3 */ \
@@ -1465,13 +1353,13 @@ namespace lsp
         __ASM_EMIT("vmul.f32        q4, q6, q9")                /* q4 = D/X */ \
         __ASM_EMIT("veor            q5, q5")                    /* q5 = 0 */ \
         \
-        __ASM_EMIT("vclt.f32        q6, q1, q13")               /* q6 = [L < 1] */ \
+        __ASM_EMIT("vcle.f32        q6, q1, q14")               /* q6 = [L <= 0.5] */ \
         __ASM_EMIT("vceq.f32        q7, q1, q5")                /* q7 = [L == 0] */ \
-        __ASM_EMIT("vcgt.f32        q8, q1, q13")               /* q8 = [L > 1] */ \
-        __ASM_EMIT("vbit            q6, q5, q7")                /* q6 = [L < 1] & [L != 0] */ \
-        __ASM_EMIT("vand            q8, q8, q4")                /* q8 = D/X & [L > 1] */ \
-        __ASM_EMIT("vand            q6, q6, q2")                /* q6 = D/L & [L < 1] & [L != 0] */ \
-        __ASM_EMIT("vorr            q2, q8, q6")                /* q2 = S = (D/L & [L < 1] & [L != 0]) | (D/X & [L > 1]) */ \
+        __ASM_EMIT("vcgt.f32        q8, q1, q14")               /* q8 = [L > 0.5] */ \
+        __ASM_EMIT("vbit            q6, q5, q7")                /* q6 = [L <= 0.5] & [L != 0] */ \
+        __ASM_EMIT("vand            q8, q8, q4")                /* q8 = D/X & [L > 0.5] */ \
+        __ASM_EMIT("vand            q6, q6, q2")                /* q6 = D/L & [L <= 0.5] & [L != 0] */ \
+        __ASM_EMIT("vorr            q2, q8, q6")                /* q2 = S = (D/L & [L <= 0.5] & [L != 0]) | (D/X & [L > 0.5]) */ \
         __ASM_EMIT("vmul.f32        q0, q0, q15")               /* q0 = H * 1/6 */ \
         __ASM_EMIT("vmul.f32        q2, q2, q14")               /* q2 = S * 1/2 */ \
 
@@ -1497,7 +1385,7 @@ namespace lsp
             H = (R - G) / d + 4.0f;
 
         // Calculate saturation
-        if (L < 1.0f)
+        if (L < 0.5f)
             S = (L != 0.0f) ? d / L : 0.0f;
         else
             S = (L != 1.0f) ? d / (1.0f - L) : 0.0f;

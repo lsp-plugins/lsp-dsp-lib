@@ -167,6 +167,7 @@ $(CXX_OBJ) $(CXX_OBJEXT):
 	@$(CXX) -o $(@) -c $(CXX_FILE) -fPIC $(CXXFLAGS) $(ARTIFACT_MFLAGS) $(EXT_FLAGS) $(INCLUDE) $(CFLAGS_DEPS)
 
 $(ARTIFACT_PC):
+	@mkdir -p $(dir $(ARTIFACT_PC))
 	@echo "prefix=$(PREFIX)" > "$(ARTIFACT_PC)"
 	@echo "exec_prefix=$(BINDIR)" >> "$(ARTIFACT_PC)"
 	@echo "includedir=$(INCDIR)" >> "$(ARTIFACT_PC)"

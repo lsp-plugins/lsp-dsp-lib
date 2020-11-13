@@ -84,6 +84,8 @@
         #include <private/dsp/arch/aarch64/asimd/filters/dynamic.h>
         #include <private/dsp/arch/aarch64/asimd/filters/transfer.h>
         #include <private/dsp/arch/aarch64/asimd/filters/transform.h>
+
+        #include <private/dsp/arch/aarch64/asimd/graphics.h>
     #undef PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL
 
     #define EXPORT2(function, export) \
@@ -385,6 +387,8 @@
                 EXPORT1(downsample_8x);
 
                 EXPORT1(convolve);
+
+                EXPORT1(abgr32_to_bgrff32);
             }
         }
     }

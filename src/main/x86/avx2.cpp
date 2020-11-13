@@ -52,8 +52,7 @@
 
         #include <private/dsp/arch/x86/avx2/search/iminmax.h>
 
-        #include <private/dsp/arch/x86/avx2/graphics/transpose.h>
-        #include <private/dsp/arch/x86/avx2/graphics/effects.h>
+        #include <private/dsp/arch/x86/avx2/graphics.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX2_IMPL
 
     namespace lsp
@@ -174,7 +173,9 @@
                 CEXPORT2_X64(favx, eff_hsla_alpha, x64_eff_hsla_alpha);
 
                 CEXPORT1(favx, normalize_fft2);
-                CEXPORT1(favx, normalize_fft3);
+                CEXPORT1(favx, abgr32_to_bgrff32);
+
+                CEXPORT1(favx, fmrmod_k4);
 
                 if (f->features & CPU_OPTION_FMA3)
                 {

@@ -121,8 +121,9 @@
 #define AMD_FAMILY_BOBCAT                       0x14
 #define AMD_FAMILY_BULLDOZER                    0x15
 #define AMD_FAMILY_JAGUAR                       0x16
-#define AMD_FAMILY_ZEN                          0x17
+#define AMD_FAMILY_ZEN_1_2                      0x17
 
+#define AMD_MODEL_ZEN_2                         0x31
 
 namespace lsp
 {

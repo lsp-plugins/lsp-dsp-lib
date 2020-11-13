@@ -198,12 +198,14 @@
 
                     if (f->features & CPU_OPTION_OSXSAVE)
                     {
+                        // Additional check for AVX2 support
                         if ((xcr0 & XCR_FLAGS_AVX) == XCR_FLAGS_AVX)
                         {
                             if (info.ebx & X86_CPUID7_INTEL_EBX_AVX2)
                                 f->features     |= CPU_OPTION_AVX2;
                         }
 
+                        // Additional check for AVX512 support
                         if ((xcr0 & XCR_FLAGS_AVX512) == XCR_FLAGS_AVX512)
                         {
                             if (info.ebx & X86_CPUID7_INTEL_EBX_AVX512F)
@@ -285,8 +287,12 @@
                 {
                     cpuid(&info, 7, 0);
 
-                    if (info.ebx & X86_CPUID7_AMD_EBX_AVX2)
-                        f->features     |= CPU_OPTION_AVX2;
+                    // Additional check for AVX2 support
+                    if ((xcr0 & XCR_FLAGS_AVX) == XCR_FLAGS_AVX)
+                    {
+                        if (info.ebx & X86_CPUID7_AMD_EBX_AVX2)
+                            f->features     |= CPU_OPTION_AVX2;
+                    }
                 }
 
                 // FUNCTION 0x80000001
@@ -306,6 +312,7 @@
 
                     if (f->features & CPU_OPTION_OSXSAVE)
                     {
+                        // Additional check for FMA4 support
                         if ((xcr0 & XCR_FLAGS_AVX) == XCR_FLAGS_AVX)
                         {
                             if (info.ecx & X86_XCPUID1_AMD_ECX_FMA4)
@@ -357,10 +364,10 @@
                 f->family           = (info.eax >> 8) & 0x0f;
                 f->model            = (info.eax >> 4) & 0x0f;
 
-                if (f->family == 0x0f)
-                    f->family           += (info.eax >> 20) & 0xff;
                 if ((f->family == 0x0f) || (f->family == 0x06))
                     f->model            += (info.eax >> 12) & 0xf0;
+                if (f->family == 0x0f)
+                    f->family           += (info.eax >> 20) & 0xff;
 
                 // Get maximum available extended CPUID
                 cpuid(&info, 0x80000000, 0);
@@ -515,12 +522,13 @@
                         if (f->vendor == CPU_VENDOR_INTEL) // Any Intel CPU is good enough with AVX
                             return true;
                         if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON))
-                            return (f->family >= AMD_FAMILY_ZEN); // Only starting with ZEN architecture AMD's implementation of AVX is fast enough
+                            return (f->family >= AMD_FAMILY_ZEN_1_2); // Only starting with ZEN 1 architecture AMD's implementation of AVX is fast enough
                         break;
                     case FEAT_FAST_FMA3:
                         if (f->vendor == CPU_VENDOR_INTEL) // Any Intel CPU is good enough with AVX
                             return true;
-                        // AMD: maybe once FMA3 will be faster
+                        if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON)) // Starting with ZEN 2 FMA3 operations are fast enough on AMD
+                            return (f->family >= AMD_FAMILY_ZEN_1_2) && (f->model >= AMD_MODEL_ZEN_2);
                         break;
                     default:
                         break;

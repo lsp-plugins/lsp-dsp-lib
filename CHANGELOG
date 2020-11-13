@@ -2,6 +2,18 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 0.5.10 ===
+* Updated build scripts.
+* Reviewed generic abgr32_to_bgrff function implementation for Big endian platforms.
+* Submitted x86/x86_64 SSE2-optimized function abgr32_to_bgrff.
+* Submitted x86/x86_64 AVX2-optimized function abgr32_to_bgrff.
+* Submitted ARMv7 NEON-optimized function abgr32_to_bgrff.
+* Submitted AArch64 ASIMD-optimized function abgr32_to_bgrff.
+* Fixed lacking export for SSE2-optimized functions support: fmmod3, fmrmod3, fmmod4, fmrmod4.
+* Added support of AMD Zen 2 architecture for CPU tuning.
+* More careful AVX2 support detection for AMD processors.
+* Fixed improper RGBA to HSLA conversion in rgba_to_hsla routine.
+
 === 0.5.9 ===
 * Updated build scripts that now use tags without prefixes first.
 
