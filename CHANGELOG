@@ -2,6 +2,8 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 0.5.11 ===
+
 === 0.5.10 ===
 * Updated build scripts.
 * Reviewed generic abgr32_to_bgrff function implementation for Big endian platforms.
