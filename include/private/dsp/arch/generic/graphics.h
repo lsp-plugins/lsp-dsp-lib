@@ -121,7 +121,7 @@ namespace lsp
                     H = (R - G) / d + 4.0f;
 
                 // Calculate saturation
-                if (L < 1.0f)
+                if (L <= 0.5f)
                     S = (L != 0.0f) ? d / L : 0.0f;
                 else
                     S = (L != 1.0f) ? d / (1.0f - L) : 0.0f;

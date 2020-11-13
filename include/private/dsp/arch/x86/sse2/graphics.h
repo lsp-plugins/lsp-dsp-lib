@@ -414,15 +414,16 @@ namespace lsp
         __ASM_EMIT("subps       %%xmm2, %%xmm5")            /* xmm5 = 1 - L */ \
         __ASM_EMIT("cmpps       $4, %%xmm2, %%xmm4")        /* xmm4 = [ L != 0 ] */ \
         __ASM_EMIT("cmpps       $4, 0x30 + %[XC], %%xmm3")  /* xmm3 = [ L != 1 ] */ \
+        __ASM_EMIT("movaps      0x40 + %[XC], %%xmm6")      /* xmm6 = 0.5 */ \
         __ASM_EMIT("divps       %%xmm2, %%xmm1")            /* xmm1 = D / L */ \
         __ASM_EMIT("divps       %%xmm5, %%xmm7")            /* xmm7 = D / (1-L) */ \
-        __ASM_EMIT("cmpps       $6, %%xmm2, %%xmm6")        /* xmm6 = [ L < 1 ] */ \
+        __ASM_EMIT("cmpps       $6, %%xmm2, %%xmm6")        /* xmm6 = [ L < 0.5 ] */ \
         __ASM_EMIT("andps       %%xmm4, %%xmm1")            /* xmm1 = [ L != 0 ] & (D/L) */ \
         __ASM_EMIT("andps       %%xmm3, %%xmm7")            /* xmm7 = [ L != 1 ] & (D/(1-L)) */ \
-        __ASM_EMIT("andps       %%xmm6, %%xmm1")            /* xmm1 = [ L != 0 ] & [ L < 1 ] & (D/L) */ \
+        __ASM_EMIT("andps       %%xmm6, %%xmm1")            /* xmm1 = [ L != 0 ] & [ L < 0.5 ] & (D/L) */ \
         __ASM_EMIT("mulps       0x50 + %[XC], %%xmm0")      /* xmm0 = H = h * 1/6 */ \
-        __ASM_EMIT("andnps      %%xmm7, %%xmm6")            /* xmm6 = [ L > 1 ] & (D/(1-L)) */ \
-        __ASM_EMIT("orps        %%xmm6, %%xmm1")            /* xmm1 = s = ([ L != 0 ] & [ L < 1 ] & (D/L)) | ([ L != 1 ] & (D/(1-L))) */ \
+        __ASM_EMIT("andnps      %%xmm7, %%xmm6")            /* xmm6 = [ L > 0.5 ] & (D/(1-L)) */ \
+        __ASM_EMIT("orps        %%xmm6, %%xmm1")            /* xmm1 = s = ([ L != 0 ] & [ L < 0.5 ] & (D/L)) | ([ L != 1 ] & (D/(1-L))) */ \
         __ASM_EMIT("movaps      0x30(%[RGBM]), %%xmm3")     /* xmm3 = A */ \
         __ASM_EMIT("mulps       0x40 + %[XC], %%xmm1")      /* xmm1 = S = s * 0.5 */ \
         \
