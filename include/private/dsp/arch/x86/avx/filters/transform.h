@@ -249,7 +249,7 @@ namespace lsp
                 __ASM_EMIT("vmulps              %%xmm5, %%xmm7, %%xmm7")    // xmm7 = b2' = (B1 - B2 + B0) * N
                 __ASM_EMIT("vmulps              %%xmm5, %%xmm6, %%xmm6")    // xmm6 = b1' = 2 * (B2 - B0) * N
                 __ASM_EMIT("vxorps              %%xmm4, %%xmm4, %%xmm4")    // xmm4 = 0
-                __ASM_EMIT("vmovaps             %%xmm5, 0x00(%[DATA])")     // store N
+                __ASM_EMIT("vmovaps             %%xmm5, %[DATA]")           // store N
                 __ASM_EMIT("vmovlps             %%xmm6, 0x18(%[bf])")
                 __ASM_EMIT("vmovlps             %%xmm7, 0x20(%[bf])")
                 __ASM_EMIT("vmovlps             %%xmm4, 0x28(%[bf])")
@@ -272,7 +272,7 @@ namespace lsp
                 __ASM_EMIT("vunpcklps           %%xmm7, %%xmm5, %%xmm4")    // xmm4 = t20 t21 t22 t23
 
                 // x2 = T0 = t0, x3=t1, x4=t2
-                __ASM_EMIT("vmovaps             0x00(%[DATA]), %%xmm7")     // load N
+                __ASM_EMIT("vmovaps             %[DATA], %%xmm7")           // load N
                 __ASM_EMIT("vmulps              %%xmm1, %%xmm4, %%xmm6")    // xmm6 = T2 = t2*kf2
                 __ASM_EMIT("vmulps              %%xmm0, %%xmm3, %%xmm5")    // xmm5 = T1 = t1*kf
                 __ASM_EMIT("vaddps              %%xmm6, %%xmm2, %%xmm4")    // xmm4 = T0 + T2
@@ -355,7 +355,7 @@ namespace lsp
                 : [bc] "+r" (bc), [bf] "+r" (bf), [count] "+r" (count)
                 : [ONE] "m" (bilinear_transform_const),
                   [kf] "m" (kf),
-                  [DATA] "r" (DATA)
+                  [DATA] "m" (DATA)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -405,7 +405,7 @@ namespace lsp
                 __ASM_EMIT("vaddps              %%xmm6, %%xmm6, %%xmm6")    // xmm6 = 2*(B2 - B0)
                 __ASM_EMIT("vmulps              %%xmm5, %%xmm7, %%xmm7")    // xmm7 = b2' = (B1 - B2 + B0) * N
                 __ASM_EMIT("vmulps              %%xmm5, %%xmm6, %%xmm6")    // xmm6 = b1' = 2 * (B2 - B0) * N
-                __ASM_EMIT("vmovaps             %%xmm5, 0x00(%[DATA])")     // store N
+                __ASM_EMIT("vmovaps             %%xmm5, %[DATA]")           // store N
                 __ASM_EMIT("vmovaps             %%xmm6, 0x30(%[bf])")
                 __ASM_EMIT("vmovaps             %%xmm7, 0x40(%[bf])")
 
@@ -424,7 +424,7 @@ namespace lsp
                 __ASM_EMIT("vunpcklps           %%xmm7, %%xmm5, %%xmm4")    // xmm4 = t20 t21 t22 t23
 
                 // x2 = T0 = t0, x3=t1, x4=t2
-                __ASM_EMIT("vmovaps             0x00(%[DATA]), %%xmm7")     // load N
+                __ASM_EMIT("vmovaps             %[DATA], %%xmm7")           // load N
                 __ASM_EMIT("vmulps              %%xmm1, %%xmm4, %%xmm6")    // xmm6 = T2 = t2*kf2
                 __ASM_EMIT("vmulps              %%xmm0, %%xmm3, %%xmm5")    // xmm5 = T1 = t1*kf
                 __ASM_EMIT("vaddps              %%xmm6, %%xmm2, %%xmm4")    // xmm4 = T0 + T2
@@ -453,8 +453,8 @@ namespace lsp
 
                 : [bc] "+r" (bc), [bf] "+r" (bf), [count] "+r" (count)
                 : [ONE] "m" (bilinear_transform_const),
-                  [kf] "o" (kf),
-                  [DATA] "r" (DATA)
+                  [kf] "m" (kf),
+                  [DATA] "m" (DATA)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
