@@ -22,6 +22,7 @@
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
 #include <lsp-plug.in/common/alloc.h>
+#include <lsp-plug.in/test-fw/helpers.h>
 
 #define MIN_RANK 8
 #define MAX_RANK 16
@@ -179,8 +180,8 @@ PTEST_BEGIN("dsp.fft", fastconv, 10, 1000)
 
         for (size_t i=0; i < (fft_size / 2); ++i)
         {
-            in[i]       = float(rand()) / RAND_MAX;
-            cv[i]       = float(rand()) / RAND_MAX;
+            in[i]       = randf(0.0f, 1.0f);
+            cv[i]       = randf(0.0f, 1.0f);
         }
 
         for (size_t rank=MIN_RANK; rank <= MAX_RANK; ++rank)

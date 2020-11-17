@@ -21,6 +21,7 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
+#include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/common/alloc.h>
 #include <lsp-plug.in/stdlib/math.h>
 
@@ -118,8 +119,8 @@ PTEST_BEGIN("dsp.float", saturation, 5, 10000)
                 case 1:  src[i] = -INFINITY; break;
                 case 2:  src[i] = NAN; break;
                 case 3:  src[i] = -NAN; break;
-                case 4:  src[i] = float(rand()) / RAND_MAX; break;
-                default: src[i] = - float(rand()) / RAND_MAX; break;
+                case 4:  src[i] = randf(0.0f, 1.0f); break;
+                default: src[i] = randf(-1.0f, 1.0f); break;
             }
         }
 

@@ -21,6 +21,7 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
+#include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/common/alloc.h>
 
 #define MIN_RANK 8
@@ -113,7 +114,7 @@ PTEST_BEGIN("dsp.copy", copy, 5, 1000)
         float *in       = &out[buf_size];
 
         for (size_t i=0; i < (1 << MAX_RANK); ++i)
-            in[i]          = float(rand()) / RAND_MAX;
+            in[i]          = randf(-1.0f, 1.0f);
 
         TEST_EXPORT(::copy);
         TEST_EXPORT(::move);

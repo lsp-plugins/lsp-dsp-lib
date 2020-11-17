@@ -21,6 +21,7 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
+#include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/common/alloc.h>
 
 #define MIN_RANK 8
@@ -96,7 +97,7 @@ PTEST_BEGIN("dsp.hmath", hsum, 5, 10000)
         float *src      = alloc_aligned<float>(data, buf_size, 64);
 
         for (size_t i=0; i < buf_size; ++i)
-            src[i]          = float(rand()) / RAND_MAX;
+            src[i]          = randf(0.0f, 1.0f);
 
         #define CALL(func) \
             call(#func, src, count, func)
