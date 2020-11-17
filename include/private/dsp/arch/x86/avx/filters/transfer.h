@@ -215,7 +215,8 @@ namespace lsp
 
                 : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count)
                   __IF_32(, [c] "+r" (c))
-                : __IF_64([c] "r" (c), [fp] "r" (fp))
+                : __IF_32([fp] "m" (fp))
+                  __IF_64([c] "r" (c), [fp] "r" (fp))
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -987,7 +988,8 @@ namespace lsp
 
                 : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count)
                   __IF_32(, [c] "+r" (c))
-                : __IF_64([c] "r" (c), [fp] "r" (fp))
+                : __IF_32([fp] "m" (fp))
+                  __IF_64([c] "r" (c), [fp] "r" (fp))
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -1179,7 +1181,8 @@ namespace lsp
 
                 : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count)
                   __IF_32(, [c] "+r" (c))
-                : __IF_64([c] "r" (c), [fp] "r" (fp))
+                : __IF_32([fp] "m" (fp))
+                  __IF_64([c] "r" (c), [fp] "r" (fp))
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
