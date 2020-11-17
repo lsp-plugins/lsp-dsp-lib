@@ -34,9 +34,9 @@ namespace lsp
             static const uint32_t LOG_IARGS[] __lsp_aligned16 =
             {
                 LSP_DSP_VEC4(0x7fffffff),           // X_SIGN
+                LSP_DSP_VEC4(0x322bcc77),           // X_AMP    = 1e-8
                 LSP_DSP_VEC4(0x007fffff),           // X_MANT
                 LSP_DSP_VEC4(0x0000007f),           // X_MMASK
-                LSP_DSP_VEC4(0x322bcc77),           // X_AMP    = 1e-8
                 LSP_DSP_VEC4(0x3f000000),           // X_HALF   = 0.5
                 LSP_DSP_VEC4(0x3f3504f3),           // SQRT1_2
                 LSP_DSP_VEC4(0x3f800000),           // ONE
@@ -73,13 +73,13 @@ namespace lsp
                 __ASM_EMIT("movups      (%[v]), %%xmm3")                // xmm3 = v
                 __ASM_EMIT("andps       0x00(%[ILOG]), %%xmm3")         // xmm3 = abs(v)
                 __ASM_EMIT("add         $0x10, %[v]")                   // v   += 4
-                __ASM_EMIT("maxps       0x30(%[ILOG]), %%xmm3")         // xmm3 = max(X_AMP, abs(v)), ignores denormalized values
+                __ASM_EMIT("maxps       0x10(%[ILOG]), %%xmm3")         // xmm3 = max(X_AMP, abs(v)), ignores denormalized values
                 __ASM_EMIT("mulps       %%xmm0, %%xmm3")                // xmm3 = max(X_AMP, abs(v)) * zero
                 // Step 2: parse float value
                 __ASM_EMIT("movdqa      %%xmm3, %%xmm4")                // xmm4 = v
                 __ASM_EMIT("psrld       $23, %%xmm4")                   // xmm4 = frac(v)
-                __ASM_EMIT("andps       0x10(%[ILOG]), %%xmm3")         // xmm3 = mant(v)
-                __ASM_EMIT("psubd       0x20(%[ILOG]), %%xmm4")         // xmm4 = frac(v) - 127
+                __ASM_EMIT("andps       0x20(%[ILOG]), %%xmm3")         // xmm3 = mant(v)
+                __ASM_EMIT("psubd       0x30(%[ILOG]), %%xmm4")         // xmm4 = frac(v) - 127
                 __ASM_EMIT("orps        0x40(%[ILOG]), %%xmm3")         // xmm3 = V = mant(v)+0.5
                 __ASM_EMIT("cvtdq2ps    %%xmm4, %%xmm4")                // xmm4 = E = float(frac(v)-127)
                 // Prepare logarithm approximation calculations
@@ -136,13 +136,13 @@ namespace lsp
                 __ASM_EMIT("movss       (%[v]), %%xmm3")                // xmm3 = v
                 __ASM_EMIT("andps       0x00(%[ILOG]), %%xmm3")         // xmm3 = abs(v)
                 __ASM_EMIT("add         $0x04, %[v]")                   // v   += 4
-                __ASM_EMIT("maxps       0x30(%[ILOG]), %%xmm3")         // xmm3 = max(X_AMP, abs(v)), ignores denormalized values
+                __ASM_EMIT("maxps       0x10(%[ILOG]), %%xmm3")         // xmm3 = max(X_AMP, abs(v)), ignores denormalized values
                 __ASM_EMIT("mulps       %%xmm0, %%xmm3")                // xmm5 = max(X_AMP, abs(v)) * zero
                 // Step 2: parse float value
                 __ASM_EMIT("movdqa      %%xmm3, %%xmm4")                // xmm4 = v
                 __ASM_EMIT("psrld       $23, %%xmm4")                   // xmm4 = frac(v)
-                __ASM_EMIT("andps       0x10(%[ILOG]), %%xmm3")         // xmm3 = mant(v)
-                __ASM_EMIT("psubd       0x20(%[ILOG]), %%xmm4")         // xmm4 = frac(v) - 127
+                __ASM_EMIT("andps       0x20(%[ILOG]), %%xmm3")         // xmm3 = mant(v)
+                __ASM_EMIT("psubd       0x30(%[ILOG]), %%xmm4")         // xmm4 = frac(v) - 127
                 __ASM_EMIT("orps        0x40(%[ILOG]), %%xmm3")         // xmm3 = V = mant(v)+0.5
                 __ASM_EMIT("cvtdq2ps    %%xmm4, %%xmm4")                // xmm4 = E = float(frac(v)-127)
                 // Prepare logarithm approximation calculations
@@ -221,13 +221,13 @@ namespace lsp
                 __ASM_EMIT("movups      (%[v]), %%xmm3")                // xmm3 = v
                 __ASM_EMIT("andps       0x00(%[ILOG]), %%xmm3")         // xmm3 = abs(v)
                 __ASM_EMIT("add         $0x10, %[v]")                   // v   += 4
-                __ASM_EMIT("maxps       0x30(%[ILOG]), %%xmm3")         // xmm3 = max(X_AMP, abs(v)), ignores denormalized values
+                __ASM_EMIT("maxps       0x10(%[ILOG]), %%xmm3")         // xmm3 = max(X_AMP, abs(v)), ignores denormalized values
                 __ASM_EMIT("mulps       %%xmm0, %%xmm3")                // xmm3 = max(X_AMP, abs(v)) * zero
                 // Step 2: parse float value
                 __ASM_EMIT("movdqa      %%xmm3, %%xmm4")                // xmm4 = v
                 __ASM_EMIT("psrld       $23, %%xmm4")                   // xmm4 = frac(v)
-                __ASM_EMIT("andps       0x10(%[ILOG]), %%xmm3")         // xmm3 = mant(v)
-                __ASM_EMIT("psubd       0x20(%[ILOG]), %%xmm4")         // xmm4 = frac(v) - 127
+                __ASM_EMIT("andps       0x20(%[ILOG]), %%xmm3")         // xmm3 = mant(v)
+                __ASM_EMIT("psubd       0x30(%[ILOG]), %%xmm4")         // xmm4 = frac(v) - 127
                 __ASM_EMIT("orps        0x40(%[ILOG]), %%xmm3")         // xmm3 = V = mant(v)+0.5
                 __ASM_EMIT("cvtdq2ps    %%xmm4, %%xmm4")                // xmm4 = E = float(frac(v)-127)
                 // Prepare logarithm approximation calculations
@@ -289,13 +289,13 @@ namespace lsp
                 __ASM_EMIT("movss       (%[v]), %%xmm3")                // xmm3 = v
                 __ASM_EMIT("andps       0x00(%[ILOG]), %%xmm3")         // xmm3 = abs(v)
                 __ASM_EMIT("add         $0x04, %[v]")                   // v   += 4
-                __ASM_EMIT("maxps       0x30(%[ILOG]), %%xmm3")         // xmm3 = max(X_AMP, abs(v)), ignores denormalized values
+                __ASM_EMIT("maxps       0x10(%[ILOG]), %%xmm3")         // xmm3 = max(X_AMP, abs(v)), ignores denormalized values
                 __ASM_EMIT("mulps       %%xmm0, %%xmm3")                // xmm5 = max(X_AMP, abs(v)) * zero
                 // Step 2: parse float value
                 __ASM_EMIT("movdqa      %%xmm3, %%xmm4")                // xmm4 = v
                 __ASM_EMIT("psrld       $23, %%xmm4")                   // xmm4 = frac(v)
-                __ASM_EMIT("andps       0x10(%[ILOG]), %%xmm3")         // xmm3 = mant(v)
-                __ASM_EMIT("psubd       0x20(%[ILOG]), %%xmm4")         // xmm4 = frac(v) - 127
+                __ASM_EMIT("andps       0x20(%[ILOG]), %%xmm3")         // xmm3 = mant(v)
+                __ASM_EMIT("psubd       0x30(%[ILOG]), %%xmm4")         // xmm4 = frac(v) - 127
                 __ASM_EMIT("orps        0x40(%[ILOG]), %%xmm3")         // xmm3 = V = mant(v)+0.5
                 __ASM_EMIT("cvtdq2ps    %%xmm4, %%xmm4")                // xmm4 = E = float(frac(v)-127)
                 // Prepare logarithm approximation calculations

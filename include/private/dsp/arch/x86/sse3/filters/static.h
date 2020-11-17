@@ -40,7 +40,8 @@ namespace lsp
         void x64_biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f)
         {
             IF_ARCH_X86_64(
-                float MASK[8] __lsp_aligned16;
+                float MASK0[4] __lsp_aligned16;
+                float MASK1[4] __lsp_aligned16;
                 size_t mask;
             )
 
@@ -56,8 +57,8 @@ namespace lsp
                 __ASM_EMIT("mov         $1, %[mask]")
                 __ASM_EMIT("movaps      %[X_MASK], %%xmm0")
                 __ASM_EMIT("xorps       %%xmm1, %%xmm1")
-                __ASM_EMIT("movaps      %%xmm0, 0x00 + %[MASK]")
-                __ASM_EMIT("movaps      %%xmm1, 0x10 + %[MASK]")
+                __ASM_EMIT("movaps      %%xmm0, %[MASK0]")
+                __ASM_EMIT("movaps      %%xmm1, %[MASK1]")
 
                 // Load delay buffer
                 __ASM_EMIT("movaps      0x00(%[f]), %%xmm6")                        // xmm6     = d0
@@ -105,8 +106,8 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm1, %%xmm9")                            // xmm9     = s2[3] r2[0] r2[1] r2[2]
 
                 // Update delay only by mask for filters
-                __ASM_EMIT("movaps      0x00 + %[MASK], %%xmm0")                    // xmm0     = MASK_LO
-                __ASM_EMIT("movaps      0x10 + %[MASK], %%xmm8")                    // xmm8     = MASK_HI
+                __ASM_EMIT("movaps      %[MASK0], %%xmm0")                          // xmm0     = MASK_LO
+                __ASM_EMIT("movaps      %[MASK1], %%xmm8")                          // xmm8     = MASK_HI
                 __ASM_EMIT("movaps      %%xmm0, %%xmm4")                            // xmm4     = MASK_LO
                 __ASM_EMIT("movaps      %%xmm8, %%xmm12")                           // xmm12    = MASK_HI
                 __ASM_EMIT("movaps      %%xmm0, %%xmm5")                            // xmm5     = MASK_LO
@@ -137,8 +138,8 @@ namespace lsp
                 __ASM_EMIT("shufps      $0x93, %%xmm0, %%xmm0")                     // xmm0     = m[3] m[0] m[1] m[2]
                 __ASM_EMIT("movss       %%xmm0, %%xmm8")                            // xmm8     = m[3] m[4] m[5] m[6]
                 __ASM_EMIT("movss       %%xmm2, %%xmm0")                            // xmm0     = m[0] m[0] m[1] m[2]
-                __ASM_EMIT("movaps      %%xmm0, 0x00 + %[MASK]")                    // *MASK_LO = xmm0
-                __ASM_EMIT("movaps      %%xmm8, 0x10 + %[MASK]")                    // *MASK_HI = xmm8
+                __ASM_EMIT("movaps      %%xmm0, %[MASK0]")                          // *MASK_LO = xmm0
+                __ASM_EMIT("movaps      %%xmm8, %[MASK1]")                          // *MASK_HI = xmm8
                 __ASM_EMIT("cmp         $0xff, %[mask]")
                 __ASM_EMIT("jne         1b")
 
@@ -194,8 +195,8 @@ namespace lsp
                 //-------------------------------------------------------------
                 // Prepare last loop
                 __ASM_EMIT("4:")
-                __ASM_EMIT("movaps      0x00 + %[MASK], %%xmm0")                    // xmm0     = m[0] m[1] m[2] m[3]
-                __ASM_EMIT("movaps      0x10 + %[MASK], %%xmm8")                    // xmm8     = m[4] m[5] m[6] m[7]
+                __ASM_EMIT("movaps      %[MASK0], %%xmm0")                          // xmm0     = m[0] m[1] m[2] m[3]
+                __ASM_EMIT("movaps      %[MASK1], %%xmm8")                          // xmm8     = m[4] m[5] m[6] m[7]
                 __ASM_EMIT("shufps      $0x93, %%xmm0, %%xmm0")                     // xmm0     = m[3] m[0] m[1] m[2]
                 __ASM_EMIT("shufps      $0x93, %%xmm8, %%xmm8")                     // xmm8     = m[7] m[4] m[5] m[6]
                 __ASM_EMIT("xorps       %%xmm2, %%xmm2")                            // xmm2     = 0 0 0 0
@@ -290,7 +291,8 @@ namespace lsp
                   [mask] "=&r" (mask)
                 : [f] "r" (f),
                   [X_MASK] "m" (biquad_const),
-                  [MASK] "o" (MASK)
+                  [MASK0] "m" (MASK0),
+                  [MASK1] "m" (MASK1)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
