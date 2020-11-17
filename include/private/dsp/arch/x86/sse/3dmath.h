@@ -2470,7 +2470,6 @@ namespace lsp
         {
             float x0, x1, x2, x3;
             float res[4] __lsp_aligned16;
-            size_t k0, k1;
 
             ARCH_X86_ASM
             (
@@ -2495,22 +2494,21 @@ namespace lsp
                 __ASM_EMIT("andps       %[IONE], %[x1]")        /* xmm1 = 1*[k0 < -TOL] 1*[k1 < -TOL] ? ? */
                 __ASM_EMIT("paddd       %[x1], %[x0]")
                 __ASM_EMIT("movdqa      %[x0], (%[res])")
-                __ASM_EMIT32("movl      0x00(%[res]), %[k0]")
-                __ASM_EMIT32("movl      0x04(%[res]), %[k1]")
-                __ASM_EMIT64("movl      0x00(%[res]), %k[k0]")
-                __ASM_EMIT64("movl      0x04(%[res]), %k[k1]")
-                __ASM_EMIT("lea         (%[k0], %[k1], 4), %[k0]")
-                : [k0] "=&r" (k0), [k1] "=&r" (k1),
+                __ASM_EMIT32("movl      0x00(%[res]), %[pl]")
+                __ASM_EMIT32("movl      0x04(%[res]), %[pv]")
+                __ASM_EMIT64("movl      0x00(%[res]), %k[pl]")
+                __ASM_EMIT64("movl      0x04(%[res]), %k[pv]")
+                __ASM_EMIT("lea         (%[pl], %[pv], 4), %[pl]")
+                : [pl] "+r" (pl), [pv] "+r" (pv),
                   [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
-                : [pl] "r" (pl), [pv] "r" (pv),
-                  [res] "r" (res),
+                : [res] "r" (res),
                   [PTOL] "m" (X_3D_TOLERANCE),
                   [MTOL] "m" (X_3D_MTOLERANCE),
                   [IONE] "m" (IONE)
                 : "cc"
             );
 
-            return k0;
+            return size_t(pl);
         }
 
         size_t colocation_x3_v1p3(const vector3d_t *pl, const point3d_t *p0, const point3d_t *p1, const point3d_t *p2)
@@ -2569,7 +2567,7 @@ namespace lsp
         {
             float x0, x1, x2, x3, x4;
             float res[4] __lsp_aligned16;
-            size_t k0, k1, k2;
+            size_t pt;
 
             ARCH_X86_ASM
             (
@@ -2596,26 +2594,25 @@ namespace lsp
                 __ASM_EMIT("andps       %[IONE], %[x1]")        /* xmm1 = 1*[k0 < -TOL] 1*[k1 < -TOL] 1*[k2 < -TOL] ? */
                 __ASM_EMIT("paddd       %[x1], %[x0]")
                 __ASM_EMIT("movdqa      %[x0], (%[res])")
-                __ASM_EMIT32("movl      0x00(%[res]), %[k0]")
-                __ASM_EMIT32("movl      0x04(%[res]), %[k1]")
-                __ASM_EMIT32("movl      0x08(%[res]), %[k2]")
-                __ASM_EMIT64("movl      0x00(%[res]), %k[k0]")
-                __ASM_EMIT64("movl      0x04(%[res]), %k[k1]")
-                __ASM_EMIT64("movl      0x08(%[res]), %k[k2]")
-                __ASM_EMIT("lea         (%[k1], %[k2], 4), %[k1]")
-                __ASM_EMIT("lea         (%[k0], %[k1], 4), %[k0]")
-                : [k0] "=&r" (k0), [k1] "=&r" (k1), [k2] "=&r" (k2),
+                __ASM_EMIT32("movl      0x00(%[res]), %[pl]")
+                __ASM_EMIT32("movl      0x04(%[res]), %[pv]")
+                __ASM_EMIT32("movl      0x08(%[res]), %[pt]")
+                __ASM_EMIT64("movl      0x00(%[res]), %k[pl]")
+                __ASM_EMIT64("movl      0x04(%[res]), %k[pv]")
+                __ASM_EMIT64("movl      0x08(%[res]), %k[pt]")
+                __ASM_EMIT("lea         (%[pv], %[pt], 4), %[pt]")
+                __ASM_EMIT("lea         (%[pl], %[pt], 4), %[pt]")
+                : [pl] "+r" (pl), [pv] "+r" (pv), [pt] "=&r" (pt),
                   [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
                   [x4] "=&x" (x4)
-                : [pl] "r" (pl), [pv] "r" (pv),
-                  [res] "r" (res),
+                : [res] "r" (res),
                   [PTOL] "m" (X_3D_TOLERANCE),
                   [MTOL] "m" (X_3D_MTOLERANCE),
                   [IONE] "m" (IONE)
                 : "cc"
             );
 
-            return k0;
+            return pt;
         }
 
         size_t colocation_x3_v3p1(const vector3d_t *v0, const vector3d_t *v1, const vector3d_t *v2, const point3d_t *p)
@@ -2675,7 +2672,7 @@ namespace lsp
         {
             float x0, x1, x2, x3, x4;
             float res[4] __lsp_aligned16;
-            size_t k0, k1, k2;
+            size_t pt;
 
             ARCH_X86_ASM
             (
@@ -2702,27 +2699,26 @@ namespace lsp
                 __ASM_EMIT("andps       %[IONE], %[x1]")        /* xmm1 = 1*[k0 < -TOL] 1*[k1 < -TOL] 1*[k2 < -TOL] ? */
                 __ASM_EMIT("paddd       %[x1], %[x0]")
                 __ASM_EMIT("movdqa      %[x0], (%[res])")
-                __ASM_EMIT32("movl      0x00(%[res]), %[k0]")
-                __ASM_EMIT32("movl      0x04(%[res]), %[k1]")
-                __ASM_EMIT32("movl      0x08(%[res]), %[k2]")
-                __ASM_EMIT64("movl      0x00(%[res]), %k[k0]")
-                __ASM_EMIT64("movl      0x04(%[res]), %k[k1]")
-                __ASM_EMIT64("movl      0x08(%[res]), %k[k2]")
-                __ASM_EMIT("lea         (%[k1], %[k2], 4), %[k1]")
-                __ASM_EMIT("lea         (%[k0], %[k1], 4), %[k0]")
+                __ASM_EMIT32("movl      0x00(%[res]), %[vv]")
+                __ASM_EMIT32("movl      0x04(%[res]), %[p]")
+                __ASM_EMIT32("movl      0x08(%[res]), %[pt]")
+                __ASM_EMIT64("movl      0x00(%[res]), %k[vv]")
+                __ASM_EMIT64("movl      0x04(%[res]), %k[p]")
+                __ASM_EMIT64("movl      0x08(%[res]), %k[pt]")
+                __ASM_EMIT("lea         (%[p], %[pt], 4), %[pt]")
+                __ASM_EMIT("lea         (%[vv], %[pt], 4), %[pt]")
 
-                : [k0] "=&r" (k0), [k1] "=&r" (k1), [k2] "=&r" (k2),
+                : [vv] "+r" (vv), [p] "+r" (p), [pt] "=&r" (pt),
                   [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
                   [x4] "=&x" (x4)
-                : [p] "r" (p), [vv] "r" (vv),
-                  [res] "r" (res),
+                : [res] "r" (res),
                   [PTOL] "m" (X_3D_TOLERANCE),
                   [MTOL] "m" (X_3D_MTOLERANCE),
                   [IONE] "m" (IONE)
                 : "cc"
             );
 
-            return k0;
+            return pt;
         }
 
         float calc_min_distance_p3(const point3d_t *sp, const point3d_t *p0, const point3d_t *p1, const point3d_t *p2)
