@@ -122,7 +122,7 @@ namespace lsp
                 LIMIT_BODY("dst", "dst")
                 : [count] "+r" (count), [off] "=&r" (off)
                 : [dst] "r" (dst),
-                  [min] "o" (min), [max] "o" (max)
+                  [min] "m" (min), [max] "m" (max)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -136,7 +136,7 @@ namespace lsp
                 LIMIT_BODY("dst", "src")
                 : [count] "+r" (count), [off] "=&r" (off)
                 : [dst] "r" (dst), [src] "r" (src),
-                  [min] "o" (min), [max] "o" (max)
+                  [min] "m" (min), [max] "m" (max)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
