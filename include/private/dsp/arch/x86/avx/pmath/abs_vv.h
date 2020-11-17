@@ -125,7 +125,7 @@ namespace lsp
                 ABS_V4_CORE("dst", "dst", "src", "vadd", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -141,7 +141,7 @@ namespace lsp
                 ABS_V4_CORE("dst", "dst", "src", "vsub", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -157,7 +157,7 @@ namespace lsp
                 ABS_V4_CORE("dst", "dst", "src", "vsub", OP_RSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -173,7 +173,7 @@ namespace lsp
                 ABS_V4_CORE("dst", "dst", "src", "vmul", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -189,7 +189,7 @@ namespace lsp
                 ABS_V4_CORE("dst", "dst", "src", "vdiv", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -205,7 +205,7 @@ namespace lsp
                 ABS_V4_CORE("dst", "dst", "src", "vdiv", OP_RSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -221,7 +221,7 @@ namespace lsp
                 ABS_V4_CORE("dst", "src1", "src2", "vadd", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -237,7 +237,7 @@ namespace lsp
                 ABS_V4_CORE("dst", "src1", "src2", "vsub", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -253,7 +253,7 @@ namespace lsp
                 ABS_V4_CORE("dst", "src1", "src2", "vsub", OP_RSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -269,7 +269,7 @@ namespace lsp
                 ABS_V4_CORE("dst", "src1", "src2", "vmul", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -285,7 +285,7 @@ namespace lsp
                 ABS_V4_CORE("dst", "src1", "src2", "vdiv", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -301,7 +301,7 @@ namespace lsp
                 ABS_V4_CORE("dst", "src1", "src2", "vdiv", OP_RSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
@@ -399,7 +399,7 @@ namespace lsp
                 ABS_CORE("dst", "dst")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9"
@@ -414,7 +414,7 @@ namespace lsp
                 ABS_CORE("dst", "src")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src),
-                  [SIGN] "o" (abs_vv_const)
+                  [SIGN] "m" (abs_vv_const)
                 : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9"
