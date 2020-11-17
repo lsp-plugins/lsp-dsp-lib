@@ -47,20 +47,21 @@ namespace lsp
             __ASM_EMIT("unpckhps    %%xmm5, %%xmm5")            /* x5   = b1 b1 b1 b1 */ \
             __ASM_EMIT("unpcklps    %%xmm2, %%xmm2")            /* x2   = t2 t2 t2 t2 */ \
             __ASM_EMIT("unpcklps    %%xmm6, %%xmm6")            /* x6   = b2 b2 b2 b2 */ \
-            __ASM_EMIT("movaps      %%xmm0, 0x00 + %[fp]")      /* x0   = t0 */ \
-            __ASM_EMIT("movaps      %%xmm1, 0x10 + %[fp]")      /* x1   = t1 */ \
-            __ASM_EMIT("movaps      %%xmm2, 0x20 + %[fp]")      /* x2   = t2 */ \
-            __ASM_EMIT("movaps      %%xmm4, 0x30 + %[fp]")      /* x4   = b0 */ \
-            __ASM_EMIT("movaps      %%xmm5, 0x40 + %[fp]")      /* x5   = b1 */ \
-            __ASM_EMIT("movaps      %%xmm6, 0x50 + %[fp]")      /* x6   = b2 */
+            __ASM_EMIT("lea         %[fp], %[c]")               /* x5   = b0 b1 b2 b3 */ \
+            __ASM_EMIT("movaps      %%xmm0, 0x00(%[c])")        /* x0   = t0 */ \
+            __ASM_EMIT("movaps      %%xmm1, 0x10(%[c])")        /* x1   = t1 */ \
+            __ASM_EMIT("movaps      %%xmm2, 0x20(%[c])")        /* x2   = t2 */ \
+            __ASM_EMIT("movaps      %%xmm4, 0x30(%[c])")        /* x4   = b0 */ \
+            __ASM_EMIT("movaps      %%xmm5, 0x40(%[c])")        /* x5   = b1 */ \
+            __ASM_EMIT("movaps      %%xmm6, 0x50(%[c])")        /* x6   = b2 */
 
         #define F_LOAD \
-            __ASM_EMIT("movaps      0x00 + %[fp], %%xmm0")      /* x0   = t0 */ \
-            __ASM_EMIT("movaps      0x10 + %[fp], %%xmm1")      /* x1   = t1 */ \
-            __ASM_EMIT("movaps      0x20 + %[fp], %%xmm2")      /* x2   = t2 */ \
-            __ASM_EMIT("movaps      0x30 + %[fp], %%xmm4")      /* x4   = b0 */ \
-            __ASM_EMIT("movaps      0x40 + %[fp], %%xmm5")      /* x5   = b1 */ \
-            __ASM_EMIT("movaps      0x50 + %[fp], %%xmm6")      /* x6   = b2 */
+            __ASM_EMIT("movaps      0x00(%[c]), %%xmm0")        /* x0   = t0 */ \
+            __ASM_EMIT("movaps      0x10(%[c]), %%xmm1")        /* x1   = t1 */ \
+            __ASM_EMIT("movaps      0x20(%[c]), %%xmm2")        /* x2   = t2 */ \
+            __ASM_EMIT("movaps      0x30(%[c]), %%xmm4")        /* x4   = b0 */ \
+            __ASM_EMIT("movaps      0x40(%[c]), %%xmm5")        /* x5   = b1 */ \
+            __ASM_EMIT("movaps      0x50(%[c]), %%xmm6")        /* x6   = b2 */
 
         #define HF_CORE \
             /* Compute H[f] */ \
@@ -143,9 +144,9 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm1, 0x00(%[im])")
                 __ASM_EMIT("6:")
 
-                : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count)
-                : [c] "r" (c),
-                  [fp] "o" (fp)
+                : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count),
+                  [c] "+r" (c)
+                : [fp] "m" (fp)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -205,9 +206,9 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm1, 0x00(%[im])")
                 __ASM_EMIT("6:")
 
-                : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count)
-                : [c] "r" (c),
-                  [fp] "o" (fp)
+                : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count),
+                  [c] "+r" (c)
+                : [fp] "m" (fp)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -303,9 +304,9 @@ namespace lsp
                 __ASM_EMIT("movlps      %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("6:")
 
-                : [dst] "+r" (dst), [f] "+r" (freq), [count] "+r" (count)
-                : [c] "r" (c),
-                  [fp] "o" (fp)
+                : [dst] "+r" (dst), [f] "+r" (freq), [count] "+r" (count),
+                  [c] "+r" (c)
+                : [fp] "m" (fp)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -367,9 +368,9 @@ namespace lsp
                 __ASM_EMIT("movlps      %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("6:")
 
-                : [dst] "+r" (dst), [f] "+r" (freq), [count] "+r" (count)
-                : [c] "r" (c),
-                  [fp] "o" (fp)
+                : [dst] "+r" (dst), [f] "+r" (freq), [count] "+r" (count),
+                  [c] "+r" (c)
+                : [fp] "m" (fp)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

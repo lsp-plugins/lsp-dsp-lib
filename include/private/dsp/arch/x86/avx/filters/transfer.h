@@ -42,19 +42,13 @@ namespace lsp
                 __ASM_EMIT("vbroadcastss        0x10(%[c]), %%ymm3")                // y3   = b0
                 __ASM_EMIT("vbroadcastss        0x14(%[c]), %%ymm4")                // y4   = b1
                 __ASM_EMIT("vbroadcastss        0x18(%[c]), %%ymm5")                // y5   = b2
-                __ASM_EMIT32("lea               %[fp], %[c]")
-                __ASM_EMIT32("vmovaps           %%ymm0, 0x00(%[c])")                // x0   = t0
-                __ASM_EMIT32("vmovaps           %%ymm1, 0x20(%[c])")                // x1   = t1
-                __ASM_EMIT32("vmovaps           %%ymm2, 0x40(%[c])")                // x2   = t2
-                __ASM_EMIT32("vmovaps           %%ymm3, 0x60(%[c])")                // x4   = b0
-                __ASM_EMIT32("vmovaps           %%ymm4, 0x80(%[c])")                // x5   = b1
-                __ASM_EMIT32("vmovaps           %%ymm5, 0xa0(%[c])")                // x6   = b2
-                __ASM_EMIT64("vmovaps           %%ymm0, 0x00(%[fp])")               // x0   = t0
-                __ASM_EMIT64("vmovaps           %%ymm1, 0x20(%[fp])")               // x1   = t1
-                __ASM_EMIT64("vmovaps           %%ymm2, 0x40(%[fp])")               // x2   = t2
-                __ASM_EMIT64("vmovaps           %%ymm3, 0x60(%[fp])")               // x4   = b0
-                __ASM_EMIT64("vmovaps           %%ymm4, 0x80(%[fp])")               // x5   = b1
-                __ASM_EMIT64("vmovaps           %%ymm5, 0xa0(%[fp])")               // x6   = b2
+                __ASM_EMIT("lea                 %[fp], %[c]")
+                __ASM_EMIT("vmovaps             %%ymm0, 0x00(%[c])")                // x0   = t0
+                __ASM_EMIT("vmovaps             %%ymm1, 0x20(%[c])")                // x1   = t1
+                __ASM_EMIT("vmovaps             %%ymm2, 0x40(%[c])")                // x2   = t2
+                __ASM_EMIT("vmovaps             %%ymm3, 0x60(%[c])")                // x4   = b0
+                __ASM_EMIT("vmovaps             %%ymm4, 0x80(%[c])")                // x5   = b1
+                __ASM_EMIT("vmovaps             %%ymm5, 0xa0(%[c])")                // x6   = b2
                 // x8 blocks
                 __ASM_EMIT("sub                 $8, %[count]")
                 __ASM_EMIT("jb                  2f")
@@ -82,18 +76,12 @@ namespace lsp
                 __ASM_EMIT("vmovups             %%ymm0, 0x00(%[re])")
                 __ASM_EMIT("vmovups             %%ymm1, 0x00(%[im])")
                 // Reload
-                __ASM_EMIT32("vmovaps           0x00(%[c]), %%ymm0")
-                __ASM_EMIT32("vmovaps           0x20(%[c]), %%ymm1")
-                __ASM_EMIT32("vmovaps           0x40(%[c]), %%ymm2")
-                __ASM_EMIT32("vmovaps           0x60(%[c]), %%ymm3")
-                __ASM_EMIT32("vmovaps           0x80(%[c]), %%ymm4")
-                __ASM_EMIT32("vmovaps           0xa0(%[c]), %%ymm5")
-                __ASM_EMIT64("vmovaps           0x00(%[fp]), %%ymm0")
-                __ASM_EMIT64("vmovaps           0x20(%[fp]), %%ymm1")
-                __ASM_EMIT64("vmovaps           0x40(%[fp]), %%ymm2")
-                __ASM_EMIT64("vmovaps           0x60(%[fp]), %%ymm3")
-                __ASM_EMIT64("vmovaps           0x80(%[fp]), %%ymm4")
-                __ASM_EMIT64("vmovaps           0xa0(%[fp]), %%ymm5")
+                __ASM_EMIT("vmovaps             0x00(%[c]), %%ymm0")
+                __ASM_EMIT("vmovaps             0x20(%[c]), %%ymm1")
+                __ASM_EMIT("vmovaps             0x40(%[c]), %%ymm2")
+                __ASM_EMIT("vmovaps             0x60(%[c]), %%ymm3")
+                __ASM_EMIT("vmovaps             0x80(%[c]), %%ymm4")
+                __ASM_EMIT("vmovaps             0xa0(%[c]), %%ymm5")
                 __ASM_EMIT("add                 $0x20, %[f]")
                 __ASM_EMIT("add                 $0x20, %[re]")
                 __ASM_EMIT("add                 $0x20, %[im]")
@@ -126,18 +114,12 @@ namespace lsp
                 __ASM_EMIT("vmovups             %%xmm0, 0x00(%[re])")
                 __ASM_EMIT("vmovups             %%xmm1, 0x00(%[im])")
                 // Reload
-                __ASM_EMIT32("vmovaps           0x00(%[c]), %%xmm0")
-                __ASM_EMIT32("vmovaps           0x20(%[c]), %%xmm1")
-                __ASM_EMIT32("vmovaps           0x40(%[c]), %%xmm2")
-                __ASM_EMIT32("vmovaps           0x60(%[c]), %%xmm3")
-                __ASM_EMIT32("vmovaps           0x80(%[c]), %%xmm4")
-                __ASM_EMIT32("vmovaps           0xa0(%[c]), %%xmm5")
-                __ASM_EMIT64("vmovaps           0x00(%[fp]), %%xmm0")
-                __ASM_EMIT64("vmovaps           0x20(%[fp]), %%xmm1")
-                __ASM_EMIT64("vmovaps           0x40(%[fp]), %%xmm2")
-                __ASM_EMIT64("vmovaps           0x60(%[fp]), %%xmm3")
-                __ASM_EMIT64("vmovaps           0x80(%[fp]), %%xmm4")
-                __ASM_EMIT64("vmovaps           0xa0(%[fp]), %%xmm5")
+                __ASM_EMIT("vmovaps             0x00(%[c]), %%xmm0")
+                __ASM_EMIT("vmovaps             0x20(%[c]), %%xmm1")
+                __ASM_EMIT("vmovaps             0x40(%[c]), %%xmm2")
+                __ASM_EMIT("vmovaps             0x60(%[c]), %%xmm3")
+                __ASM_EMIT("vmovaps             0x80(%[c]), %%xmm4")
+                __ASM_EMIT("vmovaps             0xa0(%[c]), %%xmm5")
                 __ASM_EMIT("sub                 $4, %[count]")
                 __ASM_EMIT("add                 $0x10, %[f]")
                 __ASM_EMIT("add                 $0x10, %[re]")
@@ -169,18 +151,12 @@ namespace lsp
                 __ASM_EMIT("vmovlps             %%xmm0, 0x00(%[re])")
                 __ASM_EMIT("vmovlps             %%xmm1, 0x00(%[im])")
                 // Reload
-                __ASM_EMIT32("vmovaps           0x00(%[c]), %%xmm0")
-                __ASM_EMIT32("vmovaps           0x20(%[c]), %%xmm1")
-                __ASM_EMIT32("vmovaps           0x40(%[c]), %%xmm2")
-                __ASM_EMIT32("vmovaps           0x60(%[c]), %%xmm3")
-                __ASM_EMIT32("vmovaps           0x80(%[c]), %%xmm4")
-                __ASM_EMIT32("vmovaps           0xa0(%[c]), %%xmm5")
-                __ASM_EMIT64("vmovaps           0x00(%[fp]), %%xmm0")
-                __ASM_EMIT64("vmovaps           0x20(%[fp]), %%xmm1")
-                __ASM_EMIT64("vmovaps           0x40(%[fp]), %%xmm2")
-                __ASM_EMIT64("vmovaps           0x60(%[fp]), %%xmm3")
-                __ASM_EMIT64("vmovaps           0x80(%[fp]), %%xmm4")
-                __ASM_EMIT64("vmovaps           0xa0(%[fp]), %%xmm5")
+                __ASM_EMIT("vmovaps             0x00(%[c]), %%xmm0")
+                __ASM_EMIT("vmovaps             0x20(%[c]), %%xmm1")
+                __ASM_EMIT("vmovaps             0x40(%[c]), %%xmm2")
+                __ASM_EMIT("vmovaps             0x60(%[c]), %%xmm3")
+                __ASM_EMIT("vmovaps             0x80(%[c]), %%xmm4")
+                __ASM_EMIT("vmovaps             0xa0(%[c]), %%xmm5")
                 __ASM_EMIT("sub                 $2, %[count]")
                 __ASM_EMIT("add                 $0x08, %[f]")
                 __ASM_EMIT("add                 $0x08, %[re]")
@@ -213,10 +189,9 @@ namespace lsp
                 __ASM_EMIT("vmovss              %%xmm1, 0x00(%[im])")
                 __ASM_EMIT("8:")
 
-                : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count)
-                  __IF_32(, [c] "+r" (c))
-                : __IF_32([fp] "m" (fp))
-                  __IF_64([c] "r" (c), [fp] "r" (fp))
+                : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count),
+                  [c] "+r" (c)
+                : [fp] "m" (fp)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -235,19 +210,13 @@ namespace lsp
                 __ASM_EMIT("vbroadcastss        0x10(%[c]), %%ymm3")                // y3   = b0
                 __ASM_EMIT("vbroadcastss        0x14(%[c]), %%ymm4")                // y4   = b1
                 __ASM_EMIT("vbroadcastss        0x18(%[c]), %%ymm5")                // y5   = b2
-                __ASM_EMIT32("lea               %[fp], %[c]")
-                __ASM_EMIT32("vmovaps           %%ymm0, 0x00(%[c])")                // x0   = t0
-                __ASM_EMIT32("vmovaps           %%ymm1, 0x20(%[c])")                // x1   = t1
-                __ASM_EMIT32("vmovaps           %%ymm2, 0x40(%[c])")                // x2   = t2
-                __ASM_EMIT32("vmovaps           %%ymm3, 0x60(%[c])")                // x4   = b0
-                __ASM_EMIT32("vmovaps           %%ymm4, 0x80(%[c])")                // x5   = b1
-                __ASM_EMIT32("vmovaps           %%ymm5, 0xa0(%[c])")                // x6   = b2
-                __ASM_EMIT64("vmovaps           %%ymm0, 0x00(%[fp])")               // x0   = t0
-                __ASM_EMIT64("vmovaps           %%ymm1, 0x20(%[fp])")               // x1   = t1
-                __ASM_EMIT64("vmovaps           %%ymm2, 0x40(%[fp])")               // x2   = t2
-                __ASM_EMIT64("vmovaps           %%ymm3, 0x60(%[fp])")               // x4   = b0
-                __ASM_EMIT64("vmovaps           %%ymm4, 0x80(%[fp])")               // x5   = b1
-                __ASM_EMIT64("vmovaps           %%ymm5, 0xa0(%[fp])")               // x6   = b2
+                __ASM_EMIT("lea                 %[fp], %[c]")
+                __ASM_EMIT("vmovaps             %%ymm0, 0x00(%[c])")                // x0   = t0
+                __ASM_EMIT("vmovaps             %%ymm1, 0x20(%[c])")                // x1   = t1
+                __ASM_EMIT("vmovaps             %%ymm2, 0x40(%[c])")                // x2   = t2
+                __ASM_EMIT("vmovaps             %%ymm3, 0x60(%[c])")                // x4   = b0
+                __ASM_EMIT("vmovaps             %%ymm4, 0x80(%[c])")                // x5   = b1
+                __ASM_EMIT("vmovaps             %%ymm5, 0xa0(%[c])")                // x6   = b2
                 // x8 blocks
                 __ASM_EMIT("sub                 $8, %[count]")
                 __ASM_EMIT("jb                  2f")
@@ -281,18 +250,12 @@ namespace lsp
                 __ASM_EMIT("vmovups             %%ymm0, 0x00(%[re])")
                 __ASM_EMIT("vmovups             %%ymm1, 0x00(%[im])")
                 // Reload
-                __ASM_EMIT32("vmovaps           0x00(%[c]), %%ymm0")
-                __ASM_EMIT32("vmovaps           0x20(%[c]), %%ymm1")
-                __ASM_EMIT32("vmovaps           0x40(%[c]), %%ymm2")
-                __ASM_EMIT32("vmovaps           0x60(%[c]), %%ymm3")
-                __ASM_EMIT32("vmovaps           0x80(%[c]), %%ymm4")
-                __ASM_EMIT32("vmovaps           0xa0(%[c]), %%ymm5")
-                __ASM_EMIT64("vmovaps           0x00(%[fp]), %%ymm0")
-                __ASM_EMIT64("vmovaps           0x20(%[fp]), %%ymm1")
-                __ASM_EMIT64("vmovaps           0x40(%[fp]), %%ymm2")
-                __ASM_EMIT64("vmovaps           0x60(%[fp]), %%ymm3")
-                __ASM_EMIT64("vmovaps           0x80(%[fp]), %%ymm4")
-                __ASM_EMIT64("vmovaps           0xa0(%[fp]), %%ymm5")
+                __ASM_EMIT("vmovaps             0x00(%[c]), %%ymm0")
+                __ASM_EMIT("vmovaps             0x20(%[c]), %%ymm1")
+                __ASM_EMIT("vmovaps             0x40(%[c]), %%ymm2")
+                __ASM_EMIT("vmovaps             0x60(%[c]), %%ymm3")
+                __ASM_EMIT("vmovaps             0x80(%[c]), %%ymm4")
+                __ASM_EMIT("vmovaps             0xa0(%[c]), %%ymm5")
                 __ASM_EMIT("add                 $0x20, %[f]")
                 __ASM_EMIT("add                 $0x20, %[re]")
                 __ASM_EMIT("add                 $0x20, %[im]")
@@ -331,18 +294,12 @@ namespace lsp
                 __ASM_EMIT("vmovups             %%xmm0, 0x00(%[re])")
                 __ASM_EMIT("vmovups             %%xmm1, 0x00(%[im])")
                 // Reload
-                __ASM_EMIT32("vmovaps           0x00(%[c]), %%xmm0")
-                __ASM_EMIT32("vmovaps           0x20(%[c]), %%xmm1")
-                __ASM_EMIT32("vmovaps           0x40(%[c]), %%xmm2")
-                __ASM_EMIT32("vmovaps           0x60(%[c]), %%xmm3")
-                __ASM_EMIT32("vmovaps           0x80(%[c]), %%xmm4")
-                __ASM_EMIT32("vmovaps           0xa0(%[c]), %%xmm5")
-                __ASM_EMIT64("vmovaps           0x00(%[fp]), %%xmm0")
-                __ASM_EMIT64("vmovaps           0x20(%[fp]), %%xmm1")
-                __ASM_EMIT64("vmovaps           0x40(%[fp]), %%xmm2")
-                __ASM_EMIT64("vmovaps           0x60(%[fp]), %%xmm3")
-                __ASM_EMIT64("vmovaps           0x80(%[fp]), %%xmm4")
-                __ASM_EMIT64("vmovaps           0xa0(%[fp]), %%xmm5")
+                __ASM_EMIT("vmovaps             0x00(%[c]), %%xmm0")
+                __ASM_EMIT("vmovaps             0x20(%[c]), %%xmm1")
+                __ASM_EMIT("vmovaps             0x40(%[c]), %%xmm2")
+                __ASM_EMIT("vmovaps             0x60(%[c]), %%xmm3")
+                __ASM_EMIT("vmovaps             0x80(%[c]), %%xmm4")
+                __ASM_EMIT("vmovaps             0xa0(%[c]), %%xmm5")
                 __ASM_EMIT("sub                 $4, %[count]")
                 __ASM_EMIT("add                 $0x10, %[f]")
                 __ASM_EMIT("add                 $0x10, %[re]")
@@ -382,18 +339,12 @@ namespace lsp
                 __ASM_EMIT("vmovlps             %%xmm0, 0x00(%[re])")
                 __ASM_EMIT("vmovlps             %%xmm1, 0x00(%[im])")
                 // Reload
-                __ASM_EMIT32("vmovaps           0x00(%[c]), %%xmm0")
-                __ASM_EMIT32("vmovaps           0x20(%[c]), %%xmm1")
-                __ASM_EMIT32("vmovaps           0x40(%[c]), %%xmm2")
-                __ASM_EMIT32("vmovaps           0x60(%[c]), %%xmm3")
-                __ASM_EMIT32("vmovaps           0x80(%[c]), %%xmm4")
-                __ASM_EMIT32("vmovaps           0xa0(%[c]), %%xmm5")
-                __ASM_EMIT64("vmovaps           0x00(%[fp]), %%xmm0")
-                __ASM_EMIT64("vmovaps           0x20(%[fp]), %%xmm1")
-                __ASM_EMIT64("vmovaps           0x40(%[fp]), %%xmm2")
-                __ASM_EMIT64("vmovaps           0x60(%[fp]), %%xmm3")
-                __ASM_EMIT64("vmovaps           0x80(%[fp]), %%xmm4")
-                __ASM_EMIT64("vmovaps           0xa0(%[fp]), %%xmm5")
+                __ASM_EMIT("vmovaps             0x00(%[c]), %%xmm0")
+                __ASM_EMIT("vmovaps             0x20(%[c]), %%xmm1")
+                __ASM_EMIT("vmovaps             0x40(%[c]), %%xmm2")
+                __ASM_EMIT("vmovaps             0x60(%[c]), %%xmm3")
+                __ASM_EMIT("vmovaps             0x80(%[c]), %%xmm4")
+                __ASM_EMIT("vmovaps             0xa0(%[c]), %%xmm5")
                 __ASM_EMIT("sub                 $2, %[count]")
                 __ASM_EMIT("add                 $0x08, %[f]")
                 __ASM_EMIT("add                 $0x08, %[re]")
@@ -434,10 +385,9 @@ namespace lsp
                 __ASM_EMIT("vmovss              %%xmm1, 0x00(%[im])")
                 __ASM_EMIT("8:")
 
-                : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count)
-                  __IF_32(, [c] "+r" (c))
-                : __IF_32([fp] "m" (fp))
-                  __IF_64([c] "r" (c), [fp] "r" (fp))
+                : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count),
+                  [c] "+r" (c)
+                : [fp] "m" (fp)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -835,19 +785,13 @@ namespace lsp
                 __ASM_EMIT("vbroadcastss        0x10(%[c]), %%ymm3")                // y3   = b0
                 __ASM_EMIT("vbroadcastss        0x14(%[c]), %%ymm4")                // y4   = b1
                 __ASM_EMIT("vbroadcastss        0x18(%[c]), %%ymm5")                // y5   = b2
-                __ASM_EMIT32("lea               %[fp], %[c]")
-                __ASM_EMIT32("vmovaps           %%ymm0, 0x00(%[c])")                // x0   = t0
-                __ASM_EMIT32("vmovaps           %%ymm1, 0x20(%[c])")                // x1   = t1
-                __ASM_EMIT32("vmovaps           %%ymm2, 0x40(%[c])")                // x2   = t2
-                __ASM_EMIT32("vmovaps           %%ymm3, 0x60(%[c])")                // x4   = b0
-                __ASM_EMIT32("vmovaps           %%ymm4, 0x80(%[c])")                // x5   = b1
-                __ASM_EMIT32("vmovaps           %%ymm5, 0xa0(%[c])")                // x6   = b2
-                __ASM_EMIT64("vmovaps           %%ymm0, 0x00(%[fp])")               // x0   = t0
-                __ASM_EMIT64("vmovaps           %%ymm1, 0x20(%[fp])")               // x1   = t1
-                __ASM_EMIT64("vmovaps           %%ymm2, 0x40(%[fp])")               // x2   = t2
-                __ASM_EMIT64("vmovaps           %%ymm3, 0x60(%[fp])")               // x4   = b0
-                __ASM_EMIT64("vmovaps           %%ymm4, 0x80(%[fp])")               // x5   = b1
-                __ASM_EMIT64("vmovaps           %%ymm5, 0xa0(%[fp])")               // x6   = b2
+                __ASM_EMIT("lea                 %[fp], %[c]")
+                __ASM_EMIT("vmovaps             %%ymm0, 0x00(%[c])")                // x0   = t0
+                __ASM_EMIT("vmovaps             %%ymm1, 0x20(%[c])")                // x1   = t1
+                __ASM_EMIT("vmovaps             %%ymm2, 0x40(%[c])")                // x2   = t2
+                __ASM_EMIT("vmovaps             %%ymm3, 0x60(%[c])")                // x4   = b0
+                __ASM_EMIT("vmovaps             %%ymm4, 0x80(%[c])")                // x5   = b1
+                __ASM_EMIT("vmovaps             %%ymm5, 0xa0(%[c])")                // x6   = b2
                 // x8 blocks
                 __ASM_EMIT("sub                 $8, %[count]")
                 __ASM_EMIT("jb                  2f")
@@ -870,18 +814,12 @@ namespace lsp
                 __ASM_EMIT("vmovups             %%ymm0, 0x00(%[re])")
                 __ASM_EMIT("vmovups             %%ymm1, 0x00(%[im])")
                 // Reload
-                __ASM_EMIT32("vmovaps           0x00(%[c]), %%ymm0")
-                __ASM_EMIT32("vmovaps           0x20(%[c]), %%ymm1")
-                __ASM_EMIT32("vmovaps           0x40(%[c]), %%ymm2")
-                __ASM_EMIT32("vmovaps           0x60(%[c]), %%ymm3")
-                __ASM_EMIT32("vmovaps           0x80(%[c]), %%ymm4")
-                __ASM_EMIT32("vmovaps           0xa0(%[c]), %%ymm5")
-                __ASM_EMIT64("vmovaps           0x00(%[fp]), %%ymm0")
-                __ASM_EMIT64("vmovaps           0x20(%[fp]), %%ymm1")
-                __ASM_EMIT64("vmovaps           0x40(%[fp]), %%ymm2")
-                __ASM_EMIT64("vmovaps           0x60(%[fp]), %%ymm3")
-                __ASM_EMIT64("vmovaps           0x80(%[fp]), %%ymm4")
-                __ASM_EMIT64("vmovaps           0xa0(%[fp]), %%ymm5")
+                __ASM_EMIT("vmovaps             0x00(%[c]), %%ymm0")
+                __ASM_EMIT("vmovaps             0x20(%[c]), %%ymm1")
+                __ASM_EMIT("vmovaps             0x40(%[c]), %%ymm2")
+                __ASM_EMIT("vmovaps             0x60(%[c]), %%ymm3")
+                __ASM_EMIT("vmovaps             0x80(%[c]), %%ymm4")
+                __ASM_EMIT("vmovaps             0xa0(%[c]), %%ymm5")
                 __ASM_EMIT("add                 $0x20, %[f]")
                 __ASM_EMIT("add                 $0x20, %[re]")
                 __ASM_EMIT("add                 $0x20, %[im]")
@@ -909,18 +847,12 @@ namespace lsp
                 __ASM_EMIT("vmovups             %%xmm0, 0x00(%[re])")
                 __ASM_EMIT("vmovups             %%xmm1, 0x00(%[im])")
                 // Reload
-                __ASM_EMIT32("vmovaps           0x00(%[c]), %%xmm0")
-                __ASM_EMIT32("vmovaps           0x20(%[c]), %%xmm1")
-                __ASM_EMIT32("vmovaps           0x40(%[c]), %%xmm2")
-                __ASM_EMIT32("vmovaps           0x60(%[c]), %%xmm3")
-                __ASM_EMIT32("vmovaps           0x80(%[c]), %%xmm4")
-                __ASM_EMIT32("vmovaps           0xa0(%[c]), %%xmm5")
-                __ASM_EMIT64("vmovaps           0x00(%[fp]), %%xmm0")
-                __ASM_EMIT64("vmovaps           0x20(%[fp]), %%xmm1")
-                __ASM_EMIT64("vmovaps           0x40(%[fp]), %%xmm2")
-                __ASM_EMIT64("vmovaps           0x60(%[fp]), %%xmm3")
-                __ASM_EMIT64("vmovaps           0x80(%[fp]), %%xmm4")
-                __ASM_EMIT64("vmovaps           0xa0(%[fp]), %%xmm5")
+                __ASM_EMIT("vmovaps             0x00(%[c]), %%xmm0")
+                __ASM_EMIT("vmovaps             0x20(%[c]), %%xmm1")
+                __ASM_EMIT("vmovaps             0x40(%[c]), %%xmm2")
+                __ASM_EMIT("vmovaps             0x60(%[c]), %%xmm3")
+                __ASM_EMIT("vmovaps             0x80(%[c]), %%xmm4")
+                __ASM_EMIT("vmovaps             0xa0(%[c]), %%xmm5")
                 __ASM_EMIT("sub                 $4, %[count]")
                 __ASM_EMIT("add                 $0x10, %[f]")
                 __ASM_EMIT("add                 $0x10, %[re]")
@@ -947,18 +879,12 @@ namespace lsp
                 __ASM_EMIT("vmovlps             %%xmm0, 0x00(%[re])")
                 __ASM_EMIT("vmovlps             %%xmm1, 0x00(%[im])")
                 // Reload
-                __ASM_EMIT32("vmovaps           0x00(%[c]), %%xmm0")
-                __ASM_EMIT32("vmovaps           0x20(%[c]), %%xmm1")
-                __ASM_EMIT32("vmovaps           0x40(%[c]), %%xmm2")
-                __ASM_EMIT32("vmovaps           0x60(%[c]), %%xmm3")
-                __ASM_EMIT32("vmovaps           0x80(%[c]), %%xmm4")
-                __ASM_EMIT32("vmovaps           0xa0(%[c]), %%xmm5")
-                __ASM_EMIT64("vmovaps           0x00(%[fp]), %%xmm0")
-                __ASM_EMIT64("vmovaps           0x20(%[fp]), %%xmm1")
-                __ASM_EMIT64("vmovaps           0x40(%[fp]), %%xmm2")
-                __ASM_EMIT64("vmovaps           0x60(%[fp]), %%xmm3")
-                __ASM_EMIT64("vmovaps           0x80(%[fp]), %%xmm4")
-                __ASM_EMIT64("vmovaps           0xa0(%[fp]), %%xmm5")
+                __ASM_EMIT("vmovaps             0x00(%[c]), %%xmm0")
+                __ASM_EMIT("vmovaps             0x20(%[c]), %%xmm1")
+                __ASM_EMIT("vmovaps             0x40(%[c]), %%xmm2")
+                __ASM_EMIT("vmovaps             0x60(%[c]), %%xmm3")
+                __ASM_EMIT("vmovaps             0x80(%[c]), %%xmm4")
+                __ASM_EMIT("vmovaps             0xa0(%[c]), %%xmm5")
                 __ASM_EMIT("sub                 $2, %[count]")
                 __ASM_EMIT("add                 $0x08, %[f]")
                 __ASM_EMIT("add                 $0x08, %[re]")
@@ -986,10 +912,9 @@ namespace lsp
                 __ASM_EMIT("vmovss              %%xmm1, 0x00(%[im])")
                 __ASM_EMIT("8:")
 
-                : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count)
-                  __IF_32(, [c] "+r" (c))
-                : __IF_32([fp] "m" (fp))
-                  __IF_64([c] "r" (c), [fp] "r" (fp))
+                : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count),
+                  [c] "+r" (c)
+                : [fp] "m" (fp)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -1008,19 +933,13 @@ namespace lsp
                 __ASM_EMIT("vbroadcastss        0x10(%[c]), %%ymm3")                // y3   = b0
                 __ASM_EMIT("vbroadcastss        0x14(%[c]), %%ymm4")                // y4   = b1
                 __ASM_EMIT("vbroadcastss        0x18(%[c]), %%ymm5")                // y5   = b2
-                __ASM_EMIT32("lea               %[fp], %[c]")
-                __ASM_EMIT32("vmovaps           %%ymm0, 0x00(%[c])")                // x0   = t0
-                __ASM_EMIT32("vmovaps           %%ymm1, 0x20(%[c])")                // x1   = t1
-                __ASM_EMIT32("vmovaps           %%ymm2, 0x40(%[c])")                // x2   = t2
-                __ASM_EMIT32("vmovaps           %%ymm3, 0x60(%[c])")                // x4   = b0
-                __ASM_EMIT32("vmovaps           %%ymm4, 0x80(%[c])")                // x5   = b1
-                __ASM_EMIT32("vmovaps           %%ymm5, 0xa0(%[c])")                // x6   = b2
-                __ASM_EMIT64("vmovaps           %%ymm0, 0x00(%[fp])")               // x0   = t0
-                __ASM_EMIT64("vmovaps           %%ymm1, 0x20(%[fp])")               // x1   = t1
-                __ASM_EMIT64("vmovaps           %%ymm2, 0x40(%[fp])")               // x2   = t2
-                __ASM_EMIT64("vmovaps           %%ymm3, 0x60(%[fp])")               // x4   = b0
-                __ASM_EMIT64("vmovaps           %%ymm4, 0x80(%[fp])")               // x5   = b1
-                __ASM_EMIT64("vmovaps           %%ymm5, 0xa0(%[fp])")               // x6   = b2
+                __ASM_EMIT("lea                 %[fp], %[c]")
+                __ASM_EMIT("vmovaps             %%ymm0, 0x00(%[c])")                // x0   = t0
+                __ASM_EMIT("vmovaps             %%ymm1, 0x20(%[c])")                // x1   = t1
+                __ASM_EMIT("vmovaps             %%ymm2, 0x40(%[c])")                // x2   = t2
+                __ASM_EMIT("vmovaps             %%ymm3, 0x60(%[c])")                // x4   = b0
+                __ASM_EMIT("vmovaps             %%ymm4, 0x80(%[c])")                // x5   = b1
+                __ASM_EMIT("vmovaps             %%ymm5, 0xa0(%[c])")                // x6   = b2
                 // x8 blocks
                 __ASM_EMIT("sub                 $8, %[count]")
                 __ASM_EMIT("jb                  2f")
@@ -1047,18 +966,12 @@ namespace lsp
                 __ASM_EMIT("vmovups             %%ymm0, 0x00(%[re])")
                 __ASM_EMIT("vmovups             %%ymm1, 0x00(%[im])")
                 // Reload
-                __ASM_EMIT32("vmovaps           0x00(%[c]), %%ymm0")
-                __ASM_EMIT32("vmovaps           0x20(%[c]), %%ymm1")
-                __ASM_EMIT32("vmovaps           0x40(%[c]), %%ymm2")
-                __ASM_EMIT32("vmovaps           0x60(%[c]), %%ymm3")
-                __ASM_EMIT32("vmovaps           0x80(%[c]), %%ymm4")
-                __ASM_EMIT32("vmovaps           0xa0(%[c]), %%ymm5")
-                __ASM_EMIT64("vmovaps           0x00(%[fp]), %%ymm0")
-                __ASM_EMIT64("vmovaps           0x20(%[fp]), %%ymm1")
-                __ASM_EMIT64("vmovaps           0x40(%[fp]), %%ymm2")
-                __ASM_EMIT64("vmovaps           0x60(%[fp]), %%ymm3")
-                __ASM_EMIT64("vmovaps           0x80(%[fp]), %%ymm4")
-                __ASM_EMIT64("vmovaps           0xa0(%[fp]), %%ymm5")
+                __ASM_EMIT("vmovaps             0x00(%[c]), %%ymm0")
+                __ASM_EMIT("vmovaps             0x20(%[c]), %%ymm1")
+                __ASM_EMIT("vmovaps             0x40(%[c]), %%ymm2")
+                __ASM_EMIT("vmovaps             0x60(%[c]), %%ymm3")
+                __ASM_EMIT("vmovaps             0x80(%[c]), %%ymm4")
+                __ASM_EMIT("vmovaps             0xa0(%[c]), %%ymm5")
                 __ASM_EMIT("add                 $0x20, %[f]")
                 __ASM_EMIT("add                 $0x20, %[re]")
                 __ASM_EMIT("add                 $0x20, %[im]")
@@ -1090,18 +1003,12 @@ namespace lsp
                 __ASM_EMIT("vmovups             %%xmm0, 0x00(%[re])")
                 __ASM_EMIT("vmovups             %%xmm1, 0x00(%[im])")
                 // Reload
-                __ASM_EMIT32("vmovaps           0x00(%[c]), %%xmm0")
-                __ASM_EMIT32("vmovaps           0x20(%[c]), %%xmm1")
-                __ASM_EMIT32("vmovaps           0x40(%[c]), %%xmm2")
-                __ASM_EMIT32("vmovaps           0x60(%[c]), %%xmm3")
-                __ASM_EMIT32("vmovaps           0x80(%[c]), %%xmm4")
-                __ASM_EMIT32("vmovaps           0xa0(%[c]), %%xmm5")
-                __ASM_EMIT64("vmovaps           0x00(%[fp]), %%xmm0")
-                __ASM_EMIT64("vmovaps           0x20(%[fp]), %%xmm1")
-                __ASM_EMIT64("vmovaps           0x40(%[fp]), %%xmm2")
-                __ASM_EMIT64("vmovaps           0x60(%[fp]), %%xmm3")
-                __ASM_EMIT64("vmovaps           0x80(%[fp]), %%xmm4")
-                __ASM_EMIT64("vmovaps           0xa0(%[fp]), %%xmm5")
+                __ASM_EMIT("vmovaps             0x00(%[c]), %%xmm0")
+                __ASM_EMIT("vmovaps             0x20(%[c]), %%xmm1")
+                __ASM_EMIT("vmovaps             0x40(%[c]), %%xmm2")
+                __ASM_EMIT("vmovaps             0x60(%[c]), %%xmm3")
+                __ASM_EMIT("vmovaps             0x80(%[c]), %%xmm4")
+                __ASM_EMIT("vmovaps             0xa0(%[c]), %%xmm5")
                 __ASM_EMIT("sub                 $4, %[count]")
                 __ASM_EMIT("add                 $0x10, %[f]")
                 __ASM_EMIT("add                 $0x10, %[re]")
@@ -1134,18 +1041,12 @@ namespace lsp
                 __ASM_EMIT("vmovlps             %%xmm0, 0x00(%[re])")
                 __ASM_EMIT("vmovlps             %%xmm1, 0x00(%[im])")
                 // Reload
-                __ASM_EMIT32("vmovaps           0x00(%[c]), %%xmm0")
-                __ASM_EMIT32("vmovaps           0x20(%[c]), %%xmm1")
-                __ASM_EMIT32("vmovaps           0x40(%[c]), %%xmm2")
-                __ASM_EMIT32("vmovaps           0x60(%[c]), %%xmm3")
-                __ASM_EMIT32("vmovaps           0x80(%[c]), %%xmm4")
-                __ASM_EMIT32("vmovaps           0xa0(%[c]), %%xmm5")
-                __ASM_EMIT64("vmovaps           0x00(%[fp]), %%xmm0")
-                __ASM_EMIT64("vmovaps           0x20(%[fp]), %%xmm1")
-                __ASM_EMIT64("vmovaps           0x40(%[fp]), %%xmm2")
-                __ASM_EMIT64("vmovaps           0x60(%[fp]), %%xmm3")
-                __ASM_EMIT64("vmovaps           0x80(%[fp]), %%xmm4")
-                __ASM_EMIT64("vmovaps           0xa0(%[fp]), %%xmm5")
+                __ASM_EMIT("vmovaps             0x00(%[c]), %%xmm0")
+                __ASM_EMIT("vmovaps             0x20(%[c]), %%xmm1")
+                __ASM_EMIT("vmovaps             0x40(%[c]), %%xmm2")
+                __ASM_EMIT("vmovaps             0x60(%[c]), %%xmm3")
+                __ASM_EMIT("vmovaps             0x80(%[c]), %%xmm4")
+                __ASM_EMIT("vmovaps             0xa0(%[c]), %%xmm5")
                 __ASM_EMIT("sub                 $2, %[count]")
                 __ASM_EMIT("add                 $0x08, %[f]")
                 __ASM_EMIT("add                 $0x08, %[re]")
@@ -1179,10 +1080,9 @@ namespace lsp
                 __ASM_EMIT("vmovss              %%xmm1, 0x00(%[im])")
                 __ASM_EMIT("8:")
 
-                : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count)
-                  __IF_32(, [c] "+r" (c))
-                : __IF_32([fp] "m" (fp))
-                  __IF_64([c] "r" (c), [fp] "r" (fp))
+                : [re] "+r" (re), [im] "+r" (im), [f] "+r" (freq), [count] "+r" (count),
+                  [c] "+r" (c)
+                : [fp] "m" (fp)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
