@@ -361,16 +361,12 @@ namespace lsp
 
         void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f)
         {
-            float   MASK[4] __lsp_aligned16;
-            size_t mask;
-
-    #pragma pack(push)
-            struct {
-                float  *f;
-                float  *dst;
-                size_t  count;
-            } context;
-    #pragma pack(pop)
+            IF_ARCH_X86(
+                float   MASK[4] __lsp_aligned16;
+                float  *X_F, *X_D;
+                size_t  X_COUNT;
+                size_t  mask;
+            )
 
             ARCH_X86_ASM
             (
@@ -380,11 +376,9 @@ namespace lsp
 
                 //---------------------------------------------------------------------
                 // Cycle 1
-                __ASM_EMIT("mov         %[f], 0x00 + %[context]")
-                __ASM_EMIT32("mov       %[dst], 0x04 + %[context]")
-                __ASM_EMIT32("mov       %[count], 0x08 + %[context]")
-                __ASM_EMIT64("mov       %[dst], 0x08 + %[context]")
-                __ASM_EMIT64("mov       %[count], 0x10 + %[context]")
+                __ASM_EMIT("mov         %[f], %[X_F]")
+                __ASM_EMIT("mov         %[dst], %[X_D]")
+                __ASM_EMIT("mov         %[count], %[X_COUNT]")
 
                 // Initialize mask
                 // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
@@ -397,7 +391,7 @@ namespace lsp
                 __ASM_EMIT32("mov       %[d], %[f]")
                 __ASM_EMIT32("movups    0x00(%[f]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT32("movups    0x20(%[f]), %%xmm7")                        // xmm7     = d1
-                __ASM_EMIT32("mov       0x00 + %[context], %[f]")
+                __ASM_EMIT32("mov       %[X_F], %[f]")
                 __ASM_EMIT64("movups    0x00(%[d]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT64("movups    0x20(%[d]), %%xmm7")                        // xmm7     = d1
 
@@ -541,10 +535,8 @@ namespace lsp
 
                 //---------------------------------------------------------------------
                 // Cycle 2
-                __ASM_EMIT32("mov       0x04 + %[context], %[dst]")
-                __ASM_EMIT32("mov       0x08 + %[context], %[count]")
-                __ASM_EMIT64("mov       0x08 + %[context], %[dst]")
-                __ASM_EMIT64("mov       0x10 + %[context], %[count]")
+                __ASM_EMIT("mov         %[X_D], %[dst]")
+                __ASM_EMIT("mov         %[X_COUNT], %[count]")
                 __ASM_EMIT("mov         %[dst], %[src]")                            // Chaining filter groups
 
                 // Initialize mask
@@ -559,7 +551,7 @@ namespace lsp
                 __ASM_EMIT32("movups    0x30(%[f]), %%xmm7")                        // xmm7     = d1
                 __ASM_EMIT64("movups    0x10(%[d]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT64("movups    0x30(%[d]), %%xmm7")                        // xmm7     = d1
-                __ASM_EMIT("mov         0x00 + %[context], %[f]")
+                __ASM_EMIT("mov         %[X_F], %[f]")
 
                 // Process first 3 steps
                 __ASM_EMIT(".align 16")
@@ -704,11 +696,13 @@ namespace lsp
 
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [mask] "=&r" (mask), [count] "+r" (count), [f] "+r" (f)
-                : [context] "o" (context),
-                  __IF_64([d] "r" (d),)
+                : __IF_64([d] "r" (d),)
                   __IF_32([d] "g" (d),)
                   [X_MASK] "m" (dyn_biquad_const),
-                  [MASK] "m" (MASK)
+                  [MASK] "m" (MASK),
+                  [X_F] "m" (X_F),
+                  [X_D] "m" (X_D),
+                  [X_COUNT] "m" (X_COUNT)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

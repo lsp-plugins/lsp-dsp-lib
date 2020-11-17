@@ -351,17 +351,10 @@ namespace lsp
         {
             IF_ARCH_X86(
                 float   MASK[4] __lsp_aligned16;
-                size_t mask;
+                float  *X_D;
+                size_t  X_COUNT;
+                size_t  mask;
             )
-
-            #pragma pack(push)
-            IF_ARCH_X86(
-                struct {
-                    float  *dst;
-                    size_t  count;
-                } context;
-            )
-            #pragma pack(pop)
 
             ARCH_X86_ASM
             (
@@ -371,10 +364,8 @@ namespace lsp
 
                 //---------------------------------------------------------------------
                 // Cycle 1
-                __ASM_EMIT32("mov       %[dst], 0x00 + %[context]")
-                __ASM_EMIT32("mov       %[count], 0x04 + %[context]")
-                __ASM_EMIT64("mov       %[dst], 0x00 + %[context]")
-                __ASM_EMIT64("mov       %[count], 0x08 + %[context]")
+                __ASM_EMIT("mov         %[dst], %[X_D]")
+                __ASM_EMIT("mov         %[count], %[X_COUNT]")
 
                 // Initialize mask
                 // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
@@ -521,10 +512,8 @@ namespace lsp
 
                 //---------------------------------------------------------------------
                 // Cycle 2
-                __ASM_EMIT32("mov       0x00 + %[context], %[dst]")
-                __ASM_EMIT32("mov       0x04 + %[context], %[count]")
-                __ASM_EMIT64("mov       0x00 + %[context], %[dst]")
-                __ASM_EMIT64("mov       0x08 + %[context], %[count]")
+                __ASM_EMIT("mov         %[X_D], %[dst]")
+                __ASM_EMIT("mov         %[X_COUNT], %[count]")
                 __ASM_EMIT("mov         %[dst], %[src]")                            // Chaining filter groups
 
                 // Initialize mask
@@ -674,9 +663,9 @@ namespace lsp
                 __ASM_EMIT("10:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [mask] "=&r" (mask), [count] "+r" (count)
-                :
-                  [f] "r" (f),
-                  [context] "o" (context),
+                : [f] "r" (f),
+                  [X_D] "m" (X_D),
+                  [X_COUNT] "m" (X_COUNT),
                   [X_MASK] "m" (biquad_const),
                   [MASK] "m" (MASK)
                 : "cc", "memory",
