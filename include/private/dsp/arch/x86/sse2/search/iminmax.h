@@ -64,11 +64,11 @@ namespace lsp
             __ASM_EMIT("test            %[count], %[count]") \
             __ASM_EMIT("jz              4f") \
             __ASM_EMIT("movss           0x00(%[src]), %%xmm2")      /* x2   = s = s0 */ \
-            __ASM_EMIT("movdqa          0x00 + %[IDXS], %%xmm1")    /* x1   = I[k] = 0 1 2 3 */ \
+            __ASM_EMIT("movdqa          0x00(%[IDXS]), %%xmm1")     /* x1   = I[k] = 0 1 2 3 */ \
             __ASM_EMIT("shufps          $0x00, %%xmm2, %%xmm2")     /* x2   = s[k] = s0 s0 s0 s0 */ \
             __ASM_EMIT("sub             $0x04, %[count]") \
             __ASM_EMIT("jb              2f") \
-            __ASM_EMIT("movdqa          0x10 + %[IDXS], %%xmm7")    /* x7   = D = 4 4 4 4 */ \
+            __ASM_EMIT("movdqa          0x10(%[IDXS]), %%xmm7")     /* x7   = D = 4 4 4 4 */ \
             \
             /* x4 blocks */ \
             __ASM_EMIT("1:") \
@@ -118,7 +118,7 @@ namespace lsp
             __ASM_EMIT("2:") \
             __ASM_EMIT("add             $3, %[count]") \
             __ASM_EMIT("jl              4f") \
-            __ASM_EMIT("movdqa          0x20 + %[IDXS], %%xmm7")    /* x7   = D = 1 1 1 1 */ \
+            __ASM_EMIT("movdqa          0x20(%[IDXS]), %%xmm7")     /* x7   = D = 1 1 1 1 */ \
             __ASM_EMIT("3:") \
             __ASM_EMIT("movaps          %%xmm2, %%xmm4") \
             __ASM_EMIT("movss           0x00(%[src]), %%xmm3") \
@@ -146,7 +146,7 @@ namespace lsp
                 SEARCH_CORE(CMPLEPS)
                 : [src] "+r" (src), [count] "+r" (count),
                   [index] "=Yz" (index)
-                : [IDXS] "o" (indexes)
+                : [IDXS] "r" (indexes)
                 : "cc",
                   "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -163,7 +163,7 @@ namespace lsp
                 SEARCH_CORE(CMPGEPS)
                 : [src] "+r" (src), [count] "+r" (count),
                   [index] "=Yz" (index)
-                : [IDXS] "o" (indexes)
+                : [IDXS] "r" (indexes)
                 : "cc",
                   "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -189,13 +189,13 @@ namespace lsp
             __ASM_EMIT("test            %[count], %[count]") \
             __ASM_EMIT("jz              4f") \
             __ASM_EMIT("movss           0x00(%[src]), %%xmm2")      /* x2   = s = s0 */ \
-            __ASM_EMIT("movdqa          0x00 + %[IDXS], %%xmm1")    /* x1   = I[k] = 0 1 2 3 */ \
+            __ASM_EMIT("movdqa          0x00(%[IDXS]), %%xmm1")     /* x1   = I[k] = 0 1 2 3 */ \
             __ASM_EMIT("movaps          %[X_SIGN], %%xmm6")         /* x6   = SIGN */ \
             __ASM_EMIT("shufps          $0x00, %%xmm2, %%xmm2")     /* x2   = s[k] = s0 s0 s0 s0 */ \
             __ASM_EMIT("sub             $0x04, %[count]") \
             __ASM_EMIT("andps           %%xmm6, %%xmm2")            /* x2   = abs(s[k]) */ \
             __ASM_EMIT("jb              2f") \
-            __ASM_EMIT("movdqa          0x10 + %[IDXS], %%xmm7")    /* x7   = D = 4 4 4 4 */ \
+            __ASM_EMIT("movdqa          0x10(%[IDXS]), %%xmm7")     /* x7   = D = 4 4 4 4 */ \
             \
             /* x4 blocks */ \
             __ASM_EMIT("1:") \
@@ -247,7 +247,7 @@ namespace lsp
             __ASM_EMIT("2:") \
             __ASM_EMIT("add             $3, %[count]") \
             __ASM_EMIT("jl              4f") \
-            __ASM_EMIT("movdqa          0x20 + %[IDXS], %%xmm7")    /* x7   = D = 1 1 1 1 */ \
+            __ASM_EMIT("movdqa          0x20(%[IDXS]), %%xmm7")     /* x7   = D = 1 1 1 1 */ \
             __ASM_EMIT("3:") \
             __ASM_EMIT("movaps          %%xmm2, %%xmm4") \
             __ASM_EMIT("movss           0x00(%[src]), %%xmm3") \
@@ -275,7 +275,7 @@ namespace lsp
                 ABS_SEARCH_CORE(CMPLEPS)
                 : [src] "+r" (src), [count] "+r" (count),
                   [index] "=Yz" (index)
-                : [IDXS] "o" (indexes),
+                : [IDXS] "r" (indexes),
                   [X_SIGN] "m" (iminmax_const)
                 : "cc",
                   "%xmm1", "%xmm2", "%xmm3",
@@ -293,7 +293,7 @@ namespace lsp
                 ABS_SEARCH_CORE(CMPGEPS)
                 : [src] "+r" (src), [count] "+r" (count),
                   [index] "=Yz" (index)
-                : [IDXS] "o" (indexes),
+                : [IDXS] "r" (indexes),
                   [X_SIGN] "m" (iminmax_const)
                 : "cc",
                   "%xmm1", "%xmm2", "%xmm3",
@@ -317,7 +317,7 @@ namespace lsp
 
                 __ASM_EMIT("movss           0x00(%[src]), %%xmm2")      // x2   = min
                 __ASM_EMIT("shufps          $0x00, %%xmm2, %%xmm2")     // x2   = min
-                __ASM_EMIT("movdqa          0x00 + %[IDXS], %%xmm4")    // x4   = idx_new
+                __ASM_EMIT("movdqa          0x00(%[IDXS]), %%xmm4")     // x4   = idx_new
                 __ASM_EMIT("movaps          %%xmm2, %%xmm3")            // x3   = max
                 __ASM_EMIT("sub             $0x04, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -346,7 +346,7 @@ namespace lsp
                 __ASM_EMIT("por             %%xmm6, %%xmm1")            // x1   = idx_max & (max >= sample) | idx_new & !(max >= sample)
                 __ASM_EMIT("orps            %%xmm7, %%xmm3")            // x3   = max & (max >= sample) | sample & !(max >= sample)
                 // Next loop
-                __ASM_EMIT("paddd           0x10 + %[IDXS], %%xmm4")    // x4   = idx_new + 4
+                __ASM_EMIT("paddd           0x10(%[IDXS]), %%xmm4")     // x4   = idx_new + 4
                 __ASM_EMIT("add             $0x10, %[src]")             // src += 4
                 __ASM_EMIT("sub             $4, %[count]")              // count -= 4
                 __ASM_EMIT("jae             1b")
@@ -437,7 +437,7 @@ namespace lsp
                 __ASM_EMIT("por             %%xmm6, %%xmm1")            // x1   = idx_max & (max >= sample) | idx_new & !(max >= sample)
                 __ASM_EMIT("orps            %%xmm7, %%xmm3")            // x3   = max & (max >= sample) | sample & !(max >= sample)
                 // Next loop
-                __ASM_EMIT("paddd           0x20 + %[IDXS], %%xmm4")    // x4   = idx_new + 1
+                __ASM_EMIT("paddd           0x20(%[IDXS]), %%xmm4")     // x4   = idx_new + 1
                 __ASM_EMIT("add             $0x04, %[src]")             // src += 4
                 __ASM_EMIT("dec             %[count]")                  // count --
                 __ASM_EMIT("jge             3b")
@@ -449,7 +449,7 @@ namespace lsp
                 __ASM_EMIT64("movl          $0, 0x04(%[max])")
                 : [src] "+r" (src), [count] "+r" (count)
                 : [min] "r" (min), [max] "r" (max),
-                  [IDXS] "o" (indexes),
+                  [IDXS] "r" (indexes),
                   [COUNTERS] "m" (counters)
             );
         }
@@ -466,7 +466,7 @@ namespace lsp
 
                 __ASM_EMIT("movss           0x00(%[src]), %%xmm2")      // x2   = min
                 __ASM_EMIT("shufps          $0x00, %%xmm2, %%xmm2")     // x2   = min
-                __ASM_EMIT("movdqa          0x00 + %[IDXS], %%xmm4")    // x4   = idx_new
+                __ASM_EMIT("movdqa          0x00(%[IDXS]), %%xmm4")     // x4   = idx_new
                 __ASM_EMIT("andps           %[X_SIGN], %%xmm2")         // x5   = abs(sample)
                 __ASM_EMIT("movaps          %%xmm2, %%xmm3")            // x3   = max = abs(sample)
                 __ASM_EMIT("sub             $0x04, %[count]")
@@ -497,7 +497,7 @@ namespace lsp
                 __ASM_EMIT("por             %%xmm6, %%xmm1")            // x1   = idx_max & (max >= sample) | idx_new & !(max >= sample)
                 __ASM_EMIT("orps            %%xmm7, %%xmm3")            // x3   = max & (max >= sample) | sample & !(max >= sample)
                 // Next loop
-                __ASM_EMIT("paddd           0x10 + %[IDXS], %%xmm4")    // x4   = idx_new + 4
+                __ASM_EMIT("paddd           0x10(%[IDXS]), %%xmm4")     // x4   = idx_new + 4
                 __ASM_EMIT("add             $0x10, %[src]")             // src += 4
                 __ASM_EMIT("sub             $4, %[count]")              // count -= 4
                 __ASM_EMIT("jae             1b")
@@ -589,7 +589,7 @@ namespace lsp
                 __ASM_EMIT("por             %%xmm6, %%xmm1")            // x1   = idx_max & (max >= sample) | idx_new & !(max >= sample)
                 __ASM_EMIT("orps            %%xmm7, %%xmm3")            // x3   = max & (max >= sample) | sample & !(max >= sample)
                 // Next loop
-                __ASM_EMIT("paddd           0x20 + %[IDXS], %%xmm4")    // x4   = idx_new + 1
+                __ASM_EMIT("paddd           0x20(%[IDXS]), %%xmm4")     // x4   = idx_new + 1
                 __ASM_EMIT("add             $0x04, %[src]")             // src += 4
                 __ASM_EMIT("dec             %[count]")                  // count --
                 __ASM_EMIT("jge             3b")
@@ -601,8 +601,8 @@ namespace lsp
                 __ASM_EMIT64("movl          $0, 0x04(%[max])")
                 : [src] "+r" (src), [count] "+r" (count)
                 : [min] "r" (min), [max] "r" (max),
-                  [IDXS] "o" (indexes),
-                  [X_SIGN] "o" (iminmax_const),
+                  [IDXS] "r" (indexes),
+                  [X_SIGN] "m" (iminmax_const),
                   [COUNTERS] "m" (counters)
             );
         }
