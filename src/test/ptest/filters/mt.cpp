@@ -46,8 +46,8 @@ namespace lsp
 
     static const dsp::f_cascade_t test_c =
     {
-        1, 2, 1, 0,
-        1, -2, 1, 0
+        { 1, 2, 1, 0  },
+        { 1, -2, 1, 0 }
     };
 }
 

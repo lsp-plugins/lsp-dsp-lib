@@ -22,6 +22,7 @@
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/stdlib/math.h>
 #include <lsp-plug.in/test-fw/utest.h>
+#include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/test-fw/ByteBuffer.h>
 
 namespace lsp
@@ -84,13 +85,13 @@ UTEST_BEGIN("dsp.float", sanitize)
             switch (i % 10)
             {
                 case 0:
-                    fval[i]          = (rand() * 2.0f) / RAND_MAX;
+                    fval[i]          = randf(0.0f, 2.0f);
                     break;
                 case 1:
                     ival[i]         = 0x7f800000; // + Infinity
                     break;
                 case 2:
-                    fval[i]         = - (rand() * 2.0f) / RAND_MAX;
+                    fval[i]         = randf(-2.0f, 0.0f);
                     break;
                 case 3:
                     ival[i]         = 0xff800000; // - Infinity
