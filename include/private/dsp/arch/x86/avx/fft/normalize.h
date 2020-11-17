@@ -69,7 +69,7 @@ namespace lsp
                 : [off] "+r" (off), [count] __ASM_ARG_RW(count)
                 : [s_re] "r" (re), [s_im] "r" (im),
                   [d_re] "r" (dre), [d_im] "r" (dim),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -114,7 +114,7 @@ namespace lsp
                 __ASM_EMIT  ("4:")
                 : [off] "+r" (off), [count] "+r" (count)
                 : [d_re] "r" (re), [d_im] "r" (im),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
