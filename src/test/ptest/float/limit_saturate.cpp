@@ -120,7 +120,7 @@ PTEST_BEGIN("dsp.float", limit_saturate, 5, 10000)
                 case 2:  src[i] = NAN; break;
                 case 3:  src[i] = -NAN; break;
                 case 4:  src[i] = randf(0.0f, 2.0f); break;
-                default: src[i] = randf(-2.0f, 0.0f) / RAND_MAX; break;
+                default: src[i] = randf(-2.0f, 0.0f); break;
             }
         }
 
