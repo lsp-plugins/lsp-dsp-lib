@@ -43,8 +43,8 @@ namespace lsp
 
     #define MULTIPLE_SATURATION_BODY(dst, src) \
         /* Prepare values */ \
-        __ASM_EMIT("movaps          0x00 + %[XC], %%xmm6") \
-        __ASM_EMIT("movaps          0x10 + %[XC], %%xmm7") \
+        __ASM_EMIT("movaps          0x00(%[XC]), %%xmm6") \
+        __ASM_EMIT("movaps          0x10(%[XC]), %%xmm7") \
         __ASM_EMIT("xor             %[off], %[off]") \
         __ASM_EMIT("sub             $4, %[count]") \
         __ASM_EMIT("jb              2f") \
@@ -57,12 +57,12 @@ namespace lsp
         __ASM_EMIT("andps           %%xmm6, %%xmm1")                    /* xmm1 = abs(s)  */ \
         __ASM_EMIT("andps           %%xmm7, %%xmm2")                    /* xmm2 = sign(s) */ \
         __ASM_EMIT("movaps          %%xmm1, %%xmm3")                    /* xmm3 = abs(s)  */ \
-        __ASM_EMIT("pcmpgtd         0x20 + %[XC], %%xmm1")              /* xmm1 = abs(s) > +Inf */ \
-        __ASM_EMIT("pcmpeqd         0x20 + %[XC], %%xmm3")              /* xmm3 = abs(s) == +Inf */ \
+        __ASM_EMIT("pcmpgtd         0x20(%[XC]), %%xmm1")               /* xmm1 = abs(s) > +Inf */ \
+        __ASM_EMIT("pcmpeqd         0x20(%[XC]), %%xmm3")               /* xmm3 = abs(s) == +Inf */ \
         __ASM_EMIT("movaps          %%xmm1, %%xmm4")                    /* xmm4 = abs(s) > +Inf */ \
         __ASM_EMIT("movaps          %%xmm3, %%xmm5")                    /* xmm5 = abs(s) == +Inf */ \
-        __ASM_EMIT("andps           0x30 + %[XC], %%xmm4")              /* xmm4 = P_NAN & (abs(s) > +Inf) */ \
-        __ASM_EMIT("andps           0x40 + %[XC], %%xmm5")              /* xmm4 = P_INF & (abs(s) == +Inf) */ \
+        __ASM_EMIT("andps           0x30(%[XC]), %%xmm4")               /* xmm4 = P_NAN & (abs(s) > +Inf) */ \
+        __ASM_EMIT("andps           0x40(%[XC]), %%xmm5")               /* xmm4 = P_INF & (abs(s) == +Inf) */ \
         __ASM_EMIT("orps            %%xmm3, %%xmm1")                    /* xmm1 = abs(s) >= +Inf */ \
         __ASM_EMIT("orps            %%xmm5, %%xmm4")                    /* xmm4 = P_NAN & (abs(s) > +Inf) | P_INF & (abs(s) == +Inf) */ \
         __ASM_EMIT("andnps          %%xmm0, %%xmm1")                    /* xmm1 = s & (abs(s) < +Inf) */ \
@@ -83,12 +83,12 @@ namespace lsp
         __ASM_EMIT("andps           %%xmm6, %%xmm1")                    /* xmm1 = abs(s)  */ \
         __ASM_EMIT("andps           %%xmm7, %%xmm2")                    /* xmm2 = sign(s) */ \
         __ASM_EMIT("movaps          %%xmm1, %%xmm3")                    /* xmm3 = abs(s)  */ \
-        __ASM_EMIT("pcmpgtd         0x20 + %[XC], %%xmm1")              /* xmm1 = abs(s) > +Inf */ \
-        __ASM_EMIT("pcmpeqd         0x20 + %[XC], %%xmm3")              /* xmm3 = abs(s) == +Inf */ \
+        __ASM_EMIT("pcmpgtd         0x20(%[XC]), %%xmm1")               /* xmm1 = abs(s) > +Inf */ \
+        __ASM_EMIT("pcmpeqd         0x20(%[XC]), %%xmm3")               /* xmm3 = abs(s) == +Inf */ \
         __ASM_EMIT("movaps          %%xmm1, %%xmm4")                    /* xmm4 = abs(s) > +Inf */ \
         __ASM_EMIT("movaps          %%xmm3, %%xmm5")                    /* xmm5 = abs(s) == +Inf */ \
-        __ASM_EMIT("andps           0x30 + %[XC], %%xmm4")              /* xmm4 = P_NAN & (abs(s) > +Inf) */ \
-        __ASM_EMIT("andps           0x40 + %[XC], %%xmm5")              /* xmm4 = P_INF & (abs(s) == +Inf) */ \
+        __ASM_EMIT("andps           0x30(%[XC]), %%xmm4")               /* xmm4 = P_NAN & (abs(s) > +Inf) */ \
+        __ASM_EMIT("andps           0x40(%[XC]), %%xmm5")               /* xmm4 = P_INF & (abs(s) == +Inf) */ \
         __ASM_EMIT("orps            %%xmm3, %%xmm1")                    /* xmm1 = abs(s) >= +Inf */ \
         __ASM_EMIT("orps            %%xmm5, %%xmm4")                    /* xmm4 = P_NAN & (abs(s) > +Inf) | P_INF & (abs(s) == +Inf) */ \
         __ASM_EMIT("andnps          %%xmm0, %%xmm1")                    /* xmm1 = s & (abs(s) < +Inf) */ \
@@ -109,7 +109,7 @@ namespace lsp
                 MULTIPLE_SATURATION_BODY("dst", "src")
                 : [count] "+r" (count), [off] "=&r" (off)
                 : [dst] "r" (dst), [src] "r" (src),
-                  [XC] "o" (XC_SAT)
+                  [XC] "r" (XC_SAT)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -125,7 +125,7 @@ namespace lsp
                 MULTIPLE_SATURATION_BODY("dst", "dst")
                 : [count] "+r" (count), [off] "=&r" (off)
                 : [dst] "r" (dst),
-                  [XC] "o" (XC_SAT)
+                  [XC] "r" (XC_SAT)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -140,14 +140,14 @@ namespace lsp
         __ASM_EMIT("movaps          %%xmm0, %%xmm2")                /* xmm2 = s */ \
         __ASM_EMIT("movaps          %%xmm1, %%xmm3")                /* xmm3 = s */ \
         __ASM_EMIT("movaps          %%xmm2, %%xmm4")                /* xmm4 = s */ \
-        __ASM_EMIT("cmpps           $5, 0x00 + %[XC], %%xmm1")      /* xmm1 = [ s >= -1 ] */ \
-        __ASM_EMIT("cmpps           $2, 0x10 + %[XC], %%xmm2")      /* xmm2 = [ s <= 1 ] */ \
-        __ASM_EMIT("andps           0x20 + %[XC], %%xmm3")          /* xmm3 = sign(s) */ \
+        __ASM_EMIT("cmpps           $5, 0x00(%[XC]), %%xmm1")       /* xmm1 = [ s >= -1 ] */ \
+        __ASM_EMIT("cmpps           $2, 0x10(%[XC]), %%xmm2")       /* xmm2 = [ s <= 1 ] */ \
+        __ASM_EMIT("andps           0x20(%[XC]), %%xmm3")           /* xmm3 = sign(s) */ \
         __ASM_EMIT("andps           %%xmm2, %%xmm1")                /* xmm1 = [ s >= -1 ] & [ s <= 1 ] */ \
-        __ASM_EMIT("andps           0x30 + %[XC], %%xmm4")          /* xmm4 = abs(s) */ \
+        __ASM_EMIT("andps           0x30(%[XC]), %%xmm4")           /* xmm4 = abs(s) */ \
         __ASM_EMIT("andps           %%xmm1, %%xmm0")                /* xmm0 = s & [ s >= -1 ] & [ s <= 1 ] */ \
-        __ASM_EMIT("pcmpgtd         0x40 + %[XC], %%xmm4")          /* xmm4 = abs(s) > +Inf */ \
-        __ASM_EMIT("andnps          0x10 + %[XC], %%xmm4")          /* xmm4 = 1 & (abs(s) <= +Inf) */ \
+        __ASM_EMIT("pcmpgtd         0x40(%[XC]), %%xmm4")           /* xmm4 = abs(s) > +Inf */ \
+        __ASM_EMIT("andnps          0x10(%[XC]), %%xmm4")           /* xmm4 = 1 & (abs(s) <= +Inf) */ \
         __ASM_EMIT("orps            %%xmm3, %%xmm4")                /* xmm4 = (1 & (abs(s) == +Inf)) | sign(s) */ \
         __ASM_EMIT("andnps          %%xmm4, %%xmm1")                /* xmm1 = ((1 & (abs(s) == +Inf)) | sign(s)) & ([ s < -1 ] | [ s > 1 ]) */ \
         __ASM_EMIT("orps            %%xmm1, %%xmm0")                /* xmm0 = (s & [ s >= -1 ] & [ s <= 1 ]) | (((1 & (abs(s) <= +Inf)) | sign(s)) & ([ s < -1 ] | [ s > 1 ])) */
@@ -209,7 +209,7 @@ namespace lsp
 
                 __ASM_EMIT("10:")
                 : [dst] "+r" (dst), [count] "+r" (count)
-                : [XC] "o" (XLIM_SAT)
+                : [XC] "r" (XLIM_SAT)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -264,7 +264,7 @@ namespace lsp
 
                 __ASM_EMIT("10:")
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
-                : [XC] "o" (XLIM_SAT)
+                : [XC] "r" (XLIM_SAT)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -285,16 +285,16 @@ namespace lsp
         __ASM_EMIT("movdqa          %%xmm4, %%xmm5") \
         __ASM_EMIT("movdqa          %%xmm0, %%xmm2")                        /* xmm2 = s */ \
         __ASM_EMIT("movdqa          %%xmm4, %%xmm6") \
-        __ASM_EMIT("pand            0x00 + %[CVAL], %%xmm0")                /* xmm0 = abs(s) */ \
-        __ASM_EMIT("pand            0x00 + %[CVAL], %%xmm4") \
-        __ASM_EMIT("pand            0x10 + %[CVAL], %%xmm1")                /* xmm1 = sign(s) */ \
-        __ASM_EMIT("pand            0x10 + %[CVAL], %%xmm5") \
+        __ASM_EMIT("pand            0x00(%[CVAL]), %%xmm0")                 /* xmm0 = abs(s) */ \
+        __ASM_EMIT("pand            0x00(%[CVAL]), %%xmm4") \
+        __ASM_EMIT("pand            0x10(%[CVAL]), %%xmm1")                 /* xmm1 = sign(s) */ \
+        __ASM_EMIT("pand            0x10(%[CVAL]), %%xmm5") \
         __ASM_EMIT("movdqa          %%xmm0, %%xmm3")                        /* xmm3 = abs(s) */ \
         __ASM_EMIT("movdqa          %%xmm4, %%xmm7") \
-        __ASM_EMIT("pcmpgtd         0x20 + %[CVAL], %%xmm0")                /* xmm0 = abs(s) > X_MAX */ \
-        __ASM_EMIT("pcmpgtd         0x20 + %[CVAL], %%xmm4") \
-        __ASM_EMIT("pcmpgtd         0x30 + %[CVAL], %%xmm3")                /* xmm3 = abs(s) > X_MIN */ \
-        __ASM_EMIT("pcmpgtd         0x30 + %[CVAL], %%xmm7") \
+        __ASM_EMIT("pcmpgtd         0x20(%[CVAL]), %%xmm0")                 /* xmm0 = abs(s) > X_MAX */ \
+        __ASM_EMIT("pcmpgtd         0x20(%[CVAL]), %%xmm4") \
+        __ASM_EMIT("pcmpgtd         0x30(%[CVAL]), %%xmm3")                 /* xmm3 = abs(s) > X_MIN */ \
+        __ASM_EMIT("pcmpgtd         0x30(%[CVAL]), %%xmm7") \
         __ASM_EMIT("pandn           %%xmm3, %%xmm0")                        /* xmm0 = (abs(s) > X_MIN) & (abs(s) <= X_MAX) */ \
         __ASM_EMIT("pandn           %%xmm7, %%xmm4") \
         __ASM_EMIT("pand            %%xmm2, %%xmm0")                        /* xmm0 = s & (abs(s) > X_MIN) & (abs(s) <= X_MAX) */ \
@@ -313,11 +313,11 @@ namespace lsp
         __ASM_EMIT("movdqu          0x00(%[" SRC "], %[off]), %%xmm0")      /* xmm0 = s */ \
         __ASM_EMIT("movdqa          %%xmm0, %%xmm1")                        /* xmm1 = s */ \
         __ASM_EMIT("movdqa          %%xmm0, %%xmm2")                        /* xmm2 = s */ \
-        __ASM_EMIT("pand            0x00 + %[CVAL], %%xmm0")                /* xmm0 = abs(s) */ \
-        __ASM_EMIT("pand            0x10 + %[CVAL], %%xmm1")                /* xmm1 = sign(s) */ \
+        __ASM_EMIT("pand            0x00(%[CVAL]), %%xmm0")                 /* xmm0 = abs(s) */ \
+        __ASM_EMIT("pand            0x10(%[CVAL]), %%xmm1")                 /* xmm1 = sign(s) */ \
         __ASM_EMIT("movdqa          %%xmm0, %%xmm3")                        /* xmm3 = abs(s) */ \
-        __ASM_EMIT("pcmpgtd         0x20 + %[CVAL], %%xmm0")                /* xmm0 = abs(s) > X_MAX */ \
-        __ASM_EMIT("pcmpgtd         0x30 + %[CVAL], %%xmm3")                /* xmm3 = abs(s) > X_MIN */ \
+        __ASM_EMIT("pcmpgtd         0x20(%[CVAL]), %%xmm0")                 /* xmm0 = abs(s) > X_MAX */ \
+        __ASM_EMIT("pcmpgtd         0x30(%[CVAL]), %%xmm3")                 /* xmm3 = abs(s) > X_MIN */ \
         __ASM_EMIT("pandn           %%xmm3, %%xmm0")                        /* xmm0 = (abs(s) > X_MIN) & (abs(s) <= X_MAX) */ \
         __ASM_EMIT("pand            %%xmm2, %%xmm0")                        /* xmm0 = s & (abs(s) > X_MIN) & (abs(s) <= X_MAX) */ \
         __ASM_EMIT("por             %%xmm1, %%xmm0")                        /* xmm0 = sign(s) | (s & (abs(s) > X_MIN) & (abs(s) <= X_MAX)) */ \
@@ -332,11 +332,11 @@ namespace lsp
         __ASM_EMIT("movd            0x00(%[" SRC "], %[off]), %%xmm0")      /* xmm0 = s */ \
         __ASM_EMIT("movdqa          %%xmm0, %%xmm1")                        /* xmm1 = s */ \
         __ASM_EMIT("movdqa          %%xmm0, %%xmm2")                        /* xmm2 = s */ \
-        __ASM_EMIT("pand            0x00 + %[CVAL], %%xmm0")                /* xmm0 = abs(s) */ \
-        __ASM_EMIT("pand            0x10 + %[CVAL], %%xmm1")                /* xmm1 = sign(s) */ \
+        __ASM_EMIT("pand            0x00(%[CVAL]), %%xmm0")                 /* xmm0 = abs(s) */ \
+        __ASM_EMIT("pand            0x10(%[CVAL]), %%xmm1")                 /* xmm1 = sign(s) */ \
         __ASM_EMIT("movdqa          %%xmm0, %%xmm3")                        /* xmm3 = abs(s) */ \
-        __ASM_EMIT("pcmpgtd         0x20 + %[CVAL], %%xmm0")                /* xmm0 = abs(s) > X_MAX */ \
-        __ASM_EMIT("pcmpgtd         0x30 + %[CVAL], %%xmm3")                /* xmm3 = abs(s) > X_MIN */ \
+        __ASM_EMIT("pcmpgtd         0x20(%[CVAL]), %%xmm0")                 /* xmm0 = abs(s) > X_MAX */ \
+        __ASM_EMIT("pcmpgtd         0x30(%[CVAL]), %%xmm3")                 /* xmm3 = abs(s) > X_MIN */ \
         __ASM_EMIT("pandn           %%xmm3, %%xmm0")                        /* xmm0 = (abs(s) > X_MIN) & (abs(s) <= X_MAX) */ \
         __ASM_EMIT("pand            %%xmm2, %%xmm0")                        /* xmm0 = s & (abs(s) > X_MIN) & (abs(s) <= X_MAX) */ \
         __ASM_EMIT("por             %%xmm1, %%xmm0")                        /* xmm0 = sign(s) | (s & (abs(s) > X_MIN) & (abs(s) <= X_MAX)) */ \
@@ -367,7 +367,7 @@ namespace lsp
                 SANITIZE_BODY("dst", "dst")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst),
-                  [CVAL] "o" (SANITIZE_CVAL)
+                  [CVAL] "r" (SANITIZE_CVAL)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -383,7 +383,7 @@ namespace lsp
                 SANITIZE_BODY("dst", "src")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src),
-                  [CVAL] "o" (SANITIZE_CVAL)
+                  [CVAL] "r" (SANITIZE_CVAL)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

@@ -90,7 +90,7 @@ namespace lsp
         __ASM_EMIT("subps           %%xmm7, %%xmm6")            /*  xmm6 = L + S - L * S */ \
         __ASM_EMIT("addps           %%xmm2, %%xmm7")            /*  xmm7 = L + L * S */ \
         __ASM_EMIT("movaps          %%xmm2, %%xmm5")            /*  xmm5 = L */ \
-        __ASM_EMIT("movaps          0x00 + %[XC], %%xmm4")      /*  xmm4 = 0.5 */ \
+        __ASM_EMIT("movaps          0x00(%[XC]), %%xmm4")       /*  xmm4 = 0.5 */ \
         __ASM_EMIT("addps           %%xmm2, %%xmm5")            /*  xmm5 = L + L */ \
         __ASM_EMIT("cmpps           $2, %%xmm2, %%xmm4")        /*  xmm4 = [L >= 0.5f] */ \
         __ASM_EMIT("andps           %%xmm4, %%xmm6")            /*  xmm6 = [L >= 0.5f] & (L+S - L*S) */ \
@@ -100,11 +100,11 @@ namespace lsp
         __ASM_EMIT("subps           %%xmm4, %%xmm5")            /*  xmm5 = T1 = L + L - T2 */ \
         __ASM_EMIT("movaps          %%xmm0, %%xmm2")            /*  xmm2 = H */ \
         \
-        __ASM_EMIT("movaps          0x10 + %[XC], %%xmm6")      /*  xmm6 = 1/3 */ \
+        __ASM_EMIT("movaps          0x10(%[XC]), %%xmm6")       /*  xmm6 = 1/3 */ \
         __ASM_EMIT("addps           %%xmm6, %%xmm0")            /*  xmm0 = H + 1/3 */ \
         __ASM_EMIT("subps           %%xmm6, %%xmm2")            /*  xmm2 = H - 1/3 */ \
         \
-        __ASM_EMIT("movaps          0x20 + %[XC], %%xmm7")      /*  xmm7 = 1 */ \
+        __ASM_EMIT("movaps          0x20(%[XC]), %%xmm7")       /*  xmm7 = 1 */ \
         __ASM_EMIT("movaps          %%xmm0, %%xmm6")            /*  xmm6 = H + 1/3 */ \
         __ASM_EMIT("subps           %%xmm7, %%xmm6")            /*  xmm6 = H + 1/3 - 1 */ \
         __ASM_EMIT("cmpps           $5, %%xmm0, %%xmm7")        /*  xmm7 = [(H + 1/3) <= 1] */ \
@@ -112,7 +112,7 @@ namespace lsp
         __ASM_EMIT("andnps          %%xmm6, %%xmm7")            /*  xmm7 = (H + 1/3 - 1) & [(H + 1/3) > 1] */ \
         __ASM_EMIT("orps            %%xmm7, %%xmm0")            /*  xmm0 = TR = ((H + 1/3) & [(H + 1/3) <= 1]) | ((H + 1/3 - 1) & [(H + 1/3) > 1]) */ \
         \
-        __ASM_EMIT("movaps          0x20 + %[XC], %%xmm7")      /*  xmm7 = 1 */ \
+        __ASM_EMIT("movaps          0x20(%[XC]), %%xmm7")       /*  xmm7 = 1 */ \
         __ASM_EMIT("movaps          %%xmm2, %%xmm6")            /*  xmm6 = H - 1/3 */ \
         __ASM_EMIT("addps           %%xmm7, %%xmm6")            /*  xmm6 = H - 1/3 + 1 */ \
         __ASM_EMIT("xorps           %%xmm7, %%xmm7")            /*  xmm7 = 0 */ \
@@ -123,7 +123,7 @@ namespace lsp
         \
         __ASM_EMIT("movaps          %%xmm4, %%xmm6")            /*  xmm6 = T2 */ \
         __ASM_EMIT("subps           %%xmm5, %%xmm6")            /*  xmm6 = T2 - T1 */ \
-        __ASM_EMIT("mulps           0x30 + %[XC], %%xmm6")      /*  xmm6 = K = (T2 - T1)*6.0 */ \
+        __ASM_EMIT("mulps           0x30(%[XC]), %%xmm6")       /*  xmm6 = K = (T2 - T1)*6.0 */ \
         \
         /*  xmm0 = TR */ \
         /*  xmm1 = TG */ \
@@ -139,7 +139,7 @@ namespace lsp
         __ASM_EMIT("movaps          %%xmm4, 0x40(%[HSLM])")     /*  T2 */ \
         __ASM_EMIT("movaps          %%xmm5, 0x50(%[HSLM])")     /*  T1 */ \
         \
-        __ASM_EMIT("movaps          0x50 + %[XC], %%xmm3")      /*  xmm3 = 2/3 */ \
+        __ASM_EMIT("movaps          0x50(%[XC]), %%xmm3")       /*  xmm3 = 2/3 */ \
         __ASM_EMIT("movaps          %%xmm5, %%xmm7")            /*  xmm7 = T1 */ \
         __ASM_EMIT("mulps           %%xmm6, %%xmm0")            /*  xmm0 = k*TR */ \
         __ASM_EMIT("mulps           %%xmm6, %%xmm3")            /*  xmm3 = K * 2/3 */ \
@@ -173,9 +173,9 @@ namespace lsp
         /*  Process red */ \
         __ASM_EMIT("movaps          %%xmm0, %%xmm5")            /*  xmm5 = TR */ \
         __ASM_EMIT("movaps          %%xmm0, %%xmm6")            /*  xmm6 = TR */ \
-        __ASM_EMIT("cmpps           $1, 0x00 + %[XC], %%xmm0")  /*  xmm0 = [ TR < 0.5 ] */ \
-        __ASM_EMIT("cmpps           $1, 0x40 + %[XC], %%xmm5")  /*  xmm5 = [ TR < 1/6 ] */ \
-        __ASM_EMIT("cmpps           $1, 0x50 + %[XC], %%xmm6")  /*  xmm6 = [ TR < 2/3 ] */ \
+        __ASM_EMIT("cmpps           $1, 0x00(%[XC]), %%xmm0")   /*  xmm0 = [ TR < 0.5 ] */ \
+        __ASM_EMIT("cmpps           $1, 0x40(%[XC]), %%xmm5")   /*  xmm5 = [ TR < 1/6 ] */ \
+        __ASM_EMIT("cmpps           $1, 0x50(%[XC]), %%xmm6")   /*  xmm6 = [ TR < 2/3 ] */ \
         __ASM_EMIT("movaps          %%xmm5, %%xmm7")            /*  xmm7 = [ TR < 1/6 ] */ \
         __ASM_EMIT("andnps          %%xmm0, %%xmm7")            /*  xmm7 = [ TR >= 1/6 ] & [ TR < 0.5 ] */ \
         __ASM_EMIT("andnps          %%xmm6, %%xmm0")            /*  xmm0 = [ TR >= 0.5 ] & [ TR < 2/3 ] */ \
@@ -190,9 +190,9 @@ namespace lsp
         /*  Process green */ \
         __ASM_EMIT("movaps          %%xmm1, %%xmm5")            /*  xmm5 = TG */ \
         __ASM_EMIT("movaps          %%xmm1, %%xmm6")            /*  xmm6 = TG */ \
-        __ASM_EMIT("cmpps           $1, 0x00 + %[XC], %%xmm1")  /*  xmm1 = [ TG < 0.5 ] */ \
-        __ASM_EMIT("cmpps           $1, 0x40 + %[XC], %%xmm5")  /*  xmm5 = [ TG < 1/6 ] */ \
-        __ASM_EMIT("cmpps           $1, 0x50 + %[XC], %%xmm6")  /*  xmm6 = [ TG < 2/3 ] */ \
+        __ASM_EMIT("cmpps           $1, 0x00(%[XC]), %%xmm1")   /*  xmm1 = [ TG < 0.5 ] */ \
+        __ASM_EMIT("cmpps           $1, 0x40(%[XC]), %%xmm5")   /*  xmm5 = [ TG < 1/6 ] */ \
+        __ASM_EMIT("cmpps           $1, 0x50(%[XC]), %%xmm6")   /*  xmm6 = [ TG < 2/3 ] */ \
         __ASM_EMIT("movaps          %%xmm5, %%xmm7")            /*  xmm7 = [ TG < 1/6 ] */ \
         __ASM_EMIT("andnps          %%xmm1, %%xmm7")            /*  xmm7 = [ TG >= 1/6 ] & [ TG < 0.5 ] */ \
         __ASM_EMIT("andnps          %%xmm6, %%xmm1")            /*  xmm1 = [ TG >= 0.5 ] & [ TG < 2/3 ] */ \
@@ -207,9 +207,9 @@ namespace lsp
         /*  Process blue */ \
         __ASM_EMIT("movaps          %%xmm2, %%xmm5")            /*  xmm5 = TB */ \
         __ASM_EMIT("movaps          %%xmm2, %%xmm6")            /*  xmm6 = TB */ \
-        __ASM_EMIT("cmpps           $1, 0x00 + %[XC], %%xmm2")  /*  xmm2 = [ TB < 0.5 ] */ \
-        __ASM_EMIT("cmpps           $1, 0x40 + %[XC], %%xmm5")  /*  xmm5 = [ TB < 1/6 ] */ \
-        __ASM_EMIT("cmpps           $1, 0x50 + %[XC], %%xmm6")  /*  xmm6 = [ TB < 2/3 ] */ \
+        __ASM_EMIT("cmpps           $1, 0x00(%[XC]), %%xmm2")   /*  xmm2 = [ TB < 0.5 ] */ \
+        __ASM_EMIT("cmpps           $1, 0x40(%[XC]), %%xmm5")   /*  xmm5 = [ TB < 1/6 ] */ \
+        __ASM_EMIT("cmpps           $1, 0x50(%[XC]), %%xmm6")   /*  xmm6 = [ TB < 2/3 ] */ \
         __ASM_EMIT("movaps          %%xmm5, %%xmm7")            /*  xmm7 = [ TB < 1/6 ] */ \
         __ASM_EMIT("andnps          %%xmm2, %%xmm7")            /*  xmm7 = [ TB >= 1/6 ] & [ TB < 0.5 ] */ \
         __ASM_EMIT("andnps          %%xmm6, %%xmm2")            /*  xmm2 = [ TB >= 0.5 ] & [ TB < 2/3 ] */ \
@@ -296,7 +296,7 @@ namespace lsp
                 __ASM_EMIT("10:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
-                : [XC] "o" (HSL_RGB), [HSLM] "r" (&hslm)
+                : [XC] "r" (HSL_RGB), [HSLM] "r" (&hslm)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -371,13 +371,13 @@ namespace lsp
         __ASM_EMIT("subps       %%xmm2, %%xmm1")            /* xmm1 = G - B */ \
         __ASM_EMIT("divps       %%xmm7, %%xmm0")            /* xmm0 = (R-G)/D */ \
         __ASM_EMIT("subps       %%xmm3, %%xmm2")            /* xmm2 = B - R */ \
-        __ASM_EMIT("addps       0x00 + %[XC], %%xmm0")      /* xmm0 = HB = (R-G)/D + 4 */ \
+        __ASM_EMIT("addps       0x00(%[XC]), %%xmm0")       /* xmm0 = HB = (R-G)/D + 4 */ \
         __ASM_EMIT("divps       %%xmm7, %%xmm2")            /* xmm2 = (B-R)/D */ \
         __ASM_EMIT("xorps       %%xmm3, %%xmm3")            /* xmm3 = 0 */ \
         __ASM_EMIT("divps       %%xmm7, %%xmm1")            /* xmm1 = (G-B)/D */ \
-        __ASM_EMIT("addps       0x10 + %[XC], %%xmm2")      /* xmm2 = HG = (B-R)/D + 2 */ \
+        __ASM_EMIT("addps       0x10(%[XC]), %%xmm2")       /* xmm2 = HG = (B-R)/D + 2 */ \
         __ASM_EMIT("cmpps       $6, %%xmm1, %%xmm3")        /* xmm3 = (G-B)/D < 0 */ \
-        __ASM_EMIT("andps       0x20 + %[XC], %%xmm3")      /* xmm3 = [ (G-B)/D < 0 ] & 6 */ \
+        __ASM_EMIT("andps       0x20(%[XC]), %%xmm3")       /* xmm3 = [ (G-B)/D < 0 ] & 6 */ \
         __ASM_EMIT("addps       %%xmm3, %%xmm1")            /* xmm1 = HR = (G-B)/D + [ (G-B)/D < 0 ] & 6 */ \
         \
         /* xmm0 = HB        */ \
@@ -403,29 +403,29 @@ namespace lsp
         __ASM_EMIT("andps       %%xmm6, %%xmm1")            /* xmm1 = [ D !- 0 ] & ((HR & [ R == CMAX ]) | (HG & [ R != CMAX ] & [ G == CMAX ]) | (HB & [ R != CMAX ] & [ G != CMAX ])) */ \
         \
         __ASM_EMIT("movaps      0x40(%[RGBM]), %%xmm2")     /* xmm2 = CMIN */ \
-        __ASM_EMIT("movaps      0x30 + %[XC], %%xmm6")      /* xmm6 = 1 */ \
+        __ASM_EMIT("movaps      0x30(%[XC]), %%xmm6")       /* xmm6 = 1 */ \
         __ASM_EMIT("movaps      %%xmm1, %%xmm0")            /* xmm0 = h */ \
         __ASM_EMIT("addps       0x50(%[RGBM]), %%xmm2")     /* xmm2 = CMAX + CMIN */ \
         __ASM_EMIT("movaps      %%xmm6, %%xmm5")            /* xmm5 = 1 */ \
         __ASM_EMIT("movaps      %%xmm7, %%xmm1")            /* xmm1 = D */ \
-        __ASM_EMIT("mulps       0x40 + %[XC], %%xmm2")      /* xmm2 = L = 0.5 * (CMAX+CMIN) */ \
+        __ASM_EMIT("mulps       0x40(%[XC]), %%xmm2")       /* xmm2 = L = 0.5 * (CMAX+CMIN) */ \
         __ASM_EMIT("xorps       %%xmm4, %%xmm4")            /* xmm4 = 0 */ \
         __ASM_EMIT("movaps      %%xmm2, %%xmm3")            /* xmm3 = L */ \
         __ASM_EMIT("subps       %%xmm2, %%xmm5")            /* xmm5 = 1 - L */ \
         __ASM_EMIT("cmpps       $4, %%xmm2, %%xmm4")        /* xmm4 = [ L != 0 ] */ \
-        __ASM_EMIT("cmpps       $4, 0x30 + %[XC], %%xmm3")  /* xmm3 = [ L != 1 ] */ \
-        __ASM_EMIT("movaps      0x40 + %[XC], %%xmm6")      /* xmm6 = 0.5 */ \
+        __ASM_EMIT("cmpps       $4, 0x30(%[XC]), %%xmm3")   /* xmm3 = [ L != 1 ] */ \
+        __ASM_EMIT("movaps      0x40(%[XC]), %%xmm6")       /* xmm6 = 0.5 */ \
         __ASM_EMIT("divps       %%xmm2, %%xmm1")            /* xmm1 = D / L */ \
         __ASM_EMIT("divps       %%xmm5, %%xmm7")            /* xmm7 = D / (1-L) */ \
         __ASM_EMIT("cmpps       $6, %%xmm2, %%xmm6")        /* xmm6 = [ L < 0.5 ] */ \
         __ASM_EMIT("andps       %%xmm4, %%xmm1")            /* xmm1 = [ L != 0 ] & (D/L) */ \
         __ASM_EMIT("andps       %%xmm3, %%xmm7")            /* xmm7 = [ L != 1 ] & (D/(1-L)) */ \
         __ASM_EMIT("andps       %%xmm6, %%xmm1")            /* xmm1 = [ L != 0 ] & [ L < 0.5 ] & (D/L) */ \
-        __ASM_EMIT("mulps       0x50 + %[XC], %%xmm0")      /* xmm0 = H = h * 1/6 */ \
+        __ASM_EMIT("mulps       0x50(%[XC]), %%xmm0")       /* xmm0 = H = h * 1/6 */ \
         __ASM_EMIT("andnps      %%xmm7, %%xmm6")            /* xmm6 = [ L > 0.5 ] & (D/(1-L)) */ \
         __ASM_EMIT("orps        %%xmm6, %%xmm1")            /* xmm1 = s = ([ L != 0 ] & [ L < 0.5 ] & (D/L)) | ([ L != 1 ] & (D/(1-L))) */ \
         __ASM_EMIT("movaps      0x30(%[RGBM]), %%xmm3")     /* xmm3 = A */ \
-        __ASM_EMIT("mulps       0x40 + %[XC], %%xmm1")      /* xmm1 = S = s * 0.5 */ \
+        __ASM_EMIT("mulps       0x40(%[XC]), %%xmm1")       /* xmm1 = S = s * 0.5 */ \
         \
         /*  Transpose back */ \
         HSLA_TRANSPOSE
@@ -533,7 +533,7 @@ namespace lsp
                 __ASM_EMIT("10:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
-                : [XC] "o" (RGB_HSL), [RGBM] "r" (&rgbm)
+                : [XC] "r" (RGB_HSL), [RGBM] "r" (&rgbm)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -549,7 +549,7 @@ namespace lsp
         /* xmm1     = g */ \
         /* xmm2     = b */ \
         /* xmm3     = a */ \
-        __ASM_EMIT("movaps          0x00 + %[XC], %%xmm7")          /* xmm7 = 255       */ \
+        __ASM_EMIT("movaps          %[XC], %%xmm7")                 /* xmm7 = 255       */ \
         __ASM_EMIT("xorps           %%xmm0, %%xmm2")                /* xmm2 = b^r       */ \
         __ASM_EMIT("xorps           %%xmm4, %%xmm4")                /* xmm4 = 0         */ \
         __ASM_EMIT("xorps           %%xmm2, %%xmm0")                /* xmm0 = r^b^r = b */ \
@@ -589,17 +589,17 @@ namespace lsp
 
         void rgba_to_bgra32(void *dst, const float *src, size_t count)
         {
-            uint32_t mxcsr[2];
+            uint32_t mxcsr1, mxcsr2;
             uint32_t tmp;
 
             ARCH_X86_ASM
             (
                 // Set rounding mode to zero
-                __ASM_EMIT("stmxcsr         %[mxcsr]")
-                __ASM_EMIT("movl            %[mxcsr], %[tmp]")
+                __ASM_EMIT("stmxcsr         %[mxcsr1]")
+                __ASM_EMIT("movl            %[mxcsr1], %[tmp]")
                 __ASM_EMIT("or              $0x6000, %[tmp]")
-                __ASM_EMIT("movl            %[tmp], 0x04 + %[mxcsr]")
-                __ASM_EMIT("ldmxcsr         0x04 + %[mxcsr]")
+                __ASM_EMIT("movl            %[tmp], %[mxcsr2]")
+                __ASM_EMIT("ldmxcsr         %[mxcsr2]")
 
                 __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -657,11 +657,13 @@ namespace lsp
                 __ASM_EMIT("10:")
 
                 // Restore rounding mode
-                __ASM_EMIT("ldmxcsr         %[mxcsr]")
+                __ASM_EMIT("ldmxcsr         %[mxcsr1]")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count),
                   [tmp] "=&r" (tmp)
-                : [XC] "o" (RGBA_TO_BGRA32), [mxcsr] "o" (mxcsr)
+                : [XC] "m" (RGBA_TO_BGRA32),
+                  [mxcsr1] "m" (mxcsr1),
+                  [mxcsr2] "m" (mxcsr2)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
