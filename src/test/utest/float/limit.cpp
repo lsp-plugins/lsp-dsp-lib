@@ -78,13 +78,13 @@ UTEST_BEGIN("dsp.float", limit)
                     buf[i]          = +INFINITY;
                     break;
                 case 1:
-                    buf[i]          = (rand() * 2.0f) / RAND_MAX;
+                    buf[i]          = randf(0.0f, 2.0f);
                     break;
                 case 2:
                     buf[i]          = -INFINITY;
                     break;
                 case 3:
-                    buf[i]          = - (rand() * 2.0f) / RAND_MAX;
+                    buf[i]          = randf(-2.0f, 0.0f);
                     break;
                 case 4:
                     buf[i]          = -NAN;

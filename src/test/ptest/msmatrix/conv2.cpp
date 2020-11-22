@@ -21,6 +21,7 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
+#include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/common/alloc.h>
 
 #define MIN_RANK 8
@@ -94,7 +95,7 @@ PTEST_BEGIN("dsp.msmatrix", conv2, 5, 1000)
         float *s2       = &s1[buf_size];
 
         for (size_t i=0; i < buf_size * 4; ++i)
-            d1[i]           = float(rand()) / RAND_MAX;
+            d1[i]           = randf(0.0f, 1.0f);
 
         #define CALL(func) \
             call(#func, d1, d2, s1, s2, count, func)

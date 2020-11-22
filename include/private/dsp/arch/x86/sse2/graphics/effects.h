@@ -53,7 +53,7 @@ namespace lsp
 
     #define EFF_HSLA_HUE_CORE \
         /* xmm0 = v, xmm6 = T, xmm7 = KT */ \
-        __ASM_EMIT("movaps          0x00 + %[XC], %%xmm5")      /* xmm5 = 1 */ \
+        __ASM_EMIT("movaps          %[XC], %%xmm5")             /* xmm5 = 1 */ \
         __ASM_EMIT("xorps           %%xmm4, %%xmm4")            /* xmm4 = 0 */ \
         __ASM_EMIT("movaps          %%xmm5, %%xmm1")            /* xmm1 = 1 */ \
         __ASM_EMIT("cmpps           $6, %%xmm0, %%xmm4")        /* xmm4 = [0 > v] */ \
@@ -80,7 +80,7 @@ namespace lsp
         __ASM_EMIT("andps           %%xmm4, %%xmm2")            /* xmm2 = (EH + T) & [(V - T) >= 0] */ \
         __ASM_EMIT("andnps          %%xmm0, %%xmm4")            /* xmm4 = (EH + V) & [(V - T) < 0] */ \
         __ASM_EMIT("orps            %%xmm2, %%xmm4")            /* xmm4 = NH = ((EH + T) & [(V - T) >= 0]) | ((EH + V) & [(V - T) < 0]) */ \
-        __ASM_EMIT("movaps          0x00 + %[XC], %%xmm0")      /* xmm0 = 1 */ \
+        __ASM_EMIT("movaps          %[XC], %%xmm0")             /* xmm0 = 1 */ \
         __ASM_EMIT("movaps          %%xmm4, %%xmm1")            /* xmm1 = NH */ \
         __ASM_EMIT("movaps          %%xmm0, %%xmm5")            /* xmm5 = 1 */ \
         __ASM_EMIT("cmpps           $6, %%xmm4, %%xmm0")        /* xmm0 = [1 > NH] */ \
@@ -99,7 +99,7 @@ namespace lsp
         void eff_hsla_hue(float *dst, const float *v, const dsp::hsla_hue_eff_t *eff, size_t count)
         {
             ARCH_X86_ASM(
-                __ASM_EMIT("movaps          0x00 + %[XC], %%xmm6")      /* xmm6 = 1 */
+                __ASM_EMIT("movaps          %[XC], %%xmm6")             /* xmm6 = 1 */
                 __ASM_EMIT("movss           0x10(%[eff]), %%xmm4")      /* xmm4 = t 0 0 0 */
                 __ASM_EMIT("movaps          %%xmm6, %%xmm7")            /* xmm7 = 1 */
                 __ASM_EMIT("shufps          $0x00, %%xmm4, %%xmm4")     /* xmm4 = t */
@@ -161,7 +161,7 @@ namespace lsp
 
                 : [dst] "+r" (dst), [src] "+r" (v), [count] "+r" (count)
                 : [eff] "r" (eff),
-                  [XC] "o" (EFF_HSLA_HUE_XC)
+                  [XC] "m" (EFF_HSLA_HUE_XC)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -206,7 +206,7 @@ namespace lsp
     #define EFF_HSLA_ALPHA_CORE \
         /* xmm3 = v */ \
         __ASM_EMIT("xorps           %%xmm4, %%xmm4")            /* xmm4 = 0 */ \
-        __ASM_EMIT("movaps          0x00 + %[XC], %%xmm5")      /* xmm5 = 1 */ \
+        __ASM_EMIT("movaps          %[XC], %%xmm5")             /* xmm5 = 1 */ \
         __ASM_EMIT("cmpps           $6, %%xmm3, %%xmm4")        /* xmm4 = [0 > v] */ \
         __ASM_EMIT("movups          0x00(%[eff]), %%xmm0")      /* xmm0 = hsla */ \
         __ASM_EMIT("movaps          %%xmm3, %%xmm6")            /* xmm6 = v */ \
@@ -291,7 +291,7 @@ namespace lsp
 
                 : [dst] "+r" (dst), [src] "+r" (v), [count] "+r" (count)
                 : [eff] "r" (eff),
-                  [XC] "o" (EFF_HSLA_ALPHA_XC)
+                  [XC] "m" (EFF_HSLA_ALPHA_XC)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -311,7 +311,7 @@ namespace lsp
     #define EFF_HSLA_SAT_CORE \
         /* xmm1 = v, xmm6 = T, xmm7 = KT */ \
         __ASM_EMIT("movaps          %%xmm6, %%xmm0")            /* xmm0 = T */ \
-        __ASM_EMIT("andps           0x10 + %[XC], %%xmm1")      /* xmm1 = V */ \
+        __ASM_EMIT("andps           0x10(%[XC]), %%xmm1")       /* xmm1 = V */ \
         __ASM_EMIT("xorps           %%xmm5, %%xmm5")            /* xmm5 = 0 */ \
         __ASM_EMIT("subps           %%xmm1, %%xmm0")            /* xmm0 = T-V */ \
         __ASM_EMIT("cmpps           $6, %%xmm0, %%xmm5")        /* xmm5 = [ 0 >= T - V] */ \
@@ -354,7 +354,7 @@ namespace lsp
         {
             ARCH_X86_ASM(
                 __ASM_EMIT("movss           0x10(%[eff]), %%xmm6")      /* xmm6 = t 0 0 0 */
-                __ASM_EMIT("movaps          0x00 + %[XC], %%xmm7")      /* xmm7 = 1 */
+                __ASM_EMIT("movaps          0x00(%[XC]), %%xmm7")       /* xmm7 = 1 */
                 __ASM_EMIT("shufps          $0x00, %%xmm6, %%xmm6")     /* xmm6 = T */
                 __ASM_EMIT("divps           %%xmm6, %%xmm7")            /* xmm7 = KT = 1 / t */
 
@@ -413,7 +413,7 @@ namespace lsp
 
                 : [dst] "+r" (dst), [src] "+r" (v), [count] "+r" (count)
                 : [eff] "r" (eff),
-                  [XC] "o" (EFF_HSLA_SAT_XC)
+                  [XC] "r" (EFF_HSLA_SAT_XC)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -433,7 +433,7 @@ namespace lsp
     #define EFF_HSLA_LIGHT_CORE \
         /* xmm2 = v, xmm6 = T, xmm7 = KT */ \
         __ASM_EMIT("movaps          %%xmm6, %%xmm0")            /* xmm0 = T */ \
-        __ASM_EMIT("andps           0x10 + %[XC], %%xmm2")      /* xmm2 = V */ \
+        __ASM_EMIT("andps           0x10(%[XC]), %%xmm2")       /* xmm2 = V */ \
         __ASM_EMIT("xorps           %%xmm5, %%xmm5")            /* xmm5 = 0 */ \
         __ASM_EMIT("subps           %%xmm2, %%xmm0")            /* xmm0 = T-V */ \
         __ASM_EMIT("cmpps           $6, %%xmm0, %%xmm5")        /* xmm5 = [ 0 >= T - V] */ \
@@ -475,7 +475,7 @@ namespace lsp
         {
             ARCH_X86_ASM(
                 __ASM_EMIT("movss           0x10(%[eff]), %%xmm6")      /* xmm6 = t 0 0 0 */
-                __ASM_EMIT("movaps          0x00 + %[XC], %%xmm7")      /* xmm7 = 1 */
+                __ASM_EMIT("movaps          0x00(%[XC]), %%xmm7")       /* xmm7 = 1 */
                 __ASM_EMIT("shufps          $0x00, %%xmm6, %%xmm6")     /* xmm6 = T */
                 __ASM_EMIT("divps           %%xmm6, %%xmm7")            /* xmm7 = KT = 1 / t */
 
@@ -534,7 +534,7 @@ namespace lsp
 
                 : [dst] "+r" (dst), [src] "+r" (v), [count] "+r" (count)
                 : [eff] "r" (eff),
-                  [XC] "o" (EFF_HSLA_LIGHT_XC)
+                  [XC] "r" (EFF_HSLA_LIGHT_XC)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

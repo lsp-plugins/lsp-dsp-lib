@@ -143,7 +143,7 @@ UTEST_BEGIN("dsp.3d", matrix)
             );
     }
 
-    void init(
+    void init_data(
             const char *label,
             init_matrix3d_t init_matrix3d,
             init_matrix3d_zero_t init_matrix3d_zero,
@@ -484,7 +484,7 @@ UTEST_BEGIN("dsp.3d", matrix)
 
     UTEST_MAIN
     {
-        IF_ARCH_X86(init("sse init_matrix",
+        IF_ARCH_X86(init_data("sse init_matrix",
                 sse::init_matrix3d, sse::init_matrix3d_zero, sse::init_matrix3d_one, sse::init_matrix3d_identity,
                 sse::transpose_matrix3d1, sse::transpose_matrix3d2
             ));

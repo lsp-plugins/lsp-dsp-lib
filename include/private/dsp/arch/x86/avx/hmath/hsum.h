@@ -390,7 +390,7 @@ namespace lsp
                 __ASM_EMIT("10:")
                 : [src] "+r" (src), [count] "+r" (count),
                   [res] "=Yz" (result)
-                : [CC] "o" (h_abs_const)
+                : [CC] "m" (h_abs_const)
                 : "cc", "memory",
                   "%xmm1"
             );

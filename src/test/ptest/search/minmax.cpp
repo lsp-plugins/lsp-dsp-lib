@@ -22,6 +22,7 @@
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
 #include <lsp-plug.in/common/alloc.h>
+#include <lsp-plug.in/test-fw/helpers.h>
 
 #define MIN_RANK 8
 #define MAX_RANK 16
@@ -133,7 +134,7 @@ PTEST_BEGIN("dsp.search", minmax, 5, 1000)
 
         float *in       = alloc_aligned<float>(data, buf_size, 64);
         for (size_t i=0; i < (1 << MAX_RANK); ++i)
-            in[i]          = float(rand()) / RAND_MAX;
+            in[i]          = randf(-1.0f, 1.0f);
 
         #define CALL(func) \
             call(#func, in, count, func)

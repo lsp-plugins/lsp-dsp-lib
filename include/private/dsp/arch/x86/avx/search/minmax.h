@@ -213,7 +213,7 @@ namespace lsp
                 AMINMAX_CORE("src", "vmin")
                 : [src] "+r" (src), [count] "+r" (count),
                   [res] "+Yz" (res)
-                : [CC] "o" (minmax_const)
+                : [CC] "m" (minmax_const)
                 : "cc",
                   "%xmm1", "%xmm2",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -229,7 +229,7 @@ namespace lsp
                 AMINMAX_CORE("src", "vmax")
                 : [src] "+r" (src), [count] "+r" (count),
                   [res] "+Yz" (res)
-                : [CC] "o" (minmax_const)
+                : [CC] "m" (minmax_const)
                 : "cc",
                   "%xmm1", "%xmm2",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -431,7 +431,7 @@ namespace lsp
                 __ASM_EMIT("vmovss          %%xmm1, 0x00(%[max])")
                 : [src] "+r" (src), [count] "+r" (count)
                 : [min] "r" (min), [max] "r" (max),
-                  [CC] "o" (minmax_const)
+                  [CC] "m" (minmax_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

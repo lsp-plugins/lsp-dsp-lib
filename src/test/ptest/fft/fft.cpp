@@ -21,6 +21,7 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/ptest.h>
+#include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/common/alloc.h>
 
 #define MIN_RANK 8
@@ -117,7 +118,7 @@ PTEST_BEGIN("dsp.fft", fft, 10, 1000)
 
         for (size_t i=0; i < (1 << MAX_RANK); ++i)
         {
-            sig_re[i]       = float(rand()) / RAND_MAX;
+            sig_re[i]       = randf(0.0f, 1.0f);
             sig_im[i]       = 0.0f;
         }
 

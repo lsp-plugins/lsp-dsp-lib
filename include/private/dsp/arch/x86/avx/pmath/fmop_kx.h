@@ -109,7 +109,7 @@ namespace lsp
                 FMADDSUB_K3_CORE("dst", "dst", "src", "vfmadd231")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -124,7 +124,7 @@ namespace lsp
                 FMADDSUB_K3_CORE("dst", "dst", "src", "vfnmadd231")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -139,7 +139,7 @@ namespace lsp
                 FMADDSUB_K3_CORE("dst", "dst", "src", "vfmsub231")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -154,7 +154,7 @@ namespace lsp
                 FMADDSUB_K3_CORE("dst", "src1", "src2", "vfmadd231")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -169,7 +169,7 @@ namespace lsp
                 FMADDSUB_K3_CORE("dst", "src1", "src2", "vfnmadd231")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -184,7 +184,7 @@ namespace lsp
                 FMADDSUB_K3_CORE("dst", "src1", "src2", "vfmsub231")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -274,7 +274,7 @@ namespace lsp
                 FMOP_K4_CORE("dst", "dst", "src", "vadd", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -289,7 +289,7 @@ namespace lsp
                 FMOP_K4_CORE("dst", "dst", "src", "vsub", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -304,7 +304,7 @@ namespace lsp
                 FMOP_K4_CORE("dst", "dst", "src", "vsub", OP_RSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -319,7 +319,7 @@ namespace lsp
                 FMOP_K4_CORE("dst", "dst", "src", "vmul", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -334,7 +334,7 @@ namespace lsp
                 FMOP_K4_CORE("dst", "dst", "src", "vdiv", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -349,7 +349,7 @@ namespace lsp
                 FMOP_K4_CORE("dst", "dst", "src", "vdiv", OP_RSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r"(src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -364,7 +364,7 @@ namespace lsp
                 FMOP_K4_CORE("dst", "src1", "src2", "vadd", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -379,7 +379,7 @@ namespace lsp
                 FMOP_K4_CORE("dst", "src1", "src2", "vsub", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -394,7 +394,7 @@ namespace lsp
                 FMOP_K4_CORE("dst", "src1", "src2", "vsub", OP_RSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -409,7 +409,7 @@ namespace lsp
                 FMOP_K4_CORE("dst", "src1", "src2", "vmul", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -424,7 +424,7 @@ namespace lsp
                 FMOP_K4_CORE("dst", "src1", "src2", "vdiv", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -439,7 +439,7 @@ namespace lsp
                 FMOP_K4_CORE("dst", "src1", "src2", "vdiv", OP_RSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -540,7 +540,7 @@ namespace lsp
                 FMOD_KX_CORE("dst", "dst", "src", OP_DSEL, FMA_OFF)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r" (src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -555,7 +555,7 @@ namespace lsp
                 FMOD_KX_CORE("dst", "dst", "src", OP_DSEL, FMA_ON)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r" (src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -570,7 +570,7 @@ namespace lsp
                 FMOD_KX_CORE("dst", "dst", "src", OP_RSEL, FMA_OFF)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r" (src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -585,7 +585,7 @@ namespace lsp
                 FMOD_KX_CORE("dst", "dst", "src", OP_RSEL, FMA_ON)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src] "r" (src),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -600,7 +600,7 @@ namespace lsp
                 FMOD_KX_CORE("dst", "src1", "src2", OP_DSEL, FMA_OFF)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -615,7 +615,7 @@ namespace lsp
                 FMOD_KX_CORE("dst", "src1", "src2", OP_DSEL, FMA_ON)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -630,7 +630,7 @@ namespace lsp
                 FMOD_KX_CORE("dst", "src1", "src2", OP_RSEL, FMA_OFF)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -645,7 +645,7 @@ namespace lsp
                 FMOD_KX_CORE("dst", "src1", "src2", OP_RSEL, FMA_ON)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "o" (k)
+                  [k] "m" (k)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

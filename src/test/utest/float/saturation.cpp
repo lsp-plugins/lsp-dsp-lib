@@ -22,6 +22,7 @@
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/stdlib/math.h>
 #include <lsp-plug.in/test-fw/utest.h>
+#include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
 namespace lsp
@@ -87,10 +88,10 @@ UTEST_BEGIN("dsp.float", saturation)
                     buf[i]          = -NAN;
                     break;
                 case 4:
-                    buf[i]          = float(rand()) / RAND_MAX;
+                    buf[i]          = randf(0.0f, 2.0f);
                     break;
                 default:
-                    buf[i]          = - float(rand()) / RAND_MAX;
+                    buf[i]          = randf(-2.0f, 0.0f);
                     break;
             }
         }

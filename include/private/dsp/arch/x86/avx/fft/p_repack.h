@@ -130,7 +130,7 @@ namespace lsp
                 __ASM_EMIT("4:")
 
                 : [dst] "+r"(dst), [blocks] "+r" (blocks)
-                : [norm] "o" (norm)
+                : [norm] "m" (norm)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

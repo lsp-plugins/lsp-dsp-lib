@@ -296,7 +296,7 @@ namespace lsp
                 : [count] "+r" (count), [off] "=&r" (off),
                   "=Yz" (result)
                 : [a] "r" (a), [b] "r" (b),
-                  [SIGN] "o" (h_abs_dotp_const)
+                  [SIGN] "m" (h_abs_dotp_const)
                 : "cc", "memory",
                   "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

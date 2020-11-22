@@ -23,6 +23,7 @@
 #include <lsp-plug.in/test-fw/ptest.h>
 #include <lsp-plug.in/common/alloc.h>
 #include <lsp-plug.in/stdlib/math.h>
+#include <lsp-plug.in/test-fw/helpers.h>
 
 #define MIN_RANK 8
 #define MAX_RANK 16
@@ -171,7 +172,7 @@ PTEST_BEGIN("dsp.pmath", pow, 5, 1000)
         float *src2     = &src1[buf_size];
 
         for (size_t i=0; i < buf_size*3; ++i)
-            dst[i]          = float(rand()) / RAND_MAX;
+            dst[i]          = randf(0.0f, 1.0f);
 
         #define CALL(func) \
             call(#func, dst, src1, count, func)

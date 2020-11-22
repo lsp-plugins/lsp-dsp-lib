@@ -184,9 +184,9 @@ namespace lsp
                 // x3 = N[k]
                 // x4 = fb1[0] fb1[1] fb1[2] fb1[3]
                 // x5 = fb0[0] fb0[1] fb0[2] fb0[3]
-                __ASM_EMIT("movaps      %[x3], 0x00 + %[DATA]")     // store N
-                __ASM_EMIT("movaps      %[x5], 0x10 + %[DATA]")     // store B0
-                __ASM_EMIT("movaps      %[x4], 0x20 + %[DATA]")     // store B1
+                __ASM_EMIT("movaps      %[x3], 0x00(%[DATA])")      // store N
+                __ASM_EMIT("movaps      %[x5], 0x10(%[DATA])")      // store B0
+                __ASM_EMIT("movaps      %[x4], 0x20(%[DATA])")      // store B1
 
                 // Load Top part of cascade and transpose
                 __ASM_EMIT("movaps      0x00(%[bc]), %[x2]")        // x2 = a0[0] a1[0] a2[0] ?
@@ -197,7 +197,7 @@ namespace lsp
                 FIL_TRANSPOSE("[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]")
 
                 // x2 = T0[k] = a0[0..3], x4=a1[0..3], x6=a2[0..4]
-                __ASM_EMIT("movaps      0x00 + %[DATA], %[x7]")     // load N
+                __ASM_EMIT("movaps      0x00(%[DATA]), %[x7]")     // load N
                 FIL_BILINEAR_X4_TOP("[x0]", "[x1]", "[x2]", "[x3]", "[x4]", "[x6]", "[x7]")
 
                 // Now we need to transpose data and store filter
@@ -205,7 +205,7 @@ namespace lsp
                 // x4 = a0 a1 a2 a3
                 // x3 = b0 b1 b2 b3
                 // x2 = c0 c1 c2 c3
-                __ASM_EMIT("movaps      0x10 + %[DATA], %[x7]")     // x7 = d0 d1 d2 d3
+                __ASM_EMIT("movaps      0x10(%[DATA]), %[x7]")      // x7 = d0 d1 d2 d3
                 __ASM_EMIT("movaps      %[x4], %[x5]")              // x5 = a0 a1 a2 a3
                 __ASM_EMIT("movaps      %[x3], %[x6]")              // x6 = b0 b1 b2 b3
                 __ASM_EMIT("unpckhps    %[x2], %[x5]")              // x5 = a2 c2 a3 c3
@@ -222,10 +222,10 @@ namespace lsp
                 __ASM_EMIT("movaps      %[x2], 0x20(%[bf])")
                 __ASM_EMIT("movaps      %[x5], 0x40(%[bf])")
                 __ASM_EMIT("movaps      %[x7], 0x60(%[bf])")
-                __ASM_EMIT("movss       0x20 + %[DATA], %[x2]")     // x2 = b1[0] 0 0 0
-                __ASM_EMIT("movss       0x24 + %[DATA], %[x3]")     // x3 = b1[1] 0 0 0
-                __ASM_EMIT("movss       0x28 + %[DATA], %[x4]")     // x4 = b1[2] 0 0 0
-                __ASM_EMIT("movss       0x2c + %[DATA], %[x5]")     // x5 = b1[3] 0 0 0
+                __ASM_EMIT("movss       0x20(%[DATA]), %[x2]")      // x2 = b1[0] 0 0 0
+                __ASM_EMIT("movss       0x24(%[DATA]), %[x3]")      // x3 = b1[1] 0 0 0
+                __ASM_EMIT("movss       0x28(%[DATA]), %[x4]")      // x4 = b1[2] 0 0 0
+                __ASM_EMIT("movss       0x2c(%[DATA]), %[x5]")      // x5 = b1[3] 0 0 0
                 __ASM_EMIT("movaps      %[x2], 0x10(%[bf])")
                 __ASM_EMIT("movaps      %[x3], 0x30(%[bf])")
                 __ASM_EMIT("movaps      %[x4], 0x50(%[bf])")
@@ -298,8 +298,8 @@ namespace lsp
                   [count] "+r" (count),
                   [bc] "+r" (bc),
                   [bf] "+r" (bf)
-                : [ONE] "m" (f_transform_const),
-                  [DATA] "o" (DATA)
+                : [DATA] "r" (DATA),
+                  [ONE] "m" (f_transform_const)
                 : "cc", "memory"
             );
         }
@@ -599,8 +599,8 @@ namespace lsp
                   [count] "+r" (count),
                   [bc] "+r" (bc),
                   [bf] "+r" (bf)
-                : [ONE] "m" (f_transform_const),
-                  [N] "o" (N)
+                : [N] "m" (N),
+                  [ONE] "m" (f_transform_const)
                 : "cc", "memory"
             );
         }
@@ -812,7 +812,7 @@ namespace lsp
                 __ASM_EMIT("addps       %[x3], %[x4]")          // x4 = re = b[0]*cos_2w + b[1]*cos_w + b[2]
                 __ASM_EMIT("mulps       %[x2], %[x2]")          // x2 = im*im
                 __ASM_EMIT("mulps       %[x4], %[x4]")          // x4 = re*re
-                __ASM_EMIT("movaps      0x00 + %[CC], %[x0]")   // x0 = 1
+                __ASM_EMIT("movaps      0x00(%[CC]), %[x0]")    // x0 = 1
                 __ASM_EMIT("addps       %[x2], %[x4]")          // x4 = re*re + im*im
                 __ASM_EMIT("divps       %[x5], %[x0]")          // x0 = N2 = 1/b[0]
                 __ASM_EMIT("sqrtps      %[x4], %[x1]")          // x1 = ab = sqrt(re*re + im*im)
@@ -846,7 +846,7 @@ namespace lsp
                 __ASM_EMIT("movaps      %[x7], 0x60(%[bf])")
 
                 // Bottom part
-                __ASM_EMIT("xorps       0x10 + %[CC], %[x0]")   // x0 = -N2
+                __ASM_EMIT("xorps       0x10(%[CC]), %[x0]")    // x0 = -N2
                 __ASM_EMIT("movaps      0x10(%[bf]), %[x2]")    // x2 = b[1]
                 __ASM_EMIT("movaps      0x30(%[bf]), %[x3]")    // x3 = b[2]
 
@@ -920,7 +920,7 @@ namespace lsp
                 __ASM_EMIT("addss       %[x3], %[x4]")          // x4 = re = b[0]*cos_2w + b[1]*cos_w + b[2]
                 __ASM_EMIT("mulss       %[x2], %[x2]")          // x2 = im*im
                 __ASM_EMIT("mulss       %[x4], %[x4]")          // x4 = re*re
-                __ASM_EMIT("movaps      0x00 + %[CC], %[x0]")   // x0 = 1
+                __ASM_EMIT("movaps      0x00(%[CC]), %[x0]")    // x0 = 1
                 __ASM_EMIT("addss       %[x2], %[x4]")          // x4 = re*re + im*im
                 __ASM_EMIT("divss       %[x5], %[x0]")          // x0 = N2 = 1/b[0]
                 __ASM_EMIT("sqrtss      %[x4], %[x1]")          // x1 = ab = sqrt(re*re + im*im)
@@ -942,7 +942,7 @@ namespace lsp
                 __ASM_EMIT("movaps      %[x2], 0x00(%[bf])")
 
                 // Bottom part
-                __ASM_EMIT("xorps       0x10 + %[CC], %[x0]")   // x0 = -N2
+                __ASM_EMIT("xorps       0x10(%[CC]), %[x0]")    // x0 = -N2
                 __ASM_EMIT("movss       0x14(%[bc]), %[x2]")    // x2 = b[1]
                 __ASM_EMIT("movss       0x18(%[bc]), %[x3]")    // x3 = b[2]
 
@@ -963,7 +963,7 @@ namespace lsp
                   [count] "+r" (count),
                   [bc] "+r" (bc),
                   [bf] "+r" (bf)
-                : [CC] "o" (f_transform_const),
+                : [CC] "r" (f_transform_const),
                   [COSW] "m" (COSW),
                   [SINW] "m" (SINW),
                   [COS2W] "m" (COS2W),
