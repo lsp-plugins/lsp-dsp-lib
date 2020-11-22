@@ -25,7 +25,7 @@
 // Define version of headers
 #define LSP_DSP_LIB_MAJOR           0
 #define LSP_DSP_LIB_MINOR           5
-#define LSP_DSP_LIB_MICRO           11
+#define LSP_DSP_LIB_MICRO           12
 
 #ifdef LSP_DSP_LIB_BUILTIN
     #define LSP_DSP_LIB_CPPEXPORT

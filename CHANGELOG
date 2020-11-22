@@ -2,6 +2,8 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 0.5.12 ===
+
 === 0.5.11 ===
 * Improved build: fixed many GCC warnings.
 * DSP library can now be compiled with Clang C++ compiler.
