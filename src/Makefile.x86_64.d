@@ -6209,6 +6209,18 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/div2.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+$(LSP_DSP_LIB_BIN)/test/ptest/number.o: test/ptest/number.cpp \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/ptest.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/status.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/test.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
 $(LSP_DSP_LIB_BIN)/test/ptest/msmatrix/conv2x1.o: \
  test/ptest/msmatrix/conv2x1.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
