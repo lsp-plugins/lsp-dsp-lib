@@ -365,6 +365,7 @@
                 EXPORT1(mix_add3);
                 EXPORT1(mix_add4);
 
+                EXPORT1(lin_inter_set);
                 EXPORT1(lin_inter_mul2);
                 EXPORT1(lin_inter_mul3);
                 EXPORT1(lin_inter_fmadd2);

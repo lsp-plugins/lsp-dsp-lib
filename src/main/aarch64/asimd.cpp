@@ -392,6 +392,7 @@
 
                 EXPORT1(abgr32_to_bgrff32);
 
+                EXPORT1(lin_inter_set);
                 EXPORT1(lin_inter_mul2);
                 EXPORT1(lin_inter_mul3);
                 EXPORT1(lin_inter_fmadd2);
