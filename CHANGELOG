@@ -3,6 +3,10 @@
 *******************************************************************************
 
 === 0.5.12 ===
+* Submitted x86/x86_64 SSE2-optimized linear interpolation functions.
+* Submitted x86/x86_64 AVX2-optimized linear interpolation functions.
+* Submitted ARMv7 NEON-optimized linear interpolation functions.
+* Submitted AArch64 ASIMD-optimized linear interpolation functions.
 
 === 0.5.11 ===
 * Improved build: fixed many GCC warnings.
