@@ -102,12 +102,8 @@ endif
 
 ifeq ($(ARCHITECTURE),i586)
   CXX_OBJEXT             += $(X86_IMPL) $(SSE_IMPL) $(SSE2_IMPL) $(SSE3_IMPL) $(SSE4_IMPL) $(AVX_IMPL) $(AVX2_IMPL)
-else ifeq ($(ARCHITECTURE), x86_64)
+else ifeq ($(ARCHITECTURE),x86_64)
   CXX_OBJEXT             += $(X86_IMPL) $(SSE_IMPL) $(SSE2_IMPL) $(SSE3_IMPL) $(SSE4_IMPL) $(AVX_IMPL) $(AVX2_IMPL)
-else ifeq ($(ARCHITECTURE),armv7a)
-  CXX_OBJEXT             += $(ARM_IMPL) $(NEON_D32_IMPL)
-else ifeq ($(ARCHITECTURE),armv7ve)
-  CXX_OBJEXT             += $(ARM_IMPL) $(NEON_D32_IMPL)
 else ifeq ($(ARCHITECTURE),arm32)
   CXX_OBJEXT             += $(ARM_IMPL) $(NEON_D32_IMPL)
 else ifeq ($(ARCHITECTURE),aarch64)
