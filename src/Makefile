@@ -21,8 +21,8 @@
 BASEDIR                 = $(CURDIR)
 CONFIG                 := $(CURDIR)/.config.mk
 
-include $(BASEDIR)/../project.mk
 include $(CONFIG)
+include $(BASEDIR)/../project.mk
 include $(BASEDIR)/../make/functions.mk
 
 ifeq ($(TEST),1)
