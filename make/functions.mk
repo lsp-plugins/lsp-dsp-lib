@@ -19,7 +19,26 @@
 #
 
 # Deduplicates all strings in the list
+# $(call uniq, <list>)
+# $(call uniq, $(DEPENDENCIES))
 uniq                    = $(if $1,$(firstword $1) $(call uniq,$(filter-out $(firstword $1),$1)))
 
 # Recursively lookup directory for specific file pattern
+# $(call rwildcard, <path>, <file-name-pattern>)
+# $(call rwildcard, main, *.cpp)
 rwildcard               = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+
+# Fetch different flags from symbolic dependencies
+# $(call query, <field>, <list>)
+# $(call query, CFLAGS, $(DEPENDENCIES))
+query                   = $(foreach d,$(call uniq, $2),$($(d)_$(strip $1)))
+
+# Fetch conditionally if dependency field is present
+# $(call dquery, <field>, <list>)
+# $(call dquery, OBJ, $(DEPENDENCIES))
+dquery                  = $(foreach d,$(call uniq, $2),$(if $($(d)_$(strip $1)),$(d)))
+
+# Fetch different flags from symbolic dependencies
+# $(call cquery, <test-field>, <return-field>, <list>)
+# $(call cquery, OBJ_META, BIN, $(DEPENDENCIES))
+cquery                  = $(foreach d,$(call uniq, $3),$(if $($(d)_$(strip $1)),$($(d)_$(strip $2))))
