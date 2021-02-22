@@ -95,6 +95,7 @@ define srcconfig =
   $(if $($(name)_CFLAGS),,  $(eval $(name)_CFLAGS  := "-I\"$($(name)_INC)\"" $(if $(builtin),"-D$(name)_BUILTIN")))
   $(if $($(name)_LDLAGS),,  $(eval $(name)_LDFLAGS :=))
   $(if $($(name)_OBJ),,     $(eval $(name)_OBJ     := "$($(name)_BIN)/$($(name)_NAME).o"))
+  $(if $($(name)_OBJ_TEST),,$(eval $(name)_OBJ_TEST:= "$($(name)_BIN)/$($(name)_NAME)-test.o"))
   $(if $($(name)_MFLAGS),,  $(eval $(name)_MFLAGS  := $(if $(builtin),"-D$(name)_BUILTIN -fvisibility=hidden")))
 endef
 
@@ -159,6 +160,7 @@ CONFIG_VARS = \
     $(name)_MFLAGS \
     $(name)_LDFLAGS \
     $(name)_OBJ \
+    $(name)_OBJ_TEST \
   )
 
 .DEFAULT_GOAL      := config
