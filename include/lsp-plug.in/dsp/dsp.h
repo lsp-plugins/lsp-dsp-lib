@@ -60,6 +60,7 @@
 #include <lsp-plug.in/dsp/common/resampling.h>
 #include <lsp-plug.in/dsp/common/search.h>
 #include <lsp-plug.in/dsp/common/smath.h>
+#include <lsp-plug.in/dsp/common/interpolation.h>
 
 #undef LSP_DSP_LIB_CXX_IFACE
 

@@ -29,6 +29,7 @@ Current set of functions provided:
   * Mid/Side matrix functions for converting Stereo channel to Mid/Side and back;
   * Functions for searching minimums and maximums;
   * Resampling functions based on Lanczos filter;
+  * Interpolation functions;
   * Some set of function to work with 3D mathematics.
 
 Supported platforms

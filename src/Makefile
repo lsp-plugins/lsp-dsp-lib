@@ -18,120 +18,112 @@
 # along with lsp-dsp-lib.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+BASEDIR                 = $(CURDIR)
 CONFIG                 := $(CURDIR)/.config.mk
 
 include $(CONFIG)
-include $(CURDIR)/../project.mk
+include $(BASEDIR)/../project.mk
+include $(BASEDIR)/../make/functions.mk
 
-rwildcard               = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
-
-CXX_SRCMAIN             = 
-CXX_SRCEXT              = main/dsp.cpp main/generic/generic.cpp
-CXX_SRCALL              = $(call rwildcard, main, *.cpp)
-CXX_SRCTEST             = $(call rwildcard, test, *.cpp)
-CXX_SRC                 = $(CXX_SRCMAIN)
-
-CXX_OBJ                 = $(patsubst %.cpp, $($(ARTIFACT_VARS)_BIN)/%.o, $(CXX_SRC))
-CXX_OBJEXT              = $(patsubst %.cpp, $($(ARTIFACT_VARS)_BIN)/%.o, $(CXX_SRCEXT))
-
-ALL_HEADERS             = $(call rwildcard, $($(ARTIFACT_VARS)_INC), *.h)
-CXX_FILE                = $(patsubst $($(ARTIFACT_VARS)_BIN)/%.o,%.cpp, $(@))
-CXX_HDR_PATHS           = $(foreach hdr,$(ARTIFACT_HEADERS),$($(ARTIFACT_VARS)_INC)/$(hdr))
-CXX_HEADERS             = $(foreach path,$(CXX_HDR_PATHS),$(call rwildcard, $(path), *.h))
-CXX_INSTHEADERS         = $(patsubst $($(ARTIFACT_VARS)_INC)/%,$(DESTDIR)$(INCDIR)/%,$(CXX_HEADERS))
-
-ARTIFACT_BIN            = $($(ARTIFACT_VARS)_BIN)
-ARTIFACT_LIB            = $(ARTIFACT_BIN)/$(LIBRARY_PREFIX)$($(ARTIFACT_VARS)_NAME)-$($(ARTIFACT_VARS)_VERSION)$(LIBRARY_EXT)
-ARTIFACT_SLIB           = $(ARTIFACT_BIN)/$(LIBRARY_PREFIX)$($(ARTIFACT_VARS)_NAME)-$($(ARTIFACT_VARS)_VERSION)$(STATICLIB_EXT)
-ARTIFACT_LIBLINK        = $(LIBRARY_PREFIX)$($(ARTIFACT_VARS)_NAME)$(LIBRARY_EXT)
-ARTIFACT_SLIBLINK       = $(LIBRARY_PREFIX)$($(ARTIFACT_VARS)_NAME)$(STATICLIB_EXT)
-ARTIFACT_PC             = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)$(PKGCONFIG_EXT)
-ARTIFACT_TESTBIN        = $(ARTIFACT_BIN)/$($(ARTIFACT_VARS)_NAME)-test$(EXECUTABLE_EXT)
-ARTIFACT_OBJ            = $($(ARTIFACT_VARS)_OBJ)
-ARTIFACT_MFLAGS         = $($(ARTIFACT_VARS)_MFLAGS) $(foreach dep,$(DEPENDENCIES),-DUSE_$(dep))
-
-CFLAGS_DEPS             = $(foreach dep, $(DEPENDENCIES) $(ARTIFACT_VARS), $(if $($(dep)_CFLAGS), $($(dep)_CFLAGS)))
-BUILD_DEPS              = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_OBJ), $(dep)))
-LINKER_DEPS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_LDFLAGS), $($(dep)_LDFLAGS)))
-LINKER_OBJS             = $(foreach dep, $(DEPENDENCIES), $(if $($(dep)_OBJ), $($(dep)_OBJ)))
-BUILD_ALL               = $(ARTIFACT_LIB) $(ARTIFACT_SLIB) $(ARTIFACT_PC)
-
-ifeq ($(TEST), 1)
-  ifeq ($($(ARTIFACT_VARS)_TESTING),1)
-    CXX_SRC                += $(CXX_SRCTEST)
-    BUILD_ALL              += $(ARTIFACT_TESTBIN)
-  endif
-  DEPENDENCIES           += $(TEST_DEPENDENCIES)
+ifeq ($(TEST),1)
+  UNIQ_DEPENDENCIES      := $(call uniq, $(DEPENDENCIES) $(TEST_DEPENDENCIES))
+  DEPENDENCIES            = $(UNIQ_DEPENDENCIES)
 endif
 
-ifeq ($(NO_DEPENDENCIES),1)
-  BUILD_DEPS              =
-endif
+# Artifact settings
+ARTIFACT_BIN            = $($(ARTIFACT_ID)_BIN)
+ARTIFACT_NAME           = $($(ARTIFACT_ID)_NAME)
+ARTIFACT_VERSION        = $($(ARTIFACT_ID)_VERSION)
 
-CXX_DEPS                = $(foreach src,$(CXX_SRCALL) $(CXX_SRCTEST),$(patsubst %.cpp,$(ARTIFACT_BIN)/%.d,$(src)))
-CXX_DEPFILE             = $(patsubst $(ARTIFACT_BIN)/%.d,%.cpp,$(@))
-CXX_DEPTARGET           = $(patsubst $(ARTIFACT_BIN)/%.d,%.o,$(@))
+ARTIFACT_TEST_BIN       = $(ARTIFACT_BIN)/$(ARTIFACT_NAME)-test$(EXECUTABLE_EXT)
+ARTIFACT_LIB            = $(ARTIFACT_BIN)/$(LIBRARY_PREFIX)$(ARTIFACT_NAME)-$(ARTIFACT_VERSION)$(LIBRARY_EXT)
+ARTIFACT_SLIB           = $(ARTIFACT_BIN)/$(LIBRARY_PREFIX)$(ARTIFACT_NAME)-$(ARTIFACT_VERSION)$(STATICLIB_EXT)
+ARTIFACT_LIBLINK        = $(LIBRARY_PREFIX)$(ARTIFACT_NAME)$(LIBRARY_EXT)
+ARTIFACT_SLIBLINK       = $(LIBRARY_PREFIX)$(ARTIFACT_NAME)$(STATICLIB_EXT)
+ARTIFACT_PC             = $(ARTIFACT_BIN)/$(ARTIFACT_NAME)$(PKGCONFIG_EXT)
+ARTIFACT_OBJ            = $($(ARTIFACT_ID)_OBJ)
+ARTIFACT_OBJ_TEST       = $($(ARTIFACT_ID)_OBJ_TEST)
+ARTIFACT_MFLAGS         = $($(ARTIFACT_ID)_MFLAGS) $(foreach dep,$(DEPENDENCIES),-DUSE_$(dep))
+ARTIFACT_DEPS           = $(call dquery, OBJ, $(DEPENDENCIES))
+ARTIFACT_CFLAGS         = $(call query, CFLAGS, $(DEPENDENCIES) $(ARTIFACT_ID))
+ARTIFACT_LDFLAGS        = $(call query, LDFLAGS, $(DEPENDENCIES) $(ARTIFACT_ID))
+ARTIFACT_OBJFILES       = $(call query, OBJ, $(DEPENDENCIES) $(ARTIFACT_ID))
 
-# Configre list of extended build parameters
-X86_IMPL                = $(ARTIFACT_BIN)/main/x86/x86.o
-SSE_IMPL                = $(ARTIFACT_BIN)/main/x86/sse.o
-SSE2_IMPL               = $(ARTIFACT_BIN)/main/x86/sse2.o
-SSE3_IMPL               = $(ARTIFACT_BIN)/main/x86/sse3.o
-SSE4_IMPL               = $(ARTIFACT_BIN)/main/x86/sse4.o
-AVX_IMPL                = $(ARTIFACT_BIN)/main/x86/avx.o
-AVX2_IMPL               = $(ARTIFACT_BIN)/main/x86/avx2.o
-ARM_IMPL                = $(ARTIFACT_BIN)/main/arm/arm.o
-NEON_D32_IMPL           = $(ARTIFACT_BIN)/main/arm/neon-d32.o
-AARCH64_IMPL            = $(ARTIFACT_BIN)/main/aarch64/aarch64.o
-ASIMD_IMPL              = $(ARTIFACT_BIN)/main/aarch64/asimd.o
+ARTIFACT_TARGETS        = $(ARTIFACT_LIB) $(ARTIFACT_SLIB) $(ARTIFACT_PC)
 
-SSE_INSTR_SET           = -mmmx -m3dnow -msse
-SSE2_INSTR_SET          = $(SSE_INSTR_SET) -msse2
-SSE3_INSTR_SET          = $(SSE2_INSTR_SET) -msse3 -mssse3
-SSE4_INSTR_SET          = $(SSE3_INSTR_SET) -msse4 -msse4a -msse4.1 -msse4.2
-AVX_INSTR_SET           = -mavx -mvzeroupper
-AVX2_INSTR_SET          = $(AVX_INSTR_SET) -mavx2
-NEON_D32_INSTR_SET      = -mfpu=neon-vfpv4
-ASIMD_INSTR_SET      	= -march=armv8-a+simd
+# Source code
+CXX_SRC_MAIN            = main/dsp.cpp main/generic/generic.cpp
+CXX_SRC_TEST            = $(call rwildcard, test, *.cpp)
+CXX_SRC_NOTEST          =
+CXX_SRC_EXT             = $(patsubst $($(ARTIFACT_ID)_BIN)/%.o, %.cpp, $(CXX_OBJ_EXT))
+CXX_SRC                 = $(CXX_SRC_MAIN) $(CXX_SRC_EXT)
 
-ifeq ($(PLATFORM),BSD)
-  ifeq ($(ARCHITECTURE), arm)
-    CXX_OBJEXT             += $(ARM_IMPL) $(NEON_D32_IMPL)
-  endif
-endif
+CXX_OBJ_MAIN            = $(patsubst %.cpp, $($(ARTIFACT_ID)_BIN)/%.o, $(CXX_SRC_MAIN))
+CXX_OBJ_TEST            = $(patsubst %.cpp, $($(ARTIFACT_ID)_BIN)/%.o, $(CXX_SRC_TEST))
+CXX_OBJ_NOTEST          = $(patsubst %.cpp, $($(ARTIFACT_ID)_BIN)/%.o, $(CXX_SRC_NOTEST))
+CXX_OBJ_EXT             = 
+CXX_OBJ_X86             = $(ARTIFACT_BIN)/main/x86/x86.o
+CXX_OBJ_SSE             = $(ARTIFACT_BIN)/main/x86/sse.o
+CXX_OBJ_SSE2            = $(ARTIFACT_BIN)/main/x86/sse2.o
+CXX_OBJ_SSE3            = $(ARTIFACT_BIN)/main/x86/sse3.o
+CXX_OBJ_SSE4            = $(ARTIFACT_BIN)/main/x86/sse4.o
+CXX_OBJ_AVX             = $(ARTIFACT_BIN)/main/x86/avx.o
+CXX_OBJ_AVX2            = $(ARTIFACT_BIN)/main/x86/avx2.o
+CXX_OBJ_ARM             = $(ARTIFACT_BIN)/main/arm/arm.o
+CXX_OBJ_NEON_D32        = $(ARTIFACT_BIN)/main/arm/neon-d32.o
+CXX_OBJ_AARCH64         = $(ARTIFACT_BIN)/main/aarch64/aarch64.o
+CXX_OBJ_ASIMD           = $(ARTIFACT_BIN)/main/aarch64/asimd.o
+CXX_OBJ                 = $(CXX_OBJ_MAIN) $(CXX_OBJ_EXT)
 
 ifeq ($(ARCHITECTURE),i586)
-  CXX_OBJEXT             += $(X86_IMPL) $(SSE_IMPL) $(SSE2_IMPL) $(SSE3_IMPL) $(SSE4_IMPL) $(AVX_IMPL) $(AVX2_IMPL)
-else ifeq ($(ARCHITECTURE), x86_64)
-  CXX_OBJEXT             += $(X86_IMPL) $(SSE_IMPL) $(SSE2_IMPL) $(SSE3_IMPL) $(SSE4_IMPL) $(AVX_IMPL) $(AVX2_IMPL)
-else ifeq ($(ARCHITECTURE),armv7a)
-  CXX_OBJEXT             += $(ARM_IMPL) $(NEON_D32_IMPL)
-else ifeq ($(ARCHITECTURE),armv7ve)
-  CXX_OBJEXT             += $(ARM_IMPL) $(NEON_D32_IMPL)
+  CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2)
+else ifeq ($(ARCHITECTURE),x86_64)
+  CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2)
 else ifeq ($(ARCHITECTURE),arm32)
-  CXX_OBJEXT             += $(ARM_IMPL) $(NEON_D32_IMPL)
+  CXX_OBJ_EXT            += $(CXX_OBJ_ARM) $(CXX_OBJ_NEON_D32)
 else ifeq ($(ARCHITECTURE),aarch64)
-  CXX_OBJEXT             += $(AARCH64_IMPL) $(ASIMD_IMPL)
+  CXX_OBJ_EXT            += $(CXX_OBJ_AARCH64) $(CXX_OBJ_ASIMD)
 endif
 
-# Define targets
+ALL_HEADERS             = $(call rwildcard, $($(ARTIFACT_ID)_INC), *.h)
+CXX_FILE                = $(patsubst $($(ARTIFACT_ID)_BIN)/%.o,%.cpp, $(@))
+CXX_HDR_PATHS           = $(foreach hdr,$(ARTIFACT_HEADERS),$($(ARTIFACT_ID)_INC)/$(hdr))
+CXX_HEADERS             = $(foreach path,$(CXX_HDR_PATHS),$(call rwildcard, $(path), *.h))
+CXX_INSTHEADERS         = $(patsubst $($(ARTIFACT_ID)_INC)/%,$(DESTDIR)$(INCDIR)/%,$(CXX_HEADERS))
+
+CXX_SSE_CFLAGS          = -mmmx -m3dnow -msse
+CXX_SSE2_CFLAGS         = $(CXX_SSE_CFLAGS) -msse2
+CXX_SSE3_CFLAGS         = $(CXX_SSE2_CFLAGS) -msse3 -mssse3
+CXX_SSE4_CFLAGS         = $(CXX_SSE3_CFLAGS) -msse4 -msse4a -msse4.1 -msse4.2
+CXX_AVX_CFLAGS          = -mavx -mvzeroupper
+CXX_AVX2_CFLAGS         = $(CXX_AVX_CFLAGS) -mavx2
+CXX_NEON_D32_CFLAGS     = -mfpu=neon-vfpv4
+CXX_ASIMD_CFLAGS      	= -march=armv8-a+simd
+
+BUILD_ALL               = $(ARTIFACT_LIB) $(ARTIFACT_SLIB) $(ARTIFACT_PC)
+
+ifeq ($($(ARTIFACT_ID)_TESTING),1)
+  ARTIFACT_TARGETS       += $(ARTIFACT_TEST_BIN)
+endif
+
+DEP_CXX                 = $(foreach src,$(CXX_SRC_MAIN) $(CXX_SRC_EXT) $(CXX_SRC_TEST),$(patsubst %.cpp,$(ARTIFACT_BIN)/%.d,$(src)))
+DEP_CXX_FILE            = $(patsubst $(ARTIFACT_BIN)/%.d,%.cpp,$(@))
+DEP_DEP_FILE            = $(patsubst $(ARTIFACT_BIN)/%.d,%.o,$(@))
+
 .DEFAULT_GOAL = all
 .PHONY: compile depend dep_clean all install uninstall
-.PHONY: $(BUILD_DEPS)
+.PHONY: $(ARTIFACT_DEPS)
 
-compile: $(ARTIFACT_OBJ)
-
-all: $(BUILD_ALL)
-
+# Dependencies
 dep_clean:
 
-$(CXX_DEPS): dep_clean
-	@echo "  dep  [$(ARTIFACT_NAME)] $(CXX_DEPFILE)"
+$(DEP_CXX): dep_clean
+	@echo "  dep  [$(ARTIFACT_NAME)] $(DEP_CXX_FILE)"
 	@mkdir -p $(dir $(@))
-	$(CXX) -MM -MT "\$$($(ARTIFACT_VARS)_BIN)/$(CXX_DEPTARGET)" -MF $(@) $(CXX_DEPFILE) $(CXXFLAGS) $(INCLUDE) $(CFLAGS_DEPS)
+	$(CXX) -MM -MT "\$$($(ARTIFACT_ID)_BIN)/$(DEP_DEP_FILE)" -MF $(@) $(DEP_CXX_FILE) $(CXXFLAGS) $(INCLUDE) $(ARTIFACT_CFLAGS)
 
-depend: $(CXX_DEPS)
-	$(foreach dep,$(DEPENDENCIES) $(ARTIFACT_VARS),\
+depend: $(DEP_CXX)
+	$(foreach dep,$(DEPENDENCIES) $(ARTIFACT_ID),\
 	  $(if $($(dep)_INC), \
 	    $(eval SED_RULES += s/$(shell echo "$($(dep)_INC)" | sed "s/\\//\\\\\//g")/\$$$$\\($(dep)_INC\\)/g;)\
 	  )\
@@ -139,32 +131,43 @@ depend: $(CXX_DEPS)
 	    $(eval SED_RULES += s/$(shell echo "$($(dep)_BIN)" | sed "s/\\//\\\\\//g")/\\$$$$\\($(dep)_BIN\\)/g;)\
 	  )\
 	)
-	@cat $(CXX_DEPS) | sed -E "$(SED_RULES)" >Makefile.$(ARCHITECTURE).d
+	@cat $(DEP_CXX) | sed -E "$(SED_RULES)" >Makefile.$(ARCHITECTURE).d
 
-$(BUILD_DEPS):
+$(ARTIFACT_DEPS):
 	@echo "make $(notdir $($(@)_OBJ))"
-	@$(MAKE) -s -C "$($(@)_PATH)" compile CONFIG="$(CONFIG)" NO_DEPENDENCIES="1" DEMO_TEST="0"
+	@$(MAKE) -s -C "$($(@)_PATH)" compile CONFIG="$(CONFIG)" DEMO_TEST="0"
 
-$(ARTIFACT_OBJ): $(BUILD_DEPS) $(CXX_OBJ) $(CXX_OBJEXT)
-	@echo "  $(LD)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_OBJ))"
-	@$(LD) -o $(ARTIFACT_OBJ) -r $(CXX_OBJ) $(CXX_OBJEXT)
+# Compilation
+compile: $(ARTIFACT_OBJ)
 
-$(ARTIFACT_LIB): $(ARTIFACT_OBJ)
-	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_LIB))"
-	@$(CXX) -o $(ARTIFACT_LIB) $(LINKER_OBJS) $(ARTIFACT_OBJ) $(SO_FLAGS) $(LINKER_DEPS)
-	
-$(ARTIFACT_SLIB): $(ARTIFACT_OBJ)
-	@echo "  $(AR)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_SLIB))"
-	@$(AR) rcs $(ARTIFACT_SLIB) $(LINKER_OBJS) $(ARTIFACT_OBJ)
-
-$(ARTIFACT_TESTBIN): $(ARTIFACT_OBJ)
-	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_TESTBIN))"
-	@$(CXX) -o $(ARTIFACT_TESTBIN) $(LINKER_OBJS) $(ARTIFACT_OBJ) $(EXE_FLAGS) $(LINKER_DEPS)
-
-$(CXX_OBJ) $(CXX_OBJEXT):
+$(CXX_OBJ_MAIN) $(CXX_OBJ_EXT) $(CXX_OBJ_TEST) $(CXX_OBJ_NOTEST):
 	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(CXX_FILE)"
 	@mkdir -p $(dir $@)
-	@$(CXX) -o $(@) -c $(CXX_FILE) -fPIC $(CXXFLAGS) $(ARTIFACT_MFLAGS) $(EXT_FLAGS) $(INCLUDE) $(CFLAGS_DEPS)
+	@$(CXX) -o $(@) -c $(CXX_FILE) -fPIC $(CXXFLAGS) $(ARTIFACT_MFLAGS) $(EXT_FLAGS) $(INCLUDE) $(ARTIFACT_CFLAGS)
+	
+# Producing large object files
+$(ARTIFACT_OBJ): $(CXX_OBJ)
+	@echo "  $(LD)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_OBJ))"
+	@$(LD) -o $(ARTIFACT_OBJ) -r $(CXX_OBJ)
+
+$(ARTIFACT_OBJ_TEST): $(CXX_OBJ_TEST)
+	@echo "  $(LD)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_OBJ_TEST))"
+	@$(LD) -o $(ARTIFACT_OBJ_TEST) -r $(CXX_OBJ_TEST)
+
+# Linking
+all: $(ARTIFACT_TARGETS)
+
+$(ARTIFACT_LIB): $(ARTIFACT_DEPS) $(ARTIFACT_OBJ) $(CXX_OBJ_NOTEST)
+	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_LIB))"
+	@$(CXX) -o $(ARTIFACT_LIB) $(ARTIFACT_OBJFILES) $(CXX_OBJ_NOTEST) $(SO_FLAGS) $(ARTIFACT_LDFLAGS)
+	
+$(ARTIFACT_SLIB): $(ARTIFACT_DEPS) $(ARTIFACT_OBJ) $(CXX_OBJ_NOTEST)
+	@echo "  $(AR)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_SLIB))"
+	@$(AR) rcs $(ARTIFACT_SLIB) $(ARTIFACT_OBJFILES) $(CXX_OBJ_NOTEST)
+
+$(ARTIFACT_TEST_BIN): $(ARTIFACT_DEPS) $(ARTIFACT_OBJ) $(ARTIFACT_OBJ_TEST)
+	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_TEST_BIN))"
+	@$(CXX) -o $(ARTIFACT_TEST_BIN) $(ARTIFACT_OBJFILES) $(ARTIFACT_OBJ_TEST) $(EXE_FLAGS) $(ARTIFACT_LDFLAGS)
 
 $(ARTIFACT_PC):
 	@mkdir -p $(dir $(ARTIFACT_PC))
@@ -173,14 +176,15 @@ $(ARTIFACT_PC):
 	@echo "includedir=$(INCDIR)" >> "$(ARTIFACT_PC)"
 	@echo "libdir=$(LIBDIR)" >> "$(ARTIFACT_PC)"
 	@echo "" >> $(ARTIFACT_PC) >> "$(ARTIFACT_PC)"
-	@echo "Name: $($(ARTIFACT_VARS)_NAME)" >> "$(ARTIFACT_PC)"
-	@echo "Description: $($(ARTIFACT_VARS)_DESC)" >> "$(ARTIFACT_PC)"
-	@echo "Version: $($(ARTIFACT_VARS)_VERSION)" >> "$(ARTIFACT_PC)"
+	@echo "Name: $($(ARTIFACT_ID)_NAME)" >> "$(ARTIFACT_PC)"
+	@echo "Description: $($(ARTIFACT_ID)_DESC)" >> "$(ARTIFACT_PC)"
+	@echo "Version: $($(ARTIFACT_ID)_VERSION)" >> "$(ARTIFACT_PC)"
 	@echo "Cflags: -I\$${includedir}" >> "$(ARTIFACT_PC)"
-	@echo "Libs: -L\$${libdir} -l$(notdir $($(ARTIFACT_VARS)_NAME))" >> "$(ARTIFACT_PC)"
+	@echo "Libs: -L\$${libdir} -l$(notdir $($(ARTIFACT_ID)_NAME))" >> "$(ARTIFACT_PC)"
 
+# Installation/deinstallation
 install: all
-	@echo "Installing $($(ARTIFACT_VARS)_NAME)"
+	@echo "Installing $($(ARTIFACT_ID)_NAME)"
 	@mkdir -p "$(DESTDIR)$(INCDIR)"
 	@mkdir -p "$(DESTDIR)$(LIBDIR)/pkgconfig"
 	@cp -r "$(CXX_HDR_PATHS)" "$(DESTDIR)$(INCDIR)/"
@@ -194,7 +198,7 @@ install: all
 	@echo "Install OK"
 
 uninstall:
-	@echo "Uninstalling $($(ARTIFACT_VARS)_NAME)"
+	@echo "Uninstalling $($(ARTIFACT_ID)_NAME)"
 	@-rm -f "$(DESTDIR)$(LIBDIR)/$(notdir $(ARTIFACT_LIB))"
 	@-rm -f "$(DESTDIR)$(LIBDIR)/$(notdir $(ARTIFACT_SLIB))"
 	@-rm -f "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_LIBLINK)"
@@ -204,14 +208,14 @@ uninstall:
 	@echo "Uninstall OK"
 
 # Additional extended rules:
-$(SSE_IMPL):        EXT_FLAGS=$(SSE_INSTR_SET)
-$(SSE2_IMPL):       EXT_FLAGS=$(SSE2_INSTR_SET)
-$(SSE3_IMPL):       EXT_FLAGS=$(SSE3_INSTR_SET)
-$(SSE4_IMPL):       EXT_FLAGS=$(SSE4_INSTR_SET)
-$(AVX_IMPL):        EXT_FLAGS=$(AVX_INSTR_SET)
-$(AVX2_IMPL):       EXT_FLAGS=$(AVX2_INSTR_SET)
-$(NEON_D32_IMPL):   EXT_FLAGS=$(NEON_D32_INSTR_SET)
-$(ASIMD_IMPL):      EXT_FLAGS=$(ASIMD_INSTR_SET)
+$(CXX_OBJ_SSE):        EXT_FLAGS=$(CXX_SSE_CFLAGS)
+$(CXX_OBJ_SSE2):       EXT_FLAGS=$(CXX_SSE2_CFLAGS)
+$(CXX_OBJ_SSE3):       EXT_FLAGS=$(CXX_SSE3_CFLAGS)
+$(CXX_OBJ_SSE4):       EXT_FLAGS=$(CXX_SSE4_CFLAGS)
+$(CXX_OBJ_AVX):        EXT_FLAGS=$(CXX_AVX_CFLAGS)
+$(CXX_OBJ_AVX2):       EXT_FLAGS=$(CXX_AVX2_CFLAGS)
+$(CXX_OBJ_NEON_D32):   EXT_FLAGS=$(CXX_NEON_D32_CFLAGS)
+$(CXX_OBJ_ASIMD):      EXT_FLAGS=$(CXX_ASIMD_CFLAGS)
 
 # Dependencies
 -include $(CURDIR)/Makefile.$(ARCHITECTURE).d

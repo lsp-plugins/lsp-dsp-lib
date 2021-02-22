@@ -18,31 +18,34 @@
 # along with lsp-dsp-lib.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-BASEDIR            := $(CURDIR)
-CONFIG             := $(CURDIR)/.config.mk
+BASEDIR                := $(CURDIR)
+DEPLIST                := $(BASEDIR)/dependencies.mk
+PROJECT                := $(BASEDIR)/project.mk
+CONFIG                 := $(BASEDIR)/.config.mk
 
 include $(BASEDIR)/make/functions.mk
-include $(BASEDIR)/dependencies.mk
-ifneq ($(TREE),1)
+ifeq ($(TREE),1)
+  include $(DEPLIST)
+else
   -include $(CONFIG)
 endif
-include $(BASEDIR)/project.mk
+include $(PROJECT)
 
-SYS_DEPENDENCIES        = $(DEPENDENCIES) $(TEST_DEPENDENCIES)
-ALL_DEPENDENCIES_UNIQ   = $(call uniq,$(ALL_DEPENDENCIES))
+UNIQ_DEPENDENCIES       = $(call uniq,$(DEPENDENCIES) $(TEST_DEPENDENCIES))
+UNIQ_ALL_DEPENDENCIES  := $(call uniq,$(ALL_DEPENDENCIES))
 
 # Find the proper branch of the GIT repository
 ifeq ($(TREE),1)
-  MODULES            := $(BASEDIR)/modules
-  GIT                := git
+  MODULES                := $(BASEDIR)/modules
+  GIT                    := git
   
   ifeq ($(findstring -devel,$(ARTIFACT_VERSION)),-devel)
-    $(foreach dep, $(ALL_DEPENDENCIES_UNIQ), \
+    $(foreach dep, $(UNIQ_ALL_DEPENDENCIES), \
       $(eval $(dep)_BRANCH=devel) \
       $(eval $(dep)_PATH=$(MODULES)/$($(dep)_NAME)) \
     )
   else
-    $(foreach dep, $(ALL_DEPENDENCIES_UNIQ), \
+    $(foreach dep, $(UNIQ_ALL_DEPENDENCIES), \
       $(eval $(dep)_BRANCH="$($(dep)_VERSION)") \
       $(eval $(dep)_PATH=$(MODULES)/$($(dep)_NAME)) \
     )
@@ -50,10 +53,10 @@ ifeq ($(TREE),1)
 endif
 
 # Form list of modules, exclude all modules that have 'system' version
-SRC_MODULES         = $(foreach dep, $(SYS_DEPENDENCIES), $(if $(findstring src,$($(dep)_TYPE)),$(dep)))
-HDR_MODULES         = $(foreach dep, $(SYS_DEPENDENCIES), $(if $(findstring hdr,$($(dep)_TYPE)),$(dep)))
-ALL_SRC_MODULES     = $(foreach dep, $(ALL_DEPENDENCIES_UNIQ), $(if $(findstring src,$($(dep)_TYPE)),$(dep)))
-ALL_HDR_MODULES     = $(foreach dep, $(ALL_DEPENDENCIES_UNIQ), $(if $(findstring hdr,$($(dep)_TYPE)),$(dep)))
+SRC_MODULES         = $(foreach dep, $(UNIQ_DEPENDENCIES), $(if $(findstring src,$($(dep)_TYPE)),$(dep)))
+HDR_MODULES         = $(foreach dep, $(UNIQ_DEPENDENCIES), $(if $(findstring hdr,$($(dep)_TYPE)),$(dep)))
+ALL_SRC_MODULES     = $(foreach dep, $(UNIQ_ALL_DEPENDENCIES), $(if $(findstring src,$($(dep)_TYPE)),$(dep)))
+ALL_HDR_MODULES     = $(foreach dep, $(UNIQ_ALL_DEPENDENCIES), $(if $(findstring hdr,$($(dep)_TYPE)),$(dep)))
 ALL_PATHS           = $(foreach dep, $(ALL_SRC_MODULES) $(ALL_HDR_MODULES), $($(dep)_PATH))
 
 # Branches

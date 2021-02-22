@@ -84,6 +84,8 @@
         #include <private/dsp/arch/arm/neon-d32/fft.h>
         #include <private/dsp/arch/arm/neon-d32/fastconv.h>
         #include <private/dsp/arch/arm/neon-d32/mix.h>
+
+        #include <private/dsp/arch/arm/neon-d32/interpolation/linear.h>
     #undef PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL
 
 
@@ -362,6 +364,13 @@
                 EXPORT1(mix_add2);
                 EXPORT1(mix_add3);
                 EXPORT1(mix_add4);
+
+                EXPORT1(lin_inter_set);
+                EXPORT1(lin_inter_mul2);
+                EXPORT1(lin_inter_mul3);
+                EXPORT1(lin_inter_fmadd2);
+                EXPORT1(lin_inter_frmadd2);
+                EXPORT1(lin_inter_fmadd3);
             }
         }
     }

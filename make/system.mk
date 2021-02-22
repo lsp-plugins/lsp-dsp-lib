@@ -53,21 +53,23 @@ ifndef ARCHITECTURE
     endif
   else # BUILD_PLATFORM != Windows
     BUILD_ARCH             := $(shell uname -m)
-    ifeq ($(patsubst armv6%,armv6,$(BUILD_ARCH)), armv6)
-      ARCHITECTURE           := armv6a
-    else ifeq ($(patsubst armv7%,armv7,$(BUILD_ARCH)), armv7)
-      ARCHITECTURE           := armv7a
-    else ifeq ($(patsubst armv8%,armv8,$(BUILD_ARCH)), armv8)
-      ARCHITECTURE           := armv8a
-    else ifeq ($(patsubst aarch64%,aarch64,$(BUILD_ARCH)), aarch64)
+    ifeq ($(patsubst armv6%,armv6,$(BUILD_ARCH)),armv6)
+      ARCHITECTURE           := arm32
+    else ifeq ($(patsubst armv7%,armv7,$(BUILD_ARCH)),armv7)
+      ARCHITECTURE           := arm32
+    else ifeq ($(patsubst armv8%,armv8,$(BUILD_ARCH)),armv8)
       ARCHITECTURE           := aarch64
+    else ifeq ($(patsubst aarch64%,aarch64,$(BUILD_ARCH)),aarch64)
+      ARCHITECTURE           := aarch64
+    else ifeq ($(BUILD_ARCH),arm)
+      ARCHITECTURE           := arm32
     else ifeq ($(BUILD_ARCH),x86_64)
       ARCHITECTURE           := x86_64
     else ifeq ($(BUILD_ARCH),amd64)
       ARCHITECTURE           := x86_64
     else ifeq ($(BUILD_ARCH),i86pc)
       ARCHITECTURE           := x86_64
-    else ifeq ($(patsubst i%86,i586,$(BUILD_ARCH)), i586)
+    else ifeq ($(patsubst i%86,i586,$(BUILD_ARCH)),i586)
       ARCHITECTURE           := i586
     else
       ARCHITECTURE           := $(BUILD_ARCH)

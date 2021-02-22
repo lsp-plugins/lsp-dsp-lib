@@ -86,6 +86,8 @@
         #include <private/dsp/arch/aarch64/asimd/filters/transform.h>
 
         #include <private/dsp/arch/aarch64/asimd/graphics.h>
+
+        #include <private/dsp/arch/aarch64/asimd/interpolation/linear.h>
     #undef PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL
 
     #define EXPORT2(function, export) \
@@ -389,6 +391,13 @@
                 EXPORT1(convolve);
 
                 EXPORT1(abgr32_to_bgrff32);
+
+                EXPORT1(lin_inter_set);
+                EXPORT1(lin_inter_mul2);
+                EXPORT1(lin_inter_mul3);
+                EXPORT1(lin_inter_fmadd2);
+                EXPORT1(lin_inter_frmadd2);
+                EXPORT1(lin_inter_fmadd3);
             }
         }
     }

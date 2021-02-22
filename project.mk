@@ -19,22 +19,28 @@
 #
 
 # Package version
+ARTIFACT_ID                 = LSP_DSP_LIB
 ARTIFACT_NAME               = lsp-dsp-lib
 ARTIFACT_DESC               = DSP library for digital signal processing
-ARTIFACT_VARS               = LSP_DSP_LIB
 ARTIFACT_HEADERS            = lsp-plug.in
-ARTIFACT_VERSION            = 0.5.11
+ARTIFACT_VERSION            = 0.5.12
 
 # List of dependencies
 DEPENDENCIES = \
-  STDLIB \
+  LIBPTHREAD \
   LSP_COMMON_LIB
 
 TEST_DEPENDENCIES = \
-  TEST_STDLIB \
   LSP_TEST_FW
 
-# All possible dependencies
+# Platform-dependent
+ifeq ($(PLATFORM),Windows)
+  TEST_DEPENDENCIES += \
+    LIBSHLWAPI
+endif
+
+# Overall system dependencies
 ALL_DEPENDENCIES = \
   $(DEPENDENCIES) \
-  $(TEST_DEPENDENCIES)
+  $(TEST_DEPENDENCIES) \
+  LIBSHLWAPI

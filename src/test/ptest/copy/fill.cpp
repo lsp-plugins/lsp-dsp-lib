@@ -22,6 +22,7 @@
 #include <lsp-plug.in/test-fw/ptest.h>
 #include <lsp-plug.in/common/alloc.h>
 #include <lsp-plug.in/stdlib/math.h>
+#include <lsp-plug.in/stdlib/string.h>
 
 #define MIN_RANK 8
 #define MAX_RANK 16
@@ -70,6 +71,20 @@ namespace lsp
     typedef void (* fill_value_t)(float *dst, float value, size_t count);
 }
 
+static void fill_zero_memset(float *dst, size_t count)
+{
+    memset(dst, 0, count*sizeof(float));
+}
+
+static void fill_zero_bzero(float *dst, size_t count)
+{
+#ifdef PLATFORM_WINDOWS
+    ZeroMemory(dst, count*sizeof(float));
+#else
+    bzero(dst, count*sizeof(float));
+#endif
+}
+
 //-----------------------------------------------------------------------------
 // Performance test for destination buffer filling
 PTEST_BEGIN("dsp.copy", fill, 5, 5000)
@@ -112,6 +127,9 @@ PTEST_BEGIN("dsp.copy", fill, 5, 5000)
         #define CALL(func) \
             call(#func, out, count, func)
 
+        TEST_EXPORT(::fill_zero_memset);
+        TEST_EXPORT(::fill_zero_bzero);
+
         for (size_t i=MIN_RANK; i <= MAX_RANK; ++i)
         {
             size_t count = 1 << i;
@@ -123,6 +141,8 @@ PTEST_BEGIN("dsp.copy", fill, 5, 5000)
             PTEST_SEPARATOR;
 
             CALL(generic::fill_zero);
+            CALL(fill_zero_memset);
+            CALL(fill_zero_bzero);
             IF_ARCH_X86(CALL(sse::fill_zero));
             IF_ARCH_ARM(CALL(neon_d32::fill_zero));
             IF_ARCH_AARCH64(CALL(asimd::fill_zero));

@@ -25,20 +25,24 @@ BINDIR                     := $(PREFIX)/bin
 INCDIR                     := $(PREFIX)/include
 BASEDIR                    := $(CURDIR)
 BUILDDIR                   := $(BASEDIR)/.build
-CONFIG                     := $(BASEDIR)/.config.mk
 MODULES                    := $(BASEDIR)/modules
+CONFIG                     := $(BASEDIR)/.config.mk
 TEST                       := 0
 DEBUG                      := 0
 PROFILE                    := 0
 TRACE                      := 0
 
+include $(BASEDIR)/make/functions.mk
 include $(BASEDIR)/make/system.mk
-include $(BASEDIR)/project.mk
 include $(BASEDIR)/make/tools.mk
 include $(BASEDIR)/dependencies.mk
+include $(BASEDIR)/project.mk
 
-DEPENDENCIES               += $(TEST_DEPENDENCIES)
+# Compute the full list of dependencies
+UNIQ_DEPENDENCIES          := $(call uniq, $(DEPENDENCIES) $(TEST_DEPENDENCIES))
+DEPENDENCIES                = $(UNIQ_DEPENDENCIES)
 
+# Determine versions
 ifeq ($(findstring -devel,$(ARTIFACT_VERSION)),-devel)
   $(foreach dep, $(DEPENDENCIES), \
     $(eval $(dep)_BRANCH=devel) \
@@ -91,6 +95,7 @@ define srcconfig =
   $(if $($(name)_CFLAGS),,  $(eval $(name)_CFLAGS  := "-I\"$($(name)_INC)\"" $(if $(builtin),"-D$(name)_BUILTIN")))
   $(if $($(name)_LDLAGS),,  $(eval $(name)_LDFLAGS :=))
   $(if $($(name)_OBJ),,     $(eval $(name)_OBJ     := "$($(name)_BIN)/$($(name)_NAME).o"))
+  $(if $($(name)_OBJ_TEST),,$(eval $(name)_OBJ_TEST:= "$($(name)_BIN)/$($(name)_NAME)-test.o"))
   $(if $($(name)_MFLAGS),,  $(eval $(name)_MFLAGS  := $(if $(builtin),"-D$(name)_BUILTIN -fvisibility=hidden")))
 endef
 
@@ -116,23 +121,23 @@ define vardef =
 endef
 
 # Define predefined variables
-ifndef $(ARTIFACT_VARS)_NAME
-  $(ARTIFACT_VARS)_NAME      := $(ARTIFACT_NAME)
+ifndef $(ARTIFACT_ID)_NAME
+  $(ARTIFACT_ID)_NAME        := $(ARTIFACT_NAME)
 endif
-ifndef $(ARTIFACT_VARS)_DESC
-  $(ARTIFACT_VARS)_DESC      := $(ARTIFACT_DESC)
+ifndef $(ARTIFACT_ID)_DESC
+  $(ARTIFACT_ID)_DESC        := $(ARTIFACT_DESC)
 endif
-ifndef $(ARTIFACT_VARS)_VERSION 
-  $(ARTIFACT_VARS)_VERSION   := $(ARTIFACT_VERSION)
+ifndef $(ARTIFACT_ID)_VERSION 
+  $(ARTIFACT_ID)_VERSION     := $(ARTIFACT_VERSION)
 endif
-ifndef $(ARTIFACT_VARS)_PATH
-  $(ARTIFACT_VARS)_PATH      := $(BASEDIR)
+ifndef $(ARTIFACT_ID)_PATH
+  $(ARTIFACT_ID)_PATH        := $(BASEDIR)
 endif
 
-$(ARTIFACT_VARS)_TESTING    = $(TEST)
-$(ARTIFACT_VARS)_TYPE      := src
+$(ARTIFACT_ID)_TESTING      = $(TEST)
+$(ARTIFACT_ID)_TYPE        := src
 
-OVERALL_DEPS := $(DEPENDENCIES) $(ARTIFACT_VARS)
+OVERALL_DEPS := $(DEPENDENCIES) $(ARTIFACT_ID)
 __tmp := $(foreach dep,$(OVERALL_DEPS),$(call vardef, $(dep)))
 
 CONFIG_VARS = \
@@ -155,6 +160,7 @@ CONFIG_VARS = \
     $(name)_MFLAGS \
     $(name)_LDFLAGS \
     $(name)_OBJ \
+    $(name)_OBJ_TEST \
   )
 
 .DEFAULT_GOAL      := config

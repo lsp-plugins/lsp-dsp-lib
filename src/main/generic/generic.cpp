@@ -81,6 +81,8 @@ namespace lsp
 
     #include <private/dsp/arch/generic/coding.h>
 
+    #include <private/dsp/arch/generic/interpolation/linear.h>
+
 #undef PRIVATE_DSP_ARCH_GENERIC_IMPL
 
 #include <stdlib.h>
@@ -545,6 +547,13 @@ namespace lsp
 
             EXPORT1(base64_enc);
             EXPORT1(base64_dec);
+
+            EXPORT1(lin_inter_set);
+            EXPORT1(lin_inter_mul2);
+            EXPORT1(lin_inter_mul3);
+            EXPORT1(lin_inter_fmadd2);
+            EXPORT1(lin_inter_frmadd2);
+            EXPORT1(lin_inter_fmadd3);
         }
 
         #undef EXPORT1
