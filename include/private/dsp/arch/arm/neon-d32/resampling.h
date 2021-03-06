@@ -293,6 +293,169 @@ namespace lsp
             );
         }
 
+        IF_ARCH_ARM
+        (
+            static const float lanczos_2x4[] __lsp_aligned16 =
+            {
+                +0.0000000000000000f,
+                -0.0126608778212387f,
+                +0.0000000000000000f,
+                +0.0599094833772629f,
+
+                +0.0000000000000000f,
+                -0.1664152316035080f,
+                +0.0000000000000000f,
+                +0.6203830132406946f,
+
+                +1.0000000000000000f,
+                +0.6203830132406946f,
+                +0.0000000000000000f,
+                -0.1664152316035080f,
+
+                +0.0000000000000000f,
+                +0.0599094833772629f,
+                +0.0000000000000000f,
+                -0.0126608778212387f
+            };
+        )
+
+        void lanczos_resample_2x4(float *dst, const float *src, size_t count)
+        {
+            IF_ARCH_ARM(
+                const float *kernel = lanczos_2x4;
+            );
+
+            ARCH_ARM_ASM
+            (
+                // Prepare
+                __ASM_EMIT("vldm            %[kernel], {q0-q3}")
+                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("blo             2f")
+
+                // 8x blocks
+                __ASM_EMIT("1:")
+                // Even cycle: prepare
+                __ASM_EMIT("vld2.32         {q4-q5}, [%[src]]!")        // q4 = s0 s2 s4 s6, q5 = s1 s3 s5 s7
+                __ASM_EMIT("vldm            %[dst], {q9-q15}")
+                __ASM_EMIT("vdup.32         q6, d8[1]")                 // q6 = s2
+                __ASM_EMIT("vdup.32         q7, d9[0]")                 // q7 = s4
+                __ASM_EMIT("vdup.32         q8, d9[1]")                 // q8 = s6
+                __ASM_EMIT("vdup.32         q4, d8[0]")                 // q4 = s0
+                // Even cycle: convolve
+                __ASM_EMIT("vmla.f32        q10, q6, q0")
+                __ASM_EMIT("vmla.f32        q11, q6, q1")
+                __ASM_EMIT("vmla.f32        q12, q6, q2")
+                __ASM_EMIT("vmla.f32        q13, q6, q3")
+                __ASM_EMIT("vmla.f32        q11, q7, q0")
+                __ASM_EMIT("vmla.f32        q12, q7, q1")
+                __ASM_EMIT("vmla.f32        q13, q7, q2")
+                __ASM_EMIT("vmla.f32        q14, q7, q3")
+                __ASM_EMIT("vmla.f32        q12, q8, q0")
+                __ASM_EMIT("vmla.f32        q13, q8, q1")
+                __ASM_EMIT("vmla.f32        q14, q8, q2")
+                __ASM_EMIT("vmla.f32        q15, q8, q3")
+                __ASM_EMIT("vmla.f32        q9, q4, q0")
+                __ASM_EMIT("vmla.f32        q10, q4, q1")
+                __ASM_EMIT("vmla.f32        q11, q4, q2")
+                __ASM_EMIT("vmla.f32        q12, q4, q3")
+
+                __ASM_EMIT("vstm            %[dst], {q9-q15}")
+                __ASM_EMIT("add             %[dst], $0x08")
+
+                // Odd cycle: prepare
+                __ASM_EMIT("vdup.32         q6, d10[1]")                // q6 = s3
+                __ASM_EMIT("vdup.32         q7, d11[0]")                // q7 = s5
+                __ASM_EMIT("vdup.32         q8, d11[1]")                // q8 = s7
+                __ASM_EMIT("vdup.32         q5, d10[0]")                // q5 = s1
+                __ASM_EMIT("vldm            %[dst], {q9-q15}")
+                // Odd cycle: convolve
+                __ASM_EMIT("vmla.f32        q10, q6, q0")
+                __ASM_EMIT("vmla.f32        q11, q6, q1")
+                __ASM_EMIT("vmla.f32        q12, q6, q2")
+                __ASM_EMIT("vmla.f32        q13, q6, q3")
+                __ASM_EMIT("vmla.f32        q11, q7, q0")
+                __ASM_EMIT("vmla.f32        q12, q7, q1")
+                __ASM_EMIT("vmla.f32        q13, q7, q2")
+                __ASM_EMIT("vmla.f32        q14, q7, q3")
+                __ASM_EMIT("vmla.f32        q12, q8, q0")
+                __ASM_EMIT("vmla.f32        q13, q8, q1")
+                __ASM_EMIT("vmla.f32        q14, q8, q2")
+                __ASM_EMIT("vmla.f32        q15, q8, q3")
+                __ASM_EMIT("vmla.f32        q9, q5, q0")
+                __ASM_EMIT("vmla.f32        q10, q5, q1")
+                __ASM_EMIT("vmla.f32        q11, q5, q2")
+                __ASM_EMIT("vmla.f32        q12, q5, q3")
+
+                __ASM_EMIT("vstm            %[dst], {q9-q15}")
+                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("add             %[dst], $0x38")
+                __ASM_EMIT("bhs             1b")
+
+                // 4x block
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("blt             4f")
+
+                // Prepare
+                __ASM_EMIT("vld1.32         {q4}, [%[src]]!")
+                __ASM_EMIT("vldm            %[dst], {q9-q13}")
+                __ASM_EMIT("vdup.32         q6, d9[0]")                 // q6 = s2
+                __ASM_EMIT("vdup.32         q5, d8[0]")                 // q4 = s0
+                // Even cycle: convolve
+                __ASM_EMIT("vmla.f32        q10, q6, q0")
+                __ASM_EMIT("vmla.f32        q11, q6, q1")
+                __ASM_EMIT("vmla.f32        q12, q6, q2")
+                __ASM_EMIT("vmla.f32        q13, q6, q3")
+                __ASM_EMIT("vmla.f32        q9, q5, q0")
+                __ASM_EMIT("vmla.f32        q10, q5, q1")
+                __ASM_EMIT("vmla.f32        q11, q5, q2")
+                __ASM_EMIT("vmla.f32        q12, q5, q3")
+                __ASM_EMIT("vstm            %[dst], {q9-q13}")
+                __ASM_EMIT("add             %[dst], $0x08")
+                // Odd cycle: convolve
+                __ASM_EMIT("vdup.32         q6, d9[1]")                 // q6 = s3
+                __ASM_EMIT("vdup.32         q5, d8[1]")                 // q5 = s1
+                __ASM_EMIT("vldm            %[dst], {q9-q13}")
+                __ASM_EMIT("vmla.f32        q10, q6, q0")
+                __ASM_EMIT("vmla.f32        q11, q6, q1")
+                __ASM_EMIT("vmla.f32        q12, q6, q2")
+                __ASM_EMIT("vmla.f32        q13, q6, q3")
+                __ASM_EMIT("vmla.f32        q9, q5, q0")
+                __ASM_EMIT("vmla.f32        q10, q5, q1")
+                __ASM_EMIT("vmla.f32        q11, q5, q2")
+                __ASM_EMIT("vmla.f32        q12, q5, q3")
+                __ASM_EMIT("vstm            %[dst], {q9-q13}")
+                __ASM_EMIT("sub             %[count], $4")
+                __ASM_EMIT("add             %[dst], $0x18")
+
+                // 1x blocks
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds            %[count], $3")
+                __ASM_EMIT("blt             6f")
+                __ASM_EMIT("7:")
+                __ASM_EMIT("vld1.32         {d8[], d9[]}, [%[src]]!")
+                __ASM_EMIT("vldm            %[dst], {q9-q12}")
+                __ASM_EMIT("vmla.f32        q9, q4, q0")
+                __ASM_EMIT("vmla.f32        q10, q4, q1")
+                __ASM_EMIT("vmla.f32        q11, q4, q2")
+                __ASM_EMIT("vmla.f32        q12, q4, q3")
+                __ASM_EMIT("vstm            %[dst], {q9-q12}")
+                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("add             %[dst], $0x08")
+                __ASM_EMIT("bge             7b")
+
+                __ASM_EMIT("6:")
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                : [kernel] "r" (kernel)
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
+            );
+        }
+
         IF_ARCH_ARM(
             static const float lanczos_kernel_3x2[] __lsp_aligned16 =
             {
@@ -430,7 +593,7 @@ namespace lsp
                 // Tail part
                 -0.1458230329384726f,
                 -0.0933267410806225f,
-                -0.0000000000000000f,
+                +0.0000000000000000f,
                 +0.0310789306368038f,
 
                 +0.0126609519658153f,
@@ -847,7 +1010,7 @@ namespace lsp
 
                 +0.0310789306368038f,
                 +0.0248005479513036f,
-                -0.0000000000000000f,
+                +0.0000000000000000f,
                 -0.0424907562338176f,
 
                 -0.0933267410806225f,
@@ -877,7 +1040,7 @@ namespace lsp
 
                 -0.0933267410806225f,
                 -0.0424907562338176f,
-                -0.0000000000000000f,
+                +0.0000000000000000f,
                 +0.0248005479513036f,
 
                 +0.0310789306368038f,

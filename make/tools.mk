@@ -43,8 +43,8 @@ INSTALL            := install
 # Patch flags and tools
 FLAG_RELRO          = -Wl,-z,relro,-z,now
 FLAG_STDLIB         = -lc
-CFLAGS_EXT          =
-CXXFLAGS_EXT        =
+CFLAGS_EXT          = $(ARCHITECTURE_CFLAGS)
+CXXFLAGS_EXT        = $(ARCHITECTURE_CFLAGS)
 LDFLAGS_EXT         =
 
 ifeq ($(PLATFORM),Solaris)
@@ -84,33 +84,6 @@ else
     CFLAGS_EXT         += -fvisibility=hidden
     CXXFLAGS_EXT       += -fvisibility=hidden
   endif
-endif
-
-# ARMv7 architecture tuning
-ifeq ($(ARCHITECTURE),i586)
-  CXXFLAGS_EXT    += -m32
-  CFLAGS_EXT      += -m32
-else ifeq ($(ARCHITECTURE),x86_64)
-  CXXFLAGS_EXT    += -m64
-  CFLAGS_EXT      += -m64
-else ifeq ($(ARCHITECTURE),armv6a)
-  CXXFLAGS_EXT    += -march=armv6-a -marm
-  CFLAGS_EXT      += -march=armv6-a -marm
-else ifeq ($(ARCHITECTURE),armv7a)
-  CXXFLAGS_EXT    += -march=armv7-a -marm
-  CFLAGS_EXT      += -march=armv7-a -marm
-else ifeq ($(ARCHITECTURE),armv7ve)
-  CXXFLAGS_EXT    += -march=armv7ve -marm
-  CFLAGS_EXT      += -march=armv7ve -marm
-else ifeq ($(ARCHITECTURE),arm32)
-  CXXFLAGS_EXT    += -marm
-  CFLAGS_EXT      += -marm
-else ifeq ($(ARCHITECTURE),armv8a)
-  CXXFLAGS_EXT    += -march=armv7-a -marm
-  CFLAGS_EXT      += -march=armv7-a -marm
-else ifeq ($(ARCHITECTURE),aarch64)
-  CXXFLAGS_EXT    += -march=armv8-a
-  CFLAGS_EXT      += -march=armv8-a
 endif
 
 # Define flags

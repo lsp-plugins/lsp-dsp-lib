@@ -26,6 +26,8 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL */
 
+#include <lsp-plug.in/common/bits.h>
+
 namespace lsp
 {
     namespace neon_d32
@@ -49,7 +51,7 @@ namespace lsp
                     __ASM_EMIT("1:")
                 #if defined(ARCH_ARM6)
                     __ASM_EMIT("push        {%[dst_re], %[dst_im]}")
-                    ARMV6_MV_RBIT32("%[j]", "%[i]", "%[dst_re]", "%[dst_im]", "%[masks]") // j = reverse_bits(i)
+                    LSP_ARMV6_MV_RBIT32("%[j]", "%[i]", "%[dst_re]", "%[dst_im]", "%[masks]") // j = reverse_bits(i)
                     __ASM_EMIT("pop         {%[dst_re], %[dst_im]}")
                 #else
                     __ASM_EMIT("rbit        %[j], %[i]")                        // j = reverse_bits(i)
@@ -114,7 +116,7 @@ namespace lsp
                       [d_re] "=&r" (d_re), [d_im] "=&r" (d_im),
                       [rrank] "+r" (rrank), [i] "=&r" (i), [j] "=&r" (j),
                       [count] "+r" (count)
-                    : IF_ARCH_ARM6([masks] "r" (__rb_masks))
+                    : IF_ARCH_ARM6([masks] "r" (lsp_rb_masks))
                     : "cc", "memory",
                       "q0", "q1", "q2", "q3", "q4", "q5"
                 );
@@ -134,7 +136,7 @@ namespace lsp
                     __ASM_EMIT("1:")
                 #if defined(ARCH_ARM6)
                     __ASM_EMIT("push        {%[dst_re], %[dst_im]}")
-                    ARMV6_MV_RBIT32("%[j]", "%[i]", "%[dst_re]", "%[dst_im]", "%[masks]") // j = reverse_bits(i)
+                    LSP_ARMV6_MV_RBIT32("%[j]", "%[i]", "%[dst_re]", "%[dst_im]", "%[masks]") // j = reverse_bits(i)
                     __ASM_EMIT("pop         {%[dst_re], %[dst_im]}")
                 #else
                     __ASM_EMIT("rbit        %[j], %[i]")                        // j = reverse_bits(i)
@@ -217,7 +219,7 @@ namespace lsp
                       [rrank] "+r" (rrank), [i] "=&r" (i), [j] "=&r" (j)
                     : [src_re] "r" (src_re), [src_im] "r" (src_im),
                       [regs] "r" (regs)
-                      IF_ARCH_ARM6(, [masks] "r" (__rb_masks))
+                      IF_ARCH_ARM6(, [masks] "r" (lsp_rb_masks))
                     : "cc", "memory",
                       "q0", "q1", "q2", "q3", "q4", "q5"
                 );
@@ -243,7 +245,7 @@ namespace lsp
                     __ASM_EMIT("1:")
                 #if defined(ARCH_ARM6)
                     __ASM_EMIT("push        {%[dst_re], %[dst_im]}")
-                    ARMV6_MV_RBIT32("%[j]", "%[i]", "%[dst_re]", "%[dst_im]", "%[masks]") // j = reverse_bits(i)
+                    LSP_ARMV6_MV_RBIT32("%[j]", "%[i]", "%[dst_re]", "%[dst_im]", "%[masks]") // j = reverse_bits(i)
                     __ASM_EMIT("pop         {%[dst_re], %[dst_im]}")
                 #else
                     __ASM_EMIT("rbit        %[j], %[i]")                        // j = reverse_bits(i)
@@ -310,7 +312,7 @@ namespace lsp
                       [d_re] "=&r" (d_re), [d_im] "=&r" (d_im),
                       [rrank] "+r" (rrank), [i] "=&r" (i), [j] "=&r" (j),
                       [count] "+r" (count)
-                    : IF_ARCH_ARM6([masks] "r" (__rb_masks))
+                    : IF_ARCH_ARM6([masks] "r" (lsp_rb_masks))
                     : "cc", "memory",
                       "q0", "q1", "q2", "q3", "q4", "q5"
                 );
@@ -330,7 +332,7 @@ namespace lsp
                     __ASM_EMIT("1:")
                 #if defined(ARCH_ARM6)
                     __ASM_EMIT("push        {%[dst_re], %[dst_im]}")
-                    ARMV6_MV_RBIT32("%[j]", "%[i]", "%[dst_re]", "%[dst_im]", "%[masks]") // j = reverse_bits(i)
+                    LSP_ARMV6_MV_RBIT32("%[j]", "%[i]", "%[dst_re]", "%[dst_im]", "%[masks]") // j = reverse_bits(i)
                     __ASM_EMIT("pop         {%[dst_re], %[dst_im]}")
                 #else
                     __ASM_EMIT("rbit        %[j], %[i]")                        // j = reverse_bits(i)
@@ -413,7 +415,7 @@ namespace lsp
                       [rrank] "+r" (rrank), [i] "=&r" (i), [j] "=&r" (j)
                     : [src_re] "r" (src_re), [src_im] "r" (src_im),
                       [regs] "r" (regs)
-                      IF_ARCH_ARM6(, [masks] "r" (__rb_masks))
+                      IF_ARCH_ARM6(, [masks] "r" (lsp_rb_masks))
                     : "cc", "memory",
                       "q0", "q1", "q2", "q3", "q4", "q5"
                 );
