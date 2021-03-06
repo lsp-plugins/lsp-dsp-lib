@@ -668,6 +668,153 @@ namespace lsp
         }
 
         IF_ARCH_ARM(
+            static const float lanczos_kernel_3x4[] __lsp_aligned16 =
+            {
+                // Part 1 (unshifted)
+                +0.0000000000000000f,
+                -0.0067568495254777f,
+                -0.0157944094156391f,
+                +0.0000000000000000f,
+
+                +0.0427448743491113f,
+                +0.0622703182267308f,
+                +0.0000000000000000f,
+                -0.1220498237243924f,
+
+                -0.1709794973964449f,
+                +0.0000000000000000f,
+                +0.3948602353909778f,
+                +0.8175787925827955f,
+
+                // Part 1 (shifted)
+                -0.0067568495254777f,
+                -0.0157944094156391f,
+                +0.0000000000000000f,
+                +0.0427448743491113f,
+
+                +0.0622703182267308f,
+                +0.0000000000000000f,
+                -0.1220498237243924f,
+                -0.1709794973964449f,
+
+                +0.0000000000000000f,
+                +0.3948602353909778f,
+                +0.8175787925827955f,
+                +1.0000000000000000f,
+
+                // Part 2 (unshifted)
+                +1.0000000000000000f,
+                +0.8175787925827955f,
+                +0.3948602353909778f,
+                +0.0000000000000000f,
+
+                -0.1709794973964449f,
+                -0.1220498237243924f,
+                +0.0000000000000000f,
+                +0.0622703182267308f,
+
+                +0.0427448743491113f,
+                +0.0000000000000000f,
+                -0.0157944094156391f,
+                -0.0067568495254777f,
+
+                // Part 2 (shifted)
+                +0.8175787925827955f,
+                +0.3948602353909778f,
+                +0.0000000000000000f,
+                -0.1709794973964449f,
+
+                -0.1220498237243924f,
+                +0.0000000000000000f,
+                +0.0622703182267308f,
+                +0.0427448743491113f,
+
+                +0.0000000000000000f,
+                -0.0157944094156391f,
+                -0.0067568495254777f,
+                +0.0000000000000000f
+            };
+        )
+
+        void lanczos_resample_3x4(float *dst, const float *src, size_t count)
+        {
+            IF_ARCH_ARM(
+                const float *kernel = lanczos_kernel_3x4;
+            );
+
+            ARCH_ARM_ASM
+            (
+                // Prepare
+                __ASM_EMIT("vldm            %[kernel], {q2-q7}")
+                __ASM_EMIT("subs            %[count], $2")
+                __ASM_EMIT("blo             2f")
+
+                // 2x blocks
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vldm            %[src]!, {d0}")     // d0 = s0 s1
+                __ASM_EMIT("vldm            %[dst], {q8-q14}")
+                __ASM_EMIT("vdup.32         q1, d0[1]")         // q1 = s1 s1 s1 s1
+                __ASM_EMIT("vdup.32         q0, d0[0]")         // q0 = s0 s0 s0 s0
+
+                // Step 1
+                __ASM_EMIT("vldm            %[kernel]!, {q2-q7}")
+                __ASM_EMIT("vmla.f32        q8, q0, q2")
+                __ASM_EMIT("vmla.f32        q9, q0, q3")
+                __ASM_EMIT("vmla.f32        q10, q0, q4")
+                __ASM_EMIT("vmla.f32        q9, q1, q5")
+                __ASM_EMIT("vmla.f32        q10, q1, q6")
+                __ASM_EMIT("vmla.f32        q11, q1, q7")
+
+                // Step 2
+                __ASM_EMIT("vldm            %[kernel], {q2-q7}")
+                __ASM_EMIT("vmla.f32        q11, q0, q2")
+                __ASM_EMIT("vmla.f32        q12, q0, q3")
+                __ASM_EMIT("vmla.f32        q13, q0, q4")
+                __ASM_EMIT("vmla.f32        q12, q1, q5")
+                __ASM_EMIT("vmla.f32        q13, q1, q6")
+                __ASM_EMIT("vmla.f32        q14, q1, q7")
+
+                __ASM_EMIT("vstm            %[dst], {q8-q14}")
+                __ASM_EMIT("sub             %[kernel], $0x60")
+                __ASM_EMIT("subs            %[count], $2")
+                __ASM_EMIT("add             %[dst], $0x18")
+                __ASM_EMIT("bhs             1b")
+
+                // 1x block
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds            %[count], $1")
+                __ASM_EMIT("blt             4f")
+
+                __ASM_EMIT("vld1.32         {d0[], d1[]}, [%[src]]") // q0 = s0 s0 s0 s0
+                __ASM_EMIT("vldm            %[dst], {q8-q13}")
+
+                // Step 1
+                __ASM_EMIT("vldm            %[kernel], {q2-q4}")
+                __ASM_EMIT("add             %[kernel], $0x60")
+                __ASM_EMIT("vmla.f32        q8, q0, q2")
+                __ASM_EMIT("vmla.f32        q9, q0, q3")
+                __ASM_EMIT("vmla.f32        q10, q0, q4")
+
+                // Step 2
+                __ASM_EMIT("vldm            %[kernel], {q2-q4}")
+                __ASM_EMIT("vmla.f32        q11, q0, q2")
+                __ASM_EMIT("vmla.f32        q12, q0, q3")
+                __ASM_EMIT("vmla.f32        q13, q0, q4")
+                __ASM_EMIT("vstm            %[dst], {q8-q13}")
+
+                __ASM_EMIT("4:")
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count), [kernel] "+r" (kernel)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
+            );
+        }
+
+        IF_ARCH_ARM(
             static const float lanczos_kernel_4x2[] __lsp_aligned16 =
             {
                 +0.0000000000000000f,
