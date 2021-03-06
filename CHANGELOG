@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 0.5.13 ===
+* Added x86/x86_64 4-lobe oversampling functions.
 
 === 0.5.12 ===
 * Submitted x86/x86_64 SSE2-optimized linear interpolation functions.
