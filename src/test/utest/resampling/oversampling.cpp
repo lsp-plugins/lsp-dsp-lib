@@ -101,7 +101,7 @@ namespace lsp
             void lanczos_resample_6x4(float *dst, const float *src, size_t count);
             void lanczos_resample_8x2(float *dst, const float *src, size_t count);
             void lanczos_resample_8x3(float *dst, const float *src, size_t count);
-//            void lanczos_resample_8x4(float *dst, const float *src, size_t count);
+            void lanczos_resample_8x4(float *dst, const float *src, size_t count);
         }
     )
 
@@ -226,7 +226,7 @@ UTEST_BEGIN("dsp.resampling", oversampling)
         IF_ARCH_ARM(CALL(generic::lanczos_resample_6x4, neon_d32::lanczos_resample_6x4, 16, 6));
         IF_ARCH_ARM(CALL(generic::lanczos_resample_8x2, neon_d32::lanczos_resample_8x2, 16, 8));
         IF_ARCH_ARM(CALL(generic::lanczos_resample_8x3, neon_d32::lanczos_resample_8x3, 16, 8));
-//        IF_ARCH_ARM(CALL(generic::lanczos_resample_8x4, neon_d32::lanczos_resample_8x4, 16, 8));
+        IF_ARCH_ARM(CALL(generic::lanczos_resample_8x4, neon_d32::lanczos_resample_8x4, 16, 8));
 
         IF_ARCH_AARCH64(CALL(generic::lanczos_resample_2x2, asimd::lanczos_resample_2x2, 16, 2));
         IF_ARCH_AARCH64(CALL(generic::lanczos_resample_2x3, asimd::lanczos_resample_2x3, 16, 2));
