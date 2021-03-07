@@ -111,7 +111,7 @@ namespace lsp
         {
             void lanczos_resample_2x2(float *dst, const float *src, size_t count);
             void lanczos_resample_2x3(float *dst, const float *src, size_t count);
-//            void lanczos_resample_2x4(float *dst, const float *src, size_t count);
+            void lanczos_resample_2x4(float *dst, const float *src, size_t count);
             void lanczos_resample_3x2(float *dst, const float *src, size_t count);
             void lanczos_resample_3x3(float *dst, const float *src, size_t count);
 //            void lanczos_resample_3x4(float *dst, const float *src, size_t count);
@@ -178,7 +178,7 @@ PTEST_BEGIN("dsp.resampling", oversampling, 5, 1000)
         IF_ARCH_X86(CALL(sse::lanczos_resample_2x4, 2));
         IF_ARCH_X86(CALL(avx::lanczos_resample_2x4, 2));
         IF_ARCH_ARM(CALL(neon_d32::lanczos_resample_2x4, 2));
-//        IF_ARCH_AARCH64(CALL(asimd::lanczos_resample_2x4, 2));
+        IF_ARCH_AARCH64(CALL(asimd::lanczos_resample_2x4, 2));
         PTEST_SEPARATOR;
 
         CALL(generic::lanczos_resample_3x2, 3);
