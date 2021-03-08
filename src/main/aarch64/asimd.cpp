@@ -385,6 +385,7 @@
                 EXPORT1(lanczos_resample_6x4);
                 EXPORT1(lanczos_resample_8x2);
                 EXPORT1(lanczos_resample_8x3);
+                EXPORT1(lanczos_resample_8x4);
 
                 EXPORT1(downsample_2x);
                 EXPORT1(downsample_3x);
