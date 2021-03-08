@@ -41,24 +41,24 @@ ifndef PLATFORM
   endif
 endif
 
-# Detect processor architecture
+# Detect/set processor architecture
 ifndef ARCHITECTURE
   ifeq ($(PLATFORM),Windows)
     ifeq ($(PROCESSOR_ARCHITECTURE),x86)
       ARCHITECTURE             := i586
-      ARCHITECTURE_CFLAGS      := -m32
+      ARCHITECTURE_CFLAGS      := -march=i586 -m32
     else ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
       ARCHITECTURE             := x86_64
-      ARCHITECTURE_CFLAGS      := -m64
+      ARCHITECTURE_CFLAGS      := -march=x86-64 -m64
     else
       ARCHITECTURE             := i586
-      ARCHITECTURE_CFLAGS      := -m32
+      ARCHITECTURE_CFLAGS      := -march=i586 -m32
     endif
   else # BUILD_PLATFORM != Windows
     BUILD_ARCH             := $(shell uname -m)
     ifeq ($(patsubst armv6%,armv6,$(BUILD_ARCH)),armv6)
       ARCHITECTURE           := arm32
-      ARCHITECTURE_CFLAGS    := -march=armv6-a -marm
+      ARCHITECTURE_CFLAGS    := -march=armv6 -marm
     else ifeq ($(patsubst armv7ve%,armv7ve,$(BUILD_ARCH)),armv7ve)
       ARCHITECTURE           := arm32
       ARCHITECTURE_CFLAGS    := -march=armv7ve -marm
@@ -73,24 +73,64 @@ ifndef ARCHITECTURE
       ARCHITECTURE_CFLAGS    := -march=armv8-a
     else ifeq ($(BUILD_ARCH),arm)
       ARCHITECTURE           := arm32
-      ARCHITECTURE_CFLAGS    := -marm
+      ARCHITECTURE_CFLAGS    := -march=armv6 -marm
     else ifeq ($(BUILD_ARCH),x86_64)
       ARCHITECTURE           := x86_64
-      ARCHITECTURE_CFLAGS    := -m64
+      ARCHITECTURE_CFLAGS    := -march=x86-64 -m64
     else ifeq ($(BUILD_ARCH),amd64)
       ARCHITECTURE           := x86_64
-      ARCHITECTURE_CFLAGS    := -m64
+      ARCHITECTURE_CFLAGS    := -march=x86-64 -m64
     else ifeq ($(BUILD_ARCH),i86pc)
       ARCHITECTURE           := x86_64
-      ARCHITECTURE_CFLAGS    := -m64
+      ARCHITECTURE_CFLAGS    := -march=x86-64 -m64
     else ifeq ($(patsubst i%86,i586,$(BUILD_ARCH)),i586)
       ARCHITECTURE           := i586
-      ARCHITECTURE_CFLAGS    := -m32
+      ARCHITECTURE_CFLAGS    := -march=i586 -m32
+    else ifeq ($(BUILD_ARCH),x86)
+      ARCHITECTURE           := i586
+      ARCHITECTURE_CFLAGS    := -march=i586 -m32
     else
-      ARCHITECTURE           := $(BUILD_ARCH)
-      ARCHITECTURE_CFLAGS    := 
+      override ARCHITECTURE   =
+      ARCHITECTURE_CFLAGS    :=
     endif
   endif # PLATFORM != Windows
+else
+  ifeq ($(ARCHITECTURE),x86_64)
+    ARCHITECTURE_CFLAGS    := -march=x86-64 -m64
+  else ifeq ($(ARCHITECTURE),amd64)
+    override ARCHITECTURE   = x86_64
+    ARCHITECTURE_CFLAGS    := -march=x86-64 -m64
+  else ifeq ($(ARCHITECTURE),i586)
+    ARCHITECTURE_CFLAGS    := -march=i586 -m32
+  else ifeq ($(ARCHITECTURE),ia32)
+    override ARCHITECTURE   = i586
+    ARCHITECTURE_CFLAGS    := -march=i586 -m32
+  else ifeq ($(ARCHITECTURE),x86)
+    override ARCHITECTURE   = i586
+    ARCHITECTURE_CFLAGS    := -march=i586 -m32
+  else ifeq ($(ARCHITECTURE),arm32)
+    override ARCHITECTURE   = arm32
+    ARCHITECTURE_CFLAGS    := -march=armv6 -marm
+  else ifeq ($(ARCHITECTURE),arm32-v6)
+    override ARCHITECTURE   = arm32
+    ARCHITECTURE_CFLAGS    := -march=armv6 -marm
+  else ifeq ($(ARCHITECTURE),armv6)
+    override ARCHITECTURE   = arm32
+    ARCHITECTURE_CFLAGS    := -march=armv6 -marm
+  else ifeq ($(ARCHITECTURE),arm32-v7)
+    override ARCHITECTURE   = arm32
+    ARCHITECTURE_CFLAGS    := -march=armv7-a -marm
+  else ifeq ($(ARCHITECTURE),armv7)
+    override ARCHITECTURE   = arm32
+    ARCHITECTURE_CFLAGS    := -march=armv7-a -marm
+  else ifeq ($(ARCHITECTURE),aarch64)
+    ARCHITECTURE_CFLAGS    := -march=armv8-a
+  else ifeq ($(ARCHITECTURE),armv8)
+    override ARCHITECTURE   = aarch64
+    ARCHITECTURE_CFLAGS    := -march=armv8-a
+  else
+    ARCHITECTURE_CFLAGS    :=
+  endif
 endif
 
 # Extension of libraries
