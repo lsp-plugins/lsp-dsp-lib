@@ -1605,6 +1605,232 @@ namespace lsp
         }
 
         IF_ARCH_AARCH64(
+            static const float lanczos_6x4[] __lsp_aligned16 =
+            {
+                +0.0000000000000000f,
+                -0.0018000092949500f,
+                -0.0067568495254777f,
+                -0.0126608778212387f,
+
+                -0.0157944094156391f,
+                -0.0123019137260206f,
+                +0.0000000000000000f,
+                +0.0200263389720192f,
+
+                +0.0427448743491113f,
+                +0.0599094833772629f,
+                +0.0622703182267308f,
+                +0.0427971267140625f,
+
+                +0.0000000000000000f,
+                -0.0597744992948478f,
+                -0.1220498237243924f,
+                -0.1664152316035080f,
+
+                -0.1709794973964449f,
+                -0.1181145298553785f,
+                +0.0000000000000000f,
+                +0.1776396342037379f,
+
+                +0.3948602353909778f,
+                +0.6203830132406946f,
+                +0.8175787925827955f,
+                +0.9522049170285306f,
+
+                +1.0000000000000000f,
+                +0.9522049170285306f,
+                +0.8175787925827955f,
+                +0.6203830132406946f,
+
+                +0.3948602353909778f,
+                +0.1776396342037379f,
+                +0.0000000000000000f,
+                -0.1181145298553785f,
+
+                -0.1709794973964449f,
+                -0.1664152316035080f,
+                -0.1220498237243924f,
+                -0.0597744992948478f,
+
+                +0.0000000000000000f,
+                +0.0427971267140625f,
+                +0.0622703182267308f,
+                +0.0599094833772629f,
+
+                +0.0427448743491113f,
+                +0.0200263389720192f,
+                +0.0000000000000000f,
+                -0.0123019137260206f,
+
+                -0.0157944094156391f,
+                -0.0126608778212387f,
+                -0.0067568495254777f,
+                -0.0018000092949500f
+            };
+        )
+
+        void lanczos_resample_6x4(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM(
+                // Prepare
+                __ASM_EMIT("ldp             q20, q21, [%[kernel], #0x00]")
+                __ASM_EMIT("ldp             q22, q23, [%[kernel], #0x20]")
+                __ASM_EMIT("ldp             q24, q25, [%[kernel], #0x40]")
+                __ASM_EMIT("ldp             q26, q27, [%[kernel], #0x60]")
+                __ASM_EMIT("ldp             q28, q29, [%[kernel], #0x80]")
+                __ASM_EMIT("ldp             q30, q31, [%[kernel], #0xa0]")
+                // 4x blocks
+                __ASM_EMIT("subs            %[count], %[count], #4")
+                __ASM_EMIT("b.lo            2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("ld4r            {v16.4s, v17.4s, v18.4s, v19.4s}, [%[src]]") // v16 = s0, v17 = s1, v18 = s2, v19 = s3
+
+                // Even part
+                __ASM_EMIT("ldp             q0, q1, [%[dst], #0x00]")
+                __ASM_EMIT("ldp             q2, q3, [%[dst], #0x20]")
+                __ASM_EMIT("ldp             q4, q5, [%[dst], #0x40]")
+                __ASM_EMIT("ldp             q6, q7, [%[dst], #0x60]")
+                __ASM_EMIT("fmla            v0.4s, v16.4s, v20.4s")
+                __ASM_EMIT("fmla            v1.4s, v16.4s, v21.4s")
+                __ASM_EMIT("fmla            v2.4s, v16.4s, v22.4s")
+                __ASM_EMIT("fmla            v3.4s, v16.4s, v23.4s")
+                __ASM_EMIT("fmla            v4.4s, v16.4s, v24.4s")
+                __ASM_EMIT("fmla            v5.4s, v16.4s, v25.4s")
+                __ASM_EMIT("fmla            v6.4s, v16.4s, v26.4s")
+                __ASM_EMIT("fmla            v7.4s, v16.4s, v27.4s")
+                __ASM_EMIT("fmla            v3.4s, v18.4s, v20.4s")
+                __ASM_EMIT("fmla            v4.4s, v18.4s, v21.4s")
+                __ASM_EMIT("fmla            v5.4s, v18.4s, v22.4s")
+                __ASM_EMIT("fmla            v6.4s, v18.4s, v23.4s")
+                __ASM_EMIT("fmla            v7.4s, v18.4s, v24.4s")
+                __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
+                __ASM_EMIT("stp             q2, q3, [%[dst], #0x20]")
+                __ASM_EMIT("stp             q4, q5, [%[dst], #0x40]")
+                __ASM_EMIT("stp             q6, q7, [%[dst], #0x60]")
+
+                __ASM_EMIT("ldp             q0, q1, [%[dst], #0x80]")
+                __ASM_EMIT("ldp             q2, q3, [%[dst], #0xa0]")
+                __ASM_EMIT("ldp             q4, q5, [%[dst], #0xc0]")
+                __ASM_EMIT("ldr             q6, [%[dst], #0xe0]")
+                __ASM_EMIT("fmla            v0.4s, v16.4s, v28.4s")
+                __ASM_EMIT("fmla            v1.4s, v16.4s, v29.4s")
+                __ASM_EMIT("fmla            v2.4s, v16.4s, v30.4s")
+                __ASM_EMIT("fmla            v3.4s, v16.4s, v31.4s")
+                __ASM_EMIT("fmla            v0.4s, v18.4s, v25.4s")
+                __ASM_EMIT("fmla            v1.4s, v18.4s, v26.4s")
+                __ASM_EMIT("fmla            v2.4s, v18.4s, v27.4s")
+                __ASM_EMIT("fmla            v3.4s, v18.4s, v28.4s")
+                __ASM_EMIT("fmla            v4.4s, v18.4s, v29.4s")
+                __ASM_EMIT("fmla            v5.4s, v18.4s, v30.4s")
+                __ASM_EMIT("fmla            v6.4s, v18.4s, v31.4s")
+                __ASM_EMIT("stp             q0, q1, [%[dst], #0x80]")
+                __ASM_EMIT("stp             q2, q3, [%[dst], #0xa0]")
+                __ASM_EMIT("stp             q4, q5, [%[dst], #0xc0]")
+                __ASM_EMIT("str             q6, [%[dst], #0xe0]")
+
+                __ASM_EMIT("add             %[dst], %[dst], #0x18")
+
+                // Odd part
+                __ASM_EMIT("ldp             q0, q1, [%[dst], #0x00]")
+                __ASM_EMIT("ldp             q2, q3, [%[dst], #0x20]")
+                __ASM_EMIT("ldp             q4, q5, [%[dst], #0x40]")
+                __ASM_EMIT("ldp             q6, q7, [%[dst], #0x60]")
+                __ASM_EMIT("fmla            v0.4s, v17.4s, v20.4s")
+                __ASM_EMIT("fmla            v1.4s, v17.4s, v21.4s")
+                __ASM_EMIT("fmla            v2.4s, v17.4s, v22.4s")
+                __ASM_EMIT("fmla            v3.4s, v17.4s, v23.4s")
+                __ASM_EMIT("fmla            v4.4s, v17.4s, v24.4s")
+                __ASM_EMIT("fmla            v5.4s, v17.4s, v25.4s")
+                __ASM_EMIT("fmla            v6.4s, v17.4s, v26.4s")
+                __ASM_EMIT("fmla            v7.4s, v17.4s, v27.4s")
+                __ASM_EMIT("fmla            v3.4s, v19.4s, v20.4s")
+                __ASM_EMIT("fmla            v4.4s, v19.4s, v21.4s")
+                __ASM_EMIT("fmla            v5.4s, v19.4s, v22.4s")
+                __ASM_EMIT("fmla            v6.4s, v19.4s, v23.4s")
+                __ASM_EMIT("fmla            v7.4s, v19.4s, v24.4s")
+                __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
+                __ASM_EMIT("stp             q2, q3, [%[dst], #0x20]")
+                __ASM_EMIT("stp             q4, q5, [%[dst], #0x40]")
+                __ASM_EMIT("stp             q6, q7, [%[dst], #0x60]")
+
+                __ASM_EMIT("ldp             q0, q1, [%[dst], #0x80]")
+                __ASM_EMIT("ldp             q2, q3, [%[dst], #0xa0]")
+                __ASM_EMIT("ldp             q4, q5, [%[dst], #0xc0]")
+                __ASM_EMIT("ldr             q6, [%[dst], #0xe0]")
+                __ASM_EMIT("fmla            v0.4s, v17.4s, v28.4s")
+                __ASM_EMIT("fmla            v1.4s, v17.4s, v29.4s")
+                __ASM_EMIT("fmla            v2.4s, v17.4s, v30.4s")
+                __ASM_EMIT("fmla            v3.4s, v17.4s, v31.4s")
+                __ASM_EMIT("fmla            v0.4s, v19.4s, v25.4s")
+                __ASM_EMIT("fmla            v1.4s, v19.4s, v26.4s")
+                __ASM_EMIT("fmla            v2.4s, v19.4s, v27.4s")
+                __ASM_EMIT("fmla            v3.4s, v19.4s, v28.4s")
+                __ASM_EMIT("fmla            v4.4s, v19.4s, v29.4s")
+                __ASM_EMIT("fmla            v5.4s, v19.4s, v30.4s")
+                __ASM_EMIT("fmla            v6.4s, v19.4s, v31.4s")
+                __ASM_EMIT("stp             q0, q1, [%[dst], #0x80]")
+                __ASM_EMIT("stp             q2, q3, [%[dst], #0xa0]")
+                __ASM_EMIT("stp             q4, q5, [%[dst], #0xc0]")
+                __ASM_EMIT("str             q6, [%[dst], #0xe0]")
+
+                __ASM_EMIT("subs            %[count], %[count], #4")
+                __ASM_EMIT("add             %[src], %[src], #0x10")
+                __ASM_EMIT("add             %[dst], %[dst], #0x48")
+                __ASM_EMIT("b.hs            1b")
+                __ASM_EMIT("2:")
+                // 1x blocks
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds            %[count], %[count], #3")
+                __ASM_EMIT("b.lt            4f")
+                __ASM_EMIT("3:")
+                __ASM_EMIT("ld1r            {v16.4s}, [%[src]]")
+
+                __ASM_EMIT("ldp             q0, q1, [%[dst], #0x00]")
+                __ASM_EMIT("ldp             q2, q3, [%[dst], #0x20]")
+                __ASM_EMIT("ldp             q4, q5, [%[dst], #0x40]")
+                __ASM_EMIT("fmla            v0.4s, v16.4s, v20.4s")
+                __ASM_EMIT("fmla            v1.4s, v16.4s, v21.4s")
+                __ASM_EMIT("fmla            v2.4s, v16.4s, v22.4s")
+                __ASM_EMIT("fmla            v3.4s, v16.4s, v23.4s")
+                __ASM_EMIT("fmla            v4.4s, v16.4s, v24.4s")
+                __ASM_EMIT("fmla            v5.4s, v16.4s, v25.4s")
+                __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
+                __ASM_EMIT("stp             q2, q3, [%[dst], #0x20]")
+                __ASM_EMIT("stp             q4, q5, [%[dst], #0x40]")
+
+                __ASM_EMIT("ldp             q0, q1, [%[dst], #0x60]")
+                __ASM_EMIT("ldp             q2, q3, [%[dst], #0x80]")
+                __ASM_EMIT("ldp             q4, q5, [%[dst], #0xa0]")
+                __ASM_EMIT("fmla            v0.4s, v16.4s, v26.4s")
+                __ASM_EMIT("fmla            v1.4s, v16.4s, v27.4s")
+                __ASM_EMIT("fmla            v2.4s, v16.4s, v28.4s")
+                __ASM_EMIT("fmla            v3.4s, v16.4s, v29.4s")
+                __ASM_EMIT("fmla            v4.4s, v16.4s, v30.4s")
+                __ASM_EMIT("fmla            v5.4s, v16.4s, v31.4s")
+                __ASM_EMIT("stp             q0, q1, [%[dst], #0x60]")
+                __ASM_EMIT("stp             q2, q3, [%[dst], #0x80]")
+                __ASM_EMIT("stp             q4, q5, [%[dst], #0xa0]")
+
+                __ASM_EMIT("subs            %[count], %[count], #1")
+                __ASM_EMIT("add             %[src], %[src], #0x04")
+                __ASM_EMIT("add             %[dst], %[dst], #0x18")
+                __ASM_EMIT("b.ge            3b")
+                __ASM_EMIT("4:")
+
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                : [kernel] "r" (&lanczos_6x4[0])
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q16", "q17", "q18", "q19",
+                  "q20", "q21", "q22", "q23",
+                  "q24", "q25", "q26", "q27",
+                  "q28", "q29", "q30", "q31"
+            );
+        }
+
+        IF_ARCH_AARCH64(
             static const float lanczos_8x2[] __lsp_aligned16 =
             {
                 +0.0000000000000000f,
