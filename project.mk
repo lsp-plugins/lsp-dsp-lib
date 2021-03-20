@@ -23,7 +23,7 @@ ARTIFACT_ID                 = LSP_DSP_LIB
 ARTIFACT_NAME               = lsp-dsp-lib
 ARTIFACT_DESC               = DSP library for digital signal processing
 ARTIFACT_HEADERS            = lsp-plug.in
-ARTIFACT_VERSION            = 0.5.13-devel
+ARTIFACT_VERSION            = 0.5.13
 
 # List of dependencies
 DEPENDENCIES = \
