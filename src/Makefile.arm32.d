@@ -1,3 +1,146 @@
+$(LSP_DSP_LIB_BIN)/main/dsp.o: main/dsp.cpp \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/types.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/3dmath.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/3dmath/types.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/coding.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/complex.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/context.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/convolution.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/copy.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/fastconv.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/fft.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/types.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/dynamic.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/static.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/transfer.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/transform.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/float.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/graphics.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/hmath.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/hmath/hdotp.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/hmath/hsum.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/misc.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/mix.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/msmatrix.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pcomplex.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/abs_vv.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/exp.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/fmop_kx.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/fmop_vv.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/log.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/minmax.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/op_kx.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/op_vv.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/pow.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/resampling.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/search.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/search/iminmax.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/search/minmax.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/smath.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/interpolation.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/interpolation/linear.h
+$(LSP_DSP_LIB_BIN)/main/generic/generic.o: main/generic/generic.cpp \
+ $(LSP_DSP_LIB_INC)/private/dsp/exports.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/bits.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/bits.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/armv7/bits.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/types.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/3dmath.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/3dmath/types.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/coding.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/complex.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/context.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/convolution.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/copy.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/fastconv.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/fft.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/types.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/dynamic.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/static.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/transfer.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/transform.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/float.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/graphics.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/hmath.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/hmath/hdotp.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/hmath/hsum.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/misc.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/mix.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/msmatrix.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pcomplex.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/abs_vv.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/exp.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/fmop_kx.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/fmop_vv.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/log.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/minmax.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/op_kx.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/op_vv.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/pow.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/resampling.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/search.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/search/iminmax.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/search/minmax.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/smath.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/interpolation.h \
+ $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/interpolation/linear.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/string.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/test.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/status.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/context.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/copy.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/complex.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pcomplex.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/convolution.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/graphics.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/graphics/pixelfmt.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/graphics/effects.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/graphics/interpolation.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/op_kx.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/op_vv.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/fmop_kx.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/fmop_vv.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/abs_vv.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/exp.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/log.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/minmax.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/pow.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/hmath/hsum.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/hmath/hdotp.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/search.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/filters/static.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/filters/dynamic.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/filters/transform.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/filters/transfer.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/fft.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/fastconv.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/float.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/resampling.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/msmatrix.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/smath.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/mix.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/3dmath.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/coding.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/interpolation/linear.h
 $(LSP_DSP_LIB_BIN)/main/arm/arm.o: main/arm/arm.cpp \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h \
@@ -145,6 +288,9 @@ $(LSP_DSP_LIB_BIN)/main/arm/neon-d32.o: main/arm/neon-d32.cpp \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/fft.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/fft/const.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/fft/scramble.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/bits.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/bits.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/armv7/bits.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/fft/pscramble.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/fft/butterfly.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/fft/pbutterfly.h \
@@ -156,176 +302,6 @@ $(LSP_DSP_LIB_BIN)/main/arm/neon-d32.o: main/arm/neon-d32.cpp \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/fastconv/papply.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/mix.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/interpolation/linear.h
-$(LSP_DSP_LIB_BIN)/main/aarch64/aarch64.o: main/aarch64/aarch64.cpp \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h
-$(LSP_DSP_LIB_BIN)/main/aarch64/asimd.o: main/aarch64/asimd.cpp \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h
-$(LSP_DSP_LIB_BIN)/main/generic/generic.o: main/generic/generic.cpp \
- $(LSP_DSP_LIB_INC)/private/dsp/exports.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/bits.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/bits.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/armv7/bits.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/types.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/3dmath.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/3dmath/types.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/coding.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/complex.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/context.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/convolution.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/copy.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/fastconv.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/fft.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/types.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/dynamic.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/static.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/transfer.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/transform.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/float.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/graphics.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/hmath.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/hmath/hdotp.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/hmath/hsum.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/misc.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/mix.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/msmatrix.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pcomplex.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/abs_vv.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/exp.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/fmop_kx.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/fmop_vv.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/log.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/minmax.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/op_kx.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/op_vv.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/pow.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/resampling.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/search.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/search/iminmax.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/search/minmax.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/smath.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/interpolation.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/interpolation/linear.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/string.h \
- $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/test.h \
- $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
- $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
- $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/status.h \
- $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
- $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/context.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/copy.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/complex.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pcomplex.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/convolution.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/graphics.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/graphics/pixelfmt.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/graphics/effects.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/graphics/interpolation.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/op_kx.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/op_vv.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/fmop_kx.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/fmop_vv.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/abs_vv.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/exp.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/log.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/minmax.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/pmath/pow.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/hmath/hsum.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/hmath/hdotp.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/search.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/filters/static.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/filters/dynamic.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/filters/transform.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/filters/transfer.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/fft.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/fastconv.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/float.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/resampling.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/msmatrix.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/smath.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/mix.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/3dmath.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/coding.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/interpolation/linear.h
-$(LSP_DSP_LIB_BIN)/main/dsp.o: main/dsp.cpp \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/types.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/3dmath.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/3dmath/types.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/coding.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/complex.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/context.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/convolution.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/copy.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/fastconv.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/fft.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/types.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/dynamic.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/static.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/transfer.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/filters/transform.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/float.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/graphics.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/hmath.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/hmath/hdotp.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/hmath/hsum.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/misc.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/mix.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/msmatrix.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pcomplex.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/abs_vv.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/exp.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/fmop_kx.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/fmop_vv.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/log.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/minmax.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/op_kx.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/op_vv.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/pmath/pow.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/resampling.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/search.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/search/iminmax.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/search/minmax.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/smath.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/interpolation.h \
- $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/interpolation/linear.h
-$(LSP_DSP_LIB_BIN)/main/x86/sse4.o: main/x86/sse4.cpp \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h
-$(LSP_DSP_LIB_BIN)/main/x86/avx.o: main/x86/avx.cpp \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h
-$(LSP_DSP_LIB_BIN)/main/x86/sse3.o: main/x86/sse3.cpp \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h
-$(LSP_DSP_LIB_BIN)/main/x86/avx2.o: main/x86/avx2.cpp \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h
-$(LSP_DSP_LIB_BIN)/main/x86/sse2.o: main/x86/sse2.cpp \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h
-$(LSP_DSP_LIB_BIN)/main/x86/x86.o: main/x86/x86.cpp \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h
-$(LSP_DSP_LIB_BIN)/main/x86/sse.o: main/x86/sse.cpp \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h
 $(LSP_DSP_LIB_BIN)/test/ptest/convolve.o: test/ptest/convolve.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -452,7 +428,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/copy/fill.o: test/ptest/copy/fill.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/string.h
 $(LSP_DSP_LIB_BIN)/test/ptest/copy/copy.o: test/ptest/copy/copy.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \

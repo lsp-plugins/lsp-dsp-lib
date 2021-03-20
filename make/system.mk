@@ -41,40 +41,96 @@ ifndef PLATFORM
   endif
 endif
 
-# Detect processor architecture
+# Detect/set processor architecture
 ifndef ARCHITECTURE
   ifeq ($(PLATFORM),Windows)
     ifeq ($(PROCESSOR_ARCHITECTURE),x86)
       ARCHITECTURE             := i586
+      ARCHITECTURE_CFLAGS      := -march=i586 -m32
     else ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
       ARCHITECTURE             := x86_64
+      ARCHITECTURE_CFLAGS      := -march=x86-64 -m64
     else
       ARCHITECTURE             := i586
+      ARCHITECTURE_CFLAGS      := -march=i586 -m32
     endif
   else # BUILD_PLATFORM != Windows
     BUILD_ARCH             := $(shell uname -m)
     ifeq ($(patsubst armv6%,armv6,$(BUILD_ARCH)),armv6)
       ARCHITECTURE           := arm32
+      ARCHITECTURE_CFLAGS    := -march=armv6 -marm
+    else ifeq ($(patsubst armv7ve%,armv7ve,$(BUILD_ARCH)),armv7ve)
+      ARCHITECTURE           := arm32
+      ARCHITECTURE_CFLAGS    := -march=armv7ve -marm
     else ifeq ($(patsubst armv7%,armv7,$(BUILD_ARCH)),armv7)
       ARCHITECTURE           := arm32
+      ARCHITECTURE_CFLAGS    := -march=armv7-a -marm
     else ifeq ($(patsubst armv8%,armv8,$(BUILD_ARCH)),armv8)
       ARCHITECTURE           := aarch64
+      ARCHITECTURE_CFLAGS    := -march=armv8-a
     else ifeq ($(patsubst aarch64%,aarch64,$(BUILD_ARCH)),aarch64)
       ARCHITECTURE           := aarch64
+      ARCHITECTURE_CFLAGS    := -march=armv8-a
     else ifeq ($(BUILD_ARCH),arm)
       ARCHITECTURE           := arm32
+      ARCHITECTURE_CFLAGS    := -march=armv6 -marm
     else ifeq ($(BUILD_ARCH),x86_64)
       ARCHITECTURE           := x86_64
+      ARCHITECTURE_CFLAGS    := -march=x86-64 -m64
     else ifeq ($(BUILD_ARCH),amd64)
       ARCHITECTURE           := x86_64
+      ARCHITECTURE_CFLAGS    := -march=x86-64 -m64
     else ifeq ($(BUILD_ARCH),i86pc)
       ARCHITECTURE           := x86_64
+      ARCHITECTURE_CFLAGS    := -march=x86-64 -m64
     else ifeq ($(patsubst i%86,i586,$(BUILD_ARCH)),i586)
       ARCHITECTURE           := i586
+      ARCHITECTURE_CFLAGS    := -march=i586 -m32
+    else ifeq ($(BUILD_ARCH),x86)
+      ARCHITECTURE           := i586
+      ARCHITECTURE_CFLAGS    := -march=i586 -m32
     else
-      ARCHITECTURE           := $(BUILD_ARCH)
+      override ARCHITECTURE   =
+      ARCHITECTURE_CFLAGS    :=
     endif
   endif # PLATFORM != Windows
+else
+  ifeq ($(ARCHITECTURE),x86_64)
+    ARCHITECTURE_CFLAGS    := -march=x86-64 -m64
+  else ifeq ($(ARCHITECTURE),amd64)
+    override ARCHITECTURE   = x86_64
+    ARCHITECTURE_CFLAGS    := -march=x86-64 -m64
+  else ifeq ($(ARCHITECTURE),i586)
+    ARCHITECTURE_CFLAGS    := -march=i586 -m32
+  else ifeq ($(ARCHITECTURE),ia32)
+    override ARCHITECTURE   = i586
+    ARCHITECTURE_CFLAGS    := -march=i586 -m32
+  else ifeq ($(ARCHITECTURE),x86)
+    override ARCHITECTURE   = i586
+    ARCHITECTURE_CFLAGS    := -march=i586 -m32
+  else ifeq ($(ARCHITECTURE),arm32)
+    override ARCHITECTURE   = arm32
+    ARCHITECTURE_CFLAGS    := -march=armv6 -marm
+  else ifeq ($(ARCHITECTURE),arm32-v6)
+    override ARCHITECTURE   = arm32
+    ARCHITECTURE_CFLAGS    := -march=armv6 -marm
+  else ifeq ($(ARCHITECTURE),armv6)
+    override ARCHITECTURE   = arm32
+    ARCHITECTURE_CFLAGS    := -march=armv6 -marm
+  else ifeq ($(ARCHITECTURE),arm32-v7)
+    override ARCHITECTURE   = arm32
+    ARCHITECTURE_CFLAGS    := -march=armv7-a -marm
+  else ifeq ($(ARCHITECTURE),armv7)
+    override ARCHITECTURE   = arm32
+    ARCHITECTURE_CFLAGS    := -march=armv7-a -marm
+  else ifeq ($(ARCHITECTURE),aarch64)
+    ARCHITECTURE_CFLAGS    := -march=armv8-a
+  else ifeq ($(ARCHITECTURE),armv8)
+    override ARCHITECTURE   = aarch64
+    ARCHITECTURE_CFLAGS    := -march=armv8-a
+  else
+    ARCHITECTURE_CFLAGS    :=
+  endif
 endif
 
 # Extension of libraries
@@ -153,6 +209,7 @@ TEST                       := 0
 COMMON_VARS = \
 	PLATFORM \
 	ARCHITECTURE \
+	ARCHITECTURE_CFLAGS \
 	LIBRARY_EXT \
 	LIBRARY_PREFIX \
 	STATICLIB_EXT \
@@ -173,6 +230,7 @@ COMMON_VARS = \
 sysvars:
 	@echo "List of available system variables:"
 	@echo "  ARCHITECTURE              target architecture to perform build"
+	@echo "  ARCHITECTURE_CFLAGS       compiler flags to specify architecture"
 	@echo "  BINDIR                    location of the binaries"
 	@echo "  DEBUG                     build with debug options"
 	@echo "  EXECUTABLE_EXT            file extension for executable files"

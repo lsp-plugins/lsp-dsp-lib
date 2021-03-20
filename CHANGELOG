@@ -2,6 +2,12 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 0.5.13 ===
+* Added x86/x86_64 4-lobe oversampling functions.
+* Added ARMv7 NEON-optimized 4-lobe oversampling functions.
+* Added AArch64 ASIMD-optimized 4-lobe oversampling functions.
+* Fixed target compiler architecture detection.
+
 === 0.5.12 ===
 * Submitted x86/x86_64 SSE2-optimized linear interpolation functions.
 * Submitted x86/x86_64 AVX2-optimized linear interpolation functions.

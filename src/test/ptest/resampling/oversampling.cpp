@@ -30,14 +30,19 @@ namespace lsp
     {
         void lanczos_resample_2x2(float *dst, const float *src, size_t count);
         void lanczos_resample_2x3(float *dst, const float *src, size_t count);
+        void lanczos_resample_2x4(float *dst, const float *src, size_t count);
         void lanczos_resample_3x2(float *dst, const float *src, size_t count);
         void lanczos_resample_3x3(float *dst, const float *src, size_t count);
+        void lanczos_resample_3x4(float *dst, const float *src, size_t count);
         void lanczos_resample_4x2(float *dst, const float *src, size_t count);
         void lanczos_resample_4x3(float *dst, const float *src, size_t count);
+        void lanczos_resample_4x4(float *dst, const float *src, size_t count);
         void lanczos_resample_6x2(float *dst, const float *src, size_t count);
         void lanczos_resample_6x3(float *dst, const float *src, size_t count);
+        void lanczos_resample_6x4(float *dst, const float *src, size_t count);
         void lanczos_resample_8x2(float *dst, const float *src, size_t count);
         void lanczos_resample_8x3(float *dst, const float *src, size_t count);
+        void lanczos_resample_8x4(float *dst, const float *src, size_t count);
     }
 
     IF_ARCH_X86(
@@ -45,28 +50,38 @@ namespace lsp
         {
             void lanczos_resample_2x2(float *dst, const float *src, size_t count);
             void lanczos_resample_2x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_2x4(float *dst, const float *src, size_t count);
             void lanczos_resample_3x2(float *dst, const float *src, size_t count);
             void lanczos_resample_3x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_3x4(float *dst, const float *src, size_t count);
             void lanczos_resample_4x2(float *dst, const float *src, size_t count);
             void lanczos_resample_4x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_4x4(float *dst, const float *src, size_t count);
             void lanczos_resample_6x2(float *dst, const float *src, size_t count);
             void lanczos_resample_6x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_6x4(float *dst, const float *src, size_t count);
             void lanczos_resample_8x2(float *dst, const float *src, size_t count);
             void lanczos_resample_8x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_8x4(float *dst, const float *src, size_t count);
         }
 
         namespace avx
         {
             void lanczos_resample_2x2(float *dst, const float *src, size_t count);
             void lanczos_resample_2x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_2x4(float *dst, const float *src, size_t count);
             void lanczos_resample_3x2(float *dst, const float *src, size_t count);
             void lanczos_resample_3x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_3x4(float *dst, const float *src, size_t count);
             void lanczos_resample_4x2(float *dst, const float *src, size_t count);
             void lanczos_resample_4x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_4x4(float *dst, const float *src, size_t count);
             void lanczos_resample_6x2(float *dst, const float *src, size_t count);
             void lanczos_resample_6x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_6x4(float *dst, const float *src, size_t count);
             void lanczos_resample_8x2(float *dst, const float *src, size_t count);
             void lanczos_resample_8x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_8x4(float *dst, const float *src, size_t count);
         }
     )
 
@@ -75,14 +90,19 @@ namespace lsp
         {
             void lanczos_resample_2x2(float *dst, const float *src, size_t count);
             void lanczos_resample_2x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_2x4(float *dst, const float *src, size_t count);
             void lanczos_resample_3x2(float *dst, const float *src, size_t count);
             void lanczos_resample_3x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_3x4(float *dst, const float *src, size_t count);
             void lanczos_resample_4x2(float *dst, const float *src, size_t count);
             void lanczos_resample_4x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_4x4(float *dst, const float *src, size_t count);
             void lanczos_resample_6x2(float *dst, const float *src, size_t count);
             void lanczos_resample_6x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_6x4(float *dst, const float *src, size_t count);
             void lanczos_resample_8x2(float *dst, const float *src, size_t count);
             void lanczos_resample_8x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_8x4(float *dst, const float *src, size_t count);
         }
     )
 
@@ -91,14 +111,19 @@ namespace lsp
         {
             void lanczos_resample_2x2(float *dst, const float *src, size_t count);
             void lanczos_resample_2x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_2x4(float *dst, const float *src, size_t count);
             void lanczos_resample_3x2(float *dst, const float *src, size_t count);
             void lanczos_resample_3x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_3x4(float *dst, const float *src, size_t count);
             void lanczos_resample_4x2(float *dst, const float *src, size_t count);
             void lanczos_resample_4x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_4x4(float *dst, const float *src, size_t count);
             void lanczos_resample_6x2(float *dst, const float *src, size_t count);
             void lanczos_resample_6x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_6x4(float *dst, const float *src, size_t count);
             void lanczos_resample_8x2(float *dst, const float *src, size_t count);
             void lanczos_resample_8x3(float *dst, const float *src, size_t count);
+            void lanczos_resample_8x4(float *dst, const float *src, size_t count);
         }
     )
 }
@@ -149,6 +174,13 @@ PTEST_BEGIN("dsp.resampling", oversampling, 5, 1000)
         IF_ARCH_AARCH64(CALL(asimd::lanczos_resample_2x3, 2));
         PTEST_SEPARATOR;
 
+        CALL(generic::lanczos_resample_2x4, 2);
+        IF_ARCH_X86(CALL(sse::lanczos_resample_2x4, 2));
+        IF_ARCH_X86(CALL(avx::lanczos_resample_2x4, 2));
+        IF_ARCH_ARM(CALL(neon_d32::lanczos_resample_2x4, 2));
+        IF_ARCH_AARCH64(CALL(asimd::lanczos_resample_2x4, 2));
+        PTEST_SEPARATOR;
+
         CALL(generic::lanczos_resample_3x2, 3);
         IF_ARCH_X86(CALL(sse::lanczos_resample_3x2, 3));
         IF_ARCH_X86(CALL(avx::lanczos_resample_3x2, 3));
@@ -161,6 +193,13 @@ PTEST_BEGIN("dsp.resampling", oversampling, 5, 1000)
         IF_ARCH_X86(CALL(avx::lanczos_resample_3x3, 3));
         IF_ARCH_ARM(CALL(neon_d32::lanczos_resample_3x3, 3));
         IF_ARCH_AARCH64(CALL(asimd::lanczos_resample_3x3, 3));
+        PTEST_SEPARATOR;
+
+        CALL(generic::lanczos_resample_3x4, 3);
+        IF_ARCH_X86(CALL(sse::lanczos_resample_3x4, 3));
+        IF_ARCH_X86(CALL(avx::lanczos_resample_3x4, 3));
+        IF_ARCH_ARM(CALL(neon_d32::lanczos_resample_3x4, 3));
+        IF_ARCH_AARCH64(CALL(asimd::lanczos_resample_3x4, 3));
         PTEST_SEPARATOR;
 
         CALL(generic::lanczos_resample_4x2, 4);
@@ -177,6 +216,13 @@ PTEST_BEGIN("dsp.resampling", oversampling, 5, 1000)
         IF_ARCH_AARCH64(CALL(asimd::lanczos_resample_4x3, 4));
         PTEST_SEPARATOR;
 
+        CALL(generic::lanczos_resample_4x4, 4);
+        IF_ARCH_X86(CALL(sse::lanczos_resample_4x4, 4));
+        IF_ARCH_X86(CALL(avx::lanczos_resample_4x4, 4));
+        IF_ARCH_ARM(CALL(neon_d32::lanczos_resample_4x4, 4));
+        IF_ARCH_AARCH64(CALL(asimd::lanczos_resample_4x4, 4));
+        PTEST_SEPARATOR;
+
         CALL(generic::lanczos_resample_6x2, 6);
         IF_ARCH_X86(CALL(sse::lanczos_resample_6x2, 6));
         IF_ARCH_X86(CALL(avx::lanczos_resample_6x2, 6));
@@ -191,6 +237,13 @@ PTEST_BEGIN("dsp.resampling", oversampling, 5, 1000)
         IF_ARCH_AARCH64(CALL(asimd::lanczos_resample_6x3, 6));
         PTEST_SEPARATOR;
 
+        CALL(generic::lanczos_resample_6x4, 6);
+        IF_ARCH_X86(CALL(sse::lanczos_resample_6x4, 6));
+        IF_ARCH_X86(CALL(avx::lanczos_resample_6x4, 6));
+        IF_ARCH_ARM(CALL(neon_d32::lanczos_resample_6x4, 6));
+        IF_ARCH_AARCH64(CALL(asimd::lanczos_resample_6x4, 6));
+        PTEST_SEPARATOR;
+
         CALL(generic::lanczos_resample_8x2, 8);
         IF_ARCH_X86(CALL(sse::lanczos_resample_8x2, 8));
         IF_ARCH_X86(CALL(avx::lanczos_resample_8x2, 8));
@@ -203,6 +256,13 @@ PTEST_BEGIN("dsp.resampling", oversampling, 5, 1000)
         IF_ARCH_X86(CALL(avx::lanczos_resample_8x3, 8));
         IF_ARCH_ARM(CALL(neon_d32::lanczos_resample_8x3, 8));
         IF_ARCH_AARCH64(CALL(asimd::lanczos_resample_8x3, 8));
+        PTEST_SEPARATOR;
+
+        CALL(generic::lanczos_resample_8x4, 8);
+        IF_ARCH_X86(CALL(sse::lanczos_resample_8x4, 8));
+        IF_ARCH_X86(CALL(avx::lanczos_resample_8x4, 8));
+        IF_ARCH_ARM(CALL(neon_d32::lanczos_resample_8x4, 8));
+        IF_ARCH_AARCH64(CALL(asimd::lanczos_resample_8x4, 8));
         PTEST_SEPARATOR;
 
         delete [] out;
