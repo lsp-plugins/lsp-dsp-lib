@@ -91,7 +91,7 @@ config:
 distsrc:
 	echo "Building source code archive"
 	mkdir -p "$(DISTSRC)/modules"
-	$(MAKE) -f "$(BASEDIR)/make/modules.mk" tree BASEDIR="$(BASEDIR)" MODULES="$(DISTSRC)/modules" TREE="1"
+	$(MAKE) -f "$(BASEDIR)/make/modules.mk" tree VERBOSE="$(VERBOSE)" BASEDIR="$(BASEDIR)" MODULES="$(DISTSRC)/modules" TREE="1"
 	cp -R $(BASEDIR)/include $(BASEDIR)/make $(BASEDIR)/src "$(DISTSRC)/"
 	cp $(BASEDIR)/CHANGELOG $(BASEDIR)/COPYING* $(BASEDIR)/Makefile $(BASEDIR)/*.mk "$(DISTSRC)/"
 	find "$(DISTSRC)" -iname '.git' | xargs -exec rm -rf {}
@@ -120,5 +120,5 @@ help:
 	echo "                            to make source code portable between machines"
 	echo "  uninstall                 Uninstall binaries"
 	echo ""
-	$(MAKE) -f "$(BASEDIR)/make/configure.mk" $(@)
+	$(MAKE) -f "$(BASEDIR)/make/configure.mk" $(@) VERBOSE="$(VERBOSE)"
 	echo ""
