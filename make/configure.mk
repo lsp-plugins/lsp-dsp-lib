@@ -17,6 +17,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with lsp-dsp-lib.  If not, see <https://www.gnu.org/licenses/>.
 #
+ifneq ($(VERBOSE),1)
+.SILENT:
+endif
 
 # Definitions
 PREFIX                     := /usr/local
@@ -168,39 +171,39 @@ CONFIG_VARS = \
 .PHONY: $(CONFIG_VARS)
 
 prepare:
-	@echo "Configuring build..."
-	@echo "# Project settings" > "$(CONFIG)"
+	echo "Configuring build..."
+	echo "# Project settings" > "$(CONFIG)"
 
 $(CONFIG_VARS): prepare
-	@echo "$(@)=$($(@))" >> "$(CONFIG)"
+	echo "$(@)=$($(@))" >> "$(CONFIG)"
 
 config: $(CONFIG_VARS)
-	@echo "Configured OK"
+	echo "Configured OK"
 
 help: | toolvars sysvars
-	@echo ""
-	@echo "List of variables for each dependency:"
-	@echo "  <ARTIFACT>_BIN            location to put all binaries when building artifact"
-	@echo "  <ARTIFACT>_BRANCH         git branch used to checkout source code"
-	@echo "  <ARTIFACT>_CFLAGS         C/C++ flags to access headers of the artifact"
-	@echo "  <ARTIFACT>_DESC           Full description of the artifact"
-	@echo "  <ARTIFACT>_INC            path to include files of the artifact"
-	@echo "  <ARTIFACT>_LDFLAGS        linker flags to link with artifact"
-	@echo "  <ARTIFACT>_MFLAGS         artifact-specific compilation flags"
-	@echo "  <ARTIFACT>_NAME           the artifact name used in pathnames"
-	@echo "  <ARTIFACT>_OBJ            path to output object file for artifact"
-	@echo "  <ARTIFACT>_PATH           location of the source code of the artifact"
-	@echo "  <ARTIFACT>_SRC            path to source code files of the artifact"
-	@echo "  <ARTIFACT>_TEST           location of test files of the artifact"
-	@echo "  <ARTIFACT>_TYPE           artifact usage type"
-	@echo "                            - src - use sources and headers from git"
-	@echo "                            - hdr - use headers only from git"
-	@echo "                            - pkg - use pkgconfig for configuration"
-	@echo "                            - lib - use system headers and -l<libname> flags"
-	@echo "                            - opt - use optional configuration"
-	@echo "  <ARTIFACT>_URL            location of the artifact git repoisitory"
-	@echo "  <ARTIFACT>_VERSION        version of the artifact used for building"
-	@echo ""
-	@echo "Artifacts used for build:"
-	@echo "  $(DEPENDENCIES)"
+	echo ""
+	echo "List of variables for each dependency:"
+	echo "  <ARTIFACT>_BIN            location to put all binaries when building artifact"
+	echo "  <ARTIFACT>_BRANCH         git branch used to checkout source code"
+	echo "  <ARTIFACT>_CFLAGS         C/C++ flags to access headers of the artifact"
+	echo "  <ARTIFACT>_DESC           Full description of the artifact"
+	echo "  <ARTIFACT>_INC            path to include files of the artifact"
+	echo "  <ARTIFACT>_LDFLAGS        linker flags to link with artifact"
+	echo "  <ARTIFACT>_MFLAGS         artifact-specific compilation flags"
+	echo "  <ARTIFACT>_NAME           the artifact name used in pathnames"
+	echo "  <ARTIFACT>_OBJ            path to output object file for artifact"
+	echo "  <ARTIFACT>_PATH           location of the source code of the artifact"
+	echo "  <ARTIFACT>_SRC            path to source code files of the artifact"
+	echo "  <ARTIFACT>_TEST           location of test files of the artifact"
+	echo "  <ARTIFACT>_TYPE           artifact usage type"
+	echo "                            - src - use sources and headers from git"
+	echo "                            - hdr - use headers only from git"
+	echo "                            - pkg - use pkgconfig for configuration"
+	echo "                            - lib - use system headers and -l<libname> flags"
+	echo "                            - opt - use optional configuration"
+	echo "  <ARTIFACT>_URL            location of the artifact git repoisitory"
+	echo "  <ARTIFACT>_VERSION        version of the artifact used for building"
+	echo ""
+	echo "Artifacts used for build:"
+	echo "  $(DEPENDENCIES)"
 

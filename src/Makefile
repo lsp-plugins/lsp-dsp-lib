@@ -17,6 +17,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with lsp-dsp-lib.  If not, see <https://www.gnu.org/licenses/>.
 #
+ifneq ($(VERBOSE),1)
+.SILENT:
+endif
 
 BASEDIR                 = $(CURDIR)
 CONFIG                 := $(CURDIR)/.config.mk
@@ -118,8 +121,8 @@ DEP_DEP_FILE            = $(patsubst $(ARTIFACT_BIN)/%.d,%.o,$(@))
 dep_clean:
 
 $(DEP_CXX): dep_clean
-	@echo "  dep  [$(ARTIFACT_NAME)] $(DEP_CXX_FILE)"
-	@mkdir -p $(dir $(@))
+	echo "  dep  [$(ARTIFACT_NAME)] $(DEP_CXX_FILE)"
+	mkdir -p $(dir $(@))
 	$(CXX) -MM -MT "\$$($(ARTIFACT_ID)_BIN)/$(DEP_DEP_FILE)" -MF $(@) $(DEP_CXX_FILE) $(CXXFLAGS) $(INCLUDE) $(ARTIFACT_CFLAGS)
 
 depend: $(DEP_CXX)
@@ -131,81 +134,81 @@ depend: $(DEP_CXX)
 	    $(eval SED_RULES += s/$(shell echo "$($(dep)_BIN)" | sed "s/\\//\\\\\//g")/\\$$$$\\($(dep)_BIN\\)/g;)\
 	  )\
 	)
-	@cat $(DEP_CXX) | sed -E "$(SED_RULES)" >Makefile.$(ARCHITECTURE).d
+	cat $(DEP_CXX) | sed -E "$(SED_RULES)" >Makefile.$(ARCHITECTURE).d
 
 $(ARTIFACT_DEPS):
-	@echo "make $(notdir $($(@)_OBJ))"
-	@$(MAKE) -s -C "$($(@)_PATH)" compile CONFIG="$(CONFIG)" DEMO_TEST="0"
+	echo "make $(notdir $($(@)_OBJ))"
+	$(MAKE) -C "$($(@)_PATH)" compile VERBOSE="$(VERBOSE)" CONFIG="$(CONFIG)" DEMO_TEST="0"
 
 # Compilation
 compile: $(ARTIFACT_OBJ)
 
 $(CXX_OBJ_MAIN) $(CXX_OBJ_EXT) $(CXX_OBJ_TEST) $(CXX_OBJ_NOTEST):
-	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(CXX_FILE)"
-	@mkdir -p $(dir $@)
-	@$(CXX) -o $(@) -c $(CXX_FILE) -fPIC $(CXXFLAGS) $(ARTIFACT_MFLAGS) $(EXT_FLAGS) $(INCLUDE) $(ARTIFACT_CFLAGS)
+	echo "  $(CXX)  [$(ARTIFACT_NAME)] $(CXX_FILE)"
+	mkdir -p $(dir $@)
+	$(CXX) -o $(@) -c $(CXX_FILE) -fPIC $(CXXFLAGS) $(ARTIFACT_MFLAGS) $(EXT_FLAGS) $(INCLUDE) $(ARTIFACT_CFLAGS)
 	
 # Producing large object files
 $(ARTIFACT_OBJ): $(CXX_OBJ)
-	@echo "  $(LD)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_OBJ))"
-	@$(LD) -o $(ARTIFACT_OBJ) -r $(CXX_OBJ)
+	echo "  $(LD)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_OBJ))"
+	$(LD) -o $(ARTIFACT_OBJ) -r $(CXX_OBJ)
 
 $(ARTIFACT_OBJ_TEST): $(CXX_OBJ_TEST)
-	@echo "  $(LD)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_OBJ_TEST))"
-	@$(LD) -o $(ARTIFACT_OBJ_TEST) -r $(CXX_OBJ_TEST)
+	echo "  $(LD)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_OBJ_TEST))"
+	$(LD) -o $(ARTIFACT_OBJ_TEST) -r $(CXX_OBJ_TEST)
 
 # Linking
 all: $(ARTIFACT_TARGETS)
 
 $(ARTIFACT_LIB): $(ARTIFACT_DEPS) $(ARTIFACT_OBJ) $(CXX_OBJ_NOTEST)
-	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_LIB))"
-	@$(CXX) -o $(ARTIFACT_LIB) $(ARTIFACT_OBJFILES) $(CXX_OBJ_NOTEST) $(SO_FLAGS) $(ARTIFACT_LDFLAGS)
+	echo "  $(CXX)  [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_LIB))"
+	$(CXX) -o $(ARTIFACT_LIB) $(ARTIFACT_OBJFILES) $(CXX_OBJ_NOTEST) $(SO_FLAGS) $(ARTIFACT_LDFLAGS)
 	
 $(ARTIFACT_SLIB): $(ARTIFACT_DEPS) $(ARTIFACT_OBJ) $(CXX_OBJ_NOTEST)
-	@echo "  $(AR)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_SLIB))"
-	@$(AR) rcs $(ARTIFACT_SLIB) $(ARTIFACT_OBJFILES) $(CXX_OBJ_NOTEST)
+	echo "  $(AR)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_SLIB))"
+	$(AR) rcs $(ARTIFACT_SLIB) $(ARTIFACT_OBJFILES) $(CXX_OBJ_NOTEST)
 
 $(ARTIFACT_TEST_BIN): $(ARTIFACT_DEPS) $(ARTIFACT_OBJ) $(ARTIFACT_OBJ_TEST)
-	@echo "  $(CXX)  [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_TEST_BIN))"
-	@$(CXX) -o $(ARTIFACT_TEST_BIN) $(ARTIFACT_OBJFILES) $(ARTIFACT_OBJ_TEST) $(EXE_FLAGS) $(ARTIFACT_LDFLAGS)
+	echo "  $(CXX)  [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_TEST_BIN))"
+	$(CXX) -o $(ARTIFACT_TEST_BIN) $(ARTIFACT_OBJFILES) $(ARTIFACT_OBJ_TEST) $(EXE_FLAGS) $(ARTIFACT_LDFLAGS)
 
 $(ARTIFACT_PC):
-	@mkdir -p $(dir $(ARTIFACT_PC))
-	@echo "prefix=$(PREFIX)" > "$(ARTIFACT_PC)"
-	@echo "exec_prefix=$(BINDIR)" >> "$(ARTIFACT_PC)"
-	@echo "includedir=$(INCDIR)" >> "$(ARTIFACT_PC)"
-	@echo "libdir=$(LIBDIR)" >> "$(ARTIFACT_PC)"
-	@echo "" >> $(ARTIFACT_PC) >> "$(ARTIFACT_PC)"
-	@echo "Name: $($(ARTIFACT_ID)_NAME)" >> "$(ARTIFACT_PC)"
-	@echo "Description: $($(ARTIFACT_ID)_DESC)" >> "$(ARTIFACT_PC)"
-	@echo "Version: $($(ARTIFACT_ID)_VERSION)" >> "$(ARTIFACT_PC)"
-	@echo "Cflags: -I\$${includedir}" >> "$(ARTIFACT_PC)"
-	@echo "Libs: -L\$${libdir} -l$(notdir $($(ARTIFACT_ID)_NAME))" >> "$(ARTIFACT_PC)"
+	mkdir -p $(dir $(ARTIFACT_PC))
+	echo "prefix=$(PREFIX)" > "$(ARTIFACT_PC)"
+	echo "exec_prefix=$(BINDIR)" >> "$(ARTIFACT_PC)"
+	echo "includedir=$(INCDIR)" >> "$(ARTIFACT_PC)"
+	echo "libdir=$(LIBDIR)" >> "$(ARTIFACT_PC)"
+	echo "" >> $(ARTIFACT_PC) >> "$(ARTIFACT_PC)"
+	echo "Name: $($(ARTIFACT_ID)_NAME)" >> "$(ARTIFACT_PC)"
+	echo "Description: $($(ARTIFACT_ID)_DESC)" >> "$(ARTIFACT_PC)"
+	echo "Version: $($(ARTIFACT_ID)_VERSION)" >> "$(ARTIFACT_PC)"
+	echo "Cflags: -I\$${includedir}" >> "$(ARTIFACT_PC)"
+	echo "Libs: -L\$${libdir} -l$(notdir $($(ARTIFACT_ID)_NAME))" >> "$(ARTIFACT_PC)"
 
 # Installation/deinstallation
 install: all
-	@echo "Installing $($(ARTIFACT_ID)_NAME)"
-	@mkdir -p "$(DESTDIR)$(INCDIR)"
-	@mkdir -p "$(DESTDIR)$(LIBDIR)/pkgconfig"
-	@cp -r "$(CXX_HDR_PATHS)" "$(DESTDIR)$(INCDIR)/"
-	@cp $(ARTIFACT_PC) "$(DESTDIR)$(LIBDIR)/pkgconfig/"
-	@echo $(INSTALL) $(ARTIFACT_LIB) -t "$(DESTDIR)$(LIBDIR)"
-	@$(INSTALL) $(ARTIFACT_LIB) -t "$(DESTDIR)$(LIBDIR)"
-	@echo cp $(ARTIFACT_SLIB) -t "$(DESTDIR)$(LIBDIR)"
-	@cp $(ARTIFACT_SLIB) -t "$(DESTDIR)$(LIBDIR)"
-	@ln -sf $(notdir $(ARTIFACT_LIB)) "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_LIBLINK)"
-	@ln -sf $(notdir $(ARTIFACT_SLIB)) "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_SLIBLINK)"
-	@echo "Install OK"
+	echo "Installing $($(ARTIFACT_ID)_NAME)"
+	mkdir -p "$(DESTDIR)$(INCDIR)"
+	mkdir -p "$(DESTDIR)$(LIBDIR)/pkgconfig"
+	cp -r "$(CXX_HDR_PATHS)" "$(DESTDIR)$(INCDIR)/"
+	cp $(ARTIFACT_PC) "$(DESTDIR)$(LIBDIR)/pkgconfig/"
+	echo $(INSTALL) $(ARTIFACT_LIB) -t "$(DESTDIR)$(LIBDIR)"
+	$(INSTALL) $(ARTIFACT_LIB) -t "$(DESTDIR)$(LIBDIR)"
+	echo cp $(ARTIFACT_SLIB) -t "$(DESTDIR)$(LIBDIR)"
+	cp $(ARTIFACT_SLIB) -t "$(DESTDIR)$(LIBDIR)"
+	ln -sf $(notdir $(ARTIFACT_LIB)) "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_LIBLINK)"
+	ln -sf $(notdir $(ARTIFACT_SLIB)) "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_SLIBLINK)"
+	echo "Install OK"
 
 uninstall:
-	@echo "Uninstalling $($(ARTIFACT_ID)_NAME)"
-	@-rm -f "$(DESTDIR)$(LIBDIR)/$(notdir $(ARTIFACT_LIB))"
-	@-rm -f "$(DESTDIR)$(LIBDIR)/$(notdir $(ARTIFACT_SLIB))"
-	@-rm -f "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_LIBLINK)"
-	@-rm -f "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_SLIBLINK)"
-	@-rm -f "$(DESTDIR)$(LIBDIR)/pkgconfig/$(notdir $(ARTIFACT_PC))"
-	@-rm -f $(CXX_INSTHEADERS)
-	@echo "Uninstall OK"
+	echo "Uninstalling $($(ARTIFACT_ID)_NAME)"
+	-rm -f "$(DESTDIR)$(LIBDIR)/$(notdir $(ARTIFACT_LIB))"
+	-rm -f "$(DESTDIR)$(LIBDIR)/$(notdir $(ARTIFACT_SLIB))"
+	-rm -f "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_LIBLINK)"
+	-rm -f "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_SLIBLINK)"
+	-rm -f "$(DESTDIR)$(LIBDIR)/pkgconfig/$(notdir $(ARTIFACT_PC))"
+	-rm -f $(CXX_INSTHEADERS)
+	echo "Uninstall OK"
 
 # Additional extended rules:
 $(CXX_OBJ_SSE):        EXT_FLAGS=$(CXX_SSE_CFLAGS)
