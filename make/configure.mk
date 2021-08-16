@@ -54,10 +54,8 @@ ifeq ($(findstring -devel,$(ARTIFACT_VERSION)),-devel)
   tmp_version :=$(shell echo "$(ARTIFACT_VERSION)" | sed s/-devel//g)
   ARTIFACT_VERSION=$(tmp_version)
 else
-  $(foreach dep, $(DEPENDENCIES), \
-    $(eval \
-      $(dep)_BRANCH="$($(dep)_VERSION)" \
-    ) \
+  $(foreach dep,$(DEPENDENCIES),\
+    $(eval $(dep)_BRANCH="$($(dep)_VERSION)") \
   )
 endif
 
