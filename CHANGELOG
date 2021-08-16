@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 0.5.14 ===
-- Updated build system.
+* Updated build system.
 
 === 0.5.13 ===
 * Added x86/x86_64 4-lobe oversampling functions.
