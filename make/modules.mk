@@ -17,6 +17,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with lsp-dsp-lib.  If not, see <https://www.gnu.org/licenses/>.
 #
+ifneq ($(VERBOSE),1)
+.SILENT:
+endif
 
 BASEDIR                := $(CURDIR)
 DEPLIST                := $(BASEDIR)/dependencies.mk
@@ -64,27 +67,27 @@ ALL_PATHS           = $(foreach dep, $(ALL_SRC_MODULES) $(ALL_HDR_MODULES), $($(
 .PHONY: fetch prune clean
 
 $(ALL_SRC_MODULES) $(ALL_HDR_MODULES):
-	@echo "Cloning $($(@)_URL) -> $($(@)_PATH) [$($(@)_BRANCH)]"
-	@test -f "$($(@)_PATH)/.git/config" || $(GIT) clone "$($(@)_URL)" "$($(@)_PATH)"
-	@$(GIT) -C "$($(@)_PATH)" reset --hard
-	@$(GIT) -C "$($(@)_PATH)" fetch origin --force
-	@$(GIT) -C "$($(@)_PATH)" fetch origin '+refs/heads/*:refs/tags/*' --force
-	@$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout origin/$($(@)_BRANCH) || \
-	 $(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout refs/tags/$($(@)_BRANCH) || \
-	 $(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout origin/$($(@)_NAME)-$($(@)_BRANCH) || \
-	 $(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout refs/tags/$($(@)_NAME)-$($(@)_BRANCH)
+	echo "Cloning $($(@)_URL) -> $($(@)_PATH) [$($(@)_BRANCH)]"
+	test -f "$($(@)_PATH)/.git/config" || $(GIT) clone "$($(@)_URL)" "$($(@)_PATH)"
+	$(GIT) -C "$($(@)_PATH)" reset --hard
+	$(GIT) -C "$($(@)_PATH)" fetch origin --force
+	$(GIT) -C "$($(@)_PATH)" fetch origin '+refs/heads/*:refs/tags/*' --force
+	$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout -B "$($(@)_BRANCH)" "origin/$($(@)_BRANCH)" || \
+	$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout "refs/tags/$($(@)_BRANCH)" || \
+	$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout -B "$($(@)_NAME)-$($(@)_BRANCH)" "origin/$($(@)_NAME)-$($(@)_BRANCH)" || \
+	$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout "refs/tags/$($(@)_NAME)-$($(@)_BRANCH)"
 
 $(ALL_PATHS):
-	@echo "Removing $(notdir $(@))"
-	@-rm -rf $(@)
+	echo "Removing $(notdir $(@))"
+	-rm -rf $(@)
 
 fetch: $(SRC_MODULES) $(HDR_MODULES)
 
 tree: $(ALL_SRC_MODULES) $(ALL_HDR_MODULES)
 
 clean:
-	@echo rm -rf "$($(ARTIFACT_VARS)_BIN)/$(ARTIFACT_NAME)"
-	@-rm -rf "$($(ARTIFACT_VARS)_BIN)/$(ARTIFACT_NAME)"
+	echo rm -rf "$($(ARTIFACT_VARS)_BIN)/$(ARTIFACT_NAME)"
+	-rm -rf "$($(ARTIFACT_VARS)_BIN)/$(ARTIFACT_NAME)"
 
 prune: $(ALL_PATHS)
 
