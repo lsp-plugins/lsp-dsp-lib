@@ -4,8 +4,6 @@
 /.test/*
 /Debug/*
 /Release/*
-/.cproject
-/.project
 /Debug/
 /Release
 *.log
