@@ -204,7 +204,7 @@ install: all
 	echo "Installing $($(ARTIFACT_ID)_NAME)"
 	mkdir -p "$(DESTDIR)$(LIBDIR)/pkgconfig"
 	$(if $(CXX_INSTALL_HEADERS), mkdir -p "$(DESTDIR)$(INCDIR)")
-	$(if $(CXX_INSTALL_HEADERS), cp -r "$(CXX_HDR_PATHS)" "$(DESTDIR)$(INCDIR)/"))
+	$(if $(CXX_INSTALL_HEADERS), cp -r "$(CXX_HDR_PATHS)" "$(DESTDIR)$(INCDIR)/")
 	cp $(ARTIFACT_PC) "$(DESTDIR)$(LIBDIR)/pkgconfig/"
 	echo $(INSTALL) $(ARTIFACT_LIB) -t "$(DESTDIR)$(LIBDIR)"
 	$(INSTALL) $(ARTIFACT_LIB) -t "$(DESTDIR)$(LIBDIR)"
