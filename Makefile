@@ -42,7 +42,7 @@ include $(BASEDIR)/project.mk
 
 # Setup paths
 CHK_CONFIG                  = test -f "$(CONFIG)" || (echo "System not properly configured. Please launch 'make config' first" && exit 1)
-DISTSRC_PATH                = $(BUILDDIR)/.distsrc
+DISTSRC_PATH                = $(BUILDDIR)/distsrc
 DISTSRC                     = $(DISTSRC_PATH)/$(ARTIFACT_NAME)
 
 .DEFAULT_GOAL              := all

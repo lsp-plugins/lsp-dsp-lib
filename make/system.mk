@@ -207,6 +207,8 @@ TEST                       := 0
 
 # Set-up list of common variables
 COMMON_VARS = \
+    ROOTDIR \
+    ROOT_ARTIFACT_ID \
 	PLATFORM \
 	ARCHITECTURE \
 	ARCHITECTURE_CFLAGS \
@@ -233,6 +235,7 @@ sysvars:
 	echo "  ARCHITECTURE_CFLAGS       compiler flags to specify architecture"
 	echo "  BINDIR                    location of the binaries"
 	echo "  DEBUG                     build with debug options"
+	echo "  DEVEL                     build with modules checked out for read/write URL"
 	echo "  EXECUTABLE_EXT            file extension for executable files"
 	echo "  INCDIR                    location of the header files"
 	echo "  LIBDIR                    location of the library"
