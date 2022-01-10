@@ -21,12 +21,13 @@ ifneq ($(VERBOSE),1)
 .SILENT:
 endif
 
-BASEDIR                 = $(CURDIR)
-CONFIG                 := $(CURDIR)/.config.mk
+MODDIR                  = $(CURDIR)/..
+CONFIG                 := $(MODDIR)/.config.mk
 
 include $(CONFIG)
-include $(BASEDIR)/../project.mk
-include $(BASEDIR)/../make/functions.mk
+include $(MODDIR)/project.mk
+include $(MODDIR)/dependencies.mk
+include $(MODDIR)/make/functions.mk
 
 ifeq ($(TEST),1)
   UNIQ_DEPENDENCIES      := $(call uniq, $(DEPENDENCIES) $(TEST_DEPENDENCIES))

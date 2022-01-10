@@ -47,8 +47,9 @@ endif
 include $(BASEDIR)/make/functions.mk
 include $(BASEDIR)/make/system.mk
 include $(BASEDIR)/make/tools.mk
-include $(BASEDIR)/dependencies.mk
 include $(BASEDIR)/project.mk
+include $(BASEDIR)/modules.mk
+include $(BASEDIR)/dependencies.mk
 
 # Compute the full list of dependencies
 MERGED_DEPENDENCIES        := \
