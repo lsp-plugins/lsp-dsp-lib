@@ -25,13 +25,15 @@ BASEDIR                := $(CURDIR)
 CONFIG                 := $(BASEDIR)/.config.mk
 
 include $(BASEDIR)/project.mk
-include $(BASEDIR)/dependencies.mk
 include $(BASEDIR)/make/functions.mk
 ifeq ($(TREE),1)
+  include $(BASEDIR)/make/system.mk
+  include $(BASEDIR)/make/tools.mk
   include $(BASEDIR)/modules.mk
 else
   -include $(CONFIG)
 endif
+include $(BASEDIR)/dependencies.mk
 
 MERGED_DEPENDENCIES        := \
   $(DEPENDENCIES) \
