@@ -22,25 +22,33 @@ ifneq ($(VERBOSE),1)
 endif
 
 BASEDIR                := $(CURDIR)
-DEPLIST                := $(BASEDIR)/dependencies.mk
-PROJECT                := $(BASEDIR)/project.mk
 CONFIG                 := $(BASEDIR)/.config.mk
 
+include $(BASEDIR)/project.mk
 include $(BASEDIR)/make/functions.mk
 ifeq ($(TREE),1)
-  include $(DEPLIST)
+  include $(BASEDIR)/make/system.mk
+  include $(BASEDIR)/make/tools.mk
+  include $(BASEDIR)/modules.mk
 else
   -include $(CONFIG)
 endif
-include $(PROJECT)
+include $(BASEDIR)/dependencies.mk
 
-UNIQ_DEPENDENCIES       = $(call uniq,$(DEPENDENCIES) $(TEST_DEPENDENCIES))
-UNIQ_ALL_DEPENDENCIES  := $(call uniq,$(ALL_DEPENDENCIES))
+MERGED_DEPENDENCIES        := \
+  $(DEPENDENCIES) \
+  $(TEST_DEPENDENCIES)
+UNIQ_MERGED_DEPENDENCIES   := $(filter-out $(ARTIFACT_ID),$(call uniq, $(MERGED_DEPENDENCIES)))
+UNIQ_ALL_DEPENDENCIES      := $(filter-out $(ARTIFACT_ID),$(call uniq, $(ALL_DEPENDENCIES)))
 
 # Find the proper branch of the GIT repository
 ifeq ($(TREE),1)
   MODULES                := $(BASEDIR)/modules
   GIT                    := git
+  
+  $(foreach dep,$(UNIQ_ALL_DEPENDENCIES), \
+    $(eval $(dep)_URL=$($(dep)_URL_RO)) \
+  )
   
   ifeq ($(findstring -devel,$(ARTIFACT_VERSION)),-devel)
     $(foreach dep, $(UNIQ_ALL_DEPENDENCIES), \
@@ -56,8 +64,8 @@ ifeq ($(TREE),1)
 endif
 
 # Form list of modules, exclude all modules that have 'system' version
-SRC_MODULES         = $(foreach dep, $(UNIQ_DEPENDENCIES), $(if $(findstring src,$($(dep)_TYPE)),$(dep)))
-HDR_MODULES         = $(foreach dep, $(UNIQ_DEPENDENCIES), $(if $(findstring hdr,$($(dep)_TYPE)),$(dep)))
+SRC_MODULES         = $(foreach dep, $(UNIQ_MERGED_DEPENDENCIES), $(if $(findstring src,$($(dep)_TYPE)),$(dep)))
+HDR_MODULES         = $(foreach dep, $(UNIQ_MERGED_DEPENDENCIES), $(if $(findstring hdr,$($(dep)_TYPE)),$(dep)))
 ALL_SRC_MODULES     = $(foreach dep, $(UNIQ_ALL_DEPENDENCIES), $(if $(findstring src,$($(dep)_TYPE)),$(dep)))
 ALL_HDR_MODULES     = $(foreach dep, $(UNIQ_ALL_DEPENDENCIES), $(if $(findstring hdr,$($(dep)_TYPE)),$(dep)))
 ALL_PATHS           = $(foreach dep, $(ALL_SRC_MODULES) $(ALL_HDR_MODULES), $($(dep)_PATH))
