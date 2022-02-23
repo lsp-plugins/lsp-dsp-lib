@@ -53,6 +53,7 @@ else
 endif
 
 # Set actual architecture
+# The current architecture can be obtained by: gcc -Q --help=target
 ifeq ($(patsubst armv6%,armv6,$(BUILD_ARCH)),armv6)
   override ARCHITECTURE   = arm32
   ARCHITECTURE_CFLAGS    := -march=armv6 -marm
@@ -92,6 +93,12 @@ else ifeq ($(patsubst i%86,i586,$(BUILD_ARCH)),i586)
 else ifeq ($(BUILD_ARCH),x86)
   override ARCHITECTURE   = i586
   ARCHITECTURE_CFLAGS    := -march=i586 -m32
+else ifeq ($(BUILD_ARCH),riscv32)
+  override ARCHITECTURE   = riscv32
+  ARCHITECTURE_CFLAGS    := -march=rv32imafdc -mabi=lp32d
+else ifeq ($(BUILD_ARCH),riscv64)
+  override ARCHITECTURE   = riscv64
+  ARCHITECTURE_CFLAGS    := -march=rv64imafdc -mabi=lp64d
 else
   override ARCHITECTURE   =
   ARCHITECTURE_CFLAGS    :=
