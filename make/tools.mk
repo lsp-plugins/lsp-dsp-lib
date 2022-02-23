@@ -19,6 +19,7 @@
 #
 
 # Determine tools
+X_PHP_TOOL         := php
 ifeq ($(PLATFORM),OpenBSD)
   X_CC_TOOL          := egcc
   X_CXX_TOOL         := eg++
@@ -44,6 +45,7 @@ CXX                := $(X_CXX_TOOL)
 AS                 := $(X_AS_TOOL)
 AR                 := $(X_AR_TOOL)
 LD                 := $(X_LD_TOOL)
+PHP                := $(X_PHP_TOOL)
 PKG_CONFIG         := $(X_PKG_CONFIG)
 
 # Define tool variables for host build
@@ -52,6 +54,7 @@ HOST_CXX           := $(CXX)
 HOST_AS            := $(AS)
 HOST_AR            := $(AR)
 HOST_LD            := $(LD)
+HOST_PHP           := $(PHP)
 HOST_PKG_CONFIG    := $(PKG_CONFIG)
 
 # Miscellaneous tools
@@ -145,10 +148,10 @@ HOST_SO_FLAGS      := $(SO_FLAGS)
 # The overall list of exported variables
 TOOL_VARS := \
   GIT INSTALL \
-  PKG_CONFIG AS AR CC CXX LD \
+  PKG_CONFIG AS AR CC CXX LD PHP \
   CFLAGS CDEFS CXXFLAGS CXXDEFS LDFLAGS EXE_FLAGS SO_FLAGS \
   INCLUDE \
-  HOST_PKG_CONFIG HOST_AS HOST_AR HOST_CC HOST_CXX HOST_LD \
+  HOST_PKG_CONFIG HOST_AS HOST_AR HOST_CC HOST_CXX HOST_LD HOST_PHP \
   HOST_CFLAGS HOST_CDEFS HOST_CXXFLAGS HOST_CXXDEFS HOST_LDFLAGS HOST_EXE_FLAGS HOST_SO_FLAGS \
   
 
@@ -182,6 +185,7 @@ toolvars:
 	echo "  INCLUDE                   Additional paths for include files"
 	echo "  LD                        Linker execution command line for target build"
 	echo "  LDFLAGS                   Linker flags for merging object files for target build"
+	echo "  PHP                       Installed PHP interpreter tool for building documentation"
 	echo "  PKG_CONFIG                Installed package management tool for target build"
 	echo "  SO_FLAGS                  Flags to link shared object/library files for target build"
 	echo ""

@@ -25,7 +25,9 @@ endif
 PREFIX                     := /usr/local
 LIBDIR                     := $(PREFIX)/lib
 BINDIR                     := $(PREFIX)/bin
+SHAREDDIR                  := $(PREFIX)/share
 INCDIR                     := $(PREFIX)/include
+ETCDIR                     := /etc
 BASEDIR                    := $(CURDIR)
 ROOTDIR                    := $(CURDIR)
 BUILDDIR                   := $(BASEDIR)/.build
@@ -44,11 +46,11 @@ else
   X_URL_SUFFIX                = _RO
 endif
 
-include $(BASEDIR)/project.mk
 include $(BASEDIR)/make/functions.mk
 include $(BASEDIR)/make/system.mk
 include $(BASEDIR)/make/tools.mk
 include $(BASEDIR)/modules.mk
+include $(BASEDIR)/project.mk
 include $(BASEDIR)/dependencies.mk
 
 # Compute the full list of dependencies
@@ -57,6 +59,7 @@ MERGED_DEPENDENCIES        := \
   $(TEST_DEPENDENCIES)
 UNIQ_MERGED_DEPENDENCIES   := $(call uniq, $(MERGED_DEPENDENCIES))
 DEPENDENCIES                = $(UNIQ_MERGED_DEPENDENCIES)
+FEATURES                   := $(call uniq, $(call subtraction,$(SUB_FEATURES),$(DEFAULT_FEATURES) $(ADD_FEATURES)))
 
 # Determine versions
 ifeq ($(findstring -devel,$(ARTIFACT_VERSION)),-devel)
@@ -186,8 +189,15 @@ define vardef =
 endef
 
 # Define predefined variables
+ifndef ARTIFACT_TYPE
+  ARTIFACT_TYPE              := src
+endif
+
 ifndef $(ARTIFACT_ID)_NAME
   $(ARTIFACT_ID)_NAME        := $(ARTIFACT_NAME)
+endif
+ifndef $(ARTIFACT_ID)_TYPE
+  $(ARTIFACT_ID)_TYPE        := $(ARTIFACT_TYPE)
 endif
 ifndef $(ARTIFACT_ID)_DESC
   $(ARTIFACT_ID)_DESC        := $(ARTIFACT_DESC)
@@ -204,9 +214,8 @@ endif
 
 ROOT_ARTIFACT_ID           := $(ARTIFACT_ID)
 $(ARTIFACT_ID)_TESTING      = $(TEST)
-$(ARTIFACT_ID)_TYPE        := src
 
-OVERALL_DEPS := $(DEPENDENCIES) $(ARTIFACT_ID)
+OVERALL_DEPS := $(call uniq,$(DEPENDENCIES) $(ARTIFACT_ID))
 __tmp := $(foreach dep,$(OVERALL_DEPS),$(call vardef, $(dep)))
 
 CONFIG_VARS = \
@@ -257,6 +266,8 @@ $(CONFIG_VARS): prepare
 	echo "$(@)=$($(@))" >> "$(CONFIG)"
 
 config: $(CONFIG_VARS)
+	echo "Architecture: $(ARCHITECTURE) ($(ARCHITECTURE_CFLAGS))"
+	echo "Features:     $(FEATURES)"
 	echo "Configured OK"
 
 help: | toolvars sysvars
@@ -286,4 +297,4 @@ help: | toolvars sysvars
 	echo ""
 	echo "Artifacts used for build:"
 	echo "  $(DEPENDENCIES)"
-
+	echo ""

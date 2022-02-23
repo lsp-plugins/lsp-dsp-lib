@@ -38,8 +38,8 @@ include $(BASEDIR)/dependencies.mk
 MERGED_DEPENDENCIES        := \
   $(DEPENDENCIES) \
   $(TEST_DEPENDENCIES)
-UNIQ_MERGED_DEPENDENCIES   := $(call uniq, $(MERGED_DEPENDENCIES))
-UNIQ_ALL_DEPENDENCIES      := $(call uniq, $(ALL_DEPENDENCIES))
+UNIQ_MERGED_DEPENDENCIES   := $(filter-out $(ARTIFACT_ID),$(call uniq, $(MERGED_DEPENDENCIES)))
+UNIQ_ALL_DEPENDENCIES      := $(filter-out $(ARTIFACT_ID),$(call uniq, $(ALL_DEPENDENCIES)))
 
 # Find the proper branch of the GIT repository
 ifeq ($(TREE),1)
