@@ -2,7 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
-=== 0.5.15 ===
+=== 1.0.0 ===
+* Updated build scripts.
+* Added Eclipse project files.
 
 === 0.5.14 ===
 * Updated build system.
