@@ -42,18 +42,14 @@ ifndef PLATFORM
 endif
 
 # Detect system processor architecture
-ifeq ($(PLATFORM),Windows)
-  ifndef ARCHITECTURE
+ifndef ARCHITECTURE
+  ifeq ($(PLATFORM),Windows)
     BUILD_ARCH             := $(PROCESSOR_ARCHITECTURE)
   else
-    BUILD_ARCH             := $(ARCHITECTURE)
+    BUILD_ARCH             := $(shell uname -m)
   endif
 else
-  ifndef ARCHITECTURE
-    BUILD_ARCH             := $(shell uname -m)
-  else
-    BUILD_ARCH             := $(ARCHITECTURE)
-  endif
+  BUILD_ARCH             := $(ARCHITECTURE)
 endif
 
 # Set actual architecture
@@ -72,6 +68,9 @@ else ifeq ($(patsubst armv8%,armv8,$(BUILD_ARCH)),armv8)
 else ifeq ($(patsubst aarch64%,aarch64,$(BUILD_ARCH)),aarch64)
   override ARCHITECTURE   = aarch64
   ARCHITECTURE_CFLAGS    := -march=armv8-a
+else ifeq ($(BUILD_ARCH),arm32)
+  override ARCHITECTURE   = arm32
+  ARCHITECTURE_CFLAGS    := -march=armv6 -marm
 else ifeq ($(BUILD_ARCH),arm)
   override ARCHITECTURE   = arm32
   ARCHITECTURE_CFLAGS    := -march=armv6 -marm
