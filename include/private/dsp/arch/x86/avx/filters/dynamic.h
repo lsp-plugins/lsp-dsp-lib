@@ -38,8 +38,7 @@ namespace lsp
             (
                 // Check count
                 __ASM_EMIT64("test              %[count], %[count]")
-                __ASM_EMIT32NP("test            %[count], %[count]")
-                __ASM_EMIT32P("cmpl             $0, %[count]")
+                __ASM_EMIT32("cmpl              $0, %[count]")
                 __ASM_EMIT("jz                  2f")
 
                 // Load permanent data
@@ -90,8 +89,7 @@ namespace lsp
             (
                 // Check count
                 __ASM_EMIT64("test              %[count], %[count]")
-                __ASM_EMIT32NP("test            %[count], %[count]")
-                __ASM_EMIT32P("cmpl             $0, %[count]")
+                __ASM_EMIT32("cmpl              $0, %[count]")
                 __ASM_EMIT("jz                  2f")
 
                 // Load permanent data
@@ -295,8 +293,7 @@ namespace lsp
             (
                 // Check count
                 __ASM_EMIT64("test              %[count], %[count]")
-                __ASM_EMIT32NP("test            %[count], %[count]")
-                __ASM_EMIT32P("cmpl             $0, %[count]")
+                __ASM_EMIT32("cmpl              $0, %[count]")
                 __ASM_EMIT("jz                  8f")
 
                 // Initialize mask
@@ -428,8 +425,7 @@ namespace lsp
             (
                 // Check count
                 __ASM_EMIT64("test              %[count], %[count]")
-                __ASM_EMIT32NP("test            %[count], %[count]")
-                __ASM_EMIT32P("cmpl             $0, %[count]")
+                __ASM_EMIT32("cmpl              $0, %[count]")
                 __ASM_EMIT("jz                  8f")
 
                 // Initialize mask
@@ -558,8 +554,7 @@ namespace lsp
             (
                 // Check count
                 __ASM_EMIT64("test          %[count], %[count]")
-                __ASM_EMIT32NP("test        %[count], %[count]")
-                __ASM_EMIT32P("cmpl         $0, %[count]")
+                __ASM_EMIT32("cmpl          $0, %[count]")
                 __ASM_EMIT("jz              8f")
 
                 // Initialize mask
@@ -705,8 +700,7 @@ namespace lsp
             (
                 // Check count
                 __ASM_EMIT64("test          %[count], %[count]")
-                __ASM_EMIT32NP("test        %[count], %[count]")
-                __ASM_EMIT32P("cmpl         $0, %[count]")
+                __ASM_EMIT32("cmpl          $0, %[count]")
                 __ASM_EMIT("jz              8f")
 
                 // Initialize mask
