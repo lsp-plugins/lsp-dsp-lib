@@ -349,8 +349,8 @@ namespace lsp
 
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [f] "+r" (f), [mask] "=&r"(mask),
-                  __IF_32([count] "+g"(var))
-                  __IF_64([count] "+r"(var))
+                  __IF_32([count] "+g"(count))
+                  __IF_64([count] "+r"(count))
                 : [d] "r" (d),
                   [X_MASK] "m" (dyn_biquad_const),
                   [MASK] "m" (MASK)
