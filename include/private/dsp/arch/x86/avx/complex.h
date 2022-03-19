@@ -142,7 +142,9 @@ namespace lsp
                 : __IF_32(
                     [ptr_re] "=&r" (ptr_re), [ptr_im] "=&r" (ptr_im),
                   )
-                  [count] __ASM_ARG_RW(count), [off] "=&r" (off)
+                  __IF_32([count] "+g" (count),)
+                  __IF_64([count] "+r" (count),)
+                  [off] "=&r" (off)
                 : __IF_32(
                     [dst_re] "g" (dst_re), [dst_im] "g" (dst_im),
                     [src1_re] "g" (src1_re), [src1_im] "g" (src1_im),
@@ -168,7 +170,9 @@ namespace lsp
                 : __IF_32(
                     [ptr_re] "=&r" (ptr_re), [ptr_im] "=&r" (ptr_im),
                   )
-                  [count] __ASM_ARG_RW(count), [off] "=&r" (off)
+                  __IF_32([count] "+g" (count),)
+                  __IF_64([count] "+r" (count),)
+                  [off] "=&r" (off)
                 : __IF_32(
                     [dst_re] "g" (dst_re), [dst_im] "g" (dst_im),
                     [src1_re] "g" (src1_re), [src1_im] "g" (src1_im),
@@ -259,7 +263,9 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_MUL2_CORE("dst", "src", FMA_OFF)
-                : [count] __ASM_ARG_RW(count), [off] "=&r" (off)
+                : __IF_32([count] "+g" (count),)
+                  __IF_64([count] "+r" (count),)
+                  [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im)
                 : "cc", "memory",
@@ -274,7 +280,9 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_MUL2_CORE("dst", "src", FMA_ON)
-                : [count] __ASM_ARG_RW(count), [off] "=&r" (off)
+                : __IF_32([count] "+g" (count),)
+                  __IF_64([count] "+r" (count),)
+                  [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im)
                 : "cc", "memory",
@@ -657,7 +665,9 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_DIV2_CORE("dst", "dst", "src", FMA_OFF)
-                : [count] __ASM_ARG_RW(count), [off] "=&r" (off)
+                : __IF_32([count] "+g" (count),)
+                  __IF_64([count] "+r" (count),)
+                  [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
                   [CC] "m" (complex_div_const)
@@ -673,7 +683,9 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_DIV2_CORE("dst", "dst", "src", FMA_ON)
-                : [count] __ASM_ARG_RW(count), [off] "=&r" (off)
+                : __IF_32([count] "+g" (count),)
+                  __IF_64([count] "+r" (count),)
+                  [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
                   [CC] "m" (complex_div_const)
@@ -689,7 +701,9 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_DIV2_CORE("dst", "src", "dst", FMA_OFF)
-                : [count] __ASM_ARG_RW(count), [off] "=&r" (off)
+                : __IF_32([count] "+g" (count),)
+                  __IF_64([count] "+r" (count),)
+                  [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
                   [CC] "m" (complex_div_const)
@@ -705,7 +719,9 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_DIV2_CORE("dst", "src", "dst", FMA_ON)
-                : [count] __ASM_ARG_RW(count), [off] "=&r" (off)
+                : __IF_32([count] "+g" (count),)
+                  __IF_64([count] "+r" (count),)
+                  [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
                   [CC] "m" (complex_div_const)
@@ -851,7 +867,9 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_RCP_CORE("dst", "src", FMA_OFF)
-                : [count] __ASM_ARG_RW(count), [off] "=&r" (off)
+                : __IF_32([count] "+g" (count),)
+                  __IF_64([count] "+r" (count),)
+                  [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
                   [CC] "m" (complex_div_const)
@@ -867,7 +885,9 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_RCP_CORE("dst", "src", FMA_ON)
-                : [count] __ASM_ARG_RW(count), [off] "=&r" (off)
+                : __IF_32([count] "+g" (count),)
+                  __IF_64([count] "+r" (count),)
+                  [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
                   [CC] "m" (complex_div_const)
