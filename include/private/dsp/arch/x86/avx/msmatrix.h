@@ -111,7 +111,9 @@ namespace lsp
                 __ASM_EMIT("jge             7b")
                 __ASM_EMIT("8:")
 
-                : [off] "=&r" (off), [count] __ASM_ARG_RW(count)
+                : [off] "=&r" (off),
+                  __IF_32([count] "+g" (count))
+                  __IF_64([count] "+r" (count))
                 : [left] "r"(l), [right] "r" (r),
                   [mid] "r" (m), [side] "r" (s),
                   [X_HALF] "m" (msmatrix_const)
@@ -323,7 +325,9 @@ namespace lsp
                 __ASM_EMIT("jge             9b")
                 __ASM_EMIT("10:")
 
-                : [off] "=&r" (off), [count] __ASM_ARG_RW(count)
+                : [off] "=&r" (off),
+                  __IF_32([count] "+g" (count))
+                  __IF_64([count] "+r" (count))
                 : [left] "r"(l), [right] "r" (r),
                   [mid] "r" (m), [side] "r" (s)
                 : "cc", "memory",
