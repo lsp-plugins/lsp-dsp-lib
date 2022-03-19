@@ -3444,6 +3444,7 @@ $(LSP_DSP_LIB_BIN)/test/utest/filters/dynamic.o: \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/utest.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/status.h \
@@ -4293,6 +4294,7 @@ $(LSP_DSP_LIB_BIN)/test/utest/3d/split_triangle.o: \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/utest.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/status.h \
@@ -5038,6 +5040,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/search/minmax.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h
 $(LSP_DSP_LIB_BIN)/test/ptest/search/iminmax.o: \
  test/ptest/search/iminmax.cpp \
@@ -5096,6 +5099,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/search/iminmax.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h
 $(LSP_DSP_LIB_BIN)/test/ptest/resampling/oversampling.o: \
  test/ptest/resampling/oversampling.cpp \
@@ -5265,6 +5269,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/pow.o: test/ptest/pmath/pow.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/op_k3.o: test/ptest/pmath/op_k3.cpp \
@@ -5323,7 +5328,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/op_k3.o: test/ptest/pmath/op_k3.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/op_k2.o: test/ptest/pmath/op_k2.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -5380,7 +5386,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/op_k2.o: test/ptest/pmath/op_k2.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/op3.o: test/ptest/pmath/op3.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -5437,7 +5444,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/op3.o: test/ptest/pmath/op3.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/op2.o: test/ptest/pmath/op2.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -5494,7 +5502,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/op2.o: test/ptest/pmath/op2.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/minmax3.o: \
  test/ptest/pmath/minmax3.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -5552,7 +5561,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/minmax3.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/minmax2.o: \
  test/ptest/pmath/minmax2.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -5610,7 +5620,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/minmax2.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/log.o: test/ptest/pmath/log.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -5667,7 +5678,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/log.o: test/ptest/pmath/log.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/fmop_k4.o: \
  test/ptest/pmath/fmop_k4.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -5725,7 +5737,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/fmop_k4.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/fmop_k3.o: \
  test/ptest/pmath/fmop_k3.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -5783,7 +5796,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/fmop_k3.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/fmop4.o: test/ptest/pmath/fmop4.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -5840,7 +5854,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/fmop4.o: test/ptest/pmath/fmop4.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/fmop3.o: test/ptest/pmath/fmop3.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -5897,7 +5912,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/fmop3.o: test/ptest/pmath/fmop3.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/exp.o: test/ptest/pmath/exp.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -5954,7 +5970,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/exp.o: test/ptest/pmath/exp.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/abs_op3.o: \
  test/ptest/pmath/abs_op3.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -6012,7 +6029,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/abs_op3.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/abs_op2.o: \
  test/ptest/pmath/abs_op2.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -6070,7 +6088,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/abs_op2.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pmath/abs.o: test/ptest/pmath/abs.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -6127,7 +6146,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pmath/abs.o: test/ptest/pmath/abs.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/rcp.o: test/ptest/pcomplex/rcp.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -6184,7 +6204,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/rcp.o: test/ptest/pcomplex/rcp.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/mul3.o: \
  test/ptest/pcomplex/mul3.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -6242,7 +6263,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/mul3.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/mul2.o: \
  test/ptest/pcomplex/mul2.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -6300,7 +6322,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/mul2.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/mod.o: test/ptest/pcomplex/mod.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -6357,7 +6380,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/mod.o: test/ptest/pcomplex/mod.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/div3.o: \
  test/ptest/pcomplex/div3.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -6415,7 +6439,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/div3.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/div2.o: \
  test/ptest/pcomplex/div2.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -6473,7 +6498,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/pcomplex/div2.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/msmatrix/conv2x1.o: \
  test/ptest/msmatrix/conv2x1.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -6531,7 +6557,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/msmatrix/conv2x1.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/msmatrix/conv2.o: \
  test/ptest/msmatrix/conv2.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -6589,7 +6616,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/msmatrix/conv2.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/mix.o: test/ptest/mix.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -6638,6 +6666,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/mix.o: test/ptest/mix.cpp \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/ptest.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/status.h \
@@ -6704,7 +6733,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/interpolation/linear.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/hmath/hsum.o: test/ptest/hmath/hsum.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -6761,7 +6791,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/hmath/hsum.o: test/ptest/hmath/hsum.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/hmath/hdotp.o: test/ptest/hmath/hdotp.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -6818,7 +6849,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/hmath/hdotp.o: test/ptest/hmath/hdotp.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/graphics/rgba_to_hsla.o: \
  test/ptest/graphics/rgba_to_hsla.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -6876,7 +6908,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/graphics/rgba_to_hsla.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/graphics/rgba_to_bgra32.o: \
  test/ptest/graphics/rgba_to_bgra32.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -6934,7 +6967,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/graphics/rgba_to_bgra32.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/graphics/rgba.o: \
  test/ptest/graphics/rgba.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -6991,7 +7025,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/graphics/rgba.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/graphics/hsla_to_rgba.o: \
  test/ptest/graphics/hsla_to_rgba.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -7049,7 +7084,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/graphics/hsla_to_rgba.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/graphics/fill.o: \
  test/ptest/graphics/fill.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -7106,7 +7142,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/graphics/fill.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/graphics/effects.o: \
  test/ptest/graphics/effects.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -7163,7 +7200,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/graphics/effects.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/graphics/axis.o: \
  test/ptest/graphics/axis.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -7221,7 +7259,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/graphics/axis.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/graphics/abgr32_to_bgrff32.o: \
  test/ptest/graphics/abgr32_to_bgrff32.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -7278,7 +7317,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/graphics/abgr32_to_bgrff32.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/float/saturation.o: \
  test/ptest/float/saturation.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -7337,6 +7377,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/float/saturation.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h
 $(LSP_DSP_LIB_BIN)/test/ptest/float/sanitize.o: \
  test/ptest/float/sanitize.cpp \
@@ -7395,7 +7436,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/float/sanitize.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/float/limit_saturate.o: \
  test/ptest/float/limit_saturate.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -7454,6 +7496,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/float/limit_saturate.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h
 $(LSP_DSP_LIB_BIN)/test/ptest/float/limit.o: test/ptest/float/limit.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -7512,6 +7555,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/float/limit.o: test/ptest/float/limit.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h
 $(LSP_DSP_LIB_BIN)/test/ptest/filters/transfer.o: \
  test/ptest/filters/transfer.cpp \
@@ -7571,6 +7615,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/filters/transfer.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h
 $(LSP_DSP_LIB_BIN)/test/ptest/filters/static.o: \
  test/ptest/filters/static.cpp \
@@ -7684,6 +7729,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/filters/mt.o: test/ptest/filters/mt.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h
 $(LSP_DSP_LIB_BIN)/test/ptest/filters/dynamic.o: \
  test/ptest/filters/dynamic.cpp \
@@ -7741,7 +7787,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/filters/dynamic.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/filters/bt.o: test/ptest/filters/bt.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -7797,7 +7844,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/filters/bt.o: test/ptest/filters/bt.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/fft/fft.o: test/ptest/fft/fft.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -7854,7 +7902,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/fft/fft.o: test/ptest/fft/fft.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/fft/fastconv.o: test/ptest/fft/fastconv.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -7911,6 +7960,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/fft/fastconv.o: test/ptest/fft/fastconv.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h
 $(LSP_DSP_LIB_BIN)/test/ptest/copy/reverse.o: test/ptest/copy/reverse.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -7968,7 +8018,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/copy/reverse.o: test/ptest/copy/reverse.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/copy/fill.o: test/ptest/copy/fill.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/ptest.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
@@ -7981,6 +8032,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/copy/fill.o: test/ptest/copy/fill.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/string.h
 $(LSP_DSP_LIB_BIN)/test/ptest/copy/copy.o: test/ptest/copy/copy.cpp \
@@ -8039,7 +8091,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/copy/copy.o: test/ptest/copy/copy.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/convolve.o: test/ptest/convolve.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -8096,7 +8149,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/convolve.o: test/ptest/convolve.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/complex/rcp.o: test/ptest/complex/rcp.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -8153,7 +8207,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/complex/rcp.o: test/ptest/complex/rcp.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/complex/mul3.o: test/ptest/complex/mul3.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -8210,7 +8265,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/complex/mul3.o: test/ptest/complex/mul3.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/complex/mul2.o: test/ptest/complex/mul2.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -8267,7 +8323,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/complex/mul2.o: test/ptest/complex/mul2.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/complex/mod.o: test/ptest/complex/mod.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -8324,7 +8381,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/complex/mod.o: test/ptest/complex/mod.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/complex/div3.o: test/ptest/complex/div3.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -8381,7 +8439,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/complex/div3.o: test/ptest/complex/div3.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/complex/div2.o: test/ptest/complex/div2.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
@@ -8438,7 +8497,8 @@ $(LSP_DSP_LIB_BIN)/test/ptest/complex/div2.o: test/ptest/complex/div2.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h
 $(LSP_DSP_LIB_BIN)/test/ptest/3d/raw_triangle.o: \
  test/ptest/3d/raw_triangle.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
@@ -8496,6 +8556,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/3d/raw_triangle.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h
 $(LSP_DSP_LIB_BIN)/test/ptest/3d/colocation_x3.o: \
@@ -8555,6 +8616,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/3d/colocation_x3.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h
 $(LSP_DSP_LIB_BIN)/test/ptest/3d/colocation_x2.o: \
@@ -8615,6 +8677,7 @@ $(LSP_DSP_LIB_BIN)/test/ptest/3d/colocation_x2.o: \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/helpers.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/alloc.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdlib.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h
 $(LSP_DSP_LIB_BIN)/test/main.o: test/main.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main.h \
