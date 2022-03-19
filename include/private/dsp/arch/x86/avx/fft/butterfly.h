@@ -85,7 +85,9 @@ namespace lsp
                 __ASM_EMIT("2:") \
                 \
                 : __IF_32([ptr1] "=&r" (ptr1), [ptr2] "=&r" (ptr2), ) \
-                  [off1] "+r" (off1), [off2] "+r" (off2), [np] __ASM_ARG_RW(np) \
+                  [off1] "+r" (off1), [off2] "+r" (off2), \
+                  __IF_32([np] "+g" (np)) \
+                  __IF_64([np] "+r" (np)) \
                 : __IF_32([dst_re] "g" (dst_re), [dst_im] "g" (dst_im), [fft_a] "g" (fft_a), [fft_w] "g" (fft_w)) \
                   __IF_64([dst_re] "r" (dst_re), [dst_im] "r" (dst_im), [fft_a] "r" (fft_a), [fft_w] "r" (fft_w)) \
                 : "cc", "memory",  \
