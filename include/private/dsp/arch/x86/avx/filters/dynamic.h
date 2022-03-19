@@ -827,7 +827,8 @@ namespace lsp
 
                 : [dst] "+r" (dst), [src] "+r" (src), [f] "+r" (f),
                   [mask] "=&r"(mask),
-                  [count] __ASM_ARG_RW(count)
+                  __IF_32([count] "+g" (count))
+                  __IF_64([count] "+r" (count))
                 : [d] "r" (d),
                   [X_MASK] "m" (dyn_biquad_x8_mask)
                 : "cc", "memory",
