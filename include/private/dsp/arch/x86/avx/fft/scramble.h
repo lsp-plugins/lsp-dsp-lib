@@ -426,7 +426,9 @@ namespace lsp
                     __ASM_EMIT("add             $0x40, %[dst_im]")
 
                     : [dst_re] "+r" (dst_re), [dst_im] "+r"(dst_im), [index] "+r"(index)
-                    : [src_re] "r" (src_re), [src_im] "r"(src_im), [regs] __ASM_ARG_RO(regs),
+                    : [src_re] "r" (src_re), [src_im] "r"(src_im),
+                      __IF_32([regs] "g" (regs),)
+                      __IF_64([regs] "r" (regs),)
                       [FFT_A] "o" (FFT_A)
                     : "cc", "memory",
                       "%xmm0", "%xmm1", "%xmm2", "%xmm3",
@@ -544,7 +546,9 @@ namespace lsp
                     __ASM_EMIT("add             $0x40, %[dst_im]")
 
                     : [dst_re] "+r" (dst_re), [dst_im] "+r"(dst_im), [index] "+r"(index)
-                    : [src_re] "r"(src_re), [src_im] "r"(src_im), [regs] __ASM_ARG_RO(regs),
+                    : [src_re] "r"(src_re), [src_im] "r"(src_im),
+                      __IF_32([regs] "g" (regs),)
+                      __IF_64([regs] "r" (regs),)
                       [FFT_A] "o" (FFT_A)
                     : "cc", "memory",
                       "%xmm0", "%xmm1", "%xmm2", "%xmm3",

@@ -66,7 +66,9 @@ namespace lsp
                 __ASM_EMIT  ("vmovups       %%ymm4, 0x00(%[d_re], %[off])")
                 __ASM_EMIT  ("vmovups       %%ymm6, 0x00(%[d_im], %[off])")
                 __ASM_EMIT  ("4:")
-                : [off] "+r" (off), [count] __ASM_ARG_RW(count)
+                : [off] "+r" (off),
+                  __IF_32([count] "+g" (count))
+                  __IF_64([count] "+r" (count))
                 : [s_re] "r" (re), [s_im] "r" (im),
                   [d_re] "r" (dre), [d_im] "r" (dim),
                   [k] "m" (k)

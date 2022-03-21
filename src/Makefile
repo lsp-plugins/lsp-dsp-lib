@@ -168,11 +168,11 @@ $(CXX_OBJ_MAIN) $(CXX_OBJ_EXPORT) $(CXX_OBJ_EXT) $(CXX_OBJ_TEST) $(CXX_OBJ_NOTES
 # Producing large object files
 $(ARTIFACT_OBJ): $(CXX_OBJ)
 	@echo "  $($(HOST)LD)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_OBJ))"
-	@$($(HOST)LD) -o $(ARTIFACT_OBJ) -r $(CXX_OBJ)
+	@$($(HOST)LD) -o $(ARTIFACT_OBJ) $($(HOST)LDFLAGS) $(CXX_OBJ)
 
 $(ARTIFACT_OBJ_TEST): $(CXX_OBJ_TEST)
 	echo "  $($(HOST)LD)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_OBJ_TEST))"
-	$($(HOST)LD) -o $(ARTIFACT_OBJ_TEST) -r $(CXX_OBJ_TEST)
+	$($(HOST)LD) -o $(ARTIFACT_OBJ_TEST) $($(HOST)LDFLAGS) $(CXX_OBJ_TEST)
 
 # Linking
 all: $(ARTIFACT_TARGETS)
@@ -209,10 +209,8 @@ install: all
 	$(if $(CXX_INSTALL_HEADERS), mkdir -p "$(DESTDIR)$(INCDIR)")
 	$(if $(CXX_INSTALL_HEADERS), cp -r "$(CXX_HDR_PATHS)" "$(DESTDIR)$(INCDIR)/")
 	cp $(ARTIFACT_PC) "$(DESTDIR)$(LIBDIR)/pkgconfig/"
-	echo $(INSTALL) $(ARTIFACT_LIB) -t "$(DESTDIR)$(LIBDIR)"
-	$(INSTALL) $(ARTIFACT_LIB) -t "$(DESTDIR)$(LIBDIR)"
-	echo cp $(ARTIFACT_SLIB) -t "$(DESTDIR)$(LIBDIR)"
-	cp $(ARTIFACT_SLIB) -t "$(DESTDIR)$(LIBDIR)"
+	$(INSTALL) $(ARTIFACT_LIB) "$(DESTDIR)$(LIBDIR)/"
+	cp $(ARTIFACT_SLIB) "$(DESTDIR)$(LIBDIR)/"
 	ln -sf $(notdir $(ARTIFACT_LIB)) "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_LIBLINK)"
 	ln -sf $(notdir $(ARTIFACT_SLIB)) "$(DESTDIR)$(LIBDIR)/$(ARTIFACT_SLIBLINK)"
 	echo "Install OK"
