@@ -164,7 +164,16 @@ namespace lsp
             f->variant          = 0;
             f->part             = 0;
             f->revision         = 0;
+
+        #if defined(PLATFORM_LINUX)
             f->hwcap            = getauxval(AT_HWCAP);
+        #elif defined(PLATFORM_BSD)
+            unsigned long __hwcap = 0;
+            if (elf_aux_info(AT_HWCAP, &__hwcap, sizeof(__hwcap)) == 0)
+                f->hwcap            = __hwcap;
+        #else
+            f->hwcap            = 0;
+        #endif
 
     //        processor       : 0
     //        BogoMIPS        : 38.40
