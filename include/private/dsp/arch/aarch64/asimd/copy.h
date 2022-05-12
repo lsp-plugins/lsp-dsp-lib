@@ -483,7 +483,7 @@ namespace lsp
                 /* End of move */
                 __ASM_EMIT("2000:")
 
-                : [dst] "+r" (dst), [src] "=&r" (src),
+                : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
