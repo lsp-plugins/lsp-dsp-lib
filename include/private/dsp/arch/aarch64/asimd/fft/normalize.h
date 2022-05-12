@@ -38,7 +38,7 @@ namespace lsp
             );
             ARCH_AARCH64_ASM(
                 // x8 blocks
-                __ASM_EMIT("dup         v0.4s, %S[k].s[0]")             // v0   = k
+                __ASM_EMIT("dup         v0.4s, %[k].s[0]")             // v0   = k
                 __ASM_EMIT("subs        %[count], %[count], #8")
                 __ASM_EMIT("mov         v1.16b, v0.16b")
                 __ASM_EMIT("b.lt        2f")
@@ -76,7 +76,7 @@ namespace lsp
             );
             ARCH_AARCH64_ASM(
                 // x8 blocks
-                __ASM_EMIT("dup         v0.4s, %S[k].s[0]")             // v0   = k
+                __ASM_EMIT("dup         v0.4s, %[k].s[0]")             // v0   = k
                 __ASM_EMIT("subs        %[count], %[count], #8")
                 __ASM_EMIT("mov         v1.16b, v0.16b")
                 __ASM_EMIT("b.lt        2f")

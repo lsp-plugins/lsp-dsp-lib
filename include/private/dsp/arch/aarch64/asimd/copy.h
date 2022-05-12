@@ -182,7 +182,7 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7"
             );
         }
 
@@ -487,7 +487,7 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7"
             );
         }
 
@@ -605,7 +605,7 @@ namespace lsp
                   [count] "+r" (count)
                 : [k] "r" (&k)
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7"
             );
         }
 
@@ -620,7 +620,7 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7"
             );
         }
 
@@ -648,7 +648,7 @@ namespace lsp
                   [count] "+r" (count)
                 : [DATA] "r" (fill_one_data)
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7"
             );
         }
 
@@ -662,7 +662,7 @@ namespace lsp
                   [count] "+r" (count)
                 : [DATA] "r" (fill_minus_one_data)
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7"
             );
         }
 
@@ -761,7 +761,7 @@ namespace lsp
                   [count] "+r" (count)
                 : [DATA] "r" (fill_minus_one_data)
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7"
             );
         }
 
@@ -862,7 +862,7 @@ namespace lsp
                   [count] "+r" (count)
                 : [DATA] "r" (fill_minus_one_data)
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7"
             );
         }
     }

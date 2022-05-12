@@ -131,35 +131,35 @@ namespace lsp
         __ASM_EMIT("bge         9b") \
         __ASM_EMIT("10:")
 
-         void fmadd3(float *dst, const float *a, const float *b, size_t count)
-         {
-             ARCH_AARCH64_ASM
-             (
-                 FMADDSUB_V3_CORE("dst", "a", "b", "fmla")
-                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
-                   [count] "+r" (count)
-                 :
-                 : "cc", "memory",
-                   "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
-                   "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23",
-                   "q24", "q25", "q26", "q27", "q28", "q29", "q30", "q31"
-             );
-         }
+        void fmadd3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                FMADDSUB_V3_CORE("dst", "a", "b", "fmla")
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
+                  "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31"
+            );
+        }
 
-         void fmsub3(float *dst, const float *a, const float *b, size_t count)
-         {
-             ARCH_AARCH64_ASM
-             (
-                 FMADDSUB_V3_CORE("dst", "a", "b", "fmls")
-                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
-                   [count] "+r" (count)
-                 :
-                 : "cc", "memory",
-                   "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
-                   "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23",
-                   "q24", "q25", "q26", "q27", "q28", "q29", "q30", "q31"
-             );
-         }
+        void fmsub3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                FMADDSUB_V3_CORE("dst", "a", "b", "fmls")
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
+                  "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31"
+            );
+        }
 
     #undef FMADDSUB_V3_CORE
 
@@ -286,9 +286,9 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23",
-                  "q24", "q25", "q26", "q27", "q28", "q29", "q30", "q31"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
+                  "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31"
             );
         }
 
@@ -301,9 +301,9 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23",
-                  "q24", "q25", "q26", "q27", "q28", "q29", "q30", "q31"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
+                  "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31"
             );
         }
 
@@ -433,9 +433,9 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19",
-                  "q24", "q25", "q26", "q27"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19",
+                  "v24", "v25", "v26", "v27"
             );
         }
 
@@ -448,9 +448,9 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19",
-                  "q24", "q25", "q26", "q27"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19",
+                  "v24", "v25", "v26", "v27"
             );
         }
 
@@ -559,35 +559,35 @@ namespace lsp
         __ASM_EMIT("bge         9b") \
         __ASM_EMIT("10:")
 
-         void fmadd4(float *dst, const float *a, const float *b, const float *c, size_t count)
-         {
-             ARCH_AARCH64_ASM
-             (
-                 FMADDSUB_V4_CORE("dst", "a", "b", "c", "fmla")
-                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c),
-                   [count] "+r" (count)
-                 :
-                 : "cc", "memory",
-                   "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
-                   "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23",
-                   "q24", "q25", "q26", "q27", "q28", "q29", "q30", "q31"
-             );
-         }
+        void fmadd4(float *dst, const float *a, const float *b, const float *c, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                FMADDSUB_V4_CORE("dst", "a", "b", "c", "fmla")
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
+                  "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31"
+            );
+        }
 
-         void fmsub4(float *dst, const float *a, const float *b, const float *c, size_t count)
-         {
-             ARCH_AARCH64_ASM
-             (
-                 FMADDSUB_V4_CORE("dst", "a", "b", "c", "fmls")
-                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c),
-                   [count] "+r" (count)
-                 :
-                 : "cc", "memory",
-                   "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
-                   "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23",
-                   "q24", "q25", "q26", "q27", "q28", "q29", "q30", "q31"
-             );
-         }
+        void fmsub4(float *dst, const float *a, const float *b, const float *c, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                FMADDSUB_V4_CORE("dst", "a", "b", "c", "fmls")
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
+                  "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31"
+            );
+        }
 
     #undef FMADDSUB_V4_CORE
 
@@ -719,9 +719,9 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23",
-                  "q24", "q25", "q26", "q27", "q28", "q29", "q30", "q31"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
+                  "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31"
             );
         }
 
@@ -734,9 +734,9 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23",
-                  "q24", "q25", "q26", "q27", "q28", "q29", "q30", "q31"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
+                  "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31"
             );
         }
 
@@ -870,9 +870,9 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19",
-                  "q24", "q25", "q26", "q27"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19",
+                  "v24", "v25", "v26", "v27"
             );
         }
 
@@ -885,9 +885,9 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19",
-                  "q24", "q25", "q26", "q27"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19",
+                  "v24", "v25", "v26", "v27"
             );
         }
 
@@ -1047,8 +1047,8 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
             );
         }
 
@@ -1061,8 +1061,8 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
             );
         }
 
@@ -1075,8 +1075,8 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
             );
         }
 
@@ -1089,8 +1089,8 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
             );
         }
 

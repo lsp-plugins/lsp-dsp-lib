@@ -102,11 +102,11 @@ namespace lsp
                       [k] "=&r" (k), [n] "+r" (n)
                     : [dst] "r" (dst)
                     : "cc", "memory",
-                      "q0", "q1", "q2", "q3",
-                      "q4", "q5", "q6", "q7",
-                      "q16", "q17", "q18", "q19",
-                      "q20", "q21", "q22", "q23",
-                      "q24", "q25"
+                      "v0", "v1", "v2", "v3",
+                      "v4", "v5", "v6", "v7",
+                      "v16", "v17", "v18", "v19",
+                      "v20", "v21", "v22", "v23",
+                      "v24", "v25"
                 );
 
                 // All other loops while n > 4
@@ -223,11 +223,11 @@ namespace lsp
                       [n] "+r" (n)
                     : [dst] "r" (dst), [items] "r" (items)
                     : "cc", "memory",
-                      "q0", "q1", "q2", "q3",
-                      "q4", "q5", "q6", "q7",
-                      "q16", "q17", "q18", "q19",
-                      "q20", "q21", "q22", "q23",
-                      "q24", "q25"
+                      "v0", "v1", "v2", "v3",
+                      "v4", "v5", "v6", "v7",
+                      "v16", "v17", "v18", "v19",
+                      "v20", "v21", "v22", "v23",
+                      "v24", "v25"
                 );
             }
             else
@@ -240,7 +240,7 @@ namespace lsp
                     :
                     : [src] "r" (src), [dst] "r" (dst)
                     : "memory",
-                      "q0", "q1"
+                      "v0", "v1"
                 );
             }
 
@@ -303,8 +303,8 @@ namespace lsp
                 : [dst] "+r" (dst), [items] "+r" (items)
                 : [MASK] "r" (&fastconv_swp_mask[0])
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                  "q16", "q17"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17"
             );
         }
     }
