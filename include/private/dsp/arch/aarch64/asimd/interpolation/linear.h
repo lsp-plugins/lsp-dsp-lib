@@ -73,7 +73,7 @@ namespace lsp
                 // v13 = d[1]
                 // v14 = k
                 // v15 = y0
-                __ASM_EMIT("subs            %[n], %[n], #16")
+                __ASM_EMIT("subs            %w[n], %w[n], #16")
                 __ASM_EMIT("b.lo            2f")
 
                 // 16x blocks
@@ -92,13 +92,13 @@ namespace lsp
                 __ASM_EMIT("fadd            v11.4s, v11.4s, v13.4s")                    // v11 = x[3]' = x[3]+d[1]
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
                 __ASM_EMIT("stp             q2, q3, [%[dst], #0x20]")
-                __ASM_EMIT("subs            %[n], %[n], #16")
+                __ASM_EMIT("subs            %w[n], %w[n], #16")
                 __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("b.hs            1b")
 
                 // 8x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[n], %[n], #8")
+                __ASM_EMIT("adds            %w[n], %w[n], #8")
                 __ASM_EMIT("b.lt            4f")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
                 __ASM_EMIT("fmul            v5.4s, v9.4s, v14.4s")                      // v5  = k*x[1]
@@ -107,30 +107,30 @@ namespace lsp
                 __ASM_EMIT("mov             v8.16b, v10.16b")                           // v8  = x[0]'
                 __ASM_EMIT("mov             v9.16b, v11.16b")                           // v9  = x[1]'
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
-                __ASM_EMIT("sub             %[n], %[n], #8")
+                __ASM_EMIT("sub             %w[n], %w[n], #8")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
 
                 // 4x block
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[n], %[n], #4")
+                __ASM_EMIT("adds            %w[n], %w[n], #4")
                 __ASM_EMIT("b.lt            6f")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
                 __ASM_EMIT("fadd            v0.4s, v4.4s, v15.4s")                      // v0  = k*x[0] + y0
                 __ASM_EMIT("mov             v8.16b, v9.16b")                            // v8  = x[0]'
                 __ASM_EMIT("str             q0, [%[dst], #0x00]")
-                __ASM_EMIT("sub             %[n], %[n], #4")
+                __ASM_EMIT("sub             %w[n], %w[n], #4")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
 
                 // 1x blocks
                 __ASM_EMIT("6:")
-                __ASM_EMIT("adds            %[n], %[n], #3")
+                __ASM_EMIT("adds            %w[n], %w[n], #3")
                 __ASM_EMIT("b.lt            8f")
                 __ASM_EMIT("7:")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
                 __ASM_EMIT("fadd            v0.4s, v4.4s, v15.4s")                      // v0  = k*x[0] + y0
                 __ASM_EMIT("ext             v8.16b, v8.16b, v8.16b, #4")                // v8  = x[0]'
                 __ASM_EMIT("st1             {v0.s}[0], [%[dst]]")
-                __ASM_EMIT("subs            %[n], %[n], #1")
+                __ASM_EMIT("subs            %w[n], %w[n], #1")
                 __ASM_EMIT("add             %[dst], %[dst], #0x04")
                 __ASM_EMIT("b.ge            7b")
 
@@ -183,7 +183,7 @@ namespace lsp
                 // v13 = d[1]
                 // v14 = k
                 // v15 = y0
-                __ASM_EMIT("subs            %[n], %[n], #16")
+                __ASM_EMIT("subs            %w[n], %w[n], #16")
                 __ASM_EMIT("b.lo            2f")
 
                 // 16x blocks
@@ -208,13 +208,13 @@ namespace lsp
                 __ASM_EMIT("fmul            v3.4s, v3.4s, v7.4s")                       // v0  = s0*(k*x[0] + y0)
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
                 __ASM_EMIT("stp             q2, q3, [%[dst], #0x20]")
-                __ASM_EMIT("subs            %[n], %[n], #16")
+                __ASM_EMIT("subs            %w[n], %w[n], #16")
                 __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("b.hs            1b")
 
                 // 8x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[n], %[n], #8")
+                __ASM_EMIT("adds            %w[n], %w[n], #8")
                 __ASM_EMIT("b.lt            4f")
                 __ASM_EMIT("ldp             q0, q1, [%[dst], #0x00]")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
@@ -226,12 +226,12 @@ namespace lsp
                 __ASM_EMIT("fmul            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0)
                 __ASM_EMIT("fmul            v1.4s, v1.4s, v5.4s")                       // v0  = s0*(k*x[0] + y0)
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
-                __ASM_EMIT("sub             %[n], %[n], #8")
+                __ASM_EMIT("sub             %w[n], %w[n], #8")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
 
                 // 4x block
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[n], %[n], #4")
+                __ASM_EMIT("adds            %w[n], %w[n], #4")
                 __ASM_EMIT("b.lt            6f")
                 __ASM_EMIT("ldr             q0, [%[dst], #0x00]")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
@@ -239,12 +239,12 @@ namespace lsp
                 __ASM_EMIT("mov             v8.16b, v9.16b")                            // v8  = x[0]'
                 __ASM_EMIT("fmul            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0)
                 __ASM_EMIT("str             q0, [%[dst], #0x00]")
-                __ASM_EMIT("sub             %[n], %[n], #4")
+                __ASM_EMIT("sub             %w[n], %w[n], #4")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
 
                 // 1x blocks
                 __ASM_EMIT("6:")
-                __ASM_EMIT("adds            %[n], %[n], #3")
+                __ASM_EMIT("adds            %w[n], %w[n], #3")
                 __ASM_EMIT("b.lt            8f")
                 __ASM_EMIT("7:")
                 __ASM_EMIT("ld1r            {v0.4s}, [%[dst]]")
@@ -253,7 +253,7 @@ namespace lsp
                 __ASM_EMIT("ext             v8.16b, v8.16b, v8.16b, #4")                // v8  = x[0]'
                 __ASM_EMIT("fmul            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0)
                 __ASM_EMIT("st1             {v0.s}[0], [%[dst]]")
-                __ASM_EMIT("subs            %[n], %[n], #1")
+                __ASM_EMIT("subs            %w[n], %w[n], #1")
                 __ASM_EMIT("add             %[dst], %[dst], #0x04")
                 __ASM_EMIT("b.ge            7b")
 
@@ -306,7 +306,7 @@ namespace lsp
                 // v13 = d[1]
                 // v14 = k
                 // v15 = y0
-                __ASM_EMIT("subs            %[n], %[n], #16")
+                __ASM_EMIT("subs            %w[n], %w[n], #16")
                 __ASM_EMIT("b.lo            2f")
 
                 // 16x blocks
@@ -331,14 +331,14 @@ namespace lsp
                 __ASM_EMIT("fmul            v3.4s, v3.4s, v7.4s")                       // v0  = s0*(k*x[0] + y0)
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
                 __ASM_EMIT("stp             q2, q3, [%[dst], #0x20]")
-                __ASM_EMIT("subs            %[n], %[n], #16")
+                __ASM_EMIT("subs            %w[n], %w[n], #16")
                 __ASM_EMIT("add             %[src], %[src], #0x40")
                 __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("b.hs            1b")
 
                 // 8x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[n], %[n], #8")
+                __ASM_EMIT("adds            %w[n], %w[n], #8")
                 __ASM_EMIT("b.lt            4f")
                 __ASM_EMIT("ldp             q0, q1, [%[src], #0x00]")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
@@ -350,13 +350,13 @@ namespace lsp
                 __ASM_EMIT("fmul            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0)
                 __ASM_EMIT("fmul            v1.4s, v1.4s, v5.4s")                       // v0  = s0*(k*x[0] + y0)
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
-                __ASM_EMIT("sub             %[n], %[n], #8")
+                __ASM_EMIT("sub             %w[n], %w[n], #8")
                 __ASM_EMIT("add             %[src], %[src], #0x20")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
 
                 // 4x block
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[n], %[n], #4")
+                __ASM_EMIT("adds            %w[n], %w[n], #4")
                 __ASM_EMIT("b.lt            6f")
                 __ASM_EMIT("ldr             q0, [%[src], #0x00]")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
@@ -364,13 +364,13 @@ namespace lsp
                 __ASM_EMIT("mov             v8.16b, v9.16b")                            // v8  = x[0]'
                 __ASM_EMIT("fmul            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0)
                 __ASM_EMIT("str             q0, [%[dst], #0x00]")
-                __ASM_EMIT("sub             %[n], %[n], #4")
+                __ASM_EMIT("sub             %w[n], %w[n], #4")
                 __ASM_EMIT("add             %[src], %[src], #0x10")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
 
                 // 1x blocks
                 __ASM_EMIT("6:")
-                __ASM_EMIT("adds            %[n], %[n], #3")
+                __ASM_EMIT("adds            %w[n], %w[n], #3")
                 __ASM_EMIT("b.lt            8f")
                 __ASM_EMIT("7:")
                 __ASM_EMIT("ld1r            {v0.4s}, [%[src]]")
@@ -379,7 +379,7 @@ namespace lsp
                 __ASM_EMIT("ext             v8.16b, v8.16b, v8.16b, #4")                // v8  = x[0]'
                 __ASM_EMIT("fmul            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0)
                 __ASM_EMIT("st1             {v0.s}[0], [%[dst]]")
-                __ASM_EMIT("subs            %[n], %[n], #1")
+                __ASM_EMIT("subs            %w[n], %w[n], #1")
                 __ASM_EMIT("add             %[src], %[src], #0x04")
                 __ASM_EMIT("add             %[dst], %[dst], #0x04")
                 __ASM_EMIT("b.ge            7b")
@@ -433,7 +433,7 @@ namespace lsp
                 // v13 = d[1]
                 // v14 = k
                 // v15 = y0
-                __ASM_EMIT("subs            %[n], %[n], #16")
+                __ASM_EMIT("subs            %w[n], %w[n], #16")
                 __ASM_EMIT("b.lo            2f")
 
                 // 16x blocks
@@ -464,14 +464,14 @@ namespace lsp
                 __ASM_EMIT("fadd            v3.4s, v3.4s, v7.4s")                       // v0  = s0*(k*x[0] + y0) + d0[3]
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
                 __ASM_EMIT("stp             q2, q3, [%[dst], #0x20]")
-                __ASM_EMIT("subs            %[n], %[n], #16")
+                __ASM_EMIT("subs            %w[n], %w[n], #16")
                 __ASM_EMIT("add             %[src], %[src], #0x40")
                 __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("b.hs            1b")
 
                 // 8x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[n], %[n], #8")
+                __ASM_EMIT("adds            %w[n], %w[n], #8")
                 __ASM_EMIT("b.lt            4f")
                 __ASM_EMIT("ldp             q0, q1, [%[src], #0x00]")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
@@ -486,13 +486,13 @@ namespace lsp
                 __ASM_EMIT("fadd            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0) + d0[0]
                 __ASM_EMIT("fadd            v1.4s, v1.4s, v5.4s")                       // v0  = s0*(k*x[0] + y0) + d0[1]
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
-                __ASM_EMIT("sub             %[n], %[n], #8")
+                __ASM_EMIT("sub             %w[n], %w[n], #8")
                 __ASM_EMIT("add             %[src], %[src], #0x20")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
 
                 // 4x block
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[n], %[n], #4")
+                __ASM_EMIT("adds            %w[n], %w[n], #4")
                 __ASM_EMIT("b.lt            6f")
                 __ASM_EMIT("ldr             q0, [%[src], #0x00]")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
@@ -502,13 +502,13 @@ namespace lsp
                 __ASM_EMIT("ldr             q4, [%[dst], #0x00]")
                 __ASM_EMIT("fadd            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0) + d0[0]
                 __ASM_EMIT("str             q0, [%[dst], #0x00]")
-                __ASM_EMIT("sub             %[n], %[n], #4")
+                __ASM_EMIT("sub             %w[n], %w[n], #4")
                 __ASM_EMIT("add             %[src], %[src], #0x10")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
 
                 // 1x blocks
                 __ASM_EMIT("6:")
-                __ASM_EMIT("adds            %[n], %[n], #3")
+                __ASM_EMIT("adds            %w[n], %w[n], #3")
                 __ASM_EMIT("b.lt            8f")
                 __ASM_EMIT("7:")
                 __ASM_EMIT("ld1r            {v0.4s}, [%[src]]")
@@ -519,7 +519,7 @@ namespace lsp
                 __ASM_EMIT("ld1r            {v4.4s}, [%[dst]]")
                 __ASM_EMIT("fadd            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0) + d0[0]
                 __ASM_EMIT("st1             {v0.s}[0], [%[dst]]")
-                __ASM_EMIT("subs            %[n], %[n], #1")
+                __ASM_EMIT("subs            %w[n], %w[n], #1")
                 __ASM_EMIT("add             %[src], %[src], #0x04")
                 __ASM_EMIT("add             %[dst], %[dst], #0x04")
                 __ASM_EMIT("b.ge            7b")
@@ -573,7 +573,7 @@ namespace lsp
                 // v13 = d[1]
                 // v14 = k
                 // v15 = y0
-                __ASM_EMIT("subs            %[n], %[n], #16")
+                __ASM_EMIT("subs            %w[n], %w[n], #16")
                 __ASM_EMIT("b.lo            2f")
 
                 // 16x blocks
@@ -604,14 +604,14 @@ namespace lsp
                 __ASM_EMIT("fadd            v3.4s, v3.4s, v7.4s")                       // v0  = s0*(k*x[0] + y0) + d0[3]
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
                 __ASM_EMIT("stp             q2, q3, [%[dst], #0x20]")
-                __ASM_EMIT("subs            %[n], %[n], #16")
+                __ASM_EMIT("subs            %w[n], %w[n], #16")
                 __ASM_EMIT("add             %[src], %[src], #0x40")
                 __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("b.hs            1b")
 
                 // 8x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[n], %[n], #8")
+                __ASM_EMIT("adds            %w[n], %w[n], #8")
                 __ASM_EMIT("b.lt            4f")
                 __ASM_EMIT("ldp             q0, q1, [%[dst], #0x00]")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
@@ -626,13 +626,13 @@ namespace lsp
                 __ASM_EMIT("fadd            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0) + d0[0]
                 __ASM_EMIT("fadd            v1.4s, v1.4s, v5.4s")                       // v0  = s0*(k*x[0] + y0) + d0[1]
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
-                __ASM_EMIT("sub             %[n], %[n], #8")
+                __ASM_EMIT("sub             %w[n], %w[n], #8")
                 __ASM_EMIT("add             %[src], %[src], #0x20")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
 
                 // 4x block
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[n], %[n], #4")
+                __ASM_EMIT("adds            %w[n], %w[n], #4")
                 __ASM_EMIT("b.lt            6f")
                 __ASM_EMIT("ldr             q0, [%[dst], #0x00]")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
@@ -642,13 +642,13 @@ namespace lsp
                 __ASM_EMIT("ldr             q4, [%[src], #0x00]")
                 __ASM_EMIT("fadd            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0) + d0[0]
                 __ASM_EMIT("str             q0, [%[dst], #0x00]")
-                __ASM_EMIT("sub             %[n], %[n], #4")
+                __ASM_EMIT("sub             %w[n], %w[n], #4")
                 __ASM_EMIT("add             %[src], %[src], #0x10")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
 
                 // 1x blocks
                 __ASM_EMIT("6:")
-                __ASM_EMIT("adds            %[n], %[n], #3")
+                __ASM_EMIT("adds            %w[n], %w[n], #3")
                 __ASM_EMIT("b.lt            8f")
                 __ASM_EMIT("7:")
                 __ASM_EMIT("ld1r            {v0.4s}, [%[dst]]")
@@ -659,7 +659,7 @@ namespace lsp
                 __ASM_EMIT("ld1r            {v4.4s}, [%[src]]")
                 __ASM_EMIT("fadd            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0) + d0[0]
                 __ASM_EMIT("st1             {v0.s}[0], [%[dst]]")
-                __ASM_EMIT("subs            %[n], %[n], #1")
+                __ASM_EMIT("subs            %w[n], %w[n], #1")
                 __ASM_EMIT("add             %[src], %[src], #0x04")
                 __ASM_EMIT("add             %[dst], %[dst], #0x04")
                 __ASM_EMIT("b.ge            7b")
@@ -713,7 +713,7 @@ namespace lsp
                 // v13 = d[1]
                 // v14 = k
                 // v15 = y0
-                __ASM_EMIT("subs            %[n], %[n], #16")
+                __ASM_EMIT("subs            %w[n], %w[n], #16")
                 __ASM_EMIT("b.lo            2f")
 
                 // 16x blocks
@@ -744,7 +744,7 @@ namespace lsp
                 __ASM_EMIT("fadd            v3.4s, v3.4s, v7.4s")                       // v0  = s0*(k*x[0] + y0) + d0[3]
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
                 __ASM_EMIT("stp             q2, q3, [%[dst], #0x20]")
-                __ASM_EMIT("subs            %[n], %[n], #16")
+                __ASM_EMIT("subs            %w[n], %w[n], #16")
                 __ASM_EMIT("add             %[src1], %[src1], #0x40")
                 __ASM_EMIT("add             %[src2], %[src2], #0x40")
                 __ASM_EMIT("add             %[dst], %[dst], #0x40")
@@ -752,7 +752,7 @@ namespace lsp
 
                 // 8x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[n], %[n], #8")
+                __ASM_EMIT("adds            %w[n], %w[n], #8")
                 __ASM_EMIT("b.lt            4f")
                 __ASM_EMIT("ldp             q0, q1, [%[src1], #0x00]")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
@@ -767,14 +767,14 @@ namespace lsp
                 __ASM_EMIT("fadd            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0) + d0[0]
                 __ASM_EMIT("fadd            v1.4s, v1.4s, v5.4s")                       // v0  = s0*(k*x[0] + y0) + d0[1]
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
-                __ASM_EMIT("sub             %[n], %[n], #8")
+                __ASM_EMIT("sub             %w[n], %w[n], #8")
                 __ASM_EMIT("add             %[src1], %[src1], #0x20")
                 __ASM_EMIT("add             %[src2], %[src2], #0x20")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
 
                 // 4x block
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[n], %[n], #4")
+                __ASM_EMIT("adds            %w[n], %w[n], #4")
                 __ASM_EMIT("b.lt            6f")
                 __ASM_EMIT("ldr             q0, [%[src1], #0x00]")
                 __ASM_EMIT("fmul            v4.4s, v8.4s, v14.4s")                      // v4  = k*x[0]
@@ -784,14 +784,14 @@ namespace lsp
                 __ASM_EMIT("ldr             q4, [%[src2], #0x00]")
                 __ASM_EMIT("fadd            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0) + d0[0]
                 __ASM_EMIT("str             q0, [%[dst], #0x00]")
-                __ASM_EMIT("sub             %[n], %[n], #4")
+                __ASM_EMIT("sub             %w[n], %w[n], #4")
                 __ASM_EMIT("add             %[src1], %[src1], #0x10")
                 __ASM_EMIT("add             %[src2], %[src2], #0x10")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
 
                 // 1x blocks
                 __ASM_EMIT("6:")
-                __ASM_EMIT("adds            %[n], %[n], #3")
+                __ASM_EMIT("adds            %w[n], %w[n], #3")
                 __ASM_EMIT("b.lt            8f")
                 __ASM_EMIT("7:")
                 __ASM_EMIT("ld1r            {v0.4s}, [%[src1]]")
@@ -802,7 +802,7 @@ namespace lsp
                 __ASM_EMIT("ld1r            {v4.4s}, [%[src2]]")
                 __ASM_EMIT("fadd            v0.4s, v0.4s, v4.4s")                       // v0  = s0*(k*x[0] + y0) + d0[0]
                 __ASM_EMIT("st1             {v0.s}[0], [%[dst]]")
-                __ASM_EMIT("subs            %[n], %[n], #1")
+                __ASM_EMIT("subs            %w[n], %w[n], #1")
                 __ASM_EMIT("add             %[src1], %[src1], #0x04")
                 __ASM_EMIT("add             %[src2], %[src2], #0x04")
                 __ASM_EMIT("add             %[dst], %[dst], #0x04")
