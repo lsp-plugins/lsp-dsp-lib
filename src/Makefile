@@ -90,13 +90,13 @@ CXX_OBJ_AARCH64         = $(ARTIFACT_BIN)/main/aarch64/aarch64.o
 CXX_OBJ_ASIMD           = $(ARTIFACT_BIN)/main/aarch64/asimd.o
 CXX_OBJ                 = $(CXX_OBJ_MAIN) $(CXX_OBJ_EXT)
 
-ifeq ($(ARCHITECTURE),i586)
+ifeq ($(ARCHITECTURE_FAMILY),ia32)
   CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2)
-else ifeq ($(ARCHITECTURE),x86_64)
+else ifeq ($(ARCHITECTURE_FAMILY),x86_64)
   CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2)
-else ifeq ($(ARCHITECTURE),arm32)
+else ifeq ($(ARCHITECTURE_FAMILY),arm32)
   CXX_OBJ_EXT            += $(CXX_OBJ_ARM) $(CXX_OBJ_NEON_D32)
-else ifeq ($(ARCHITECTURE),aarch64)
+else ifeq ($(ARCHITECTURE_FAMILY),aarch64)
   CXX_OBJ_EXT            += $(CXX_OBJ_AARCH64) $(CXX_OBJ_ASIMD)
 endif
 
@@ -151,7 +151,7 @@ depend: $(DEP_CXX)
 	    $(eval SED_RULES += s/$(shell echo "$($(dep)_BIN)" | sed "s/\\//\\\\\//g")/\\$$$$\\($(dep)_BIN\\)/g;)\
 	  )\
 	)
-	cat $(DEP_CXX) | sed -E "$(SED_RULES)" >Makefile.$(ARCHITECTURE).d
+	cat $(DEP_CXX) | sed -E "$(SED_RULES)" >Makefile.$(ARCHITECTURE_FAMILY).d
 
 $(ARTIFACT_DEPS):
 	echo "make $(notdir $($(@)_OBJ))"
@@ -236,4 +236,4 @@ $(CXX_OBJ_NEON_D32):   EXT_FLAGS=$(CXX_NEON_D32_CFLAGS)
 $(CXX_OBJ_ASIMD):      EXT_FLAGS=$(CXX_ASIMD_CFLAGS)
 
 # Dependencies
--include $(CURDIR)/Makefile.$(ARCHITECTURE).d
+-include $(CURDIR)/Makefile.$(ARCHITECTURE_FAMILY).d
