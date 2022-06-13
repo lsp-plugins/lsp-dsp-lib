@@ -100,7 +100,7 @@ else ifeq ($(BUILD_ARCH),i86pc)
   ARCHITECTURE_CFLAGS    := -march=x86-64 -m64
 else ifeq ($(patsubst %i686%,i686,$(BUILD_ARCH)),i686)
   override ARCHITECTURE   = i686
-  override ARCH_FAMILY    = ia32
+  ARCHITECTURE_FAMILY     = ia32
   ARCHITECTURE_CFLAGS    := -march=i686 -m32
 else ifeq ($(patsubst i%86,i586,$(BUILD_ARCH)),i586)
   override ARCHITECTURE   = i586
