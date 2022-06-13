@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 1.0.2 ===
+* Updated build scripts.
 
 === 1.0.1 ===
 * Updated build scripts.
@@ -89,3 +90,4 @@
 * Supports SIMD optimizations for 64-bit x86_64 architecture.
 * Supports SIMD optimizations for 32-bit ARMv7 architecture.
 * Supports SIMD optimizations for 64-bit AArch64 architecture.
+
