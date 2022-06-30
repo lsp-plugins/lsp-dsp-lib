@@ -12,3 +12,4 @@
 *.core
 /.config.mk
 /Debug Linux/
+/Debug Win/
