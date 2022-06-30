@@ -11,3 +11,4 @@
 **/*.gmon
 *.core
 /.config.mk
+/Debug Linux/

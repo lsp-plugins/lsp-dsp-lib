@@ -19,7 +19,7 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <lsp-plug.in/dsp/dsp.h>
+#include <lsp-plug.in/common/types.h>
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 #include <lsp-plug.in/test-fw/ByteBuffer.h>
@@ -60,19 +60,22 @@ namespace lsp
     typedef void (* abgr32_to_bgrff32_t)(void *dst, const void *src, size_t count);
 }
 
-void abgr32_to_bgrff32(void *dst, const void *src, size_t count)
+namespace
 {
-    uint8_t *dp = reinterpret_cast<uint8_t *>(dst);
-    const uint8_t *sp = reinterpret_cast<const uint8_t *>(src);
-    uint8_t r, g, b;
-
-    while (count--)
+    void abgr32_to_bgrff32(void *dst, const void *src, size_t count)
     {
-        r = sp[1]; g = sp[2]; b = sp[3];
-        dp[0] = r; dp[1] = g; dp[2] = b; dp[3] = 0xff;
+        uint8_t *dp = reinterpret_cast<uint8_t *>(dst);
+        const uint8_t *sp = reinterpret_cast<const uint8_t *>(src);
+        uint8_t r, g, b;
 
-        sp += 4;
-        dp += 4;
+        while (count--)
+        {
+            r = sp[1]; g = sp[2]; b = sp[3];
+            dp[0] = r; dp[1] = g; dp[2] = b; dp[3] = 0xff;
+
+            sp += 4;
+            dp += 4;
+        }
     }
 }
 

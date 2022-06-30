@@ -3,6 +3,8 @@
 *******************************************************************************
 
 === 1.0.3 ===
+* Migrating to C++ 11 support.
+* Updated library dependencies.
 * Updated build scripts.
 
 === 1.0.2 ===

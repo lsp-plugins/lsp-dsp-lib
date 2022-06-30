@@ -19,6 +19,7 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <lsp-plug.in/common/types.h>
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
@@ -130,9 +131,8 @@ namespace lsp
 UTEST_BEGIN("dsp.resampling", oversampling)
 
     void call(size_t times, const char *text, size_t align,
-            dsp::resampling_function_t func1,
-            dsp::resampling_function_t func2
-         )
+        dsp::resampling_function_t func1,
+        dsp::resampling_function_t func2)
     {
         if (!UTEST_SUPPORTED(func1))
             return;
