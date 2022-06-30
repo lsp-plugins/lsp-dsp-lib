@@ -246,7 +246,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                SIGN_MINMAX_CORE("dst", "dst", "src", "$6")
+                SIGN_MINMAX_CORE("dst", "dst", "src", "$5")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src),
                   [X_SIGN] "m" (minmax_abs)
@@ -261,7 +261,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                SIGN_MINMAX_CORE("dst", "a", "b", "$6")
+                SIGN_MINMAX_CORE("dst", "a", "b", "$5")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
                   [X_SIGN] "m" (minmax_abs)
