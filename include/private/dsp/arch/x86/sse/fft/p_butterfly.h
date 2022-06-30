@@ -32,9 +32,9 @@ namespace lsp
     {
         #define FFT_BUTTERFLY_BODY(add_b, add_a) \
             /* Init pointers */ \
-            register float *a       = &dst[blk*pairs*2]; \
-            register float *b       = &a[pairs]; \
-            register size_t p       = pairs; \
+            float *a        = &dst[blk*pairs*2]; \
+            float *b        = &a[pairs]; \
+            size_t p        = pairs; \
             __IF_32(size_t tmp1); \
             \
             ARCH_X86_ASM \
