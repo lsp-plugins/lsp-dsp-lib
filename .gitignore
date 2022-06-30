@@ -2,9 +2,6 @@
 /.settings/*
 /.build/*
 /.test/*
-/Debug/*
-/Release/*
-/Debug/
 /Release
 *.log
 /gmon.out
