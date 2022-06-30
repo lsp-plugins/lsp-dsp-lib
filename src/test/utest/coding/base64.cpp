@@ -19,9 +19,9 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <lsp-plug.in/common/types.h>
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/ByteBuffer.h>
-#include <lsp-plug.in/dsp/dsp.h>
 
 typedef size_t (* base64_enc_t)(void *dst, size_t *dst_left, const void *src, size_t *src_left);
 typedef ssize_t (* base64_dec_t)(void *dst, size_t *dst_left, const void *src, size_t *src_left);

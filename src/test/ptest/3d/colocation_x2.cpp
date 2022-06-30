@@ -19,11 +19,12 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <lsp-plug.in/dsp/dsp.h>
-#include <lsp-plug.in/test-fw/ptest.h>
-#include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/common/alloc.h>
+#include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/stdlib/math.h>
+#include <lsp-plug.in/test-fw/helpers.h>
+#include <lsp-plug.in/test-fw/ptest.h>
 
 #define N_PLANES        256
 #define N_LINES         256
