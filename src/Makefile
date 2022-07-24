@@ -105,11 +105,6 @@ CXX_FILE                = $(patsubst $(ARTIFACT_BIN)/%.o,%.cpp, $(@))
 CXX_HDR_PATHS           = $(foreach hdr,$(ARTIFACT_HEADERS),$(ARTIFACT_INC)/$(hdr))
 CXX_HEADERS             = $(foreach path,$(CXX_HDR_PATHS),$(call rwildcard, $(path), *.h))
 CXX_INSTHEADERS         = $(patsubst $(ARTIFACT_INC)/%,$(DESTDIR)$(INCDIR)/%,$(CXX_HEADERS))
-CXX_INSTALL_HEADERS     = 
-
-ifeq ($(HEADERS),1)
-  CXX_INSTALL_HEADERS     = 1
-endif
 
 CXX_SSE_CFLAGS          = -mmmx -m3dnow -msse
 CXX_SSE2_CFLAGS         = $(CXX_SSE_CFLAGS) -msse2
@@ -206,8 +201,8 @@ $(ARTIFACT_PC):
 install: all
 	echo "Installing $($(ARTIFACT_ID)_NAME)"
 	mkdir -p "$(DESTDIR)$(LIBDIR)/pkgconfig"
-	$(if $(CXX_INSTALL_HEADERS), mkdir -p "$(DESTDIR)$(INCDIR)")
-	$(if $(CXX_INSTALL_HEADERS), cp -r "$(CXX_HDR_PATHS)" "$(DESTDIR)$(INCDIR)/")
+	$(if $(filter $(INSTALL_HEADERS),1), mkdir -p "$(DESTDIR)$(INCDIR)")
+	$(if $(filter $(INSTALL_HEADERS),1), cp -r "$(CXX_HDR_PATHS)" "$(DESTDIR)$(INCDIR)/")
 	cp $(ARTIFACT_PC) "$(DESTDIR)$(LIBDIR)/pkgconfig/"
 	$(INSTALL) $(ARTIFACT_LIB) "$(DESTDIR)$(LIBDIR)/"
 	cp $(ARTIFACT_SLIB) "$(DESTDIR)$(LIBDIR)/"
