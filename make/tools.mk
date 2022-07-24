@@ -102,11 +102,24 @@ endif
 ifeq ($(TEST),1)
   CFLAGS_EXT         += -DLSP_TESTING
   CXXFLAGS_EXT       += -DLSP_TESTING
+  EXPORT_SYMBOLS     ?= 1
 else
-  ifneq ($(ARTIFACT_EXPORT_ALL),1)
-    CFLAGS_EXT         += -fvisibility=hidden
-    CXXFLAGS_EXT       += -fvisibility=hidden
+  ifeq ($(ARTIFACT_EXPORT_SYMBOLS),1)
+    EXPORT_SYMBOLS     ?= 1
+  else
+    EXPORT_SYMBOLS     ?= 0
   endif
+endif
+
+ifneq ($(EXPORT_SYMBOLS),1)
+  CFLAGS_EXT         += -fvisibility=hidden
+  CXXFLAGS_EXT       += -fvisibility=hidden
+endif
+
+ifneq ($(ARTIFACT_EXPORT_HEADERS),0)
+  INSTALL_HEADERS    ?= 1
+else
+  INSTALL_HEADERS    ?= 0
 endif
 
 # Define flags for (cross) build

@@ -198,29 +198,31 @@ TEST                       := 0
 
 # Set-up list of common variables
 COMMON_VARS = \
-	ROOTDIR \
-	ROOT_ARTIFACT_ID \
-	PLATFORM \
 	ARCHITECTURE \
 	ARCHITECTURE_FAMILY \
 	ARCHITECTURE_CFLAGS \
+	BINDIR \
 	BUILDDIR \
+	DEBUG \
+	ETCDIR \
+	EXECUTABLE_EXT \
+	EXPORT_SYMBOLS \
 	FEATURES \
+	INCDIR \
+	INSTALL_HEADERS \
+	LIBDIR \
 	LIBRARY_EXT \
 	LIBRARY_PREFIX \
-	STATICLIB_EXT \
-	EXECUTABLE_EXT \
 	PKGCONFIG_EXT \
+	PLATFORM \
 	PREFIX \
-	LIBDIR \
+	ROOTDIR \
+	ROOT_ARTIFACT_ID \
+	PROFILE \
 	SHAREDDIR \
-	BINDIR \
-	INCDIR \
-	ETCDIR \
+	STATICLIB_EXT \
 	TEMPDIR \
 	TEST \
-	DEBUG \
-	PROFILE \
 	TRACE
 
 .PHONY: sysvars
@@ -238,8 +240,10 @@ sysvars:
 	echo "  DEVEL                     build with modules checked out for read/write URL"
 	echo "  ETCDIR                    location of system configuration files"
 	echo "  EXECUTABLE_EXT            file extension for executable files"
+	echo "  EXPORT_SYMBOLS            make export symbols visible" 
 	echo "  FEATURES                  list of features enabled in the build"
 	echo "  INCDIR                    location of the header files"
+	echo "  INSTALL_HEADERS           install headers (enabled by default)"
 	echo "  LIBDIR                    location of the library"
 	echo "  LIBRARY_EXT               file extension for library files"
 	echo "  LIBRARY_PREFIX            prefix used for library file"
