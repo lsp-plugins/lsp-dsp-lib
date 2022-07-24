@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.4 ===
+* Updated build scripts.
+
 === 1.0.3 ===
 * Migrating to C++ 11 support.
 * Updated library dependencies.
