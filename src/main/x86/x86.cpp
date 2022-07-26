@@ -563,6 +563,8 @@
                 EXPORT1(copy);
                 EXPORT1(rgba32_to_bgra32);
                 EXPORT1(abgr32_to_bgra32);
+                EXPORT2(prgba32_set_alpha, pabc32_set_alpha);
+                EXPORT2(pbgra32_set_alpha, pabc32_set_alpha);
 
                 // Initialize extensions
                 sse::dsp_init(&f);

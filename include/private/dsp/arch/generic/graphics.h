@@ -211,7 +211,93 @@ namespace lsp
                 dst[3]  = src[3];
             }
         }
-    }
-}
+
+        constexpr uint32_t pabc_mask32  = __IF_LEBE( 0x00ffffffU, 0xffffff00U );
+        constexpr uint64_t pabc_mask64  = __IF_LEBE( 0x00ffffff00ffffffULL, 0xffffff00ffffff00ULL );
+
+        void pabc32_set_alpha(void *dst, const void *src, uint8_t alpha, size_t count)
+        {
+            uint32_t value          = __IF_LEBE(uint32_t(alpha) << 24, uint32_t(alpha));
+
+        #ifdef ARCH_64BIT
+            uint64_t value64        = (uint64_t(value) << 32) | value;
+            uint64_t *pdst64        = static_cast<uint64_t *>(dst);
+            const uint64_t *psrc64  = static_cast<const uint64_t *>(src);
+
+            // 8x loop
+            for ( ; count >= 8; count -= 8)
+            {
+                uint64_t a          = psrc64[0];
+                uint64_t b          = psrc64[1];
+                uint64_t c          = psrc64[2];
+                uint64_t d          = psrc64[3];
+
+                a                   = (a & pabc_mask64) | value64;
+                b                   = (b & pabc_mask64) | value64;
+                c                   = (c & pabc_mask64) | value64;
+                d                   = (d & pabc_mask64) | value64;
+
+                pdst64[0]           = a;
+                pdst64[1]           = b;
+                pdst64[2]           = c;
+                pdst64[3]           = d;
+
+                psrc64             += 4;
+                pdst64             += 4;
+            }
+
+            uint32_t *pdst          = reinterpret_cast<uint32_t *>(pdst64);
+            const uint32_t *psrc    = reinterpret_cast<const uint32_t *>(psrc64);
+
+        #else
+            uint32_t *pdst          = static_cast<uint32_t *>(dst);
+            const uint32_t *psrc    = static_cast<const uint32_t *>(src);
+
+            // 4x loop
+            for ( ; count >= 4; count -= 4)
+            {
+                uint32_t a          = psrc[0];
+                uint32_t b          = psrc[1];
+                uint32_t c          = psrc[2];
+                uint32_t d          = psrc[3];
+
+                a                   = (a & pabc_mask32) | value;
+                b                   = (b & pabc_mask32) | value;
+                c                   = (c & pabc_mask32) | value;
+                d                   = (d & pabc_mask32) | value;
+
+                pdst[0]             = a;
+                pdst[1]             = b;
+                pdst[2]             = c;
+                pdst[3]             = d;
+
+                psrc               += 4;
+                pdst               += 4;
+            }
+        #endif /* ARCH_64_BIT */
+
+            // 2x loop
+            if (count >= 2)
+            {
+                uint32_t a          = psrc[0];
+                uint32_t b          = psrc[1];
+
+                a                   = (a & pabc_mask32) | value;
+                b                   = (b & pabc_mask32) | value;
+
+                pdst[0]             = a;
+                pdst[1]             = b;
+
+                psrc               += 2;
+                pdst               += 2;
+                count              -= 2;
+            }
+
+            if (count)
+                pdst[0]             = (psrc[0] & pabc_mask32) | value;
+        }
+
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_GRAPHICS_H_ */
