@@ -217,10 +217,10 @@ namespace lsp
 
         void pabc32_set_alpha(void *dst, const void *src, uint8_t alpha, size_t count)
         {
-            uint32_t value          = __IF_LEBE(uint32_t(alpha) << 24, uint32_t(alpha));
+            uint32_t value32        = __IF_LEBE(uint32_t(alpha) << 24, uint32_t(alpha));
 
         #ifdef ARCH_64BIT
-            uint64_t value64        = (uint64_t(value) << 32) | value;
+            uint64_t value64        = (uint64_t(value32) << 32) | value32;
             uint64_t *pdst64        = static_cast<uint64_t *>(dst);
             const uint64_t *psrc64  = static_cast<const uint64_t *>(src);
 
@@ -249,6 +249,28 @@ namespace lsp
             uint32_t *pdst          = reinterpret_cast<uint32_t *>(pdst64);
             const uint32_t *psrc    = reinterpret_cast<const uint32_t *>(psrc64);
 
+            // 4x loop
+            if (count >= 4)
+            {
+                uint32_t a          = psrc[0];
+                uint32_t b          = psrc[1];
+                uint32_t c          = psrc[2];
+                uint32_t d          = psrc[3];
+
+                a                   = (a & pabc_mask32) | value32;
+                b                   = (b & pabc_mask32) | value32;
+                c                   = (c & pabc_mask32) | value32;
+                d                   = (d & pabc_mask32) | value32;
+
+                pdst[0]             = a;
+                pdst[1]             = b;
+                pdst[2]             = c;
+                pdst[3]             = d;
+
+                psrc               += 4;
+                pdst               += 4;
+                count              -= 4;
+            }
         #else
             uint32_t *pdst          = static_cast<uint32_t *>(dst);
             const uint32_t *psrc    = static_cast<const uint32_t *>(src);
@@ -261,10 +283,10 @@ namespace lsp
                 uint32_t c          = psrc[2];
                 uint32_t d          = psrc[3];
 
-                a                   = (a & pabc_mask32) | value;
-                b                   = (b & pabc_mask32) | value;
-                c                   = (c & pabc_mask32) | value;
-                d                   = (d & pabc_mask32) | value;
+                a                   = (a & pabc_mask32) | value32;
+                b                   = (b & pabc_mask32) | value32;
+                c                   = (c & pabc_mask32) | value32;
+                d                   = (d & pabc_mask32) | value32;
 
                 pdst[0]             = a;
                 pdst[1]             = b;
@@ -282,8 +304,8 @@ namespace lsp
                 uint32_t a          = psrc[0];
                 uint32_t b          = psrc[1];
 
-                a                   = (a & pabc_mask32) | value;
-                b                   = (b & pabc_mask32) | value;
+                a                   = (a & pabc_mask32) | value32;
+                b                   = (b & pabc_mask32) | value32;
 
                 pdst[0]             = a;
                 pdst[1]             = b;
@@ -294,7 +316,7 @@ namespace lsp
             }
 
             if (count)
-                pdst[0]             = (psrc[0] & pabc_mask32) | value;
+                pdst[0]             = (psrc[0] & pabc_mask32) | value32;
         }
 
     } /* namespace generic */

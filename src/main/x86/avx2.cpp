@@ -174,6 +174,8 @@
 
                 CEXPORT1(favx, normalize_fft2);
                 CEXPORT1(favx, abgr32_to_bgrff32);
+                CEXPORT2(favx, prgba32_set_alpha, pabc32_set_alpha);
+                CEXPORT2(favx, pbgra32_set_alpha, pabc32_set_alpha);
 
                 CEXPORT1(favx, fmrmod_k4);
 

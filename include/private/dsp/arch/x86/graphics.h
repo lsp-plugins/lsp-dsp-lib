@@ -151,7 +151,7 @@ namespace lsp
                 : "cc", "memory"
             );
         }
-        #endif /* ARCH_X86_64 */
+    #endif /* ARCH_X86_64 */
 
     #ifdef ARCH_64BIT
         void pabc32_set_alpha(void *dst, const void *src, uint8_t alpha, size_t count)
@@ -172,15 +172,19 @@ namespace lsp
                 __ASM_EMIT("mov     0x00(%[src]), %[t1]")   // t1 = src[0] = ABCL
                 __ASM_EMIT("mov     0x08(%[src]), %[t2]")
                 __ASM_EMIT("mov     0x10(%[src]), %[t3]")
-                __ASM_EMIT("mov     0x18(%[src]), %[t4]")
                 __ASM_EMIT("and     %[mask], %[t1]")        // t1 = ABC0
+                __ASM_EMIT("mov     0x18(%[src]), %[t4]")
                 __ASM_EMIT("and     %[mask], %[t2]")
-                __ASM_EMIT("and     %[mask], %[t3]")
-                __ASM_EMIT("and     %[mask], %[t4]")
                 __ASM_EMIT("or      %[value], %[t1]")       // t1 = ABCv
+                __ASM_EMIT("and     %[mask], %[t3]")
                 __ASM_EMIT("or      %[value], %[t2]")
+                __ASM_EMIT("and     %[mask], %[t4]")
+                __ASM_EMIT("mov     %[t1], 0x00(%[dst])")
                 __ASM_EMIT("or      %[value], %[t3]")
+                __ASM_EMIT("mov     %[t2], 0x08(%[dst])")
                 __ASM_EMIT("or      %[value], %[t4]")
+                __ASM_EMIT("mov     %[t3], 0x10(%[dst])")
+                __ASM_EMIT("mov     %[t4], 0x18(%[dst])")
                 __ASM_EMIT("add     $0x20, %[src]")         // src += 8
                 __ASM_EMIT("add     $0x20, %[dst]")         // dst += 8
                 __ASM_EMIT("sub     $8, %[count]")          // count -= 8
@@ -196,6 +200,8 @@ namespace lsp
                 __ASM_EMIT("and     %[mask], %[t2]")
                 __ASM_EMIT("or      %[value], %[t1]")       // t1 = ABCv
                 __ASM_EMIT("or      %[value], %[t2]")
+                __ASM_EMIT("mov     %[t1], 0x00(%[dst])")
+                __ASM_EMIT("mov     %[t2], 0x08(%[dst])")
                 __ASM_EMIT("add     $0x10, %[src]")         // src += 4
                 __ASM_EMIT("add     $0x10, %[dst]")         // dst += 4
                 __ASM_EMIT("sub     $4, %[count]")          // count -= 4

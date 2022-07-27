@@ -75,6 +75,8 @@
         #include <private/dsp/arch/x86/avx/convolution.h>
 
         #include <private/dsp/arch/x86/avx/interpolation/linear.h>
+
+        #include <private/dsp/arch/x86/avx/graphics/pixelfmt.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX_IMPL
 
     namespace lsp
@@ -355,6 +357,9 @@
                 CEXPORT1(favx, lin_inter_fmadd2);
                 CEXPORT1(favx, lin_inter_frmadd2);
                 CEXPORT1(favx, lin_inter_fmadd3);
+
+                CEXPORT2(favx, prgba32_set_alpha, pabc32_set_alpha);
+                CEXPORT2(favx, pbgra32_set_alpha, pabc32_set_alpha);
 
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)
