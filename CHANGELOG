@@ -4,6 +4,7 @@
 
 === 1.0.5 ===
 - Implemented dsp::prgba32_set_alpha and dsp::pbgraa32_set_alpha functions. 
+* Updated build scripts.
 
 === 1.0.4 ===
 * Updated build scripts.

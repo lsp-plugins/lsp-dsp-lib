@@ -76,6 +76,8 @@ ifeq ($(PLATFORM),Solaris)
 else ifeq ($(PLATFORM),Windows)
   FLAG_RELRO          =
   FLAG_STDLIB         =
+  EXE_FLAGS_EXT      += -static-libgcc -static-libstdc++
+  SO_FLAGS_EXT       += -static-libgcc -static-libstdc++
 else ifeq ($(PLATFORM),BSD)
   EXE_FLAGS_EXT      += -L/usr/local/lib
   SO_FLAGS_EXT       += -L/usr/local/lib

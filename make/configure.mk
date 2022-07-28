@@ -46,11 +46,11 @@ else
   X_URL_SUFFIX                = _RO
 endif
 
-include $(BASEDIR)/modules.mk
 include $(BASEDIR)/project.mk
 include $(BASEDIR)/make/functions.mk
 include $(BASEDIR)/make/system.mk
 include $(BASEDIR)/make/tools.mk
+include $(BASEDIR)/modules.mk
 include $(BASEDIR)/dependencies.mk
 
 # Compute the full list of dependencies
