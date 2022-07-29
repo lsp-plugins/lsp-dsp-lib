@@ -27,24 +27,28 @@
 #define LSP_DSP_LIB_MINOR           0
 #define LSP_DSP_LIB_MICRO           5
 
-#ifdef LSP_DSP_LIB_BUILTIN
-    #define LSP_DSP_LIB_CPPEXPORT
-    #define LSP_DSP_LIB_CEXPORT
+#if defined(__WINDOWS__) || defined(__WIN32__) || defined(__WIN64__) || defined(_WIN64) || defined(_WIN32) || defined(__WINNT) || defined(__WINNT__)
+    #define LSP_DSP_LIB_EXPORT_MODIFIER     __declspec(dllexport)
+    #define LSP_DSP_LIB_IMPORT_MODIFIER     __declspec(dllimport)
 #else
-    #define LSP_DSP_LIB_CPPEXPORT       __attribute__((visibility("default")))
-    #define LSP_DSP_LIB_CEXPORT         __attribute__((visibility("default")))
-#endif
+    #define LSP_DSP_LIB_EXPORT_MODIFIER     __attribute__((visibility("default")))
+    #define LSP_DSP_LIB_IMPORT_MODIFIER
+#endif /* __WINDOWS__ */
 
-#ifdef __cplusplus
-    #define LSP_DSP_LIB_CPPIMPORT       extern
-    #define LSP_DSP_LIB_CIMPORT         extern "C"
-    #define LSP_DSP_LIB_TYPE(name)      name
+#if defined(LSP_DSP_LIB_PUBLISHER)
+    #define LSP_DSP_LIB_PUBLIC          LSP_DSP_LIB_EXPORT_MODIFIER
+#elif defined(LSP_DSP_LIB_BUILTIN) || defined(LSP_IDE_DEBUG)
+    #define LSP_DSP_LIB_PUBLIC
 #else
-    #define LSP_DSP_LIB_CPPIMPORT
-    #define LSP_DSP_LIB_CIMPORT         extern
-    #define LSP_DSP_LIB_TYPE(name)      lsp_dsp_ ## name
+    #define LSP_DSP_LIB_PUBLIC          LSP_DSP_LIB_IMPORT_MODIFIER
 #endif
 
 #define LSP_DSP_LIB_MANGLE(name)    lsp_dsp_ ## name
+
+#ifdef __cplusplus
+    #define LSP_DSP_LIB_TYPE(name)      name
+#else
+    #define LSP_DSP_LIB_TYPE(name)      LSP_DSP_LIB_MANGLE(name)
+#endif
 
 #endif /* LSP_PLUG_IN_DSP_VERSION_H_ */

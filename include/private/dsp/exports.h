@@ -27,8 +27,13 @@
 #define LSP_DSP_LIB_SYMBOL(ret, name, ...) \
     namespace lsp { \
         namespace dsp { \
-            LSP_DSP_LIB_CPPIMPORT ret (* name)(__VA_ARGS__); \
-            LSP_DSP_LIB_CIMPORT   ret (* LSP_DSP_LIB_MANGLE(name))(__VA_ARGS__); \
+            LSP_DSP_LIB_PUBLIC \
+            extern      ret (* name)(__VA_ARGS__); \
+            \
+            extern "C" { \
+                LSP_DSP_LIB_PUBLIC \
+                extern ret (* LSP_DSP_LIB_MANGLE(name))(__VA_ARGS__); \
+            } \
         } \
     }
 
