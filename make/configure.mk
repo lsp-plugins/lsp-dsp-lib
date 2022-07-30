@@ -168,13 +168,13 @@ define hdrconfig =
   $(if $($(name)_INC),,          $(eval $(name)_INC          := $($(name)_PATH)/include))
   $(if $($(name)_TESTING),,      $(eval $(name)_TESTING      := 0))
   $(if $($(name)_CFLAGS),,       $(eval $(name)_CFLAGS       := "-I\"$($(name)_INC)\""$(if $(publisher), "-D$(name)_PUBLISHER")))
-  $(if $($(name)_MFLAGS),,       $(eval $(name)_MFLAGS       := $(if $(builtin),"-D$(name)_BUILTIN -fvisibility=hidden")))
+  $(if $($(name)_MFLAGS),,       $(eval $(name)_MFLAGS       := "-D$(name)_BUILTIN -fvisibility=hidden"))
   
   $(if $(HOST_$(name)_PATH),,    $(eval HOST_$(name)_PATH    := $(MODULES)/$($(name)_NAME)))
   $(if $(HOST_$(name)_INC),,     $(eval HOST_$(name)_INC     := $(HOST_$(name)_PATH)/include))
   $(if $(HOST_$(name)_TESTING),, $(eval HOST_$(name)_TESTING := 0))
   $(if $(HOST_$(name)_CFLAGS),,  $(eval HOST_$(name)_CFLAGS  := "-I\"$(HOST_$(name)_INC)\""$(if $(publisher), "-D$(name)_PUBLISHER")))
-  $(if $(HOST_$(name)_MFLAGS),,  $(eval HOST_$(name)_MFLAGS  := $(if $(builtin),"-D$(name)_BUILTIN -fvisibility=hidden")))
+  $(if $(HOST_$(name)_MFLAGS),,  $(eval HOST_$(name)_MFLAGS  := "-D$(name)_BUILTIN -fvisibility=hidden"))
 endef
 
 define vardef =
