@@ -8,5 +8,6 @@
 **/*.gmon
 *.core
 /.config.mk
+/modules/
 /DebugLinux/
 /DebugWin/
