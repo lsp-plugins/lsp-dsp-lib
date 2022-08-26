@@ -176,14 +176,8 @@ namespace lsp
                     [ptr_re] "=&r" (ptr_re), [ptr_im] "=&r" (ptr_im),
                   )
                   [count] "+r" (count), [off] "=&r" (off)
-                : __IF_32(
-                    [dst_re] "g" (dst_re), [dst_im] "g" (dst_im),
-                    [src1_re] "g" (src1_re), [src1_im] "g" (src1_im),
-                  )
-                  __IF_64(
-                    [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
-                    [src1_re] "r" (src1_re), [src1_im] "r" (src1_im),
-                  )
+                : [dst_re] X86_GREG (dst_re), [dst_im] X86_GREG (dst_im),
+                  [src1_re] X86_GREG (src1_re), [src1_im] X86_GREG (src1_im),
                   [src2_re] "r" (src2_re), [src2_im] "r" (src2_im)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm4", "%xmm5", "%xmm6"
@@ -449,14 +443,8 @@ namespace lsp
                     [ptr_re] "=&r" (ptr_re), [ptr_im] "=&r" (ptr_im),
                   )
                   [count] "+r" (count), [off] "=&r" (off)
-                : __IF_32(
-                    [dst_re] "g" (dst_re), [dst_im] "g" (dst_im),
-                    [t_re] "g" (t_re), [t_im] "g" (t_im),
-                  )
-                  __IF_64(
-                    [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
-                    [t_re] "r" (t_re), [t_im] "r" (t_im),
-                  )
+                : [dst_re] X86_GREG (dst_re), [dst_im] X86_GREG (dst_im),
+                  [t_re] X86_GREG (t_re), [t_im] X86_GREG (t_im),
                   [b_re] "r" (b_re), [b_im] "r" (b_im)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
@@ -774,7 +762,7 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
-    }
-}
+    } /* namespace sse */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_COMPLEX_H_ */

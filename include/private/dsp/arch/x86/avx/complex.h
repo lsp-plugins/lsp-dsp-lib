@@ -142,17 +142,10 @@ namespace lsp
                 : __IF_32(
                     [ptr_re] "=&r" (ptr_re), [ptr_im] "=&r" (ptr_im),
                   )
-                  __IF_32([count] "+g" (count),)
-                  __IF_64([count] "+r" (count),)
+                  [count] X86_PGREG (count),
                   [off] "=&r" (off)
-                : __IF_32(
-                    [dst_re] "g" (dst_re), [dst_im] "g" (dst_im),
-                    [src1_re] "g" (src1_re), [src1_im] "g" (src1_im),
-                  )
-                  __IF_64(
-                    [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
-                    [src1_re] "r" (src1_re), [src1_im] "r" (src1_im),
-                  )
+                : [dst_re] X86_GREG (dst_re), [dst_im] X86_GREG (dst_im),
+                  [src1_re] X86_GREG (src1_re), [src1_im] X86_GREG (src1_im),
                   [src2_re] "r" (src2_re), [src2_im] "r" (src2_im)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
@@ -170,17 +163,10 @@ namespace lsp
                 : __IF_32(
                     [ptr_re] "=&r" (ptr_re), [ptr_im] "=&r" (ptr_im),
                   )
-                  __IF_32([count] "+g" (count),)
-                  __IF_64([count] "+r" (count),)
+                  [count] X86_PGREG (count),
                   [off] "=&r" (off)
-                : __IF_32(
-                    [dst_re] "g" (dst_re), [dst_im] "g" (dst_im),
-                    [src1_re] "g" (src1_re), [src1_im] "g" (src1_im),
-                  )
-                  __IF_64(
-                    [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
-                    [src1_re] "r" (src1_re), [src1_im] "r" (src1_im),
-                  )
+                : [dst_re] X86_GREG (dst_re), [dst_im] X86_GREG (dst_im),
+                  [src1_re] X86_GREG (src1_re), [src1_im] X86_GREG (src1_im),
                   [src2_re] "r" (src2_re), [src2_im] "r" (src2_im)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
@@ -263,8 +249,7 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_MUL2_CORE("dst", "src", FMA_OFF)
-                : __IF_32([count] "+g" (count),)
-                  __IF_64([count] "+r" (count),)
+                : [count] X86_PGREG (count),
                   [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im)
@@ -280,8 +265,7 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_MUL2_CORE("dst", "src", FMA_ON)
-                : __IF_32([count] "+g" (count),)
-                  __IF_64([count] "+r" (count),)
+                : [count] X86_PGREG (count),
                   [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im)
@@ -515,17 +499,10 @@ namespace lsp
                 : __IF_32(
                     [ptr_re] "=&r" (ptr_re), [ptr_im] "=&r" (ptr_im),
                   )
-                  __IF_32([count] "+g" (count),)
-                  __IF_64([count] "+r" (count),)
+                  [count] X86_PGREG (count),
                   [off] "=&r" (off)
-                : __IF_32(
-                    [dst_re] "g" (dst_re), [dst_im] "g" (dst_im),
-                    [src1_re] "g" (src1_re), [src1_im] "g" (src1_im),
-                  )
-                  __IF_64(
-                    [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
-                    [src1_re] "r" (src1_re), [src1_im] "r" (src1_im),
-                  )
+                : [dst_re] X86_GREG (dst_re), [dst_im] X86_GREG (dst_im),
+                  [src1_re] X86_GREG (src1_re), [src1_im] X86_GREG (src1_im),
                   [src2_re] "r" (src2_re), [src2_im] "r" (src2_im),
                   [CC] "o" (complex_div_const)
                 : "cc", "memory",
@@ -547,17 +524,10 @@ namespace lsp
                 : __IF_32(
                     [ptr_re] "=&r" (ptr_re), [ptr_im] "=&r" (ptr_im),
                   )
-                  __IF_32([count] "+g" (count),)
-                  __IF_64([count] "+r" (count),)
+                  [count] X86_PGREG (count),
                   [off] "=&r" (off)
-                : __IF_32(
-                    [dst_re] "g" (dst_re), [dst_im] "g" (dst_im),
-                    [src1_re] "g" (src1_re), [src1_im] "g" (src1_im),
-                  )
-                  __IF_64(
-                    [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
-                    [src1_re] "r" (src1_re), [src1_im] "r" (src1_im),
-                  )
+                : [dst_re] X86_GREG (dst_re), [dst_im] X86_GREG (dst_im),
+                  [src1_re] X86_GREG (src1_re), [src1_im] X86_GREG (src1_im),
                   [src2_re] "r" (src2_re), [src2_im] "r" (src2_im),
                   [CC] "o" (complex_div_const)
                 : "cc", "memory",
@@ -665,8 +635,7 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_DIV2_CORE("dst", "dst", "src", FMA_OFF)
-                : __IF_32([count] "+g" (count),)
-                  __IF_64([count] "+r" (count),)
+                : [count] X86_PGREG (count),
                   [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
@@ -683,8 +652,7 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_DIV2_CORE("dst", "dst", "src", FMA_ON)
-                : __IF_32([count] "+g" (count),)
-                  __IF_64([count] "+r" (count),)
+                : [count] X86_PGREG (count),
                   [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
@@ -701,8 +669,7 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_DIV2_CORE("dst", "src", "dst", FMA_OFF)
-                : __IF_32([count] "+g" (count),)
-                  __IF_64([count] "+r" (count),)
+                : [count] X86_PGREG (count),
                   [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
@@ -719,8 +686,7 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_DIV2_CORE("dst", "src", "dst", FMA_ON)
-                : __IF_32([count] "+g" (count),)
-                  __IF_64([count] "+r" (count),)
+                : [count] X86_PGREG (count),
                   [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
@@ -867,8 +833,7 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_RCP_CORE("dst", "src", FMA_OFF)
-                : __IF_32([count] "+g" (count),)
-                  __IF_64([count] "+r" (count),)
+                : [count] X86_PGREG (count),
                   [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
@@ -885,8 +850,7 @@ namespace lsp
             ARCH_X86_ASM
             (
                 COMPLEX_RCP_CORE("dst", "src", FMA_ON)
-                : __IF_32([count] "+g" (count),)
-                  __IF_64([count] "+r" (count),)
+                : [count] X86_PGREG (count),
                   [off] "=&r" (off)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
@@ -901,7 +865,7 @@ namespace lsp
 
         #undef FMA_OFF
         #undef FMA_ON
-    }
-}
+    } /* namespace avx */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX_COMPLEX_H_ */

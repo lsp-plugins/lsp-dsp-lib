@@ -349,8 +349,7 @@ namespace lsp
 
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [f] "+r" (f), [mask] "=&r"(mask),
-                  __IF_32([count] "+g"(count))
-                  __IF_64([count] "+r"(count))
+                  [count] X86_PGREG (count)
                 : [d] "r" (d),
                   [X_MASK] "m" (dyn_biquad_const),
                   [MASK] "m" (MASK)
@@ -697,8 +696,7 @@ namespace lsp
 
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [mask] "=&r" (mask), [count] "+r" (count), [f] "+r" (f)
-                : __IF_64([d] "r" (d),)
-                  __IF_32([d] "g" (d),)
+                : [d] X86_GREG (d),
                   [X_MASK] "m" (dyn_biquad_const),
                   [MASK] "m" (MASK),
                   [X_F] "m" (X_F),
@@ -709,7 +707,7 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
-    }
-}
+    } /* namespace sse */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_FILTERS_DYNAMIC_H_ */

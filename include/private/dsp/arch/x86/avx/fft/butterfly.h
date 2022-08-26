@@ -86,10 +86,8 @@ namespace lsp
                 \
                 : __IF_32([ptr1] "=&r" (ptr1), [ptr2] "=&r" (ptr2), ) \
                   [off1] "+r" (off1), [off2] "+r" (off2), \
-                  __IF_32([np] "+g" (np)) \
-                  __IF_64([np] "+r" (np)) \
-                : __IF_32([dst_re] "g" (dst_re), [dst_im] "g" (dst_im), [fft_a] "g" (fft_a), [fft_w] "g" (fft_w)) \
-                  __IF_64([dst_re] "r" (dst_re), [dst_im] "r" (dst_im), [fft_a] "r" (fft_a), [fft_w] "r" (fft_w)) \
+                  [np] X86_PGREG (np) \
+                : [dst_re] X86_GREG (dst_re), [dst_im] X86_GREG (dst_im), [fft_a] X86_GREG (fft_a), [fft_w] X86_GREG (fft_w) \
                 : "cc", "memory",  \
                 "%xmm0", "%xmm1", "%xmm2", "%xmm3", \
                 "%xmm4", "%xmm5", "%xmm6", "%xmm7"  \

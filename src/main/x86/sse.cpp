@@ -36,6 +36,7 @@
 
     // Feature detection
     #define PRIVATE_DSP_ARCH_X86_IMPL
+        #include <private/dsp/arch/x86/defs.h>
         #include <private/dsp/arch/x86/features.h>
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
@@ -470,7 +471,7 @@
 
             #undef EXPORT1
             #undef EXPORT2
-        }
-    }
+        } /* namespace sse */
+    } /* namespace lsp */
 
 #endif /* ARCH_X86 */

@@ -208,12 +208,12 @@ namespace lsp
                 : __IF_32([dst] "+m" (dst)) __IF_64([dst] "+r" (dst)),
                   [k] "+r" (src), [count] "+r" (count),
                   [c] "=&r" (c), [d] "=&r" (d), [clen] "=&r" (clen)
-                : [conv] "g" (conv), [length] "g" (length)
+                : [conv] X86_GREG (conv), [length] X86_GREG (length)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
-    }
-}
+    } /* namespace sse */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_CONVOLUTION_H_ */

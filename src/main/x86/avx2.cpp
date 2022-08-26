@@ -36,6 +36,7 @@
 
     // Feature detection
     #define PRIVATE_DSP_ARCH_X86_IMPL
+        #include <private/dsp/arch/x86/defs.h>
         #include <private/dsp/arch/x86/features.h>
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
@@ -217,8 +218,8 @@
                     CEXPORT2_X64(favx, powvx2, x64_powvx2_fma3);
                 }
             }
-        }
-    }
+        } /* namespace avx2 */
+    } /* namespace lsp */
 
 #endif /* ARCH_X86 */
 

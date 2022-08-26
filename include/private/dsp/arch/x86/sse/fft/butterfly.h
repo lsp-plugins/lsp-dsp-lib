@@ -193,7 +193,7 @@ namespace lsp
                 __ASM_EMIT("2:") \
                 \
                 : [tmp_re] "=&r" (tmp_re), [tmp_im] "=&r" (tmp_im), \
-                  [off] "+r" (off), [p] "+g" (p) \
+                  [off] "+r" (off), [p] X86_PGREG (p) \
                 : [rank] "r" (rank), \
                   [a_re] "m" (a_re), [a_im] "m" (a_im), \
                   [b_re] "m" (b_re), [b_im] "m" (b_im), \
@@ -349,11 +349,13 @@ namespace lsp
                 FFT_BUTTERFLY_BODY("subps", "addps");
             }
         }
-    }
 
-    #undef FFT_ANGLE_INIT
-    #undef FFT_ANGLE_ROTATE
-    #undef FFT_BUTTERFLY_BODY
-}
+
+        #undef FFT_ANGLE_INIT
+        #undef FFT_ANGLE_ROTATE
+        #undef FFT_BUTTERFLY_BODY
+
+    } /* namespace sse */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_FFT_BUTTERFLY_H_ */

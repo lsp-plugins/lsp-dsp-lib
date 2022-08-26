@@ -295,7 +295,7 @@ namespace lsp
                   [src] "+r"(src),
                   [t1] "=&r" (t1),
                   [t2] "=&r" (t2)
-                : [value] "g" (value)
+                : [value] X86_GREG (value)
                 : "cc", "memory"
             );
         }
@@ -330,8 +330,8 @@ namespace lsp
                 : "cc", "memory"
             );
         }
-    }
-}
+    } /* namespace x86 */
+} /* namespace lsp */
 
 
 #endif /* PRIVATE_DSP_ARCH_X86_GRAPHICS_H_ */

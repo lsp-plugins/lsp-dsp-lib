@@ -112,8 +112,7 @@ namespace lsp
                 __ASM_EMIT("8:")
 
                 : [off] "=&r" (off),
-                  __IF_32([count] "+g" (count))
-                  __IF_64([count] "+r" (count))
+                  [count] X86_PGREG (count)
                 : [left] "r"(l), [right] "r" (r),
                   [mid] "r" (m), [side] "r" (s),
                   [X_HALF] "m" (msmatrix_const)
@@ -326,8 +325,7 @@ namespace lsp
                 __ASM_EMIT("10:")
 
                 : [off] "=&r" (off),
-                  __IF_32([count] "+g" (count))
-                  __IF_64([count] "+r" (count))
+                  [count] X86_PGREG (count)
                 : [left] "r"(l), [right] "r" (r),
                   [mid] "r" (m), [side] "r" (s)
                 : "cc", "memory",
@@ -429,7 +427,7 @@ namespace lsp
         }
 
         #undef MS_TO_PART
-    }
-}
+    } /* namespace avx */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX_MSMATRIX_H_ */

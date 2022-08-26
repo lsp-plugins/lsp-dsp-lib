@@ -67,8 +67,7 @@ namespace lsp
                 __ASM_EMIT  ("vmovups       %%ymm6, 0x00(%[d_im], %[off])")
                 __ASM_EMIT  ("4:")
                 : [off] "+r" (off),
-                  __IF_32([count] "+g" (count))
-                  __IF_64([count] "+r" (count))
+                  [count] X86_PGREG (count)
                 : [s_re] "r" (re), [s_im] "r" (im),
                   [d_re] "r" (dre), [d_im] "r" (dim),
                   [k] "m" (k)
@@ -122,7 +121,7 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
-    }
-}
+    } /* namespace avx */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX_FFT_NORMALIZE_H_ */
