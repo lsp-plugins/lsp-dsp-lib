@@ -44,12 +44,12 @@ namespace lsp
                 // s14  = d0
                 // s15  = d1
                 // x2 blocks
-                __ASM_EMIT("subs            %[count], %[count], $2")
+                __ASM_EMIT("subs            %[count], %[count], #2")
                 __ASM_EMIT("blo             2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm            %[f], {s8-s12}")
                 __ASM_EMIT("vldm            %[src]!, {s0-s1}")                      // s0   = s0, s1 = s1
-                __ASM_EMIT("add             %[f], %[f], $0x20")
+                __ASM_EMIT("add             %[f], %[f], #0x20")
                 __ASM_EMIT("vmul.f32        s2, s0, s8")                            // s2   = a0*s0
                 __ASM_EMIT("vmul.f32        s4, s0, s9")                            // s4   = a1*s0
                 __ASM_EMIT("vmul.f32        s6, s0, s10")                           // s6   = a2*s0
@@ -58,7 +58,7 @@ namespace lsp
                 __ASM_EMIT("vmla.f32        s6, s0, s12")                           // s6   = d1' = a2*s0 + b2*s0'
                 __ASM_EMIT("vadd.f32        s4, s15, s4")                           // s4   = d0' = d1 + a1*s0 + b1*s0'
                 __ASM_EMIT("vldm            %[f], {s8-s12}")
-                __ASM_EMIT("add             %[f], %[f], $0x20")
+                __ASM_EMIT("add             %[f], %[f], #0x20")
                 __ASM_EMIT("vmul.f32        s3, s1, s8")                            // s3   = a0*s1
                 __ASM_EMIT("vmul.f32        s5, s1, s9")                            // s5   = a1*s1
                 __ASM_EMIT("vmul.f32        s7, s1, s10")                           // s7   = a2*s1
@@ -68,11 +68,11 @@ namespace lsp
                 __ASM_EMIT("vadd.f32        s14, s6, s5")                           // s14  = d0" = d1' + a1*s1 + b1*s1'
                 __ASM_EMIT("vmov            s15, s7")
                 __ASM_EMIT("vstm            %[dst]!, {s0-s1}")
-                __ASM_EMIT("subs            %[count], %[count], $2")
+                __ASM_EMIT("subs            %[count], %[count], #2")
                 __ASM_EMIT("bhs             1b")
                 __ASM_EMIT("2:")
                 // x1 block:
-                __ASM_EMIT("adds            %[count], %[count], $1")
+                __ASM_EMIT("adds            %[count], %[count], #1")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vldm            %[f], {s8-s12}")
                 __ASM_EMIT("vldr            s0, [%[src]]")                          // v0   = s0
@@ -115,11 +115,11 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        d6, d10, d0")                           // d6   = a2*s0
                 __ASM_EMIT("vmla.f32        d5, d11, d4")                           // d5   = d0' = d1+a1*s0+b1*s'
                 __ASM_EMIT("vmla.f32        d6, d12, d4")                           // d6   = d1' = a2*s0+b2*s'
-                __ASM_EMIT("vext.32         d0, d0, d4, $1")                        // shift
+                __ASM_EMIT("vext.32         d0, d0, d4, #1")                        // shift
                 __ASM_EMIT("vmov            s28, s10")                              // update d0
                 __ASM_EMIT("vmov            s30, s12")                              // update d1
                 // x2 blocks
-                __ASM_EMIT("subs            %[count], %[count], $1")
+                __ASM_EMIT("subs            %[count], %[count], #1")
                 __ASM_EMIT("bls             2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm            %[f]!, {d8-d13}")                       // d8   = a0, d9 = a1, d10 = a2, d11 = b1, d12 = b2, d13 = 0
@@ -132,8 +132,8 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        d15, d10, d0")                          // d23  = a2*s0 a2*j0
                 __ASM_EMIT("vmla.f32        d14, d11, d4")                          // d22  = d0' e0' = d1+a1*s0+b1*s' e1+a1*j0+b1*j'
                 __ASM_EMIT("vmla.f32        d15, d12, d4")                          // d23  = d1' e1' = a2*s0+b2*s' a2*j0 b2*j'
-                __ASM_EMIT("subs            %[count], %[count], $1")
-                __ASM_EMIT("vext.32         d0, d0, d4, $1")                        // shift
+                __ASM_EMIT("subs            %[count], %[count], #1")
+                __ASM_EMIT("vext.32         d0, d0, d4, #1")                        // shift
                 __ASM_EMIT("bhi             1b")
                 __ASM_EMIT("2:")
                 // x1 tail block
@@ -183,7 +183,7 @@ namespace lsp
                 // Prepare
                 __ASM_EMIT("vldm        %[d], {q1-q2}")                         // q1-q2 = { d0, d1 }
                 __ASM_EMIT("vldm        %[X_MASK], {q8-q9}")                    // q8-q9 = { vmask, 1 }
-                __ASM_EMIT("mov         %[mask], $1")                           // mask  = 1
+                __ASM_EMIT("mov         %[mask], #1")                           // mask  = 1
 
                 // Do pre-loop
                 __ASM_EMIT("1:")
@@ -196,15 +196,15 @@ namespace lsp
                 __ASM_EMIT("vmla.f32    q11, q6, q10")                          // q11   = a1*s + b1*s2
                 __ASM_EMIT("vmla.f32    q12, q7, q10")                          // q12   = d1' = a2*s + b2*s2
                 __ASM_EMIT("vadd.f32    q11, q2")                               // q11   = d0' = d1 + a1*s + b1*s2
-                __ASM_EMIT("vext.32     q0, q10, q10, $3")                      // q0    = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("vext.32     q0, q10, q10, #3")                      // q0    = s2[3] s2[0] s2[1] s2[2]
                 __ASM_EMIT("vbit        q2, q12, q8")                           // q2    = (d1 & ~vmask) | (d1' & vmask)
                 __ASM_EMIT("vbit        q1, q11, q8")                           // q1    = (d0 & ~vmask) | (d0' & vmask)
 
-                __ASM_EMIT("subs        %[count], $1")
+                __ASM_EMIT("subs        %[count], #1")
                 __ASM_EMIT("beq         4f")
-                __ASM_EMIT("orr         %[mask], %[mask], LSL $1")              // mask  = (mask << 1) | 1
-                __ASM_EMIT("vext.32     q8, q9, q8, $3")                        // q8    = (vmask << 1) | 1
-                __ASM_EMIT("cmp         %[mask], $0x0f")
+                __ASM_EMIT("orr         %[mask], %[mask], LSL #1")              // mask  = (mask << 1) | 1
+                __ASM_EMIT("vext.32     q8, q9, q8, #3")                        // q8    = (vmask << 1) | 1
+                __ASM_EMIT("cmp         %[mask], #0x0f")
                 __ASM_EMIT("bne         1b")
 
                 // Do main loop
@@ -218,17 +218,17 @@ namespace lsp
                 __ASM_EMIT("vmla.f32    q11, q6, q10")                          // q11   = a1*s + b1*s2
                 __ASM_EMIT("vmla.f32    q12, q7, q10")                          // q12   = d1' = a2*s + b2*s2
                 __ASM_EMIT("vadd.f32    q1, q11, q2")                           // q1    = d0' = d1 + a1*s + b1*s2
-                __ASM_EMIT("vext.32     q0, q10, q10, $3")                      // q0    = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("vext.32     q0, q10, q10, #3")                      // q0    = s2[3] s2[0] s2[1] s2[2]
                 __ASM_EMIT("vmov        q2, q12")
                 __ASM_EMIT("vst1.32     d0[0], [%[dst]]!")
-                __ASM_EMIT("subs        %[count], $1")
+                __ASM_EMIT("subs        %[count], #1")
                 __ASM_EMIT("bne         3b")
 
                 // Do post-loop
                 __ASM_EMIT("4:")
                 __ASM_EMIT("veor        q9, q9")                                // q9    = 0
-                __ASM_EMIT("lsl         %[mask], $1")                           // mask  = mask << 1
-                __ASM_EMIT("vext.32     q8, q9, q8, $3")                        // q8    = (vmask << 1) | 0
+                __ASM_EMIT("lsl         %[mask], #1")                           // mask  = mask << 1
+                __ASM_EMIT("vext.32     q8, q9, q8, #3")                        // q8    = (vmask << 1) | 0
 
                 __ASM_EMIT("5:")
                 __ASM_EMIT("vldm        %[f]!, {q3-q7}")                        // q3-q7 = { a0, a1, a2, b1, b2 }
@@ -239,16 +239,16 @@ namespace lsp
                 __ASM_EMIT("vmla.f32    q11, q6, q10")                          // q11   = a1*s + b1*s2
                 __ASM_EMIT("vmla.f32    q12, q7, q10")                          // q12   = d1' = a2*s + b2*s2
                 __ASM_EMIT("vadd.f32    q11, q2")                               // q11   = d0' = d1 + a1*s + b1*s2
-                __ASM_EMIT("vext.32     q0, q10, q10, $3")                      // q0    = s2[3] s2[0] s2[1] s2[2]
-                __ASM_EMIT("tst         %[mask], $0x08")
+                __ASM_EMIT("vext.32     q0, q10, q10, #3")                      // q0    = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("tst         %[mask], #0x08")
                 __ASM_EMIT("beq         6f")
                 __ASM_EMIT("vst1.32     d0[0], [%[dst]]!")
                 __ASM_EMIT("6:")
                 __ASM_EMIT("vbit        q2, q12, q8")                           // q2    = (d1 & ~vmask) | (d1' & vmask)
                 __ASM_EMIT("vbit        q1, q11, q8")                           // q1    = (d0 & ~vmask) | (d0' & vmask)
-                __ASM_EMIT("lsl         %[mask], $1")                           // mask  = mask << 1
-                __ASM_EMIT("vext.32     q8, q9, q8, $3")                        // q8    = vmask << 1
-                __ASM_EMIT("tst         %[mask], $0x0f")                        // mask  == 0 ?
+                __ASM_EMIT("lsl         %[mask], #1")                           // mask  = mask << 1
+                __ASM_EMIT("vext.32     q8, q9, q8, #3")                        // q8    = vmask << 1
+                __ASM_EMIT("tst         %[mask], #0x0f")                        // mask  == 0 ?
                 __ASM_EMIT("bne         5b")
 
                 // Store memory
@@ -291,7 +291,7 @@ namespace lsp
                 // Prepare
                 __ASM_EMIT("vldm        %[d], {q2-q5}")                         // q2-q3 = d0, q4-q5 = d1
                 __ASM_EMIT("vldm        %[X_MASK], {q12-q15}")                  // q12-q15 = vmask
-                __ASM_EMIT("mov         %[mask], $1")                           // mask  = 1
+                __ASM_EMIT("mov         %[mask], #1")                           // mask  = 1
                 __ASM_EMIT("vstm        %[vmask], {q12-q15}")
 
                 // Do pre-loop
@@ -315,20 +315,20 @@ namespace lsp
                 __ASM_EMIT("vadd.f32    q8, q8, q4")                            // q8    = a1*s + b1*s2 + d1 = d0'
                 __ASM_EMIT("vadd.f32    q9, q9, q5")
 
-                __ASM_EMIT("vext.32     q1, q6, q7, $3")                        // q1    = s2[3] s2[4] s2[5] s2[6]
+                __ASM_EMIT("vext.32     q1, q6, q7, #3")                        // q1    = s2[3] s2[4] s2[5] s2[6]
                 __ASM_EMIT("vldm        %[vmask], {q12-q15}")                   // q12-q15 = vmask
-                __ASM_EMIT("vext.32     q0, q6, q6, $3")                        // q0    = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("vext.32     q0, q6, q6, #3")                        // q0    = s2[3] s2[0] s2[1] s2[2]
                 __ASM_EMIT("vbit        q2, q8, q14")                           // q2    = (d0 & ~vmask) | (d0' & vmask)
                 __ASM_EMIT("vbit        q3, q9, q15")
                 __ASM_EMIT("vbit        q4, q10, q14")                          // q4    = (d1 & ~vmask) | (d1' & vmask)
                 __ASM_EMIT("vbit        q5, q11, q15")
 
-                __ASM_EMIT("subs        %[count], $1")
+                __ASM_EMIT("subs        %[count], #1")
                 __ASM_EMIT("beq         4f")
-                __ASM_EMIT("vext.32     q15, q14, q15, $3")                     // vmask = vmask << 1
-                __ASM_EMIT("orr         %[mask], %[mask], LSL $1")              // mask  = (mask << 1) | 1
-                __ASM_EMIT("vext.32     q14, q13, q14, $3")                     // vmask = (vmask << 1) | 1
-                __ASM_EMIT("cmp         %[mask], $0xff")
+                __ASM_EMIT("vext.32     q15, q14, q15, #3")                     // vmask = vmask << 1
+                __ASM_EMIT("orr         %[mask], %[mask], LSL #1")              // mask  = (mask << 1) | 1
+                __ASM_EMIT("vext.32     q14, q13, q14, #3")                     // vmask = (vmask << 1) | 1
+                __ASM_EMIT("cmp         %[mask], #0xff")
                 __ASM_EMIT("vstm        %[vmask], {q12-q15}")
                 __ASM_EMIT("bne         1b")
 
@@ -356,19 +356,19 @@ namespace lsp
                 __ASM_EMIT("vmov        q5, q11")
 
                 __ASM_EMIT("vst1.32     d15[1], [%[dst]]!")                     // *dst++= s2[7]
-                __ASM_EMIT("vext.32     q1, q6, q7, $3")                        // q1    = s2[3] s2[4] s2[5] s2[6]
-                __ASM_EMIT("vext.32     q0, q6, q6, $3")                        // q0    = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("vext.32     q1, q6, q7, #3")                        // q1    = s2[3] s2[4] s2[5] s2[6]
+                __ASM_EMIT("vext.32     q0, q6, q6, #3")                        // q0    = s2[3] s2[0] s2[1] s2[2]
 
-                __ASM_EMIT("subs        %[count], $1")
+                __ASM_EMIT("subs        %[count], #1")
                 __ASM_EMIT("bne         3b")
 
                 // Do post-loop
                 __ASM_EMIT("4:")
                 __ASM_EMIT("vldm        %[vmask], {q12-q15}")                   // q12-q15 = vmask
                 __ASM_EMIT("veor        q13, q13")                              // q13   = 0
-                __ASM_EMIT("vext.32     q15, q14, q15, $3")                     // vmask = vmask << 1
-                __ASM_EMIT("lsl         %[mask], $1")                           // mask  = mask << 1
-                __ASM_EMIT("vext.32     q14, q13, q14, $3")                     // vmask = vmask << 1
+                __ASM_EMIT("vext.32     q15, q14, q15, #3")                     // vmask = vmask << 1
+                __ASM_EMIT("lsl         %[mask], #1")                           // mask  = mask << 1
+                __ASM_EMIT("vext.32     q14, q13, q14, #3")                     // vmask = vmask << 1
                 __ASM_EMIT("vstm        %[vmask], {q12-q15}")
 
                 __ASM_EMIT("5:")
@@ -389,22 +389,22 @@ namespace lsp
                 __ASM_EMIT("vadd.f32    q8, q8, q4")                            // q8    = a1*s + b1*s2 + d1 = d0'
                 __ASM_EMIT("vadd.f32    q9, q9, q5")
 
-                __ASM_EMIT("tst         %[mask], $0x80")
+                __ASM_EMIT("tst         %[mask], #0x80")
                 __ASM_EMIT("beq         6f")
                 __ASM_EMIT("vst1.32     d15[1], [%[dst]]!")
                 __ASM_EMIT("6:")
-                __ASM_EMIT("vext.32     q1, q6, q7, $3")                        // q1    = s2[3] s2[4] s2[5] s2[6]
+                __ASM_EMIT("vext.32     q1, q6, q7, #3")                        // q1    = s2[3] s2[4] s2[5] s2[6]
                 __ASM_EMIT("vldm        %[vmask], {q12-q15}")                   // q12-q15 = vmask
-                __ASM_EMIT("vext.32     q0, q6, q6, $3")                        // q0    = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("vext.32     q0, q6, q6, #3")                        // q0    = s2[3] s2[0] s2[1] s2[2]
                 __ASM_EMIT("vbit        q2, q8, q14")                           // q2    = (d0 & ~vmask) | (d0' & vmask)
                 __ASM_EMIT("vbit        q3, q9, q15")
                 __ASM_EMIT("vbit        q4, q10, q14")                          // q4    = (d1 & ~vmask) | (d1' & vmask)
                 __ASM_EMIT("vbit        q5, q11, q15")
 
-                __ASM_EMIT("vext.32     q15, q14, q15, $3")                     // vmask = vmask << 1
-                __ASM_EMIT("lsl         %[mask], $1")                           // mask  = mask << 1
-                __ASM_EMIT("vext.32     q14, q13, q14, $3")                     // vmask = vmask << 1
-                __ASM_EMIT("tst         %[mask], $0xff")                        // mask  == 0 ?
+                __ASM_EMIT("vext.32     q15, q14, q15, #3")                     // vmask = vmask << 1
+                __ASM_EMIT("lsl         %[mask], #1")                           // mask  = mask << 1
+                __ASM_EMIT("vext.32     q14, q13, q14, #3")                     // vmask = vmask << 1
+                __ASM_EMIT("tst         %[mask], #0xff")                        // mask  == 0 ?
                 __ASM_EMIT("vstm        %[vmask], {q12-q15}")
                 __ASM_EMIT("bne         5b")
 

@@ -54,8 +54,8 @@ namespace lsp
     #define POW2_CORE_X8 \
         __ASM_EMIT("vldm            %[E2C]!, {q8-q13}")             /* q8 = 0x7f, q9 = ln(2), q10 = C5, q11 = C4, q12 = C3, q13 = C2, E2C += 6*4 */ \
         /* q0 = x */ \
-        __ASM_EMIT("vshr.s32        q2, q0, $31")                   /* q2   = [ x < 0 ] */ \
-        __ASM_EMIT("vshr.s32        q3, q1, $31") \
+        __ASM_EMIT("vshr.s32        q2, q0, #31")                   /* q2   = [ x < 0 ] */ \
+        __ASM_EMIT("vshr.s32        q3, q1, #31") \
         __ASM_EMIT("vabs.f32        q0, q0")                        /* q0   = XP = fabs(x) */ \
         __ASM_EMIT("vabs.f32        q1, q1") \
         __ASM_EMIT("vcvt.u32.f32    q4, q0")                        /* q4   = R = int(x) */ \
@@ -64,8 +64,8 @@ namespace lsp
         __ASM_EMIT("vadd.u32        q7, q5, q8") \
         __ASM_EMIT("vcvt.f32.u32    q4, q4")                        /* q4   = float(R) */ \
         __ASM_EMIT("vcvt.f32.u32    q5, q5") \
-        __ASM_EMIT("vshl.u32        q6, q6, $23")                   /* q6   = 1 << (R + 127) */ \
-        __ASM_EMIT("vshl.u32        q7, q7, $23") \
+        __ASM_EMIT("vshl.u32        q6, q6, #23")                   /* q6   = 1 << (R + 127) */ \
+        __ASM_EMIT("vshl.u32        q7, q7, #23") \
         __ASM_EMIT("vsub.f32        q0, q0, q4")                    /* q0   = XP - float(R) */ \
         __ASM_EMIT("vsub.f32        q1, q1, q5") \
         __ASM_EMIT("vmul.f32        q0, q0, q9")                    /* q0   = X = ln(2) * (XP - float(R)) */ \
@@ -102,7 +102,7 @@ namespace lsp
         __ASM_EMIT("vadd.f32        q5, q5, q11") \
         __ASM_EMIT("vmul.f32        q4, q4, q6")                    /* q4   = E = (1 << R) * (1 + 1/7! * X*(C0+X*(C1+X*(C2+X*(C3+X*(C4+X*(C5+X))))))) */ \
         __ASM_EMIT("vmul.f32        q5, q5, q7") \
-        __ASM_EMIT("sub             %[E2C], $0x60")                 /* E2C -= 6*4 */ \
+        __ASM_EMIT("sub             %[E2C], #0x60")                 /* E2C -= 6*4 */ \
         /* Calc reciprocals into q0 */ \
         __ASM_EMIT("vrecpe.f32      q8, q4")                        /* q8   = e2 */ \
         __ASM_EMIT("vrecpe.f32      q9, q5") \
@@ -121,12 +121,12 @@ namespace lsp
     #define POW2_CORE_X4 \
         __ASM_EMIT("vldm            %[E2C]!, {q8-q13}")             /* q8 = 0x7f, q9 = ln(2), q10 = C5, q11 = C4, q12 = C3, q13 = C2, E2C += 6*4 */ \
         /* q0 = x */ \
-        __ASM_EMIT("vshr.s32        q2, q0, $31")                   /* q2   = [ x < 0 ] */ \
+        __ASM_EMIT("vshr.s32        q2, q0, #31")                   /* q2   = [ x < 0 ] */ \
         __ASM_EMIT("vabs.f32        q0, q0")                        /* q0   = XP = fabs(x) */ \
         __ASM_EMIT("vcvt.u32.f32    q4, q0")                        /* q4   = R = int(x) */ \
         __ASM_EMIT("vadd.u32        q6, q4, q8")                    /* q6   = R + 127 */ \
         __ASM_EMIT("vcvt.f32.u32    q4, q4")                        /* q4   = float(R) */ \
-        __ASM_EMIT("vshl.u32        q6, q6, $23")                   /* q6   = 1 << (R + 127) */ \
+        __ASM_EMIT("vshl.u32        q6, q6, #23")                   /* q6   = 1 << (R + 127) */ \
         __ASM_EMIT("vsub.f32        q0, q0, q4")                    /* q0   = XP - float(R) */ \
         __ASM_EMIT("vmul.f32        q0, q0, q9")                    /* q0   = X = ln(2) * (XP - float(R)) */ \
         /* q0 = X, q2 = [ x < 0 ], q6 = 1 << R */ \
@@ -146,7 +146,7 @@ namespace lsp
         __ASM_EMIT("vmul.f32        q4, q4, q10")                   /* q4   = 1/7! * X*(C0+X*(C1+X*(C2+X*(C3+X*(C4+X*(C5+X)))))) */ \
         __ASM_EMIT("vadd.f32        q4, q4, q11")                   /* q4   = 1 + 1/7! * X*(C0+X*(C1+X*(C2+X*(C3+X*(C4+X*(C5+X)))))) */ \
         __ASM_EMIT("vmul.f32        q4, q4, q6")                    /* q4   = E = (1 << R) * (1 + 1/7! * X*(C0+X*(C1+X*(C2+X*(C3+X*(C4+X*(C5+X))))))) */ \
-        __ASM_EMIT("sub             %[E2C], $0x60")                 /* E2C -= 6*4 */ \
+        __ASM_EMIT("sub             %[E2C], #0x60")                 /* E2C -= 6*4 */ \
         /* Calc reciprocals into q0 */ \
         __ASM_EMIT("vrecpe.f32      q8, q4")                        /* q8   = e2 */ \
         __ASM_EMIT("vrecps.f32      q10, q8, q4")                   /* q10  = (2 - E*e2) */ \
@@ -159,7 +159,7 @@ namespace lsp
         void exp2(float *dst, const float *src, size_t count)
         {
             ARCH_ARM_ASM(
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vldm            %[LOG2E], {q15}")
                 __ASM_EMIT("blo             2f")
                 // x8 blocks
@@ -168,37 +168,37 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q0, q0, q15")
                 __ASM_EMIT("vmul.f32        q1, q1, q15")
                 POW2_CORE_X8
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vst1.32         {q0-q1}, [%[dst]]!")
                 __ASM_EMIT("bhs             1b")
                 // x4 block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vld1.32         {q0}, [%[src]]!")
                 __ASM_EMIT("vmul.f32        q0, q0, q15")
                 POW2_CORE_X4
-                __ASM_EMIT("sub             %[count], $4")
+                __ASM_EMIT("sub             %[count], #4")
                 __ASM_EMIT("vst1.32         {q0}, [%[dst]]!")
                 // Tail: 1x-3x block
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("bls             12f")
-                __ASM_EMIT("tst             %[count], $1")
+                __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             6f")
                 __ASM_EMIT("vld1.32         {d0[0]}, [%[src]]!")
                 __ASM_EMIT("6:")
-                __ASM_EMIT("tst             %[count], $2")
+                __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             8f")
                 __ASM_EMIT("vld1.32         {d1}, [%[src]]")
                 __ASM_EMIT("8:")
                 __ASM_EMIT("vmul.f32        q0, q0, q15")
                 POW2_CORE_X4
-                __ASM_EMIT("tst             %[count], $1")
+                __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             10f")
                 __ASM_EMIT("vst1.32         {d0[0]}, [%[dst]]!")
                 __ASM_EMIT("10:")
-                __ASM_EMIT("tst             %[count], $2")
+                __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             12f")
                 __ASM_EMIT("vst1.32         {d1}, [%[dst]]")
                 // End
@@ -218,7 +218,7 @@ namespace lsp
         void exp1(float *dst, size_t count)
         {
             ARCH_ARM_ASM(
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vldm            %[LOG2E], {q15}")
                 __ASM_EMIT("blo             2f")
                 // x8 blocks
@@ -227,38 +227,38 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q0, q0, q15")
                 __ASM_EMIT("vmul.f32        q1, q1, q15")
                 POW2_CORE_X8
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vst1.32         {q0-q1}, [%[dst]]!")
                 __ASM_EMIT("bhs             1b")
                 // x4 block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vld1.32         {q0}, [%[dst]]")
                 __ASM_EMIT("vmul.f32        q0, q0, q15")
                 POW2_CORE_X4
-                __ASM_EMIT("sub             %[count], $4")
+                __ASM_EMIT("sub             %[count], #4")
                 __ASM_EMIT("vst1.32         {q0}, [%[dst]]!")
                 // Tail: 1x-3x block
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("bls             12f")
-                __ASM_EMIT("tst             %[count], $1")
+                __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             6f")
                 __ASM_EMIT("vld1.32         {d0[0]}, [%[dst]]!")
                 __ASM_EMIT("6:")
-                __ASM_EMIT("tst             %[count], $2")
+                __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             8f")
                 __ASM_EMIT("vld1.32         {d1}, [%[dst]]")
                 __ASM_EMIT("8:")
                 __ASM_EMIT("vmul.f32        q0, q0, q15")
                 POW2_CORE_X4
-                __ASM_EMIT("tst             %[count], $1")
+                __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             10f")
                 __ASM_EMIT("sub             %[dst], #0x04")
                 __ASM_EMIT("vst1.32         {d0[0]}, [%[dst]]!")
                 __ASM_EMIT("10:")
-                __ASM_EMIT("tst             %[count], $2")
+                __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             12f")
                 __ASM_EMIT("vst1.32         {d1}, [%[dst]]")
                 // End

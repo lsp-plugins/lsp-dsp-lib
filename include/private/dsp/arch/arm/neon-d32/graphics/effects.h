@@ -132,7 +132,7 @@ namespace lsp
                 __ASM_EMIT("vsub.f32        q12, q15, q12")             /* q12  = T = 1 - t */
                 __ASM_EMIT("vmul.f32        q13, q1, q0")               /* q13  = KT = 1/t = t' * (2 - TD*t') */
 
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("blo             2f")
 
                 //-----------------------------------------------------------------
@@ -143,40 +143,40 @@ namespace lsp
 
                 EFF_HSLA_HUE_CORE
 
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vstm            %[dst]!, {q0-q7}")
                 __ASM_EMIT("bhs             1b")
 
                 //-----------------------------------------------------------------
                 // 1x-8x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $8")
+                __ASM_EMIT("adds            %[count], #8")
                 __ASM_EMIT("bls             14f")
 
-                __ASM_EMIT("tst             %[count], $4")
+                __ASM_EMIT("tst             %[count], #4")
                 __ASM_EMIT("beq             4f")
                 __ASM_EMIT("vld1.32         {q0}, [%[src]]!")
                 __ASM_EMIT("4:")
-                __ASM_EMIT("tst             %[count], $2")
+                __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             6f")
                 __ASM_EMIT("vld1.32         {d2}, [%[src]]!")
                 __ASM_EMIT("6:")
-                __ASM_EMIT("tst             %[count], $1")
+                __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             8f")
                 __ASM_EMIT("vld1.32         d3[0], [%[src]]")
                 __ASM_EMIT("8:")
 
                 EFF_HSLA_HUE_CORE
 
-                __ASM_EMIT("tst             %[count], $4")
+                __ASM_EMIT("tst             %[count], #4")
                 __ASM_EMIT("beq             10f")
                 __ASM_EMIT("vstm            %[dst]!, {q0-q3}")
                 __ASM_EMIT("10:")
-                __ASM_EMIT("tst             %[count], $2")
+                __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             12f")
                 __ASM_EMIT("vstm            %[dst]!, {q4-q5}")
                 __ASM_EMIT("12:")
-                __ASM_EMIT("tst             %[count], $1")
+                __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             14f")
                 __ASM_EMIT("vstm            %[dst], {q6}")
 
@@ -263,7 +263,7 @@ namespace lsp
                 __ASM_EMIT("vswp            d22, d19")
                 __ASM_EMIT("veor            q13, q13")                  /* q13  = 0 */
 
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("blo             2f")
 
                 //-----------------------------------------------------------------
@@ -274,40 +274,40 @@ namespace lsp
 
                 EFF_HSLA_SAT_CORE
 
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vstm            %[dst]!, {q0-q7}")
                 __ASM_EMIT("bhs             1b")
 
                 //-----------------------------------------------------------------
                 // 1x-8x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $8")
+                __ASM_EMIT("adds            %[count], #8")
                 __ASM_EMIT("bls             14f")
 
-                __ASM_EMIT("tst             %[count], $4")
+                __ASM_EMIT("tst             %[count], #4")
                 __ASM_EMIT("beq             4f")
                 __ASM_EMIT("vld1.32         {q0}, [%[src]]!")
                 __ASM_EMIT("4:")
-                __ASM_EMIT("tst             %[count], $2")
+                __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             6f")
                 __ASM_EMIT("vld1.32         {d2}, [%[src]]!")
                 __ASM_EMIT("6:")
-                __ASM_EMIT("tst             %[count], $1")
+                __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             8f")
                 __ASM_EMIT("vld1.32         d3[0], [%[src]]")
                 __ASM_EMIT("8:")
 
                 EFF_HSLA_SAT_CORE
 
-                __ASM_EMIT("tst             %[count], $4")
+                __ASM_EMIT("tst             %[count], #4")
                 __ASM_EMIT("beq             10f")
                 __ASM_EMIT("vstm            %[dst]!, {q0-q3}")
                 __ASM_EMIT("10:")
-                __ASM_EMIT("tst             %[count], $2")
+                __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             12f")
                 __ASM_EMIT("vstm            %[dst]!, {q4-q5}")
                 __ASM_EMIT("12:")
-                __ASM_EMIT("tst             %[count], $1")
+                __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             14f")
                 __ASM_EMIT("vstm            %[dst], {q6}")
 
@@ -395,7 +395,7 @@ namespace lsp
                 __ASM_EMIT("vswp            d22, d19")
                 __ASM_EMIT("veor            q13, q13")                  /* q13  = 0 */
 
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("blo             2f")
 
                 //-----------------------------------------------------------------
@@ -406,40 +406,40 @@ namespace lsp
 
                 EFF_HSLA_LIGHT_CORE
 
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vstm            %[dst]!, {q0-q7}")
                 __ASM_EMIT("bhs             1b")
 
                 //-----------------------------------------------------------------
                 // 1x-8x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $8")
+                __ASM_EMIT("adds            %[count], #8")
                 __ASM_EMIT("bls             14f")
 
-                __ASM_EMIT("tst             %[count], $4")
+                __ASM_EMIT("tst             %[count], #4")
                 __ASM_EMIT("beq             4f")
                 __ASM_EMIT("vld1.32         {q0}, [%[src]]!")
                 __ASM_EMIT("4:")
-                __ASM_EMIT("tst             %[count], $2")
+                __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             6f")
                 __ASM_EMIT("vld1.32         {d2}, [%[src]]!")
                 __ASM_EMIT("6:")
-                __ASM_EMIT("tst             %[count], $1")
+                __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             8f")
                 __ASM_EMIT("vld1.32         d3[0], [%[src]]")
                 __ASM_EMIT("8:")
 
                 EFF_HSLA_LIGHT_CORE
 
-                __ASM_EMIT("tst             %[count], $4")
+                __ASM_EMIT("tst             %[count], #4")
                 __ASM_EMIT("beq             10f")
                 __ASM_EMIT("vstm            %[dst]!, {q0-q3}")
                 __ASM_EMIT("10:")
-                __ASM_EMIT("tst             %[count], $2")
+                __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             12f")
                 __ASM_EMIT("vstm            %[dst]!, {q4-q5}")
                 __ASM_EMIT("12:")
-                __ASM_EMIT("tst             %[count], $1")
+                __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             14f")
                 __ASM_EMIT("vstm            %[dst], {q6}")
 
@@ -516,7 +516,7 @@ namespace lsp
                 __ASM_EMIT("vswp            d20, d17")
                 __ASM_EMIT("vswp            d22, d19")
 
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("blo             2f")
 
                 //-----------------------------------------------------------------
@@ -527,40 +527,40 @@ namespace lsp
 
                 EFF_HSLA_ALPHA_CORE
 
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vstm            %[dst]!, {q0-q7}")
                 __ASM_EMIT("bhs             1b")
 
                 //-----------------------------------------------------------------
                 // 1x-8x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $8")
+                __ASM_EMIT("adds            %[count], #8")
                 __ASM_EMIT("bls             14f")
 
-                __ASM_EMIT("tst             %[count], $4")
+                __ASM_EMIT("tst             %[count], #4")
                 __ASM_EMIT("beq             4f")
                 __ASM_EMIT("vld1.32         {q0}, [%[src]]!")
                 __ASM_EMIT("4:")
-                __ASM_EMIT("tst             %[count], $2")
+                __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             6f")
                 __ASM_EMIT("vld1.32         {d2}, [%[src]]!")
                 __ASM_EMIT("6:")
-                __ASM_EMIT("tst             %[count], $1")
+                __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             8f")
                 __ASM_EMIT("vld1.32         d3[0], [%[src]]")
                 __ASM_EMIT("8:")
 
                 EFF_HSLA_ALPHA_CORE
 
-                __ASM_EMIT("tst             %[count], $4")
+                __ASM_EMIT("tst             %[count], #4")
                 __ASM_EMIT("beq             10f")
                 __ASM_EMIT("vstm            %[dst]!, {q0-q3}")
                 __ASM_EMIT("10:")
-                __ASM_EMIT("tst             %[count], $2")
+                __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             12f")
                 __ASM_EMIT("vstm            %[dst]!, {q4-q5}")
                 __ASM_EMIT("12:")
-                __ASM_EMIT("tst             %[count], $1")
+                __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             14f")
                 __ASM_EMIT("vstm            %[dst], {q6}")
 

@@ -39,7 +39,7 @@ namespace lsp
             ARCH_ARM_ASM(
                 // x8 blocks
                 __ASM_EMIT("vdup.32     q0, %y[k]")                 // q0   = k
-                __ASM_EMIT("subs        %[count], %[count], $8")
+                __ASM_EMIT("subs        %[count], %[count], #8")
                 __ASM_EMIT("vmov        q1, q0")
                 __ASM_EMIT("blt         2f")
                 __ASM_EMIT("1:")
@@ -49,7 +49,7 @@ namespace lsp
                 __ASM_EMIT("vmul.f32    q5, q5, q1")
                 __ASM_EMIT("vmul.f32    q6, q6, q0")
                 __ASM_EMIT("vmul.f32    q7, q7, q1")
-                __ASM_EMIT("subs        %[count], %[count], $8")
+                __ASM_EMIT("subs        %[count], %[count], #8")
                 __ASM_EMIT("vstm        %[d_re]!, {q4-q5}")
                 __ASM_EMIT("vstm        %[d_im]!, {q6-q7}")
                 __ASM_EMIT("bhs         1b")
@@ -73,7 +73,7 @@ namespace lsp
             ARCH_ARM_ASM(
                 // x8 blocks
                 __ASM_EMIT("vdup.32     q0, %y[k]")                 // q0   = k
-                __ASM_EMIT("subs        %[count], %[count], $8")
+                __ASM_EMIT("subs        %[count], %[count], #8")
                 __ASM_EMIT("vmov        q1, q0")
                 __ASM_EMIT("blt         2f")
                 __ASM_EMIT("1:")
@@ -83,7 +83,7 @@ namespace lsp
                 __ASM_EMIT("vmul.f32    q5, q5, q1")
                 __ASM_EMIT("vmul.f32    q6, q6, q0")
                 __ASM_EMIT("vmul.f32    q7, q7, q1")
-                __ASM_EMIT("subs        %[count], %[count], $8")
+                __ASM_EMIT("subs        %[count], %[count], #8")
                 __ASM_EMIT("vstm        %[d_re]!, {q4-q5}")
                 __ASM_EMIT("vstm        %[d_im]!, {q6-q7}")
                 __ASM_EMIT("bhs         1b")

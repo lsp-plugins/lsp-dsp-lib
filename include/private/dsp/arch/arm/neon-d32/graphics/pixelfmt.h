@@ -39,7 +39,7 @@ namespace lsp
 
             ARCH_ARM_ASM(
                 // 64x blocks
-                __ASM_EMIT("subs        %[count], $64")
+                __ASM_EMIT("subs        %[count], #64")
                 __ASM_EMIT("blo         2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vld4.8      {q0-q1}, [%[src]]!") // d0 = R, d1 = G, d2 = B, d3 = A
@@ -66,12 +66,12 @@ namespace lsp
                 __ASM_EMIT("vswp        d28, d30")
                 __ASM_EMIT("vst4.8      {q12-q13}, [%[dst]]!")
                 __ASM_EMIT("vst4.8      {q14-q15}, [%[dst]]!")
-                __ASM_EMIT("subs        %[count], $64")
+                __ASM_EMIT("subs        %[count], #64")
                 __ASM_EMIT("bhs         1b")
 
                 // 32x blocks
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds        %[count], $32")
+                __ASM_EMIT("adds        %[count], #32")
                 __ASM_EMIT("blt         4f")
                 __ASM_EMIT("vld4.8      {q0-q1}, [%[src]]!") // d0 = R, d1 = G, d2 = B, d3 = A
                 __ASM_EMIT("vld4.8      {q2-q3}, [%[src]]!")
@@ -85,11 +85,11 @@ namespace lsp
                 __ASM_EMIT("vswp        d12, d14")
                 __ASM_EMIT("vst4.8      {q4-q5}, [%[dst]]!")
                 __ASM_EMIT("vst4.8      {q6-q7}, [%[dst]]!")
-                __ASM_EMIT("sub         %[count], $32")
+                __ASM_EMIT("sub         %[count], #32")
 
                 // 16x blocks
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds        %[count], $16")
+                __ASM_EMIT("adds        %[count], #16")
                 __ASM_EMIT("blt         6f")
                 __ASM_EMIT("vld4.8      {q0-q1}, [%[src]]!") // d0 = R, d1 = G, d2 = B, d3 = A
                 __ASM_EMIT("vld4.8      {q2-q3}, [%[src]]!")
@@ -97,41 +97,41 @@ namespace lsp
                 __ASM_EMIT("vswp        d4, d6")
                 __ASM_EMIT("vst4.8      {q0-q1}, [%[dst]]!")
                 __ASM_EMIT("vst4.8      {q2-q3}, [%[dst]]!")
-                __ASM_EMIT("sub         %[count], $16")
+                __ASM_EMIT("sub         %[count], #16")
 
                 // 8x blocks
                 __ASM_EMIT("6:")
-                __ASM_EMIT("adds        %[count], $8")
+                __ASM_EMIT("adds        %[count], #8")
                 __ASM_EMIT("blt         8f")
                 __ASM_EMIT("vld4.8      {q0-q1}, [%[src]]!") // d0 = R, d1 = G, d2 = B, d3 = A
                 __ASM_EMIT("vswp        d0, d2")
                 __ASM_EMIT("vst4.8      {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("sub         %[count], $8")
+                __ASM_EMIT("sub         %[count], #8")
 
                 // 4x blocks
                 __ASM_EMIT("8:")
-                __ASM_EMIT("adds        %[count], $4")
+                __ASM_EMIT("adds        %[count], #4")
                 __ASM_EMIT("blt         10f")
                 __ASM_EMIT("vld2.8      {q0}, [%[src]]!") // d0 = RB, d1 = GA
-                __ASM_EMIT("vshl.i16    d2, d0, $8")
-                __ASM_EMIT("vshr.u16    d0, d0, $8")
+                __ASM_EMIT("vshl.i16    d2, d0, #8")
+                __ASM_EMIT("vshr.u16    d0, d0, #8")
                 __ASM_EMIT("vorr        d0, d2")
                 __ASM_EMIT("vst2.8      {q0}, [%[dst]]!")
-                __ASM_EMIT("sub         %[count], $4")
+                __ASM_EMIT("sub         %[count], #4")
 
                 // 1x blocks
                 __ASM_EMIT("10:")
-                __ASM_EMIT("adds        %[count], $3")
+                __ASM_EMIT("adds        %[count], #3")
                 __ASM_EMIT("blt         12f")
-                __ASM_EMIT("mov         %[mask], $0xff")
-                __ASM_EMIT("orr         %[mask], $0xff0000")           // mask = ff 00 ff 00
+                __ASM_EMIT("mov         %[mask], #0xff")
+                __ASM_EMIT("orr         %[mask], #0xff0000")           // mask = ff 00 ff 00
                 __ASM_EMIT("11:")
-                __ASM_EMIT("ldr         %[t1], [%[src]], $4")               // t1 = R G B A
+                __ASM_EMIT("ldr         %[t1], [%[src]], #4")               // t1 = R G B A
                 __ASM_EMIT("and         %[t2], %[t1], %[mask]")             // t2 = R 0 B 0
-                __ASM_EMIT("and         %[t1], %[t1], %[mask], lsl $8")     // t1 = 0 G 0 A
-                __ASM_EMIT("orr         %[t1], %[t1], %[t2], ror $16")      // t1 = B G R A
-                __ASM_EMIT("str         %[t1], [%[dst]], $4")
-                __ASM_EMIT("subs        %[count], $1")
+                __ASM_EMIT("and         %[t1], %[t1], %[mask], lsl #8")     // t1 = 0 G 0 A
+                __ASM_EMIT("orr         %[t1], %[t1], %[t2], ror #16")      // t1 = B G R A
+                __ASM_EMIT("str         %[t1], [%[dst]], #4")
+                __ASM_EMIT("subs        %[count], #1")
                 __ASM_EMIT("bge         11b")
 
                 __ASM_EMIT("12:")
@@ -159,58 +159,58 @@ namespace lsp
             ARCH_ARM_ASM
             (
                 __ASM_EMIT("vldm        %[MASK], {q8-q15}")
-                __ASM_EMIT("subs        %[count], $32")
+                __ASM_EMIT("subs        %[count], #32")
                 __ASM_EMIT("blo         2f")
                 // 32x blocks
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm        %[src]!, {q0-q7}")
-                __ASM_EMIT("vsri.32     q8, q0, $8")
-                __ASM_EMIT("vsri.32     q9, q1, $8")
-                __ASM_EMIT("vsri.32     q10, q2, $8")
-                __ASM_EMIT("vsri.32     q11, q3, $8")
-                __ASM_EMIT("vsri.32     q12, q4, $8")
-                __ASM_EMIT("vsri.32     q13, q5, $8")
-                __ASM_EMIT("vsri.32     q14, q6, $8")
-                __ASM_EMIT("vsri.32     q15, q7, $8")
-                __ASM_EMIT("subs        %[count], $32")
+                __ASM_EMIT("vsri.32     q8, q0, #8")
+                __ASM_EMIT("vsri.32     q9, q1, #8")
+                __ASM_EMIT("vsri.32     q10, q2, #8")
+                __ASM_EMIT("vsri.32     q11, q3, #8")
+                __ASM_EMIT("vsri.32     q12, q4, #8")
+                __ASM_EMIT("vsri.32     q13, q5, #8")
+                __ASM_EMIT("vsri.32     q14, q6, #8")
+                __ASM_EMIT("vsri.32     q15, q7, #8")
+                __ASM_EMIT("subs        %[count], #32")
                 __ASM_EMIT("vstm        %[dst]!, {q8-q15}")
                 __ASM_EMIT("bhs         1b")
                 // 16x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds        %[count], $16")
+                __ASM_EMIT("adds        %[count], #16")
                 __ASM_EMIT("blt         4f")
                 __ASM_EMIT("vldm        %[src]!, {q0-q3}")
-                __ASM_EMIT("vsri.32     q8, q0, $8")
-                __ASM_EMIT("vsri.32     q9, q1, $8")
-                __ASM_EMIT("vsri.32     q10, q2, $8")
-                __ASM_EMIT("vsri.32     q11, q3, $8")
-                __ASM_EMIT("sub         %[count], $16")
+                __ASM_EMIT("vsri.32     q8, q0, #8")
+                __ASM_EMIT("vsri.32     q9, q1, #8")
+                __ASM_EMIT("vsri.32     q10, q2, #8")
+                __ASM_EMIT("vsri.32     q11, q3, #8")
+                __ASM_EMIT("sub         %[count], #16")
                 __ASM_EMIT("vstm        %[dst]!, {q8-q11}")
                 // 8x block
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds        %[count], $8")
+                __ASM_EMIT("adds        %[count], #8")
                 __ASM_EMIT("blt         6f")
                 __ASM_EMIT("vldm        %[src]!, {q0-q1}")
-                __ASM_EMIT("vsri.32     q8, q0, $8")
-                __ASM_EMIT("vsri.32     q9, q1, $8")
-                __ASM_EMIT("sub         %[count], $8")
+                __ASM_EMIT("vsri.32     q8, q0, #8")
+                __ASM_EMIT("vsri.32     q9, q1, #8")
+                __ASM_EMIT("sub         %[count], #8")
                 __ASM_EMIT("vstm        %[dst]!, {q8-q9}")
                 // 4x block
                 __ASM_EMIT("6:")
-                __ASM_EMIT("adds        %[count], $4")
+                __ASM_EMIT("adds        %[count], #4")
                 __ASM_EMIT("blt         8f")
                 __ASM_EMIT("vldm        %[src]!, {q0}")
-                __ASM_EMIT("vsri.32     q8, q0, $8")
-                __ASM_EMIT("sub         %[count], $4")
+                __ASM_EMIT("vsri.32     q8, q0, #8")
+                __ASM_EMIT("sub         %[count], #4")
                 __ASM_EMIT("vstm        %[dst]!, {q8}")
                 // 1x blocks
                 __ASM_EMIT("8:")
-                __ASM_EMIT("adds        %[count], $3")
+                __ASM_EMIT("adds        %[count], #3")
                 __ASM_EMIT("blt         10f")
                 __ASM_EMIT("9:")
                 __ASM_EMIT("vld1.32     {d0[], d1[]}, [%[src]]!")
-                __ASM_EMIT("vsri.32     q8, q0, $8")
-                __ASM_EMIT("subs        %[count], $1")
+                __ASM_EMIT("vsri.32     q8, q0, #8")
+                __ASM_EMIT("subs        %[count], #1")
                 __ASM_EMIT("vst1.32     {d16[0]}, [%[dst]]!")
                 __ASM_EMIT("bge         9b")
                 __ASM_EMIT("10:")
