@@ -99,6 +99,13 @@ $(LSP_DSP_LIB_BIN)/main/generic/generic.o: main/generic/generic.cpp \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/interpolation/linear.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/string.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/test.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/status.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/context.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/copy.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/complex.h \
@@ -187,6 +194,14 @@ $(LSP_DSP_LIB_BIN)/main/x86/x86.o: main/x86/x86.cpp \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/string.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/stdio.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/test.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/status.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/defs.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/features.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/float.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/copy.h \
@@ -244,6 +259,14 @@ $(LSP_DSP_LIB_BIN)/main/x86/sse.o: main/x86/sse.cpp \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/bits.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/x86/bits.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/test.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/status.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/defs.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/features.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/sse/mxcsr.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/sse/copy.h \
@@ -338,6 +361,14 @@ $(LSP_DSP_LIB_BIN)/main/x86/sse2.o: main/x86/sse2.cpp \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/bits.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/x86/bits.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/test.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/status.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/defs.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/features.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/sse2/float.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/sse2/search/iminmax.h \
@@ -404,6 +435,14 @@ $(LSP_DSP_LIB_BIN)/main/x86/sse3.o: main/x86/sse3.cpp \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/bits.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/x86/bits.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/test.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/status.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/defs.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/features.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/sse3/copy.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/sse3/graphics.h \
@@ -464,6 +503,14 @@ $(LSP_DSP_LIB_BIN)/main/x86/sse4.o: main/x86/sse4.cpp \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/bits.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/x86/bits.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/test.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/status.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/defs.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/features.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/sse4/3dmath.h
 $(LSP_DSP_LIB_BIN)/main/x86/avx.o: main/x86/avx.cpp \
@@ -518,6 +565,14 @@ $(LSP_DSP_LIB_BIN)/main/x86/avx.o: main/x86/avx.cpp \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/bits.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/x86/bits.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/test.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/status.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/defs.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/features.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/xcr.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/copy.h \
@@ -608,6 +663,14 @@ $(LSP_DSP_LIB_BIN)/main/x86/avx2.o: main/x86/avx2.cpp \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/bits.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/x86/bits.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/stdlib/math.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/test.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/version.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/env.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/config.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
+ $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/status.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/defs.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/features.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx2/float.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx2/pmath/op_kx.h \
