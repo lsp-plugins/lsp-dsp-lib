@@ -123,13 +123,118 @@ namespace lsp
                   [count] "+r" (count)
                 : [MASK] "r" (&abgr32_to_bgrff32_const[0])
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3",
-                  "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19",
-                  "q20", "q21", "q22", "q23"
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
             );
         }
-    }
-}
+
+        IF_ARCH_AARCH64(
+            static const uint32_t pabc32_set_alpha_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0x00ffffff),
+                LSP_DSP_VEC4(0x00ffffff)
+            };
+        );
+
+        void pabc32_set_alpha(void *dst, const void *src, uint8_t alpha, size_t count)
+        {
+            IF_ARCH_AARCH64(
+                uint32_t a  = uint32_t(alpha) << 24;
+            );
+
+            ARCH_AARCH64_ASM
+            (
+                __ASM_EMIT("ld1r        {v16.4s}, [%[a]]")
+                __ASM_EMIT("subs        %[count], %[count], #32")
+                __ASM_EMIT("ldp         q18, q19, [%[MASK]]")
+                __ASM_EMIT("mov         v17.16b, v16.16b")
+                __ASM_EMIT("b.lo        2f")
+                // 32x blocks
+                __ASM_EMIT("1:")
+                __ASM_EMIT("ldp         q0, q1, [%[src], #0x00]")
+                __ASM_EMIT("ldp         q2, q3, [%[src], #0x20]")
+                __ASM_EMIT("bif         v0.16b, v16.16b, v18.16b")
+                __ASM_EMIT("bif         v1.16b, v17.16b, v19.16b")
+                __ASM_EMIT("ldp         q4, q5, [%[src], #0x40]")
+                __ASM_EMIT("bif         v2.16b, v16.16b, v18.16b")
+                __ASM_EMIT("bif         v3.16b, v17.16b, v19.16b")
+                __ASM_EMIT("ldp         q6, q7, [%[src], #0x60]")
+                __ASM_EMIT("stp         q0, q1, [%[dst], #0x00]")
+                __ASM_EMIT("bif         v4.16b, v16.16b, v18.16b")
+                __ASM_EMIT("bif         v5.16b, v17.16b, v19.16b")
+                __ASM_EMIT("stp         q2, q3, [%[dst], #0x20]")
+                __ASM_EMIT("bif         v6.16b, v16.16b, v18.16b")
+                __ASM_EMIT("bif         v7.16b, v17.16b, v19.16b")
+                __ASM_EMIT("stp         q4, q5, [%[dst], #0x40]")
+                __ASM_EMIT("stp         q6, q7, [%[dst], #0x60]")
+                __ASM_EMIT("add         %[src], %[src], #0x80")
+                __ASM_EMIT("subs        %[count], %[count], #32")
+                __ASM_EMIT("add         %[dst], %[dst], #0x80")
+                __ASM_EMIT("b.hs        1b")
+                // 16x block
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds        %[count], %[count], #16")
+                __ASM_EMIT("b.lt        4f")
+                __ASM_EMIT("ldp         q0, q1, [%[src], #0x00]")
+                __ASM_EMIT("ldp         q2, q3, [%[src], #0x20]")
+                __ASM_EMIT("bif         v0.16b, v16.16b, v18.16b")
+                __ASM_EMIT("bif         v1.16b, v17.16b, v19.16b")
+                __ASM_EMIT("bif         v2.16b, v16.16b, v18.16b")
+                __ASM_EMIT("bif         v3.16b, v17.16b, v19.16b")
+                __ASM_EMIT("stp         q0, q1, [%[dst], #0x00]")
+                __ASM_EMIT("stp         q2, q3, [%[dst], #0x20]")
+                __ASM_EMIT("add         %[src], %[src], #0x40")
+                __ASM_EMIT("sub         %[count], %[count], #16")
+                __ASM_EMIT("add         %[dst], %[dst], #0x40")
+                // 8x block
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds        %[count], %[count], #8")
+                __ASM_EMIT("b.lt        6f")
+                __ASM_EMIT("ldp         q0, q1, [%[src], #0x00]")
+                __ASM_EMIT("bif         v0.16b, v16.16b, v18.16b")
+                __ASM_EMIT("bif         v1.16b, v17.16b, v19.16b")
+                __ASM_EMIT("stp         q0, q1, [%[dst], #0x00]")
+                __ASM_EMIT("add         %[src], %[src], #0x20")
+                __ASM_EMIT("add         %[dst], %[dst], #0x20")
+                __ASM_EMIT("sub         %[count], %[count], #8")
+                // 4x block
+                __ASM_EMIT("6:")
+                __ASM_EMIT("adds        %[count], %[count], #4")
+                __ASM_EMIT("b.lt        8f")
+                __ASM_EMIT("ldr         q0, [%[src], #0x00]")
+                __ASM_EMIT("bif         v0.16b, v16.16b, v18.16b")
+                __ASM_EMIT("str         q0, [%[dst], #0x00]")
+                __ASM_EMIT("add         %[src], %[src], #0x10")
+                __ASM_EMIT("add         %[dst], %[dst], #0x10")
+                __ASM_EMIT("sub         %[count], %[count], #4")
+                // 1x blocks
+                __ASM_EMIT("8:")
+                __ASM_EMIT("adds        %[count], %[count], #3")
+                __ASM_EMIT("b.lt        10f")
+                __ASM_EMIT("9:")
+                __ASM_EMIT("ld1r        {v0.4s}, [%[src]]")
+                __ASM_EMIT("bif         v0.16b, v16.16b, v18.16b")
+                __ASM_EMIT("subs        %[count], %[count], #1")
+                __ASM_EMIT("st1         {v0.s}[0], [%[dst]]")
+                __ASM_EMIT("add         %[src], %[src], #0x04")
+                __ASM_EMIT("add         %[dst], %[dst], #0x04")
+                __ASM_EMIT("b.ge        9b")
+                __ASM_EMIT("10:")
+
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                : [MASK] "r" (&pabc32_set_alpha_const[0]),
+                  [a] "r" (&a)
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19"
+            );
+        }
+
+    } /* namespace asimd */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_GRAPHICS_PIXELFMT_H_ */

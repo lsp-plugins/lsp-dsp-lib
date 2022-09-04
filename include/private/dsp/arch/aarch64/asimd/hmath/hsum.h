@@ -99,7 +99,7 @@ namespace lsp
                 __ASM_EMIT("ext         v1.16b, v0.16b, v0.16b, #8")    /* v0 = a0 a1 a2 a3, v1 = a2 a3 a0 a1 */
                 __ASM_EMIT("fadd        v0.4s, v0.4s, v1.4s")           /* v0 = a0+a2 a1+a3 a0+a2 a1+a3 */
                 __ASM_EMIT("ext         v1.16b, v0.16b, v0.16b, #4")    /* v1 = a1+a3 a0+a2 a1+a3 a0+a2 */
-                __ASM_EMIT("fadd        %S[res].4s, v0.4s, v1.4s")      /* v0 = a0+a1+a2+a3 */
+                __ASM_EMIT("fadd        %[res].4s, v0.4s, v1.4s")       /* v0 = a0+a1+a2+a3 */
                 : [res] "=w" (res),
                   [src] "+r" (src), [count] "+r" (count)
                 :
@@ -179,7 +179,7 @@ namespace lsp
                 __ASM_EMIT("ext         v1.16b, v0.16b, v0.16b, #8")    /* v0 = a0 a1 a2 a3, v1 = a2 a3 a0 a1 */
                 __ASM_EMIT("fadd        v0.4s, v0.4s, v1.4s")           /* v0 = a0+a2 a1+a3 a0+a2 a1+a3 */
                 __ASM_EMIT("ext         v1.16b, v0.16b, v0.16b, #4")    /* v1 = a1+a3 a0+a2 a1+a3 a0+a2 */
-                __ASM_EMIT("fadd        %S[res].4s, v0.4s, v1.4s")      /* v0 = a0+a1+a2+a3 */
+                __ASM_EMIT("fadd        %[res].4s, v0.4s, v1.4s")       /* v0 = a0+a1+a2+a3 */
                 : [res] "=w" (res),
                   [src] "+r" (src), [count] "+r" (count)
                 :
@@ -273,7 +273,7 @@ namespace lsp
                 __ASM_EMIT("ext         v1.16b, v0.16b, v0.16b, #8")    /* v0 = a0 a1 a2 a3, v1 = a2 a3 a0 a1 */
                 __ASM_EMIT("fadd        v0.4s, v0.4s, v1.4s")           /* v0 = a0+a2 a1+a3 a0+a2 a1+a3 */
                 __ASM_EMIT("ext         v1.16b, v0.16b, v0.16b, #4")    /* v1 = a1+a3 a0+a2 a1+a3 a0+a2 */
-                __ASM_EMIT("fadd        %S[res].4s, v0.4s, v1.4s")      /* v0 = a0+a1+a2+a3 */
+                __ASM_EMIT("fadd        %[res].4s, v0.4s, v1.4s")       /* v0 = a0+a1+a2+a3 */
                 : [res] "=w" (res),
                   [src] "+r" (src), [count] "+r" (count)
                 :

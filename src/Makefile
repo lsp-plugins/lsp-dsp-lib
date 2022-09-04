@@ -44,6 +44,7 @@ endif
 ARTIFACT_NAME           = $($(ARTIFACT_ID)_NAME)
 ARTIFACT_VERSION        = $($(ARTIFACT_ID)_VERSION)
 ARTIFACT_DEPENDENCIES   = $(addprefix $(HOST),$(DEPENDENCIES))
+ARTIFACT_DEP_LIST       = $(addprefix $(HOST),$(call uniq, $(DEPENDENCIES) $(TEST_DEPENDENCIES) $(HOST)$(ARTIFACT_ID)))
 
 ARTIFACT_BIN            = $($(HOST)$(ARTIFACT_ID)_BIN)
 ARTIFACT_INC            = $($(HOST)$(ARTIFACT_ID)_INC)
@@ -59,6 +60,7 @@ ARTIFACT_SLIBLINK       = $(LIBRARY_PREFIX)$(ARTIFACT_NAME)$(STATICLIB_EXT)
 ARTIFACT_PC             = $(ARTIFACT_BIN)/$(ARTIFACT_NAME)$(PKGCONFIG_EXT)
 ARTIFACT_DEPS           = $(call dquery, OBJ, $(ARTIFACT_DEPENDENCIES))
 ARTIFACT_CFLAGS         = $(call query, CFLAGS, $(ARTIFACT_DEPENDENCIES) $(HOST)$(ARTIFACT_ID))
+ARTIFACT_DEPFLAGS       = $(call query, CFLAGS, $(ARTIFACT_DEP_LIST))
 ARTIFACT_LDFLAGS        = $(call query, LDFLAGS, $(ARTIFACT_DEPENDENCIES) $(HOST)$(ARTIFACT_ID))
 ARTIFACT_OBJFILES       = $(call query, OBJ, $(ARTIFACT_DEPENDENCIES) $(HOST)$(ARTIFACT_ID))
 
@@ -135,15 +137,17 @@ dep_clean:
 $(DEP_CXX): dep_clean
 	echo "  dep  [$(ARTIFACT_NAME)] $(DEP_CXX_FILE)"
 	mkdir -p $(dir $(@))
-	$(CXX) -MM -MT "\$$($(ARTIFACT_ID)_BIN)/$(DEP_DEP_FILE)" -MF $(@) $(DEP_CXX_FILE) $(CXXFLAGS) $(INCLUDE) $(ARTIFACT_CFLAGS)
+	$(CXX) -MM -MT "\$$($(ARTIFACT_ID)_BIN)/$(DEP_DEP_FILE)" -MF $(@) $(DEP_CXX_FILE) $(CXXFLAGS) $(INCLUDE) $(ARTIFACT_DEPFLAGS)
 
 depend: $(DEP_CXX)
-	$(foreach dep,$(ARTIFACT_DEPENDENCIES) $(HOST)$(ARTIFACT_ID),\
+	$(foreach dep,$(ARTIFACT_DEP_LIST),\
 	  $(if $($(dep)_INC), \
-	    $(eval SED_RULES += s/$(shell echo "$($(dep)_INC)" | sed "s/\\//\\\\\//g")/\$$$$\\($(dep)_INC\\)/g;)\
+	    $(eval REPLACEMENT = $(shell echo "$($(dep)_INC)" | sed -E "s/\//\\\\\\\\\//g")) \
+	    $(eval SED_RULES += s/$(REPLACEMENT)/\$$$$\\($(dep)_INC\\)/g;)\
 	  )\
 	  $(if $($(dep)_BIN), \
-	    $(eval SED_RULES += s/$(shell echo "$($(dep)_BIN)" | sed "s/\\//\\\\\//g")/\\$$$$\\($(dep)_BIN\\)/g;)\
+	    $(eval REPLACEMENT = $(shell echo "$($(dep)_BIN)" | sed -E "s/\//\\\\\\\\\//g")) \
+	    $(eval SED_RULES += s/$(REPLACEMENT)/\\$$$$\\($(dep)_BIN\\)/g;)\
 	  )\
 	)
 	cat $(DEP_CXX) | sed -E "$(SED_RULES)" >Makefile.$(ARCHITECTURE_FAMILY).d

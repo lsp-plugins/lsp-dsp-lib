@@ -109,10 +109,10 @@ namespace lsp
                 __ASM_EMIT("jmp         1b") \
                 __ASM_EMIT("2:") \
                 \
-                : [a] "+r"(a), [b] "+r"(b), [p] "+r"(p) \
+                : [a] "+r" (a), [b] "+r"(b), [p] "+r" (p) \
                 : [rank] "r" (rank), [XFFT_W] "r"(XFFT_W), \
-                  __IF_64([XFFT_A] "r"(XFFT_A)) \
-                  __IF_32([XFFT_A] "g"(XFFT_A), [tmp1] "g"(&tmp1)) \
+                  __IF_64([XFFT_A] "r" (XFFT_A)) \
+                  __IF_32([XFFT_A] "g" (&XFFT_A[0]), [tmp1] "g" (&tmp1)) \
                 : "cc", "memory",  \
                 "%xmm0", "%xmm1", "%xmm2", "%xmm3", \
                 "%xmm4", "%xmm5", "%xmm6", "%xmm7" \
@@ -141,7 +141,7 @@ namespace lsp
         }
 
         #undef FFT_BUTTERFLY_BODY
-    }
-}
+    } /* namespace sse */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_FFT_P_BUTTERFLY_H_ */

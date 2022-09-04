@@ -36,6 +36,7 @@
 
     // Feature detection
     #define PRIVATE_DSP_ARCH_X86_IMPL
+        #include <private/dsp/arch/x86/defs.h>
         #include <private/dsp/arch/x86/features.h>
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
@@ -140,11 +141,13 @@
                 EXPORT1(axis_apply_log2);
                 EXPORT1(rgba32_to_bgra32);
                 EXPORT1(abgr32_to_bgrff32);
+                EXPORT2(prgba32_set_alpha, pabc32_set_alpha);
+                EXPORT2(pbgra32_set_alpha, pabc32_set_alpha);
             }
 
             #undef EXPORT1
             #undef EXPORT2
-        }
-    }
+        } /* namespace sse2 */
+    } /* namespace lsp */
 
 #endif /* ARCH_X86 */

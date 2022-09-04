@@ -427,8 +427,7 @@ namespace lsp
 
                     : [dst_re] "+r" (dst_re), [dst_im] "+r"(dst_im), [index] "+r"(index)
                     : [src_re] "r" (src_re), [src_im] "r"(src_im),
-                      __IF_32([regs] "g" (regs),)
-                      __IF_64([regs] "r" (regs),)
+                      [regs] X86_GREG (regs),
                       [FFT_A] "o" (FFT_A)
                     : "cc", "memory",
                       "%xmm0", "%xmm1", "%xmm2", "%xmm3",
@@ -547,8 +546,7 @@ namespace lsp
 
                     : [dst_re] "+r" (dst_re), [dst_im] "+r"(dst_im), [index] "+r"(index)
                     : [src_re] "r"(src_re), [src_im] "r"(src_im),
-                      __IF_32([regs] "g" (regs),)
-                      __IF_64([regs] "r" (regs),)
+                      [regs] X86_GREG (regs),
                       [FFT_A] "o" (FFT_A)
                     : "cc", "memory",
                       "%xmm0", "%xmm1", "%xmm2", "%xmm3",
@@ -556,8 +554,8 @@ namespace lsp
                 );
             }
         }
-    }
-}
+    } /* namespace avx */
+} /* namespace lsp */
 
 #undef FFT_SCRAMBLE_SELF_DIRECT_NAME
 #undef FFT_SCRAMBLE_SELF_REVERSE_NAME

@@ -112,8 +112,7 @@ namespace lsp
                 __ASM_EMIT("6:")
 
                 : [off] "=&r" (off),
-                  __IF_64([count] "+r" (count))
-                  __IF_32([count] "+g" (count))
+                  [count] X86_PGREG (count)
                 : [left] "r"(l), [right] "r" (r),
                   [mid] "r" (m), [side] "r" (s),
                   [X_HALF] "m" (msmatrix_const)
@@ -188,8 +187,7 @@ namespace lsp
                 __ASM_EMIT("6:")
 
                 : [off] "=&r" (off),
-                  __IF_64([count] "+r" (count))
-                  __IF_32([count] "+g" (count))
+                  [count] X86_PGREG (count)
                 : [left] "r"(l), [right] "r" (r),
                   [mid] "r" (m), [side] "r" (s)
                 : "cc", "memory",
@@ -403,7 +401,7 @@ namespace lsp
         }
 
         #undef MS_CVT_BODY
-    }
-}
+    } /* namespace sse */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_MSMATRIX_H_ */

@@ -79,8 +79,8 @@ namespace lsp
                 : [tmp] "r" (tmp), [items] "r" (items),
                   [MASK] "r" (&fastconv_swp_mask[0])
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                  "q16", "q17"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17"
             );
 
             n = 8;
@@ -152,8 +152,8 @@ namespace lsp
                       [XFFT_A] "+r" (xfft_a)
                     : [tmp] "r" (tmp), [items] "r" (items)
                     : "cc", "memory",
-                      "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                      "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23"
+                      "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                      "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
                 );
 
                 n <<= 1;
@@ -230,9 +230,9 @@ namespace lsp
                     : [tmp] "r" (tmp), [items] "r" (items), [n] "r" (n),
                       [XFFT_A] "r" (xfft_a), [XFFT_DW] "r" (xfft_dw)
                     : "cc", "memory",
-                      "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                      "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23",
-                      "q24", "q25"
+                      "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                      "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
+                      "v24", "v25"
                 );
 
                 n <<= 1;
@@ -301,9 +301,9 @@ namespace lsp
                 : [n] "r" (n), [fftk] "r" (&fftk),
                   [XFFT_A] "r" (xfft_a), [XFFT_DW] "r" (xfft_dw)
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23",
-                  "q24", "q25"
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
+                  "v24", "v25"
             );
         }
     }

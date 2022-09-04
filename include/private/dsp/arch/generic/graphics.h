@@ -211,7 +211,7 @@ namespace lsp
                 dst[3]  = src[3];
             }
         }
-    }
-}
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_GRAPHICS_H_ */

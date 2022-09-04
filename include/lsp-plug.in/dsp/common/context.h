@@ -67,7 +67,7 @@ namespace lsp
         /** Initialize DSP
          *
          */
-        LSP_DSP_LIB_CPPIMPORT
+        LSP_DSP_LIB_PUBLIC
         void init();
     }
 }
@@ -75,7 +75,7 @@ namespace lsp
     /** Initialize DSP
      *
      */
-    LSP_DSP_LIB_CIMPORT
+    LSP_DSP_LIB_PUBLIC
     void LSP_DSP_LIB_MANGLE(init());
 #endif /* __cplusplus */
 

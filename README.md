@@ -125,10 +125,10 @@ Here's the code snippet of how the library can be initialized and used in C++:
 int main(int argc, const char **argv)
 {
     // Initialize DSP
-    dsp::init();
+    lsp::dsp::init();
 
     // Optionally: output information about the system
-    dsp::info_t *info = dsp::info();
+    lsp::dsp::info_t *info = lsp::dsp::info();
     if (info != NULL)
     {
         printf("Architecture:   %s\n", info->arch);
@@ -143,15 +143,15 @@ int main(int argc, const char **argv)
     // This will enable Flush-to-Zero and Denormals-are-Zero flags on
     // CPUs that support them. This is thread-local change and should
     // be called in each individual processing thread
-    dsp::context_t ctx;
-    dsp::start(&ctx);
+    lsp::dsp::context_t ctx;
+    lsp::dsp::start(&ctx);
     
     // Here we call some dsp functions, for example dsp::fill_zero
     float v[0x1000];
-    dsp::fill_zero(v, sizeof(v)/sizeof(float));
+    lsp::dsp::fill_zero(v, sizeof(v)/sizeof(float));
     
     // At the end, we need to restore the context and reset CPU settings to defaults
-    dsp::finish(&ctx);
+    lsp::dsp::finish(&ctx);
     
     return 0;
 }

@@ -100,6 +100,22 @@ LSP_DSP_LIB_SYMBOL(void, rgba32_to_bgra32, void *dst, const void *src, size_t co
  */
 LSP_DSP_LIB_SYMBOL(void, abgr32_to_bgra32, void *dst, const void *src, size_t count);
 
+/** Set the specific alpha value for the Premultiplied BGRA format
+ * @param dst target buffer
+ * @param src source buffer
+ * @param alpha the alpha value to set
+ * @param count number of color values to process
+ */
+LSP_DSP_LIB_SYMBOL(void, pbgra32_set_alpha, void *dst, const void *src, uint8_t alpha, size_t count);
+
+/** Set the specific alpha value for the Premultiplied RGBA format
+ * @param dst target buffer
+ * @param src source buffer
+ * @param alpha the alpha value to set
+ * @param count number of color values to process
+ */
+LSP_DSP_LIB_SYMBOL(void, prgba32_set_alpha, void *dst, const void *src, uint8_t alpha, size_t count);
+
 /** Convert ABGR32 -> BGR32 color with Alpha=0xff
  *
  * @param dst target buffer

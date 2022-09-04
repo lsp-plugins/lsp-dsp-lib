@@ -121,10 +121,10 @@ namespace lsp
                   [count] "+r" (count)
                 : [IARGS] "r" (&SAT_IARGS[0])
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3",
-                  "q4", "q5",
-                  "q16", "q17", "q18", "q19",
-                  "q20", "q21"
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21"
             );
         }
 
@@ -135,10 +135,10 @@ namespace lsp
                 : [dst] "+r" (dst), [count] "+r" (count)
                 : [IARGS] "r" (&SAT_IARGS[0])
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3",
-                  "q4", "q5",
-                  "q16", "q17", "q18", "q19",
-                  "q20", "q21"
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21"
             );
         }
 
@@ -224,9 +224,9 @@ namespace lsp
                 : [dst] "+r" (dst), [count] "+r" (count)
                 : [XC] "r" (&XLIM_SAT[0])
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3",
-                  "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19"
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19"
             );
         }
 
@@ -238,17 +238,17 @@ namespace lsp
                   [count] "+r" (count)
                 : [XC] "r" (&XLIM_SAT[0])
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3",
-                  "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19"
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19"
             );
         }
 
     #undef LIMIT_SAT_BODY
 
     #define LIMIT_BODY(DST, SRC, SEL) \
-        __ASM_EMIT("dup             v16.4s, %S[min].s[0]")          /* v16  = min */ \
-        __ASM_EMIT("dup             v17.4s, %S[max].s[0]")          /* v17  = max */ \
+        __ASM_EMIT("dup             v16.4s, %[min].s[0]")           /* v16  = min */ \
+        __ASM_EMIT("dup             v17.4s, %[max].s[0]")           /* v17  = max */ \
         /* x16 blocks */ \
         __ASM_EMIT("subs            %[count], %[count], #16") \
         __ASM_EMIT("b.lo            2f") \
@@ -332,9 +332,9 @@ namespace lsp
                   [min] "+w" (min), [max] "+w" (max)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3",
-                  "q4", "q5", "q6", "q7",
-                  "q16", "q17"
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v16", "v17"
             );
         }
 
@@ -346,9 +346,9 @@ namespace lsp
                   [min] "+w" (min), [max] "+w" (max)
                 :
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3",
-                  "q4", "q5", "q6", "q7",
-                  "q16", "q17"
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v16", "v17"
             );
         }
 
@@ -433,9 +433,9 @@ namespace lsp
                   [count] "+r" (count)
                 : [CVAL] "r" (&SANITIZE_CVAL[0])
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3",
-                  "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19"
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19"
             );
         }
 
@@ -448,9 +448,9 @@ namespace lsp
                   [count] "+r" (count)
                 : [CVAL] "r" (&SANITIZE_CVAL[0])
                 : "cc", "memory",
-                  "q0", "q1", "q2", "q3",
-                  "q4", "q5", "q6", "q7",
-                  "q16", "q17", "q18", "q19"
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19"
             );
         }
 

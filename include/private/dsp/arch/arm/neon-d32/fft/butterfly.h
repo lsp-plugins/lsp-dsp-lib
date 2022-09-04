@@ -32,7 +32,7 @@ namespace lsp
     {
     #define BUTTERFLY_RANK3(op1, op2) \
             __ASM_EMIT("vldm        %[XFFT_A], {q8-q11}")           /* q8   = wr1, q9 = wr2, q10 = wi1, q11 = wi2 */ \
-            __ASM_EMIT("subs        %[blocks], $2") \
+            __ASM_EMIT("subs        %[blocks], #2") \
             __ASM_EMIT("blo         2f") \
             \
             /* 8x butterflies */ \
@@ -60,11 +60,11 @@ namespace lsp
             __ASM_EMIT("vadd.f32    q6, q6, q15")                   /* q6   = ai2 + ci2 */ \
             __ASM_EMIT("vstm        %[dst_re]!, {q0-q3}") \
             __ASM_EMIT("vstm        %[dst_im]!, {q4-q7}") \
-            __ASM_EMIT("subs        %[blocks], $2") \
+            __ASM_EMIT("subs        %[blocks], #2") \
             __ASM_EMIT("bge         1b") \
             \
             __ASM_EMIT("2:") \
-            __ASM_EMIT("adds        %[blocks], $1") \
+            __ASM_EMIT("adds        %[blocks], #1") \
             __ASM_EMIT("blo         4f") \
             /* 4x butterflies */ \
             __ASM_EMIT("vldm        %[dst_re], {q0-q1}")            /* q0   = ar1, q1 = br1 */ \
@@ -112,11 +112,11 @@ namespace lsp
         #define BUTTERFLY_RANK4(op1, op2) \
             __ASM_EMIT("1:") \
                 /* Initialize sub-loop */ \
-                __ASM_EMIT("mov         %[pairs], $1")                  /* pairs = 1 */ \
+                __ASM_EMIT("mov         %[pairs], #1")                  /* pairs = 1 */ \
                 __ASM_EMIT("vldm        %[XFFT_A], {q8-q11}")           /* q8   = wr1, q9 = wr2, q10 = wi1, q11 = wi2 */ \
                 __ASM_EMIT("lsl         %[pairs], %[pairs], %[rank]")   /* pairs = 1 << rank */ \
-                __ASM_EMIT("add         %[b_re], %[a_re], %[pairs], LSL $4")    /* b_re = &a_re[pairs*8] */ \
-                __ASM_EMIT("add         %[b_im], %[a_im], %[pairs], LSL $4")    /* b_im = &a_im[pairs*8] */ \
+                __ASM_EMIT("add         %[b_re], %[a_re], %[pairs], LSL #4")    /* b_re = &a_re[pairs*8] */ \
+                __ASM_EMIT("add         %[b_im], %[a_im], %[pairs], LSL #4")    /* b_im = &a_im[pairs*8] */ \
                 /* 8x butterflies */ \
                 /* Calculate complex c = w * b */ \
                 __ASM_EMIT("3:") \
@@ -145,7 +145,7 @@ namespace lsp
                 __ASM_EMIT("vadd.f32    q2, q2, q14")                   /* q2   = ai1 + ci1 */ \
                 __ASM_EMIT("vst1.32     {q0-q1}, [%[a_re]]!") \
                 __ASM_EMIT("vadd.f32    q3, q3, q15")                   /* q3   = ai2 + ci2 */ \
-                __ASM_EMIT("subs        %[pairs], $2") \
+                __ASM_EMIT("subs        %[pairs], #2") \
                 __ASM_EMIT("vst1.32     {q2-q3}, [%[a_im]]!") \
                 __ASM_EMIT("beq         4f") \
                 /* Prepare next loop: rotate angle */ \
@@ -166,7 +166,7 @@ namespace lsp
             __ASM_EMIT("4:") \
             __ASM_EMIT("mov         %[a_re], %[b_re]") \
             __ASM_EMIT("mov         %[a_im], %[b_im]") \
-            __ASM_EMIT("subs        %[blocks], $1") \
+            __ASM_EMIT("subs        %[blocks], #1") \
             __ASM_EMIT("bne         1b")
 
         void direct_butterfly_rank4p(float *dst_re, float *dst_im, size_t rank, size_t blocks) {

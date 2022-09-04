@@ -32,7 +32,7 @@ namespace lsp
     {
         #define PBUTTERFLY_RANK3(op1, op2) \
             __ASM_EMIT("vldm        %[XFFT_A], {q8-q11}")           /* q8   = wr1, q9 = wr2, q10 = wi1, q11 = wi2 */ \
-            __ASM_EMIT("subs        %[blocks], $2") \
+            __ASM_EMIT("subs        %[blocks], #2") \
             __ASM_EMIT("blo         2f") \
             \
             /* 8x butterflies */ \
@@ -58,11 +58,11 @@ namespace lsp
             __ASM_EMIT("vadd.f32    q4, q4, q13")                   /* q4   = ar2 + cr2 */ \
             __ASM_EMIT("vadd.f32    q5, q5, q15")                   /* q5   = ai2 + ci2 */ \
             __ASM_EMIT("vstm        %[dst]!, {q0-q7}")               \
-            __ASM_EMIT("subs        %[blocks], $2") \
+            __ASM_EMIT("subs        %[blocks], #2") \
             __ASM_EMIT("bge         1b") \
             \
             __ASM_EMIT("2:") \
-            __ASM_EMIT("adds        %[blocks], $1") \
+            __ASM_EMIT("adds        %[blocks], #1") \
             __ASM_EMIT("blo         4f") \
             /* 4x butterflies */ \
             __ASM_EMIT("vldm        %[dst], {q0-q3}")               /* q0   = ar1, q1 = ai1, q2 = br1, q3 = bi1 */ \
@@ -107,10 +107,10 @@ namespace lsp
         #define PBUTTERFLY_RANK4(op1, op2) \
             __ASM_EMIT("1:") \
                 /* Initialize sub-loop */ \
-                __ASM_EMIT("mov         %[pairs], $1")                  /* pairs = 1 */ \
+                __ASM_EMIT("mov         %[pairs], #1")                  /* pairs = 1 */ \
                 __ASM_EMIT("vldm        %[XFFT_A], {q8-q11}")           /* q8   = wr1, q9 = wr2, q10 = wi1, q11 = wi2 */ \
                 __ASM_EMIT("lsl         %[pairs], %[pairs], %[rank]")   /* pairs = 1 << rank */ \
-                __ASM_EMIT("add         %[b], %[a], %[pairs], LSL $5")  /* b = &a[pairs*8] */ \
+                __ASM_EMIT("add         %[b], %[a], %[pairs], LSL #5")  /* b = &a[pairs*8] */ \
                 /* 8x butterflies */ \
                 /* Calculate complex c = w * b */ \
                 __ASM_EMIT("3:") \
@@ -135,7 +135,7 @@ namespace lsp
                 __ASM_EMIT("vadd.f32    q2, q2, q13")                   /* q2   = ar2 + cr2 */ \
                 __ASM_EMIT("vadd.f32    q3, q3, q15")                   /* q3   = ai2 + ci2 */ \
                 __ASM_EMIT("vstm        %[b]!, {q4-q7}") \
-                __ASM_EMIT("subs        %[pairs], $2") \
+                __ASM_EMIT("subs        %[pairs], #2") \
                 __ASM_EMIT("vstm        %[a]!, {q0-q3}") \
                 __ASM_EMIT("beq         4f") \
                 /* Prepare next loop: rotate angle */ \
@@ -154,7 +154,7 @@ namespace lsp
                 __ASM_EMIT("vadd.f32    q11, q11, q13")                 /* q11  = wi2*dr + wr2*di */ \
                 __ASM_EMIT("b           3b") \
             __ASM_EMIT("4:") \
-            __ASM_EMIT("subs        %[blocks], $1") \
+            __ASM_EMIT("subs        %[blocks], #1") \
             __ASM_EMIT("mov         %[a], %[b]") \
             __ASM_EMIT("bne         1b")
 

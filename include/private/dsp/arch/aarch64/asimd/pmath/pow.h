@@ -63,7 +63,7 @@ namespace lsp
     //        for (size_t i=0; i<count; ++i)
     //            v[i] = expf(v[i] * C);
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup             v0.4s, %S[C].s[0]")             // v15  = C
+                __ASM_EMIT("dup             v0.4s, %[C].s[0]")              // v15  = C
                 __ASM_EMIT("ldr             q14, [%[P2C], #0x120]")         // v14  = LE
                 __ASM_EMIT("ldp             q16, q17, [%[P2C], #0x000]")    // v16  = LC0, v17  = LC1
                 __ASM_EMIT("ldp             q18, q19, [%[P2C], #0x020]")    // v18  = LC2, v19  = LC3
@@ -149,7 +149,7 @@ namespace lsp
     //        for (size_t i=0; i<count; ++i)
     //            v[i] = expf(v[i] * C);
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup             v0.4s, %S[C].s[0]")             // v15  = C
+                __ASM_EMIT("dup             v0.4s, %[C].s[0]")              // v15  = C
                 __ASM_EMIT("ldr             q14, [%[P2C], #0x120]")         // v14  = LE
                 __ASM_EMIT("ldp             q16, q17, [%[P2C], #0x000]")    // v16  = LC0, v17  = LC1
                 __ASM_EMIT("ldp             q18, q19, [%[P2C], #0x020]")    // v18  = LC2, v19  = LC3
@@ -233,7 +233,7 @@ namespace lsp
     //        for (size_t i=0; i<count; ++i)
     //            dst[i] = expf(v * logf(c[i]));
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup             v15.4s, %S[V].s[0]")            // v15  = V
+                __ASM_EMIT("dup             v15.4s, %[V].s[0]")             // v15  = V
                 __ASM_EMIT("ldr             q14, [%[P2C], #0x120]")         // v14  = LE
                 __ASM_EMIT("ldp             q16, q17, [%[P2C], #0x000]")    // v16  = LC0, v17  = LC1
                 __ASM_EMIT("ldp             q18, q19, [%[P2C], #0x020]")    // v18  = LC2, v19  = LC3
@@ -321,7 +321,7 @@ namespace lsp
     //        for (size_t i=0; i<count; ++i)
     //            c[i] = expf(v * logf(c[i]));
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup             v15.4s, %S[V].s[0]")            // v15  = V
+                __ASM_EMIT("dup             v15.4s, %[V].s[0]")             // v15  = V
                 __ASM_EMIT("ldr             q14, [%[P2C], #0x120]")         // v14  = LE
                 __ASM_EMIT("ldp             q16, q17, [%[P2C], #0x000]")    // v16  = LC0, v17  = LC1
                 __ASM_EMIT("ldp             q18, q19, [%[P2C], #0x020]")    // v18  = LC2, v19  = LC3

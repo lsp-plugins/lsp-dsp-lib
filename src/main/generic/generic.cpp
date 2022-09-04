@@ -91,12 +91,14 @@ namespace lsp
 {
     namespace generic
     {
-        #define EXPORT1(function) \
+        #define EXPORT2(function, impl) \
         { \
-            dsp::function                       = generic::function; \
-            dsp::LSP_DSP_LIB_MANGLE(function)   = generic::function; \
-            TEST_EXPORT(generic::function); \
+            dsp::function                       = generic::impl; \
+            dsp::LSP_DSP_LIB_MANGLE(function)   = generic::impl; \
+            TEST_EXPORT(generic::impl); \
         }
+
+        #define EXPORT1(function) EXPORT2(function, function)
 
         void dsp_init()
         {
@@ -360,6 +362,8 @@ namespace lsp
             EXPORT1(axis_apply_log2);
             EXPORT1(rgba32_to_bgra32);
             EXPORT1(abgr32_to_bgra32);
+            EXPORT2(pbgra32_set_alpha, pabc32_set_alpha);
+            EXPORT2(prgba32_set_alpha, pabc32_set_alpha);
             EXPORT1(abgr32_to_bgrff32);
             EXPORT1(rgba32_to_bgra32_ra);
             EXPORT1(fill_rgba);

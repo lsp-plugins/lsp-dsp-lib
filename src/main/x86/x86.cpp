@@ -38,6 +38,7 @@
     #include <stdlib.h>
 
     #define PRIVATE_DSP_ARCH_X86_IMPL
+        #include <private/dsp/arch/x86/defs.h>
         #include <private/dsp/arch/x86/features.h>
         #include <private/dsp/arch/x86/float.h>
         #include <private/dsp/arch/x86/copy.h>
@@ -563,6 +564,8 @@
                 EXPORT1(copy);
                 EXPORT1(rgba32_to_bgra32);
                 EXPORT1(abgr32_to_bgra32);
+                EXPORT2(prgba32_set_alpha, pabc32_set_alpha);
+                EXPORT2(pbgra32_set_alpha, pabc32_set_alpha);
 
                 // Initialize extensions
                 sse::dsp_init(&f);
@@ -575,8 +578,8 @@
 
             #undef EXPORT1
             #undef EXPORT2
-        }
-    }
+        } /* namespace x86 */
+    } /* namespace lsp */
 
 #endif /* ARCH_X86 */
 

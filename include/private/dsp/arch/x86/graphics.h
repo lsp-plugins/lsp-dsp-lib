@@ -151,7 +151,155 @@ namespace lsp
                 : "cc", "memory"
             );
         }
-        #endif /* ARCH_X86_64 */
+    #endif /* ARCH_X86_64 */
+
+    #ifdef ARCH_64BIT
+        void pabc32_set_alpha(void *dst, const void *src, uint8_t alpha, size_t count)
+        {
+            uint32_t a          = uint32_t(alpha) << 24;
+            uint64_t value      = (uint64_t(a) << 32) | a;
+            uint64_t mask       = 0x00ffffff00ffffffULL;
+            uint64_t t1, t2, t3, t4;
+
+            ARCH_X86_64_ASM
+            (
+                // Check count
+                __ASM_EMIT("sub     $8, %[count]")
+                __ASM_EMIT("jb      2f")
+
+                // Loop x8 blocks
+                __ASM_EMIT("1:")
+                __ASM_EMIT("mov     0x00(%[src]), %[t1]")   // t1 = src[0] = ABCL
+                __ASM_EMIT("mov     0x08(%[src]), %[t2]")
+                __ASM_EMIT("mov     0x10(%[src]), %[t3]")
+                __ASM_EMIT("and     %[mask], %[t1]")        // t1 = ABC0
+                __ASM_EMIT("mov     0x18(%[src]), %[t4]")
+                __ASM_EMIT("and     %[mask], %[t2]")
+                __ASM_EMIT("or      %[value], %[t1]")       // t1 = ABCv
+                __ASM_EMIT("and     %[mask], %[t3]")
+                __ASM_EMIT("or      %[value], %[t2]")
+                __ASM_EMIT("and     %[mask], %[t4]")
+                __ASM_EMIT("mov     %[t1], 0x00(%[dst])")
+                __ASM_EMIT("or      %[value], %[t3]")
+                __ASM_EMIT("mov     %[t2], 0x08(%[dst])")
+                __ASM_EMIT("or      %[value], %[t4]")
+                __ASM_EMIT("mov     %[t3], 0x10(%[dst])")
+                __ASM_EMIT("mov     %[t4], 0x18(%[dst])")
+                __ASM_EMIT("add     $0x20, %[src]")         // src += 8
+                __ASM_EMIT("add     $0x20, %[dst]")         // dst += 8
+                __ASM_EMIT("sub     $8, %[count]")          // count -= 8
+                __ASM_EMIT("jae     1b")
+
+                // Loop x4 blocks
+                __ASM_EMIT("2:")
+                __ASM_EMIT("add     $4, %[count]")
+                __ASM_EMIT("jl      4f")
+                __ASM_EMIT("mov     0x00(%[src]), %[t1]")   // t1 = src[0] = ABCL
+                __ASM_EMIT("mov     0x08(%[src]), %[t2]")
+                __ASM_EMIT("and     %[mask], %[t1]")        // t1 = ABC0
+                __ASM_EMIT("and     %[mask], %[t2]")
+                __ASM_EMIT("or      %[value], %[t1]")       // t1 = ABCv
+                __ASM_EMIT("or      %[value], %[t2]")
+                __ASM_EMIT("mov     %[t1], 0x00(%[dst])")
+                __ASM_EMIT("mov     %[t2], 0x08(%[dst])")
+                __ASM_EMIT("add     $0x10, %[src]")         // src += 4
+                __ASM_EMIT("add     $0x10, %[dst]")         // dst += 4
+                __ASM_EMIT("sub     $4, %[count]")          // count -= 4
+                __ASM_EMIT("jae     1b")
+
+                // Loop x1 blocks
+                __ASM_EMIT("4:")
+                __ASM_EMIT("add     $3, %[count]")
+                __ASM_EMIT("jl      6f")
+                __ASM_EMIT("5:")
+                __ASM_EMIT("mov     0x00(%[src]), %k[t1]")  // t1 = src[0] = ABCL
+                __ASM_EMIT("and     %k[mask], %k[t1]")      // t1 = ABC0
+                __ASM_EMIT("or      %k[value], %k[t1]")     // t1 = ABCv
+                __ASM_EMIT("mov     %k[t1], 0x00(%[dst])")  // dst[0] = ABCv
+                __ASM_EMIT("add     $4, %[src]")            // src++
+                __ASM_EMIT("add     $4, %[dst]")            // dst++
+                __ASM_EMIT("dec     %[count]")              // count--
+                __ASM_EMIT("jge     5b")
+
+                __ASM_EMIT("6:")
+
+                : [count] "+r" (count),
+                  [dst] "+r"(dst),
+                  [src] "+r"(src),
+                  [t1] "=&r" (t1),
+                  [t2] "=&r" (t2),
+                  [t3] "=&r" (t3),
+                  [t4] "=&r" (t4)
+                : [value] "r" (value),
+                  [mask] "r" (mask)
+                : "cc", "memory"
+            );
+        }
+    #else
+        void pabc32_set_alpha(void *dst, const void *src, uint8_t alpha, size_t count)
+        {
+            uint32_t value      = uint32_t(alpha) << 24;
+            uint32_t t1, t2;
+
+            ARCH_X86_ASM
+            (
+                // Check count
+                __ASM_EMIT("sub     $4, %[count]")
+                __ASM_EMIT("jb      2f")
+
+                // Loop x4 blocks
+                __ASM_EMIT("1:")
+                __ASM_EMIT("mov     0x00(%[src]), %[t1]")   // t1 = src[0] = ABCL
+                __ASM_EMIT("mov     0x04(%[src]), %[t2]")
+                __ASM_EMIT("and     $0x00ffffff, %[t1]")    // t1 = ABC0
+                __ASM_EMIT("and     $0x00ffffff, %[t2]")
+                __ASM_EMIT("or      %[value], %[t1]")       // t1 = ABCv
+                __ASM_EMIT("or      %[value], %[t2]")
+                __ASM_EMIT("mov     %[t1], 0x00(%[dst])")   // dst[0] = ABCv
+                __ASM_EMIT("mov     %[t2], 0x04(%[dst])")
+
+                __ASM_EMIT("mov     0x08(%[src]), %[t1]")   // t1 = src[0] = ABCL
+                __ASM_EMIT("mov     0x0c(%[src]), %[t2]")
+                __ASM_EMIT("and     $0x00ffffff, %[t1]")    // t1 = ABC0
+                __ASM_EMIT("and     $0x00ffffff, %[t2]")
+                __ASM_EMIT("or      %[value], %[t1]")       // t1 = ABCv
+                __ASM_EMIT("or      %[value], %[t2]")
+                __ASM_EMIT("mov     %[t1], 0x08(%[dst])")   // dst[0] = ABCv
+                __ASM_EMIT("mov     %[t2], 0x0c(%[dst])")
+
+                __ASM_EMIT("add     $0x10, %[src]")         // src += 4
+                __ASM_EMIT("add     $0x10, %[dst]")         // dst += 4
+                __ASM_EMIT("sub     $4, %[count]")          // count -= 4
+                __ASM_EMIT("jae     1b")
+
+                // Loop x1 blocks
+                __ASM_EMIT("2:")
+                __ASM_EMIT("add     $3, %[count]")
+                __ASM_EMIT("jl      4f")
+
+                // Complete tail
+                __ASM_EMIT("3:")
+                __ASM_EMIT("mov     0x00(%[src]), %[t1]")   // t1 = src[0] = ABCL
+                __ASM_EMIT("and     $0x00ffffff, %[t1]")    // t1 = ABC0
+                __ASM_EMIT("or      %[value], %[t1]")       // t1 = ABCv
+                __ASM_EMIT("mov     %[t1], 0x00(%[dst])")   // dst[0] = ABCv
+                __ASM_EMIT("add     $4, %[src]")            // src++
+                __ASM_EMIT("add     $4, %[dst]")            // dst++
+                __ASM_EMIT("dec     %[count]")              // count--
+                __ASM_EMIT("jge     3b")
+
+                __ASM_EMIT("4:")
+
+                : [count] "+r" (count),
+                  [dst] "+r"(dst),
+                  [src] "+r"(src),
+                  [t1] "=&r" (t1),
+                  [t2] "=&r" (t2)
+                : [value] X86_GREG (value)
+                : "cc", "memory"
+            );
+        }
+    #endif /* ARCH_64BIT */
 
         // Limited number of registers
         void abgr32_to_bgra32(void *dst, const void *src, size_t count)
@@ -182,8 +330,8 @@ namespace lsp
                 : "cc", "memory"
             );
         }
-    }
-}
+    } /* namespace x86 */
+} /* namespace lsp */
 
 
 #endif /* PRIVATE_DSP_ARCH_X86_GRAPHICS_H_ */

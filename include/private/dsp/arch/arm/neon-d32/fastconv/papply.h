@@ -51,7 +51,7 @@ namespace lsp
                 ARCH_ARM_ASM
                 (
                     __ASM_EMIT("mov         %[a], %[dst]")                  // a    = dst
-                    __ASM_EMIT("add         %[b], %[a], %[n], LSL $3")      // b    = &a[n*2]
+                    __ASM_EMIT("add         %[b], %[a], %[n], LSL #3")      // b    = &a[n*2]
                     __ASM_EMIT("mov         %[k], %[n]")
                     __ASM_EMIT("vldm        %[XFFT_A], {q8-q11}")           // q8   = wr0, q9 = wr1, q10 = wi0, q11 = wi1
                     __ASM_EMIT("vldm        %[XFFT_DW], {q12-q13}")         // q12  = dr, q13 = di
@@ -68,7 +68,7 @@ namespace lsp
                     __ASM_EMIT("vmul.f32    q6, q2, q9")                    // q6   = ar1 * wr1 = br1
                     __ASM_EMIT("vneg.f32    q5, q5")                        // q5   = - ar0 * wi0 = bi0
                     __ASM_EMIT("vneg.f32    q7, q7")                        // q7   = - ar1 * wi1 = bi1
-                    __ASM_EMIT("subs        %[k], $8")
+                    __ASM_EMIT("subs        %[k], #8")
                     __ASM_EMIT("vstm        %[a]!, {q0-q3}")
                     __ASM_EMIT("vstm        %[b]!, {q4-q7}")
                     __ASM_EMIT("bls         2f")
@@ -90,9 +90,9 @@ namespace lsp
 
                     // Post-process
                     __ASM_EMIT("2:")
-                    __ASM_EMIT("sub         %[XFFT_A], $0x40")              // fw  -= 16
-                    __ASM_EMIT("sub         %[XFFT_DW], $0x20")             // fdw -= 8
-                    __ASM_EMIT("lsr         %[n], $1")                      // n >>= 1
+                    __ASM_EMIT("sub         %[XFFT_A], #0x40")              // fw  -= 16
+                    __ASM_EMIT("sub         %[XFFT_DW], #0x20")             // fdw -= 8
+                    __ASM_EMIT("lsr         %[n], #1")                      // n >>= 1
 
                     : [src] "+r" (src),
                       [a] "=&r" (a), [b] "=&r" (b),
@@ -107,7 +107,7 @@ namespace lsp
                 // All other loops while n > 4
                 ARCH_ARM_ASM
                 (
-                    __ASM_EMIT("cmp         %[n], $8")
+                    __ASM_EMIT("cmp         %[n], #8")
                     __ASM_EMIT("blo         8f")
 
                     __ASM_EMIT("1:")
@@ -115,7 +115,7 @@ namespace lsp
                     __ASM_EMIT("mov         %[p], %[items]")                // p    = items
 
                         __ASM_EMIT("3:")
-                        __ASM_EMIT("add         %[b], %[a], %[n], LSL $3")      // b    = &a[n*2]
+                        __ASM_EMIT("add         %[b], %[a], %[n], LSL #3")      // b    = &a[n*2]
                         __ASM_EMIT("vldm        %[XFFT_A], {q8-q11}")           // q8   = wr0, q9 = wr1, q10 = wi0, q11 = wi1
                         __ASM_EMIT("mov         %[k], %[n]")
                             // 8x butterflies
@@ -140,7 +140,7 @@ namespace lsp
                             __ASM_EMIT("vmls.f32    q1, q10, q12")                  // q1   = wr0*ci0 - wi0*cr0 = br1'
                             __ASM_EMIT("vmls.f32    q3, q11, q14")                  // q3   = wr1*ci1 - wi1*cr1 = bi1'
                             __ASM_EMIT("vstm        %[b]!, {q0-q3}")
-                            __ASM_EMIT("subs        %[k], $8")
+                            __ASM_EMIT("subs        %[k], #8")
                             __ASM_EMIT("bls         6f")
                             // Rotate angle & repeat loop
                             __ASM_EMIT("vldm        %[XFFT_DW], {q0-q1}")           // q0   = dr, q1 = di
@@ -159,13 +159,13 @@ namespace lsp
                             __ASM_EMIT("b           5b")
                         __ASM_EMIT("6:")
                         __ASM_EMIT("mov         %[a], %[b]")                        // a    = b
-                        __ASM_EMIT("subs        %[p], %[n], LSL $1")                // p   -= n*2
+                        __ASM_EMIT("subs        %[p], %[n], LSL #1")                // p   -= n*2
                         __ASM_EMIT("bne         3b")
 
-                    __ASM_EMIT("lsr         %[n], $1")                      // n >>= 1
-                    __ASM_EMIT("sub         %[XFFT_A], $0x40")              // fw  -= 16
-                    __ASM_EMIT("sub         %[XFFT_DW], $0x20")             // fdw -= 8
-                    __ASM_EMIT("cmp         %[n], $8")
+                    __ASM_EMIT("lsr         %[n], #1")                      // n >>= 1
+                    __ASM_EMIT("sub         %[XFFT_A], #0x40")              // fw  -= 16
+                    __ASM_EMIT("sub         %[XFFT_DW], #0x20")             // fdw -= 8
+                    __ASM_EMIT("cmp         %[n], #8")
                     __ASM_EMIT("bge         1b")
 
                     // Loop for n=4
@@ -197,7 +197,7 @@ namespace lsp
                     __ASM_EMIT("vmls.f32    q3, q10, q12")                  // q3   = wr0*ci0 - wi0*cr0 = bi0'
                     __ASM_EMIT("vmls.f32    q7, q11, q14")                  // q7   = wr1*ci1 - wi1*cr1 = bi1'
                     __ASM_EMIT("vstm        %[a]!, {q0-q7}")
-                    __ASM_EMIT("subs        %[p], $16")                     // p   -= 16
+                    __ASM_EMIT("subs        %[p], #16")                     // p   -= 16
                     __ASM_EMIT("bne         9b")
 
                     : [a] "=&r" (a), [b] "=&r" (b),
@@ -229,7 +229,7 @@ namespace lsp
             ARCH_ARM_ASM
             (
                 // Loop for n=4
-                __ASM_EMIT("subs        %[k], %[items], $8")
+                __ASM_EMIT("subs        %[k], %[items], #8")
                 __ASM_EMIT("blo         2f")
 
                 // 8x butterflies
@@ -256,8 +256,8 @@ namespace lsp
                 __ASM_EMIT("vzip.32     q6, q1")                // q6   = r4' r5' i4' i5', q1 = r6' r7' i6' i7'
                 __ASM_EMIT("vrev64.32   q0, q0")                // q0   = r3' r2' i3' i2'
                 __ASM_EMIT("vrev64.32   q1, q1")                // q1   = r7' r6' i7' i6'
-                __ASM_EMIT("vext.32     q0, q0, $1")            // q0   = r2' i3' i2' r3'
-                __ASM_EMIT("vext.32     q1, q1, $1")            // q1   = r6' i7' i6' r7'
+                __ASM_EMIT("vext.32     q0, q0, #1")            // q0   = r2' i3' i2' r3'
+                __ASM_EMIT("vext.32     q1, q1, #1")            // q1   = r6' i7' i6' r7'
                 // q4 = r0' r1' i0' i1'
                 // q6 = r4' r5' i4' i5'
                 // q0 = r2' i3' i2' r3'
@@ -323,10 +323,10 @@ namespace lsp
 
                 __ASM_EMIT("vrev64.32   q1, q1")                // q1 = i3" i0" i1" i2"
                 __ASM_EMIT("vrev64.32   q3, q3")                // q3 = i7" i4" i5" i6"
-                __ASM_EMIT("vext.32     q1, q1, q1, $1")        // q1 = i0" i1" i2" i3"
-                __ASM_EMIT("vext.32     q3, q3, q3, $1")        // q3 = i4" i5" i6" i7"
+                __ASM_EMIT("vext.32     q1, q1, q1, #1")        // q1 = i0" i1" i2" i3"
+                __ASM_EMIT("vext.32     q3, q3, q3, #1")        // q3 = i4" i5" i6" i7"
 
-                __ASM_EMIT("subs        %[k], $8")              // k   -= 8
+                __ASM_EMIT("subs        %[k], #8")              // k   -= 8
                 __ASM_EMIT("vstm        %[dst]!, {q0-q3}")
                 __ASM_EMIT("bhs         1b")
 
@@ -351,7 +351,7 @@ namespace lsp
                 ARCH_ARM_ASM
                 (
                     __ASM_EMIT("mov         %[a], %[tmp]")
-                    __ASM_EMIT("subs        %[k], %[items], $16")
+                    __ASM_EMIT("subs        %[k], %[items], #16")
                     __ASM_EMIT("vldm        %[XFFT_A]!, {q8-q11}")   // q8   = wr1, q9 = wr2, q10 = wi1, q11 = wi2
                     __ASM_EMIT("blo         2f")
                     // 8x butterflies
@@ -377,11 +377,11 @@ namespace lsp
                     __ASM_EMIT("vadd.f32    q4, q4, q13")       // q4   = ar2 + cr2
                     __ASM_EMIT("vadd.f32    q5, q5, q15")       // q5   = ai2 + ci2
                     __ASM_EMIT("vstm        %[a]!, {q0-q7}")
-                    __ASM_EMIT("subs        %[k], $16")
+                    __ASM_EMIT("subs        %[k], #16")
                     __ASM_EMIT("bge         1b")
 
                     __ASM_EMIT("2:")
-                    __ASM_EMIT("adds        %[k], $8")
+                    __ASM_EMIT("adds        %[k], #8")
                     __ASM_EMIT("blo         4f")
                     // 4x butterflies
                     __ASM_EMIT("vldm        %[a], {q0-q3}")     // q0   = ar1, q1 = ai1, q2 = br1, q3 = bi1
@@ -420,7 +420,7 @@ namespace lsp
                         // Initialize sub-loop
                         __ASM_EMIT("mov         %[p], %[n]")
                         __ASM_EMIT("vldm        %[XFFT_A], {q8-q11}")           // q8   = wr1, q9 = wr2, q10 = wi1, q11 = wi2
-                        __ASM_EMIT("add         %[b], %[a], %[n], LSL $2")      // b    = &a[n*4]
+                        __ASM_EMIT("add         %[b], %[a], %[n], LSL #2")      // b    = &a[n*4]
                         // 8x butterflies
                         __ASM_EMIT("3:")
                         // Calc cr and ci
@@ -444,7 +444,7 @@ namespace lsp
                         __ASM_EMIT("vadd.f32    q2, q2, q13")                   // q2   = ar2 + cr2
                         __ASM_EMIT("vadd.f32    q3, q3, q15")                   // q3   = ai2 + ci2
                         __ASM_EMIT("vstm        %[b]!, {q4-q7}")
-                        __ASM_EMIT("subs        %[p], $16")
+                        __ASM_EMIT("subs        %[p], #16")
                         __ASM_EMIT("vstm        %[a]!, {q0-q3}")
                         __ASM_EMIT("beq         4f")
                         // Prepare next loop: rotate angle
@@ -486,9 +486,9 @@ namespace lsp
 
             ARCH_ARM_ASM(
                 // Initialize sub-loop
-                __ASM_EMIT("add         %[b], %[a], %[n], LSL $2")      // b    = &a[n*4]
+                __ASM_EMIT("add         %[b], %[a], %[n], LSL #2")      // b    = &a[n*4]
                 __ASM_EMIT("vld1.32     {d30[], d31[]}, [%[fftk]]")     // q15  = 1 / items
-                __ASM_EMIT("add         %[db], %[da], %[n], LSL $1")    // db   = &da[n*2]
+                __ASM_EMIT("add         %[db], %[da], %[n], LSL #1")    // db   = &da[n*2]
                 __ASM_EMIT("vldm        %[XFFT_A], {q8-q11}")           // q8   = wr1, q9 = wr2, q10 = wi1, q11 = wi2
                 __ASM_EMIT("vmov        q14, q15")                      // q14  = 1 / items
                 // 8x butterflies
@@ -511,7 +511,7 @@ namespace lsp
                 __ASM_EMIT("vmla.f32    q1, q5, q15")                   // q1   = dar2 + (ar2 + cr2) / items
                 __ASM_EMIT("vmla.f32    q2, q6, q14")                   // q2   = dbr1 + (ar1 - cr1) / items
                 __ASM_EMIT("vmla.f32    q3, q7, q15")                   // q3   = dbr2 + (ar2 - cr2) / items
-                __ASM_EMIT("subs        %[items], $16")
+                __ASM_EMIT("subs        %[items], #16")
                 __ASM_EMIT("vstm        %[da]!, {q0-q1}")
                 __ASM_EMIT("vstm        %[db]!, {q2-q3}")
                 __ASM_EMIT("beq         2f")

@@ -79,11 +79,7 @@ static void fill_zero_memset(float *dst, size_t count)
 
 static void fill_zero_bzero(float *dst, size_t count)
 {
-#ifdef PLATFORM_WINDOWS
-    ZeroMemory(dst, count*sizeof(float));
-#else
     bzero(dst, count*sizeof(float));
-#endif
 }
 
 //-----------------------------------------------------------------------------

@@ -73,7 +73,7 @@ namespace lsp
             ARCH_ARM_ASM
             (
                 __ASM_EMIT("vld1.32         {d28[], d29[]}, [%[kf]]") // q14  = kf
-                __ASM_EMIT("subs            %[count], $4")
+                __ASM_EMIT("subs            %[count], #4")
                 __ASM_EMIT("vmul.f32        q15, q14, q14")         // q15  = kf*kf = kf2
                 __ASM_EMIT("blo             2f")
 
@@ -144,12 +144,12 @@ namespace lsp
                 __ASM_EMIT("vzip.32         q1, q3")
                 __ASM_EMIT("vzip.32         q5, q7")
 
-                __ASM_EMIT("subs            %[count], $4")
+                __ASM_EMIT("subs            %[count], #4")
                 __ASM_EMIT("vstm            %[bf]!, {q0-q7}")
                 __ASM_EMIT("bhs             1b")
 
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $3")
+                __ASM_EMIT("adds            %[count], #3")
                 __ASM_EMIT("blt             4f")
 
                 // 1x blocks
@@ -180,10 +180,10 @@ namespace lsp
                 __ASM_EMIT("vtrn.f32        d1, d2")                // d1  = A1 A2, d2 = -B1, -B2
                 __ASM_EMIT("veor            d3, d3")                // d3  = 0 0
                 __ASM_EMIT("vneg.f32        d2, d2")                // d2  = B1, B2
-                __ASM_EMIT("vext.32         d1, d1, d2, $1")        // d1  = A2 B1
-                __ASM_EMIT("vext.32         d2, d2, d3, $1")        // d1  = B2 0
+                __ASM_EMIT("vext.32         d1, d1, d2, #1")        // d1  = A2 B1
+                __ASM_EMIT("vext.32         d2, d2, d3, #1")        // d1  = B2 0
 
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("vst1.32         {d0-d3}, [%[bf]]!")
                 __ASM_EMIT("bge             3b")
 
@@ -206,7 +206,7 @@ namespace lsp
                 __ASM_EMIT("beq             4f")
 
                 __ASM_EMIT("vld1.32         {d28[], d29[]}, [%[kf]]")   // q14  = kf
-                __ASM_EMIT("subs            %[count], $2")
+                __ASM_EMIT("subs            %[count], #2")
                 __ASM_EMIT("vmul.f32        q15, q14, q14")             // q15  = kf*kf = kf2
                 __ASM_EMIT("blo             2f")
 
@@ -269,12 +269,12 @@ namespace lsp
                 __ASM_EMIT("vswp            d3, d8")                // q1  = A20 A21 B20 B21, q4 = A22 A23 B22 B23
                 __ASM_EMIT("vswp            d5, d10")               // q2  = B20 B21 0   0  , q5 = B22 B23 0   0
 
-                __ASM_EMIT("subs            %[count], $2")
+                __ASM_EMIT("subs            %[count], #2")
                 __ASM_EMIT("vstm            %[bf]!, {q0-q5}")
                 __ASM_EMIT("bhs             1b")
 
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $1")
+                __ASM_EMIT("adds            %[count], #1")
                 __ASM_EMIT("blt             4f")
 
                 // 1 x2 block
@@ -342,7 +342,7 @@ namespace lsp
 
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("blo             2f")
 
                 __ASM_EMIT("vld1.32         {d28[], d29[]}, [%[kf]]")   // q14  = kf
@@ -393,7 +393,7 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q3, q3, q7")            // q3   = 2*(B[2] - T[0]) = B1
                 __ASM_EMIT("vmul.f32        q4, q4, q7")            // q4   = (B[1] - B[2] - B[0]) * N = B2
 
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("vstm            %[bf]!, {q0-q4}")
                 __ASM_EMIT("bhs             1b")
 
@@ -415,7 +415,7 @@ namespace lsp
 
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("blo             2f")
 
                 __ASM_EMIT("vld1.32         {d28[], d29[]}, [%[kf]]")   // q14  = kf
@@ -523,7 +523,7 @@ namespace lsp
                 // q6  = B1     q14 =  ?
                 // q7  = W1     q15 =  ?
                 __ASM_EMIT("vstm            %[bf]!, {q0-q5}")
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("vstm            %[bf]!, {q6-q9}")
                 __ASM_EMIT("bhs             1b")
 

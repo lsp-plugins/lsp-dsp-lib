@@ -417,7 +417,7 @@ namespace lsp
             );
 
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup         v31.4s, %S[k].s[0]")             // v31   = k
+                __ASM_EMIT("dup         v31.4s, %[k].s[0]")             // v31   = k
                 // 16x blocks
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("mov         v30.16b, v31.16b")

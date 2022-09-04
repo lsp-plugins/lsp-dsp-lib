@@ -26,14 +26,48 @@ DEPENDENCIES = \
 TEST_DEPENDENCIES = \
   LSP_TEST_FW
 
-# Platform-dependent
-ifeq ($(PLATFORM),Windows)
-  TEST_DEPENDENCIES += \
-    LIBSHLWAPI
+#------------------------------------------------------------------------------
+# Linux dependencies
+LINUX_DEPENDENCIES = 
+
+LINUX_TEST_DEPENDENCIES =
+
+ifeq ($(PLATFORM),Linux)
+  DEPENDENCIES             += $(LINUX_DEPENDENCIES)
+  TEST_DEPENDENCIES        += $(LINUX_TEST_DEPENDENCIES)
 endif
 
+#------------------------------------------------------------------------------
+# BSD dependencies
+BSD_DEPENDENCIES = 
+
+BSD_TEST_DEPENDENCIES =
+
+ifeq ($(PLATFORM),BSD)
+  DEPENDENCIES             += $(BSD_DEPENDENCIES)
+  TEST_DEPENDENCIES        += $(BSD_TEST_DEPENDENCIES)
+endif
+
+#------------------------------------------------------------------------------
+# Windows dependencies
+WINDOWS_DEPENDENCIES =
+
+WINDOWS_TEST_DEPENDENCIES = \
+  LIBSHLWAPI
+
+ifeq ($(PLATFORM),Windows)
+  DEPENDENCIES             += $(WINDOWS_DEPENDENCIES)
+  TEST_DEPENDENCIES        += $(WINDOWS_TEST_DEPENDENCIES)
+endif
+
+#------------------------------------------------------------------------------
 # Overall system dependencies
 ALL_DEPENDENCIES = \
   $(DEPENDENCIES) \
+  $(LINUX_DEPENDENCIES) \
+  $(BSD_DEPENDENCIES) \
+  $(WINDOWS_DEPENDENCIES) \
   $(TEST_DEPENDENCIES) \
-  LIBSHLWAPI
+  $(LINUX_TEST_DEPENDENCIES) \
+  $(BSD_TEST_DEPENDENCIES) \
+  $(WINDOWS_TEST_DEPENDENCIES)

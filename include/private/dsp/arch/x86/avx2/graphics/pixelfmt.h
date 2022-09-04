@@ -168,8 +168,134 @@ namespace lsp
             );
         }
 
-    }
-}
+        IF_ARCH_X86(
+            static const uint32_t pabc32_set_alpha_const[] __lsp_aligned32 =
+            {
+                LSP_DSP_VEC8(0x00ffffff)
+            };
+        )
+
+        void pabc32_set_alpha(void *dst, const void *src, uint8_t alpha, size_t count)
+        {
+            IF_ARCH_X86(
+                size_t off;
+                uint32_t value  = uint32_t(alpha) << 24;
+            );
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovdqa         %[MASK], %%ymm1")               // ymm1 = 00 ff ff ff
+                __ASM_EMIT("vpbroadcastd    %%xmm0, %%ymm0")                // ymm0 = vv vv vv vv
+                __ASM_EMIT("xor             %[off], %[off]")                // off  = 0
+
+                // 48-element blocks
+                __ASM_EMIT("sub             $48, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vpand           0x00(%[src], %[off]), %%ymm1, %%ymm2")  // ymm2 = 00 XX YY ZZ
+                __ASM_EMIT("vpand           0x20(%[src], %[off]), %%ymm1, %%ymm3")
+                __ASM_EMIT("vpand           0x40(%[src], %[off]), %%ymm1, %%ymm4")
+                __ASM_EMIT("vpor            %%ymm0, %%ymm2, %%ymm2")                // ymm2 = VV XX YY ZZ
+                __ASM_EMIT("vpand           0x60(%[src], %[off]), %%ymm1, %%ymm5")
+                __ASM_EMIT("vpor            %%ymm0, %%ymm3, %%ymm3")
+                __ASM_EMIT("vpand           0x80(%[src], %[off]), %%ymm1, %%ymm6")
+                __ASM_EMIT("vpor            %%ymm0, %%ymm4, %%ymm4")
+                __ASM_EMIT("vpand           0xa0(%[src], %[off]), %%ymm1, %%ymm7")
+                __ASM_EMIT("vmovdqu         %%ymm2, 0x00(%[dst], %[off])")
+                __ASM_EMIT("vpor            %%ymm0, %%ymm5, %%ymm5")
+                __ASM_EMIT("vmovdqu         %%ymm3, 0x20(%[dst], %[off])")
+                __ASM_EMIT("vpor            %%ymm0, %%ymm6, %%ymm6")
+                __ASM_EMIT("vmovdqu         %%ymm4, 0x40(%[dst], %[off])")
+                __ASM_EMIT("vpor            %%ymm0, %%ymm7, %%ymm7")
+                __ASM_EMIT("vmovdqu         %%ymm5, 0x60(%[dst], %[off])")
+                __ASM_EMIT("vmovdqu         %%ymm6, 0x80(%[dst], %[off])")
+                __ASM_EMIT("vmovdqu         %%ymm7, 0xa0(%[dst], %[off])")
+                __ASM_EMIT("add             $0xc0, %[off]")
+                __ASM_EMIT("sub             $48, %[count]")
+                __ASM_EMIT("jae             1b")
+
+                // 32-element block
+                __ASM_EMIT("2:")
+                __ASM_EMIT("add             $16, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vpand           0x00(%[src], %[off]), %%ymm1, %%ymm2")      // ymm2 = 00 XX YY ZZ
+                __ASM_EMIT("vpand           0x20(%[src], %[off]), %%ymm1, %%ymm3")
+                __ASM_EMIT("vpand           0x40(%[src], %[off]), %%ymm1, %%ymm4")
+                __ASM_EMIT("vpand           0x60(%[src], %[off]), %%ymm1, %%ymm5")
+                __ASM_EMIT("vpor            %%ymm0, %%ymm2, %%ymm2")                    // ymm2 = VV XX YY ZZ
+                __ASM_EMIT("vpor            %%ymm0, %%ymm3, %%ymm3")
+                __ASM_EMIT("vpor            %%ymm0, %%ymm4, %%ymm4")
+                __ASM_EMIT("vpor            %%ymm0, %%ymm5, %%ymm5")
+                __ASM_EMIT("vmovdqu         %%ymm2, 0x00(%[dst], %[off])")
+                __ASM_EMIT("vmovdqu         %%ymm3, 0x20(%[dst], %[off])")
+                __ASM_EMIT("vmovdqu         %%ymm4, 0x40(%[dst], %[off])")
+                __ASM_EMIT("vmovdqu         %%ymm5, 0x60(%[dst], %[off])")
+                __ASM_EMIT("add             $0x80, %[off]")
+                __ASM_EMIT("sub             $32, %[count]")
+
+                // 16-element block
+                __ASM_EMIT("4:")
+                __ASM_EMIT("add             $16, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vpand           0x00(%[src], %[off]), %%ymm1, %%ymm2")      // ymm2 = 00 XX YY ZZ
+                __ASM_EMIT("vpand           0x20(%[src], %[off]), %%ymm1, %%ymm3")
+                __ASM_EMIT("vpor            %%ymm0, %%ymm2, %%ymm2")                    // ymm2 = VV XX YY ZZ
+                __ASM_EMIT("vpor            %%ymm0, %%ymm3, %%ymm3")
+                __ASM_EMIT("vmovdqu         %%ymm2, 0x00(%[dst], %[off])")
+                __ASM_EMIT("vmovdqu         %%ymm3, 0x20(%[dst], %[off])")
+                __ASM_EMIT("add             $0x40, %[off]")
+                __ASM_EMIT("sub             $16, %[count]")
+
+                // 8-element block
+                __ASM_EMIT("6:")
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              8f")
+                __ASM_EMIT("vpand           0x00(%[src], %[off]), %%xmm1, %%xmm2")      // xmm2 = 00 XX YY ZZ
+                __ASM_EMIT("vpand           0x10(%[src], %[off]), %%xmm1, %%xmm3")
+                __ASM_EMIT("vpor            %%xmm0, %%xmm2, %%xmm2")                    // xmm2 = VV XX YY ZZ
+                __ASM_EMIT("vpor            %%xmm0, %%xmm3, %%xmm3")
+                __ASM_EMIT("vmovdqu         %%xmm2, 0x00(%[dst], %[off])")
+                __ASM_EMIT("vmovdqu         %%xmm3, 0x10(%[dst], %[off])")
+                __ASM_EMIT("add             $0x20, %[off]")
+                __ASM_EMIT("sub             $8, %[count]")
+
+                // 4-element block
+                __ASM_EMIT("8:")
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              10f")
+                __ASM_EMIT("vpand           0x00(%[src], %[off]), %%xmm1, %%xmm2")      // xmm2 = 00 XX YY ZZ
+                __ASM_EMIT("vpor            %%xmm0, %%xmm2, %%xmm2")                    // xmm2 = VV XX YY ZZ
+                __ASM_EMIT("vmovdqu         %%xmm2, 0x00(%[dst], %[off])")
+                __ASM_EMIT("add             $0x10, %[off]")
+                __ASM_EMIT("sub             $4, %[count]")
+
+                // Tail
+                __ASM_EMIT("10:")
+                __ASM_EMIT("add             $3, %[count]")
+                __ASM_EMIT("jl              12f")
+                __ASM_EMIT("11:")
+                __ASM_EMIT("vmovd           0x00(%[src], %[off]), %%xmm2")
+                __ASM_EMIT("vpand           %%xmm1, %%xmm2, %%xmm2")                    // xmm2 = 00 XX YY ZZ
+                __ASM_EMIT("vpor            %%xmm0, %%xmm2, %%xmm2")                    // xmm2 = VV XX YY ZZ
+                __ASM_EMIT("vmovd           %%xmm2, 0x00(%[dst], %[off])")
+                __ASM_EMIT("add             $4, %[off]")
+                __ASM_EMIT("dec             %[count]")
+                __ASM_EMIT("jge             11b")
+
+                // End
+                __ASM_EMIT("12:")
+
+                : [dst] "+r"(dst), [src] "+r"(src), [count] "+r" (count),
+                  [off] "=&r" (off), [value] "+Yz" (value)
+                : [MASK] "m" (pabc32_set_alpha_const)
+                : "cc", "memory",
+                  "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
+    } /* namespace avx2 */
+} /* namespace lsp */
 
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX2_GRAPHICS_PIXELFMT_H_ */

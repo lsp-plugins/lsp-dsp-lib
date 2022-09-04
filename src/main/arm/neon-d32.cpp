@@ -154,6 +154,8 @@
 
                 EXPORT1(rgba32_to_bgra32);
                 EXPORT1(abgr32_to_bgrff32);
+                EXPORT2(pbgra32_set_alpha, pabc32_set_alpha);
+                EXPORT2(prgba32_set_alpha, pabc32_set_alpha);
 
                 EXPORT1(eff_hsla_hue);
                 EXPORT1(eff_hsla_sat);

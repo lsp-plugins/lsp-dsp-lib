@@ -36,7 +36,7 @@ namespace lsp
 
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs        %[count], $8")
+                __ASM_EMIT("subs        %[count], #8")
                 __ASM_EMIT("blo         2f")
                 __ASM_EMIT("mov         %[src2], %[dst]")
 
@@ -55,13 +55,13 @@ namespace lsp
                 __ASM_EMIT("vmls.f32    q10, q5, q7")
                 __ASM_EMIT("vmla.f32    q11, q4, q7")
                 __ASM_EMIT("vst2.32     {q8-q9}, [%[dst]]!")
-                __ASM_EMIT("subs        %[count], $8")
+                __ASM_EMIT("subs        %[count], #8")
                 __ASM_EMIT("vst2.32     {q10-q11}, [%[dst]]!")
                 __ASM_EMIT("bhs         1b")
 
                 // x4 blocks
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds        %[count], $4")
+                __ASM_EMIT("adds        %[count], #4")
                 __ASM_EMIT("blt         4f")
                 __ASM_EMIT("vld2.32     {q0-q1}, [%[src1]]!")        // q0 = sr, q1 = si
                 __ASM_EMIT("vld2.32     {q2-q3}, [%[dst]]")          // q2 = dr, q3 = di
@@ -71,11 +71,11 @@ namespace lsp
                 __ASM_EMIT("vmls.f32    q8, q1, q3")                 // q8 = sr*dr - si*di
                 __ASM_EMIT("vmla.f32    q9, q0, q3")                 // q9 = si*dr + sr*di
                 __ASM_EMIT("vst2.32     {q8-q9}, [%[dst]]!")
-                __ASM_EMIT("sub         %[count], $4")
+                __ASM_EMIT("sub         %[count], #4")
 
                 // x1 blocks
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds        %[count], $3")
+                __ASM_EMIT("adds        %[count], #3")
                 __ASM_EMIT("blt         6f")
                 __ASM_EMIT("5:")
                 __ASM_EMIT("vldm.32     %[src1]!, {s0-s1}")          // s0 = sr, q1 = si
@@ -85,7 +85,7 @@ namespace lsp
                 __ASM_EMIT("vmls.f32    s8, s1, s3")                 // s8 = sr*dr - si*di
                 __ASM_EMIT("vmla.f32    s9, s0, s3")                 // s9 = si*dr + sr*di
                 __ASM_EMIT("vstm.32     %[dst]!, {s8-s9}")
-                __ASM_EMIT("subs        %[count], $1")
+                __ASM_EMIT("subs        %[count], #1")
                 __ASM_EMIT("bge         5b")
 
                 __ASM_EMIT("6:")
@@ -103,7 +103,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs        %[count], $8")
+                __ASM_EMIT("subs        %[count], #8")
                 __ASM_EMIT("blo         2f")
 
                 // x8 blocks
@@ -121,13 +121,13 @@ namespace lsp
                 __ASM_EMIT("vmls.f32    q10, q5, q7")
                 __ASM_EMIT("vmla.f32    q11, q4, q7")
                 __ASM_EMIT("vst2.32     {q8-q9}, [%[dst]]!")
-                __ASM_EMIT("subs        %[count], $8")
+                __ASM_EMIT("subs        %[count], #8")
                 __ASM_EMIT("vst2.32     {q10-q11}, [%[dst]]!")
                 __ASM_EMIT("bhs         1b")
 
                 // x4 blocks
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds        %[count], $4")
+                __ASM_EMIT("adds        %[count], #4")
                 __ASM_EMIT("blt         4f")
                 __ASM_EMIT("vld2.32     {q0-q1}, [%[src1]]!")        // q0 = sr, q1 = si
                 __ASM_EMIT("vld2.32     {q2-q3}, [%[src2]]!")        // q2 = dr, q3 = di
@@ -136,11 +136,11 @@ namespace lsp
                 __ASM_EMIT("vmls.f32    q8, q1, q3")                 // q8 = sr*dr - si*di
                 __ASM_EMIT("vmla.f32    q9, q0, q3")                 // q9 = si*dr + sr*di
                 __ASM_EMIT("vst2.32     {q8-q9}, [%[dst]]!")
-                __ASM_EMIT("sub         %[count], $4")
+                __ASM_EMIT("sub         %[count], #4")
 
                 // x1 blocks
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds        %[count], $3")
+                __ASM_EMIT("adds        %[count], #3")
                 __ASM_EMIT("blt         6f")
                 __ASM_EMIT("5:")
                 __ASM_EMIT("vldm.32     %[src1]!, {s0-s1}")          // s0 = sr, q1 = si
@@ -150,7 +150,7 @@ namespace lsp
                 __ASM_EMIT("vmls.f32    s8, s1, s3")                 // s8 = sr*dr - si*di
                 __ASM_EMIT("vmla.f32    s9, s0, s3")                 // s9 = si*dr + sr*di
                 __ASM_EMIT("vstm.32     %[dst]!, {s8-s9}")
-                __ASM_EMIT("subs        %[count], $1")
+                __ASM_EMIT("subs        %[count], #1")
                 __ASM_EMIT("bge         5b")
 
                 __ASM_EMIT("6:")
@@ -170,7 +170,7 @@ namespace lsp
 
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("blo             2f")
                 __ASM_EMIT("mov             %[src2], %[dst]")
 
@@ -210,13 +210,13 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q1, q1, q4")
                 __ASM_EMIT("vmul.f32        q3, q3, q6")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vst2.32         {q2-q3}, [%[dst]]!")
                 __ASM_EMIT("bhs             1b")
 
                 // x4 blocks
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vld2.32         {q4-q5}, [%[src]]!")            // q4  = sr, q5 = si
                 __ASM_EMIT("vld2.32         {q8-q9}, [%[dst]]")             // q8  = dr, q9 = di
@@ -236,11 +236,11 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q0, q0, q4")
                 __ASM_EMIT("vmul.f32        q1, q1, q4")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("sub             %[count], $4")
+                __ASM_EMIT("sub             %[count], #4")
 
                 // x1 blocks
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[count], $3")
+                __ASM_EMIT("adds            %[count], #3")
                 __ASM_EMIT("blt             6f")
                 __ASM_EMIT("5:")
                 __ASM_EMIT("vldm.32         %[src]!, {s4-s5}")              // s4  = sr, s5 = si
@@ -254,7 +254,7 @@ namespace lsp
                 __ASM_EMIT("vdiv.f32        s0, s0, s4")                    // s0  = (sr*dr + si*di) / R
                 __ASM_EMIT("vdiv.f32        s1, s1, s4")                    // s1  = (sr*dr + si*di) / R
                 __ASM_EMIT("vstm.32         %[dst]!, {s0-s1}")
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("bge             5b")
 
                 __ASM_EMIT("6:")
@@ -274,7 +274,7 @@ namespace lsp
 
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("blo             2f")
                 __ASM_EMIT("mov             %[src2], %[dst]")
 
@@ -314,13 +314,13 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q1, q1, q4")
                 __ASM_EMIT("vmul.f32        q3, q3, q6")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vst2.32         {q2-q3}, [%[dst]]!")
                 __ASM_EMIT("bhs             1b")
 
                 // x4 blocks
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vld2.32         {q4-q5}, [%[dst]]")             // q4  = sr, q5 = si
                 __ASM_EMIT("vld2.32         {q8-q9}, [%[src]]!")            // q8  = dr, q9 = di
@@ -340,11 +340,11 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q0, q0, q4")
                 __ASM_EMIT("vmul.f32        q1, q1, q4")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("sub             %[count], $4")
+                __ASM_EMIT("sub             %[count], #4")
 
                 // x1 blocks
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[count], $3")
+                __ASM_EMIT("adds            %[count], #3")
                 __ASM_EMIT("blt             6f")
                 __ASM_EMIT("5:")
                 __ASM_EMIT("vldm.32         %[dst], {s4-s5}")               // s4  = sr, s5 = si
@@ -358,7 +358,7 @@ namespace lsp
                 __ASM_EMIT("vdiv.f32        s0, s0, s4")                    // s0  = (sr*dr + si*di) / R
                 __ASM_EMIT("vdiv.f32        s1, s1, s4")                    // s1  = (sr*dr + si*di) / R
                 __ASM_EMIT("vstm.32         %[dst]!, {s0-s1}")
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("bge             5b")
 
                 __ASM_EMIT("6:")
@@ -376,7 +376,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("blo             2f")
 
                 // x8 blocks
@@ -415,13 +415,13 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q1, q1, q4")
                 __ASM_EMIT("vmul.f32        q3, q3, q6")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vst2.32         {q2-q3}, [%[dst]]!")
                 __ASM_EMIT("bhs             1b")
 
                 // x4 blocks
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vld2.32         {q4-q5}, [%[b]]!")              // q4  = sr, q5 = si
                 __ASM_EMIT("vld2.32         {q8-q9}, [%[t]]!")              // q8  = dr, q9 = di
@@ -441,11 +441,11 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q0, q0, q4")
                 __ASM_EMIT("vmul.f32        q1, q1, q4")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("sub             %[count], $4")
+                __ASM_EMIT("sub             %[count], #4")
 
                 // x1 blocks
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[count], $3")
+                __ASM_EMIT("adds            %[count], #3")
                 __ASM_EMIT("blt             6f")
                 __ASM_EMIT("5:")
                 __ASM_EMIT("vldm.32         %[b]!, {s4-s5}")                // s4  = sr, s5 = si
@@ -459,7 +459,7 @@ namespace lsp
                 __ASM_EMIT("vdiv.f32        s0, s0, s4")                    // s0  = (sr*dr + si*di) / R
                 __ASM_EMIT("vdiv.f32        s1, s1, s4")                    // s1  = (sr*dr + si*di) / R
                 __ASM_EMIT("vstm.32         %[dst]!, {s0-s1}")
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("bge             5b")
 
                 __ASM_EMIT("6:")
@@ -477,7 +477,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs            %[count], $16")
+                __ASM_EMIT("subs            %[count], #16")
                 __ASM_EMIT("blo             2f")
 
                 //-----------------------------------------------------------------
@@ -531,14 +531,14 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q2, q4, q5")
                 __ASM_EMIT("vmul.f32        q3, q6, q7")
                 __ASM_EMIT("vst1.32         {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("subs            %[count], $16")
+                __ASM_EMIT("subs            %[count], #16")
                 __ASM_EMIT("vst1.32         {q2-q3}, [%[dst]]!")
                 __ASM_EMIT("bhs             1b")
 
                 //-----------------------------------------------------------------
                 // x8 blocks
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $8")
+                __ASM_EMIT("adds            %[count], #8")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vld2.32         {q0-q1}, [%[src]]!")        // q0 = r, q1 = i
                 __ASM_EMIT("vld2.32         {q2-q3}, [%[src]]!")
@@ -565,13 +565,13 @@ namespace lsp
                 // 1 / (1/sqrt(R)) = sqrt(R) calculation
                 __ASM_EMIT("vmul.f32        q0, q0, q1")                // q0 = R / sqrt(R) = sqrt(R)
                 __ASM_EMIT("vmul.f32        q1, q2, q3")
-                __ASM_EMIT("sub             %[count], $8")
+                __ASM_EMIT("sub             %[count], #8")
                 __ASM_EMIT("vst1.32         {q0-q1}, [%[dst]]!")
 
                 //-----------------------------------------------------------------
                 // x4 blocks
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             6f")
                 __ASM_EMIT("vld2.32         {q0-q1}, [%[src]]!")        // q0 = r, q1 = i
                 __ASM_EMIT("vmul.f32        q0, q0, q0")                // q0 = r*r
@@ -586,19 +586,19 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q1, q1, q3")                // q0 = x2 = x1 * (3 - R * x1 * x1) / 2
                 // 1 / (1/sqrt(R)) = sqrt(R) calculation
                 __ASM_EMIT("vmul.f32        q0, q1")                    // q0 = R / sqrt(R) = sqrt(R)
-                __ASM_EMIT("sub             %[count], $4")
+                __ASM_EMIT("sub             %[count], #4")
                 __ASM_EMIT("vst1.32         {q0}, [%[dst]]!")
 
                 // x1 blocks
                 __ASM_EMIT("6:")
-                __ASM_EMIT("adds        %[count], $3")
+                __ASM_EMIT("adds        %[count], #3")
                 __ASM_EMIT("blt         8f")
                 __ASM_EMIT("7:")
                 __ASM_EMIT("vldm.32     %[src]!, {s0-s1}")
                 __ASM_EMIT("vmul.f32    s0, s0, s0")                    // s0 = r*r
                 __ASM_EMIT("vmla.f32    s0, s1, s1")                    // s0 = r*r + i*i
                 __ASM_EMIT("vsqrt.f32   s0, s0")                        // s0 = sqrt(r*r + i*i)
-                __ASM_EMIT("subs        %[count], $1")
+                __ASM_EMIT("subs        %[count], #1")
                 __ASM_EMIT("vstm.32     %[dst]!, {s0}")
                 __ASM_EMIT("bge         7b")
 
@@ -619,7 +619,7 @@ namespace lsp
 
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("blo             2f")
 
                 //-----------------------------------------------------------------
@@ -651,14 +651,14 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q1, q1, q4")                // q1 = -i / R
                 __ASM_EMIT("vmul.f32        q3, q3, q5")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vst2.32         {q2-q3}, [%[dst]]!")
                 __ASM_EMIT("bhs             1b")
 
                 //-----------------------------------------------------------------
                 // x4 blocks
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vld2.32         {q0-q1}, [%[dst]]")         // q0 = r, q1 = i
                 __ASM_EMIT("vmul.f32        q4, q0, q0")                // q4 = r*r
@@ -673,12 +673,12 @@ namespace lsp
                 __ASM_EMIT("vneg.f32        q1, q1")                    // q1 = -i
                 __ASM_EMIT("vmul.f32        q0, q0, q4")                // q0 = r / R
                 __ASM_EMIT("vmul.f32        q1, q1, q4")                // q1 = -i / R
-                __ASM_EMIT("sub             %[count], $4")
+                __ASM_EMIT("sub             %[count], #4")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
 
                 // x1 blocks
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[count], $3")
+                __ASM_EMIT("adds            %[count], #3")
                 __ASM_EMIT("blt             6f")
                 __ASM_EMIT("5:")
                 __ASM_EMIT("vldm.32         %[dst], {s0-s1}")           // s0 = r, s1 = i
@@ -687,7 +687,7 @@ namespace lsp
                 __ASM_EMIT("vneg.f32        s1, s1")                    // s1 = -i
                 __ASM_EMIT("vdiv.f32        s0, s0, s4")                // s0 = r / R
                 __ASM_EMIT("vdiv.f32        s1, s1, s4")                // s1 = -i / R
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("vstm.32         %[dst]!, {s0-s1}")
                 __ASM_EMIT("bge             5b")
 
@@ -705,7 +705,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("blo             2f")
 
                 //-----------------------------------------------------------------
@@ -736,14 +736,14 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q1, q1, q4")                // q1 = -i / R
                 __ASM_EMIT("vmul.f32        q3, q3, q5")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("subs            %[count], $8")
+                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vst2.32         {q2-q3}, [%[dst]]!")
                 __ASM_EMIT("bhs             1b")
 
                 //-----------------------------------------------------------------
                 // x4 blocks
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vld2.32         {q0-q1}, [%[src]]!")        // q0 = r, q1 = i
                 __ASM_EMIT("vmul.f32        q4, q0, q0")                // q4 = r*r
@@ -758,12 +758,12 @@ namespace lsp
                 __ASM_EMIT("vneg.f32        q1, q1")                    // q1 = -i
                 __ASM_EMIT("vmul.f32        q0, q0, q4")                // q0 = r / R
                 __ASM_EMIT("vmul.f32        q1, q1, q4")                // q1 = -i / R
-                __ASM_EMIT("sub             %[count], $4")
+                __ASM_EMIT("sub             %[count], #4")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
 
                 // x1 blocks
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[count], $3")
+                __ASM_EMIT("adds            %[count], #3")
                 __ASM_EMIT("blt             6f")
                 __ASM_EMIT("5:")
                 __ASM_EMIT("vldm.32         %[src]!, {s0-s1}")          // s0 = r, s1 = i
@@ -772,7 +772,7 @@ namespace lsp
                 __ASM_EMIT("vneg.f32        s1, s1")                    // s1 = -i
                 __ASM_EMIT("vdiv.f32        s0, s0, s4")                // s0 = r / R
                 __ASM_EMIT("vdiv.f32        s1, s1, s4")                // s1 = -i / R
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("vstm.32         %[dst]!, {s0-s1}")
                 __ASM_EMIT("bge             5b")
 
@@ -790,7 +790,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs            %[count], $32")
+                __ASM_EMIT("subs            %[count], #32")
                 __ASM_EMIT("blo             2f")
 
                 // x32 blocks
@@ -813,13 +813,13 @@ namespace lsp
                 __ASM_EMIT("vst1.32         {q4-q5}, [%[dst]]!")
                 __ASM_EMIT("vmov            q6, q12")
                 __ASM_EMIT("vmov            q7, q14")
-                __ASM_EMIT("subs            %[count], $32")
+                __ASM_EMIT("subs            %[count], #32")
                 __ASM_EMIT("vst1.32         {q6-q7}, [%[dst]]!")
                 __ASM_EMIT("bhs             1b")
 
                 // x16 block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $16")
+                __ASM_EMIT("adds            %[count], #16")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vld2.32         {q0-q1}, [%[src]]!")        // q0 = r, q1 = i
                 __ASM_EMIT("vld2.32         {q2-q3}, [%[src]]!")
@@ -829,34 +829,34 @@ namespace lsp
                 __ASM_EMIT("vst1.32         {q0-q1}, [%[dst]]!")
                 __ASM_EMIT("vmov            q2, q4")
                 __ASM_EMIT("vmov            q3, q6")
-                __ASM_EMIT("sub             %[count], $16")
+                __ASM_EMIT("sub             %[count], #16")
                 __ASM_EMIT("vst1.32         {q2-q3}, [%[dst]]!")
 
                 // x8 block
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[count], $8")
+                __ASM_EMIT("adds            %[count], #8")
                 __ASM_EMIT("blt             6f")
                 __ASM_EMIT("vld2.32         {q0-q1}, [%[src]]!")        // q0 = r, q1 = i
                 __ASM_EMIT("vld2.32         {q2-q3}, [%[src]]!")
                 __ASM_EMIT("vmov            q1, q2")
-                __ASM_EMIT("sub             %[count], $8")
+                __ASM_EMIT("sub             %[count], #8")
                 __ASM_EMIT("vst1.32         {q0-q1}, [%[dst]]!")
 
                 // x4 block
                 __ASM_EMIT("6:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             8f")
                 __ASM_EMIT("vld2.32         {q0-q1}, [%[src]]!")        // q0 = r, q1 = i
-                __ASM_EMIT("sub             %[count], $4")
+                __ASM_EMIT("sub             %[count], #4")
                 __ASM_EMIT("vst1.32         {q0}, [%[dst]]!")
 
                 // x1 blocks
                 __ASM_EMIT("8:")
-                __ASM_EMIT("adds            %[count], $3")
+                __ASM_EMIT("adds            %[count], #3")
                 __ASM_EMIT("blt             10f")
                 __ASM_EMIT("9:")
                 __ASM_EMIT("vldm.32         %[src]!, {s0, s1}")         // s0 = r, s1 = i
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("vstm.32         %[dst]!, {s0}")
                 __ASM_EMIT("bge             9b")
                 __ASM_EMIT("10:")
@@ -873,7 +873,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs            %[count], $32")
+                __ASM_EMIT("subs            %[count], #32")
                 __ASM_EMIT("blo             2f")
 
                 // x32 blocks
@@ -905,12 +905,12 @@ namespace lsp
                 __ASM_EMIT("vst2.32         {q10-q11}, [%[dst]]!")
                 __ASM_EMIT("vst2.32         {q12-q13}, [%[dst]]!")
                 __ASM_EMIT("vst2.32         {q14-q15}, [%[dst]]!")
-                __ASM_EMIT("subs            %[count], $32")
+                __ASM_EMIT("subs            %[count], #32")
                 __ASM_EMIT("bhs             1b")
 
                 // x16 block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $16")
+                __ASM_EMIT("adds            %[count], #16")
                 __ASM_EMIT("blt             4f")
 
                 __ASM_EMIT("1:")
@@ -927,11 +927,11 @@ namespace lsp
                 __ASM_EMIT("vst2.32         {q2-q3}, [%[dst]]!")
                 __ASM_EMIT("vst2.32         {q4-q5}, [%[dst]]!")
                 __ASM_EMIT("vst2.32         {q6-q7}, [%[dst]]!")
-                __ASM_EMIT("sub             %[count], $16")
+                __ASM_EMIT("sub             %[count], #16")
 
                 // x8 block
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[count], $8")
+                __ASM_EMIT("adds            %[count], #8")
                 __ASM_EMIT("blt             6f")
                 __ASM_EMIT("vld1.32         {q0-q1}, [%[src]]!")        // q0 = r, q1 = r
                 __ASM_EMIT("veor            q3, q3")
@@ -939,27 +939,27 @@ namespace lsp
                 __ASM_EMIT("vmov            q1, q2")
                 __ASM_EMIT("veor            q1, q1")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("sub             %[count], $8")
+                __ASM_EMIT("sub             %[count], #8")
                 __ASM_EMIT("vst2.32         {q2-q3}, [%[dst]]!")
 
                 // x4 block
                 __ASM_EMIT("6:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             8f")
                 __ASM_EMIT("vld1.32         {q0}, [%[src]]!")           // q0 = r
                 __ASM_EMIT("vmov            q2, q1")
                 __ASM_EMIT("veor            q1, q1")
-                __ASM_EMIT("sub             %[count], $4")
+                __ASM_EMIT("sub             %[count], #4")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
 
                 // x1 blocks
                 __ASM_EMIT("8:")
-                __ASM_EMIT("adds            %[count], $3")
+                __ASM_EMIT("adds            %[count], #3")
                 __ASM_EMIT("blt             10f")
                 __ASM_EMIT("veor            q0, q0")
                 __ASM_EMIT("9:")
                 __ASM_EMIT("vldm.32         %[src]!, {s0}")         // s0 = r, s1 = i
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("vstm.32         %[dst]!, {s0, s1}")
                 __ASM_EMIT("bge             9b")
                 __ASM_EMIT("10:")
@@ -976,7 +976,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                __ASM_EMIT("subs            %[count], $16")
+                __ASM_EMIT("subs            %[count], #16")
                 __ASM_EMIT("blo             2f")
 
                 // x16 blocks
@@ -989,48 +989,48 @@ namespace lsp
                 __ASM_EMIT("vld1.32         {q10-q11}, [%[src]]!")
                 __ASM_EMIT("vadd.f32        q0, q8")
                 __ASM_EMIT("vadd.f32        q2, q9")
-                __ASM_EMIT("sub             %[dst], $0x60")
+                __ASM_EMIT("sub             %[dst], #0x60")
                 __ASM_EMIT("vadd.f32        q4, q10")
                 __ASM_EMIT("vadd.f32        q6, q11")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
                 __ASM_EMIT("vst2.32         {q2-q3}, [%[dst]]!")
                 __ASM_EMIT("vst2.32         {q4-q5}, [%[dst]]!")
-                __ASM_EMIT("subs            %[count], $16")
+                __ASM_EMIT("subs            %[count], #16")
                 __ASM_EMIT("vst2.32         {q6-q7}, [%[dst]]!")
                 __ASM_EMIT("bhs             1b")
 
                 // x8 block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds            %[count], $8")
+                __ASM_EMIT("adds            %[count], #8")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vld2.32         {q0-q1}, [%[dst]]!")        // q0 = r, q1 = i
                 __ASM_EMIT("vld1.32         {q8-q9}, [%[src]]!")
                 __ASM_EMIT("vld2.32         {q2-q3}, [%[dst]]")
                 __ASM_EMIT("vadd.f32        q0, q8")
-                __ASM_EMIT("sub             %[dst], $0x20")
+                __ASM_EMIT("sub             %[dst], #0x20")
                 __ASM_EMIT("vadd.f32        q2, q9")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
-                __ASM_EMIT("sub             %[count], $8")
+                __ASM_EMIT("sub             %[count], #8")
                 __ASM_EMIT("vst2.32         {q2-q3}, [%[dst]]!")
 
                 // x4 block
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds            %[count], $4")
+                __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             6f")
                 __ASM_EMIT("vld2.32         {q0-q1}, [%[dst]]")         // q0 = r, q1 = i
                 __ASM_EMIT("vld1.32         {q8}, [%[src]]!")           // q0 = r
                 __ASM_EMIT("vadd.f32        q0, q8")
-                __ASM_EMIT("sub             %[count], $4")
+                __ASM_EMIT("sub             %[count], #4")
                 __ASM_EMIT("vst2.32         {q0-q1}, [%[dst]]!")
 
                 // x1 blocks
                 __ASM_EMIT("6:")
-                __ASM_EMIT("adds            %[count], $3")
+                __ASM_EMIT("adds            %[count], #3")
                 __ASM_EMIT("blt             8f")
                 __ASM_EMIT("7:")
                 __ASM_EMIT("vldm.32         %[dst], {s0, s1}")          // s0 = r, s1 = i
                 __ASM_EMIT("vldm.32         %[src]!, {s2}")
-                __ASM_EMIT("subs            %[count], $1")
+                __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("vadd.f32        s0, s2")
                 __ASM_EMIT("vstm.32         %[dst]!, {s0, s1}")
                 __ASM_EMIT("bge             7b")

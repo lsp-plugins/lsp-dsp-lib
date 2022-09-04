@@ -33,8 +33,8 @@ namespace lsp
         void mix2(float *a, const float *b, float k1, float k2, size_t count)
         {
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup         v28.4s, %S[k1].s[0]")
-                __ASM_EMIT("dup         v29.4s, %S[k2].s[0]")
+                __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
+                __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("b.lt        2f")
                 // x16 block
@@ -115,8 +115,8 @@ namespace lsp
         void mix_copy2(float *dst, const float *a, const float *b, float k1, float k2, size_t count)
         {
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup         v28.4s, %S[k1].s[0]")
-                __ASM_EMIT("dup         v29.4s, %S[k2].s[0]")
+                __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
+                __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("b.lt        2f")
                 // x16 block
@@ -201,8 +201,8 @@ namespace lsp
         void mix_add2(float *dst, const float *a, const float *b, float k1, float k2, size_t count)
         {
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup         v28.4s, %S[k1].s[0]")
-                __ASM_EMIT("dup         v29.4s, %S[k2].s[0]")
+                __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
+                __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("b.lt        2f")
                 // x16 block
@@ -292,9 +292,9 @@ namespace lsp
         void mix3(float *a, const float *b, const float *c, float k1, float k2, float k3, size_t count)
         {
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup         v28.4s, %S[k1].s[0]")
-                __ASM_EMIT("dup         v29.4s, %S[k2].s[0]")
-                __ASM_EMIT("dup         v30.4s, %S[k3].s[0]")
+                __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
+                __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
+                __ASM_EMIT("dup         v30.4s, %[k3].s[0]")
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("b.lt        2f")
                 // x16 block
@@ -393,9 +393,9 @@ namespace lsp
         void mix_copy3(float *dst, const float *a, const float *b, const float *c, float k1, float k2, float k3, size_t count)
         {
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup         v28.4s, %S[k1].s[0]")
-                __ASM_EMIT("dup         v29.4s, %S[k2].s[0]")
-                __ASM_EMIT("dup         v30.4s, %S[k3].s[0]")
+                __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
+                __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
+                __ASM_EMIT("dup         v30.4s, %[k3].s[0]")
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("b.lt        2f")
                 // x16 block
@@ -498,9 +498,9 @@ namespace lsp
         void mix_add3(float *dst, const float *a, const float *b, const float *c, float k1, float k2, float k3, size_t count)
         {
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup         v28.4s, %S[k1].s[0]")
-                __ASM_EMIT("dup         v29.4s, %S[k2].s[0]")
-                __ASM_EMIT("dup         v30.4s, %S[k3].s[0]")
+                __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
+                __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
+                __ASM_EMIT("dup         v30.4s, %[k3].s[0]")
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("b.lt        2f")
                 // x16 block
@@ -609,10 +609,10 @@ namespace lsp
                 float k1, float k2, float k3, float k4, size_t count)
         {
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup         v28.4s, %S[k1].s[0]")
-                __ASM_EMIT("dup         v29.4s, %S[k2].s[0]")
-                __ASM_EMIT("dup         v30.4s, %S[k3].s[0]")
-                __ASM_EMIT("dup         v31.4s, %S[k4].s[0]")
+                __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
+                __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
+                __ASM_EMIT("dup         v30.4s, %[k3].s[0]")
+                __ASM_EMIT("dup         v31.4s, %[k4].s[0]")
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("b.lt        2f")
                 // x16 block
@@ -729,10 +729,10 @@ namespace lsp
                 float k1, float k2, float k3, float k4, size_t count)
         {
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup         v28.4s, %S[k1].s[0]")
-                __ASM_EMIT("dup         v29.4s, %S[k2].s[0]")
-                __ASM_EMIT("dup         v30.4s, %S[k3].s[0]")
-                __ASM_EMIT("dup         v31.4s, %S[k4].s[0]")
+                __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
+                __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
+                __ASM_EMIT("dup         v30.4s, %[k3].s[0]")
+                __ASM_EMIT("dup         v31.4s, %[k4].s[0]")
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("b.lt        2f")
                 // x16 block
@@ -853,10 +853,10 @@ namespace lsp
                 float k1, float k2, float k3, float k4, size_t count)
         {
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("dup         v28.4s, %S[k1].s[0]")
-                __ASM_EMIT("dup         v29.4s, %S[k2].s[0]")
-                __ASM_EMIT("dup         v30.4s, %S[k3].s[0]")
-                __ASM_EMIT("dup         v31.4s, %S[k4].s[0]")
+                __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
+                __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
+                __ASM_EMIT("dup         v30.4s, %[k3].s[0]")
+                __ASM_EMIT("dup         v31.4s, %[k4].s[0]")
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("b.lt        2f")
                 // x16 block

@@ -24,10 +24,12 @@
 #define LSP_DSP_LIB_SYMBOL(ret, name, ...) \
     namespace lsp { \
         namespace dsp { \
-            LSP_DSP_LIB_CPPEXPORT ret (* name)(__VA_ARGS__) = NULL; \
+            LSP_DSP_LIB_PUBLIC \
+            ret (* name)(__VA_ARGS__) = NULL; \
             \
             extern "C" { \
-                LSP_DSP_LIB_CEXPORT ret (* LSP_DSP_LIB_MANGLE(name))(__VA_ARGS__) = NULL; \
+                LSP_DSP_LIB_PUBLIC \
+                ret (* LSP_DSP_LIB_MANGLE(name))(__VA_ARGS__) = NULL; \
             } \
         } \
     }
@@ -71,7 +73,8 @@ namespace lsp
     {
         static bool is_initialized = false;
 
-        LSP_DSP_LIB_CPPEXPORT void init()
+        LSP_DSP_LIB_PUBLIC
+        void init()
         {
             // Check if we are already initialized
             if (is_initialized)
@@ -91,7 +94,8 @@ namespace lsp
 
         extern "C"
         {
-            LSP_DSP_LIB_CEXPORT void LSP_DSP_LIB_MANGLE(init)()
+            LSP_DSP_LIB_PUBLIC
+            void LSP_DSP_LIB_MANGLE(init)()
             {
                 dsp::init();
             }

@@ -295,7 +295,7 @@ namespace lsp
         __ASM_EMIT("blt             8f") \
         __ASM_EMIT("7:") \
         __ASM_EMIT("vld1.32         {d0[], d1[]}, [%[" SEL(A, DST) "]]") \
-        __ASM_EMIT("vld1.32         {d8[], d9[]}, [%["B "]]!") \
+        __ASM_EMIT("vld1.32         {d8[], d9[]}, [%[" B "]]!") \
         __ASM_EMIT(SEL("vmul.f32        q0, q0, q4", ""))       /* q0 = A*B | DST */ \
         __ASM_EMIT("vrecpe.f32      q8, q0")                    /* q8 = s2 */ \
         __ASM_EMIT("vrecps.f32      q12, q8, q0")               /* q12 = (2 - R*s2) */ \
@@ -579,7 +579,7 @@ namespace lsp
         __ASM_EMIT("vstm            %[" DST "]!, {q0-q1}") \
         /* 4x blocks */ \
         __ASM_EMIT("4:") \
-        __ASM_EMIT("adds            %[count], $4") \
+        __ASM_EMIT("adds            %[count], #4") \
         __ASM_EMIT("blt             6f") \
         __ASM_EMIT("vldm            %[" SEL(B, A) "]!, {q0}") \
         __ASM_EMIT("vldm            %[" C "]!, {q4}") \
@@ -592,11 +592,11 @@ namespace lsp
         __ASM_EMIT(SEL("", "vmul.f32        q0, q0, q4"))       /* q0 = 1/(B*C) | C/A */ \
         __ASM_EMIT("vldm            %[" SEL(A, B) "]!, {q12}")  /* q12 = A | B */ \
         __ASM_EMIT("vmul.f32        q0, q0, q12")               /* q0 = A/(B*C) | (B*C)/A */ \
-        __ASM_EMIT("sub             %[count], $4") \
+        __ASM_EMIT("sub             %[count], #4") \
         __ASM_EMIT("vstm            %[" DST "]!, {q0}") \
         /* 1x blocks */ \
         __ASM_EMIT("6:") \
-        __ASM_EMIT("adds            %[count], $3") \
+        __ASM_EMIT("adds            %[count], #3") \
         __ASM_EMIT("blt             8f") \
         __ASM_EMIT("7:") \
         __ASM_EMIT("vld1.32         {d0[], d1[]}, [%[" SEL(B, A) "]]!") \
@@ -610,7 +610,7 @@ namespace lsp
         __ASM_EMIT(SEL("", "vmul.f32        q0, q0, q4"))       /* q0 = 1/(B*C) | C/A */ \
         __ASM_EMIT("vld1.32         {d24[], d25[]}, [%[" SEL(A, B) "]]!") \
         __ASM_EMIT("vmul.f32        q0, q0, q12")               /* q0 = A/(B*C) | (B*C)/A */ \
-        __ASM_EMIT("subs            %[count], $1") \
+        __ASM_EMIT("subs            %[count], #1") \
         __ASM_EMIT("vst1.32         {d0[0]}, [%[" DST "]]!") \
         __ASM_EMIT("bge             7b") \
         __ASM_EMIT("8:")
@@ -646,7 +646,7 @@ namespace lsp
     #undef FMDIV4_CORE
 
     #define FMMOD_VV_CORE(DST, A, INCA, B, INCB, C, INCC, SEL)   \
-        __ASM_EMIT("subs            %[count], $16") \
+        __ASM_EMIT("subs            %[count], #16") \
         __ASM_EMIT("blo             2f") \
         /* 16x blocks */ \
         __ASM_EMIT("1:") \
@@ -698,11 +698,11 @@ namespace lsp
         __ASM_EMIT("vmls.f32        q2, q6, q10") \
         __ASM_EMIT("vmls.f32        q3, q7, q11") \
         __ASM_EMIT("vstm            %[" DST "]!, {q0-q3}") \
-        __ASM_EMIT("subs            %[count], $16") \
+        __ASM_EMIT("subs            %[count], #16") \
         __ASM_EMIT("bhs             1b") \
         /* 8x block */ \
         __ASM_EMIT("2:") \
-        __ASM_EMIT("adds            %[count], $8") \
+        __ASM_EMIT("adds            %[count], #8") \
         __ASM_EMIT("blt             4f") \
         __ASM_EMIT("vldm            %[" C "]" INCC ", {q12-q13}") \
         __ASM_EMIT("vldm            %[" SEL(B, A) "]" SEL(INCB, INCA) ", {q4-q5}") \
@@ -730,10 +730,10 @@ namespace lsp
         __ASM_EMIT("vmls.f32        q0, q4, q8")                        /* q0 = s - d*int(s/d) */ \
         __ASM_EMIT("vmls.f32        q1, q5, q9") \
         __ASM_EMIT("vstm            %[" DST "]!, {q0-q1}") \
-        __ASM_EMIT("sub             %[count], $8") \
+        __ASM_EMIT("sub             %[count], #8") \
         /* 4x blocks */ \
         __ASM_EMIT("4:") \
-        __ASM_EMIT("adds            %[count], $4") \
+        __ASM_EMIT("adds            %[count], #4") \
         __ASM_EMIT("blt             6f") \
         __ASM_EMIT("vldm            %[" C "]" INCC ", {q12}") \
         __ASM_EMIT("vldm            %[" SEL(B, A) "]" SEL(INCB, INCA) ", {q4}") \
@@ -750,10 +750,10 @@ namespace lsp
         __ASM_EMIT("vcvt.f32.s32    q8, q8") \
         __ASM_EMIT("vmls.f32        q0, q4, q8")                        /* q0 = s - d*int(s/d) */ \
         __ASM_EMIT("vstm            %[" DST "]!, {q0}") \
-        __ASM_EMIT("sub             %[count], $4") \
+        __ASM_EMIT("sub             %[count], #4") \
         /* 1x blocks */ \
         __ASM_EMIT("6:") \
-        __ASM_EMIT("adds            %[count], $3") \
+        __ASM_EMIT("adds            %[count], #3") \
         __ASM_EMIT("blt             8f") \
         __ASM_EMIT("7:") \
         __ASM_EMIT("vld1.32         {d24[], d25[]}, [%[" C "]]" INCC) \
@@ -771,7 +771,7 @@ namespace lsp
         __ASM_EMIT("vcvt.f32.s32    q8, q8") \
         __ASM_EMIT("vmls.f32        q0, q4, q8")                        /* q0 = s - d*int(s/d) */ \
         __ASM_EMIT("vst1.32         {d0[0]}, [%[" DST "]]!") \
-        __ASM_EMIT("subs            %[count], $1") \
+        __ASM_EMIT("subs            %[count], #1") \
         __ASM_EMIT("bge             7b") \
         __ASM_EMIT("8:")
 

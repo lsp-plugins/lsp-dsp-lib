@@ -57,12 +57,12 @@ namespace lsp
          */
         #define IDX_COND_SEARCH(kmin) \
             __ASM_EMIT("veor        q0, q0")                    /* q0   = imin0 */ \
-            __ASM_EMIT("cmp         %[count], $1") \
+            __ASM_EMIT("cmp         %[count], #1") \
             __ASM_EMIT("blo         6f") \
             /* 8x blocks */ \
             __ASM_EMIT("vldm        %[IDXS]!, {q8-q9}")         /* q8   = cind0, q9 = cind1 */ \
             __ASM_EMIT("vld1.32     {d4[], d5[]}, [%[src]]")    /* q2   = vmin0 */ \
-            __ASM_EMIT("subs        %[count], $8") \
+            __ASM_EMIT("subs        %[count], #8") \
             __ASM_EMIT("vldm        %[IDXS]!, {q14-q15}")       /* q14  = step0, q15 = step1 */ \
             __ASM_EMIT("blo         2f") \
             __ASM_EMIT("vmov        q1, q0")                    /* q1   = imin1 */ \
@@ -77,7 +77,7 @@ namespace lsp
             __ASM_EMIT("vbif        q3, q11, q13") \
             __ASM_EMIT("vadd.u32    q8, q14")                   /* inew0 += 8 */ \
             __ASM_EMIT("vadd.u32    q9, q15")                   /* inew1 += 8 */ \
-            __ASM_EMIT("subs        %[count], $8")              /* count -= 8 */ \
+            __ASM_EMIT("subs        %[count], #8")              /* count -= 8 */ \
             __ASM_EMIT("bhs         1b") \
             /* 8 -> 4 reduce */ \
             __ASM_EMIT(kmin "       q12, q2, q3") \
@@ -86,14 +86,14 @@ namespace lsp
             /* 4x block */ \
             __ASM_EMIT("2:") \
             __ASM_EMIT("vldm        %[IDXS]!, {q14-q15}")       /* q14 = incr = 4, q15 = incr = 1 */ \
-            __ASM_EMIT("adds        %[count], $4") \
+            __ASM_EMIT("adds        %[count], #4") \
             __ASM_EMIT("blt         4f") \
             __ASM_EMIT("vldm        %[src]!, {q10}")            /* q10 = samp0 */ \
             __ASM_EMIT(kmin "       q12, q2, q10")              /* q12 = (vmin0 <= samp0) */ \
             __ASM_EMIT("vbif        q0, q8, q12")               /* q0  = imin0 & (vmin0 <= samp0) | inew0 & (vmin0 > samp0) */ \
             __ASM_EMIT("vbif        q2, q10, q12")              /* q6  = vmin0 & (vmin0 <= samp0) | samp0 & (vmin0 > samp0) */ \
             __ASM_EMIT("vadd.u32    q8, q14")                   /* inew0 += 4 */ \
-            __ASM_EMIT("sub         %[count], $4")              /* count -= 4 */ \
+            __ASM_EMIT("sub         %[count], #4")              /* count -= 4 */ \
             __ASM_EMIT("4:") \
             /* reduce 4->1, step 1 */ \
             __ASM_EMIT("vext.32     q10, q2, q2, #3") \
@@ -108,7 +108,7 @@ namespace lsp
             __ASM_EMIT("vbif        q2, q10, q12") \
             __ASM_EMIT("vbif        q0, q11, q12") \
             /* 1x block */ \
-            __ASM_EMIT("adds        %[count], $3") \
+            __ASM_EMIT("adds        %[count], #3") \
             __ASM_EMIT("blt         6f") \
             __ASM_EMIT("5:") \
             __ASM_EMIT("vld1.32     {d20[], d21[]}, [%[src]]!") /* q10 = samp0 */ \
@@ -116,11 +116,11 @@ namespace lsp
             __ASM_EMIT("vbif        q0, q8, q12")               /* q0  = imin0 & (vmin0 <= samp0) | inew0 & (vmin0 > samp0) */ \
             __ASM_EMIT("vbif        q2, q10, q12")              /* q6  = vmin0 & (vmin0 <= samp0) | samp0 & (vmin0 > samp0) */ \
             __ASM_EMIT("vadd.u32    q8, q15")                   /* inew1 += 1 */ \
-            __ASM_EMIT("subs        %[count], $1")              /* count-- */ \
+            __ASM_EMIT("subs        %[count], #1")              /* count-- */ \
             __ASM_EMIT("bge         5b") \
             __ASM_EMIT("6:") \
             /* end */ \
-            __ASM_EMIT("vmov        %[res], d0[0]")
+            __ASM_EMIT("vmov.32     %[res], d0[0]")
 
         size_t min_index(const float *src, size_t count)
         {
@@ -218,13 +218,13 @@ namespace lsp
         #define MINMAX_COND_SEARCH(kmin, kmax) \
             __ASM_EMIT("veor        q0, q0")                    /* q0   = imin0 */ \
             __ASM_EMIT("veor        q4, q4")                    /* q4   = imax0 */ \
-            __ASM_EMIT("cmp         %[count], $1") \
+            __ASM_EMIT("cmp         %[count], #1") \
             __ASM_EMIT("blo         6f") \
             /* 8x blocks */ \
             __ASM_EMIT("vldm        %[IDXS]!, {q8-q9}")         /* q8   = cind0, q9 = cind1 */ \
             __ASM_EMIT("vld1.32     {d4[], d5[]}, [%[src]]")    /* q2   = vmin0 */ \
             __ASM_EMIT("vmov        q6, q2")                    /* q6   = vmax */ \
-            __ASM_EMIT("subs        %[count], $8") \
+            __ASM_EMIT("subs        %[count], #8") \
             __ASM_EMIT("vldm        %[IDXS]!, {q14-q15}")       /* q14  = step0, q15 = step1 */ \
             __ASM_EMIT("blo         2f") \
             __ASM_EMIT("vmov        q1, q0")                    /* q1   = imin1 */ \
@@ -247,7 +247,7 @@ namespace lsp
             __ASM_EMIT("vbif        q7, q11, q13") \
             __ASM_EMIT("vadd.u32    q8, q14")                   /* inew0 += 8 */ \
             __ASM_EMIT("vadd.u32    q9, q15")                   /* inew1 += 8 */ \
-            __ASM_EMIT("subs        %[count], $8")              /* count -= 8 */ \
+            __ASM_EMIT("subs        %[count], #8")              /* count -= 8 */ \
             __ASM_EMIT("bhs         1b") \
             /* 8 -> 4 reduce */ \
             __ASM_EMIT(kmin "       q12, q2, q3") \
@@ -259,7 +259,7 @@ namespace lsp
             /* 4x block */ \
             __ASM_EMIT("2:") \
             __ASM_EMIT("vldm        %[IDXS]!, {q14-q15}")       /* q14 = incr = 4, q15 = incr = 1 */ \
-            __ASM_EMIT("adds        %[count], $4") \
+            __ASM_EMIT("adds        %[count], #4") \
             __ASM_EMIT("blt         4f") \
             __ASM_EMIT("vldm        %[src]!, {q10}")            /* q10 = samp0 */ \
             __ASM_EMIT(kmin "       q12, q2, q10")              /* q12 = (vmin0 <= samp0) */ \
@@ -269,7 +269,7 @@ namespace lsp
             __ASM_EMIT("vbif        q2, q10, q12")              /* q6  = vmin0 & (vmin0 <= samp0) | samp0 & (vmin0 > samp0) */ \
             __ASM_EMIT("vbif        q6, q10, q13")              /* q8  = vmax0 & (vmax0 >= samp0) | samp0 & (vmax0 < samp0) */ \
             __ASM_EMIT("vadd.u32    q8, q14")                   /* inew0 += 4 */ \
-            __ASM_EMIT("sub         %[count], $4")              /* count -= 4 */ \
+            __ASM_EMIT("sub         %[count], #4")              /* count -= 4 */ \
             __ASM_EMIT("4:") \
             /* reduce 4->1, step 1 */ \
             __ASM_EMIT("vext.32     q10, q2, q2, #3") \
@@ -294,7 +294,7 @@ namespace lsp
             __ASM_EMIT("vbif        q6, q10, q12") \
             __ASM_EMIT("vbif        q4, q11, q12") \
             /* 1x block */ \
-            __ASM_EMIT("adds        %[count], $3") \
+            __ASM_EMIT("adds        %[count], #3") \
             __ASM_EMIT("blt         6f") \
             __ASM_EMIT("5:") \
             __ASM_EMIT("vld1.32     {d20[], d21[]}, [%[src]]!") /* q10 = samp0 */ \
@@ -305,7 +305,7 @@ namespace lsp
             __ASM_EMIT("vbif        q2, q10, q12")              /* q6  = vmin0 & (vmin0 <= samp0) | samp0 & (vmin0 > samp0) */ \
             __ASM_EMIT("vbif        q6, q10, q13")              /* q8  = vmax0 & (vmax0 >= samp0) | samp0 & (vmax0 < samp0) */ \
             __ASM_EMIT("vadd.u32    q8, q15")                   /* inew1 += 1 */ \
-            __ASM_EMIT("subs        %[count], $1")              /* count-- */ \
+            __ASM_EMIT("subs        %[count], #1")              /* count-- */ \
             __ASM_EMIT("bge         5b") \
             __ASM_EMIT("6:") \
             /* end */ \

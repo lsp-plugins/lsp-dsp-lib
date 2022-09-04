@@ -42,10 +42,10 @@ UNIQ_MERGED_DEPENDENCIES   := $(filter-out $(ARTIFACT_ID),$(call uniq, $(MERGED_
 UNIQ_ALL_DEPENDENCIES      := $(filter-out $(ARTIFACT_ID),$(call uniq, $(ALL_DEPENDENCIES)))
 
 # Find the proper branch of the GIT repository
+MODULES                    ?= $(BASEDIR)/modules
+GIT                        ?= git
+
 ifeq ($(TREE),1)
-  MODULES                := $(BASEDIR)/modules
-  GIT                    := git
-  
   $(foreach dep,$(UNIQ_ALL_DEPENDENCIES), \
     $(eval $(dep)_URL=$($(dep)_URL_RO)) \
   )
@@ -68,15 +68,15 @@ SRC_MODULES         = $(foreach dep, $(UNIQ_MERGED_DEPENDENCIES), $(if $(findstr
 HDR_MODULES         = $(foreach dep, $(UNIQ_MERGED_DEPENDENCIES), $(if $(findstring hdr,$($(dep)_TYPE)),$(dep)))
 ALL_SRC_MODULES     = $(foreach dep, $(UNIQ_ALL_DEPENDENCIES), $(if $(findstring src,$($(dep)_TYPE)),$(dep)))
 ALL_HDR_MODULES     = $(foreach dep, $(UNIQ_ALL_DEPENDENCIES), $(if $(findstring hdr,$($(dep)_TYPE)),$(dep)))
-ALL_PATHS           = $(foreach dep, $(ALL_SRC_MODULES) $(ALL_HDR_MODULES), $($(dep)_PATH))
 
 # Branches
-.PHONY: $(ALL_SRC_MODULES) $(ALL_HDR_MODULES) $(ALL_PATHS)
+.PHONY: $(ALL_SRC_MODULES) $(ALL_HDR_MODULES)
 .PHONY: fetch prune clean
 
 $(ALL_SRC_MODULES) $(ALL_HDR_MODULES):
 	echo "Cloning $($(@)_URL) -> $($(@)_PATH) [$($(@)_BRANCH)]"
 	test -f "$($(@)_PATH)/.git/config" || $(GIT) clone "$($(@)_URL)" "$($(@)_PATH)"
+	mkdir -p $(dir $($(@)_PATH))
 	$(GIT) -C "$($(@)_PATH)" reset --hard
 	$(GIT) -C "$($(@)_PATH)" fetch origin --force
 	$(GIT) -C "$($(@)_PATH)" fetch origin '+refs/heads/*:refs/tags/*' --force
@@ -84,10 +84,6 @@ $(ALL_SRC_MODULES) $(ALL_HDR_MODULES):
 	$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout "refs/tags/$($(@)_BRANCH)" || \
 	$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout -B "$($(@)_NAME)-$($(@)_BRANCH)" "origin/$($(@)_NAME)-$($(@)_BRANCH)" || \
 	$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout "refs/tags/$($(@)_NAME)-$($(@)_BRANCH)"
-
-$(ALL_PATHS):
-	echo "Removing $(notdir $(@))"
-	-rm -rf $(@)
 
 fetch: $(SRC_MODULES) $(HDR_MODULES)
 
@@ -97,5 +93,8 @@ clean:
 	echo rm -rf "$($(ARTIFACT_VARS)_BIN)/$(ARTIFACT_NAME)"
 	-rm -rf "$($(ARTIFACT_VARS)_BIN)/$(ARTIFACT_NAME)"
 
-prune: $(ALL_PATHS)
+prune:
+	echo "Removing $(notdir $(MODULES))"
+	-rm -rf $(MODULES)
+	
 
