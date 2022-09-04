@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.5 ===
-- Implemented dsp::prgba32_set_alpha and dsp::pbgraa32_set_alpha functions.
+* Implemented dsp::prgba32_set_alpha and dsp::pbgraa32_set_alpha functions.
 * Better assembly code form 32-bit ARM, now compatible with Clang.
 * Better assembly code form 64-bit ARM, now compatible with Clang.
 * Updated build scripts.
