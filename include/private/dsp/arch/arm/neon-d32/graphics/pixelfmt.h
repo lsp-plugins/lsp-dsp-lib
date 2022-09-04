@@ -226,7 +226,95 @@ namespace lsp
             );
         }
 
-    }
-}
+        IF_ARCH_ARM(
+            static const uint32_t pabc32_set_alpha_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0x00ffffff),
+                LSP_DSP_VEC4(0x00ffffff)
+            };
+        );
+
+        void pabc32_set_alpha(void *dst, const void *src, uint8_t alpha, size_t count)
+        {
+            IF_ARCH_ARM(
+                uint32_t a  = uint32_t(alpha) << 24;
+            );
+
+            ARCH_ARM_ASM
+            (
+                __ASM_EMIT("vld1.f32    {d16[], d17[]}, [%[a]]")            // q8   = alpha
+                __ASM_EMIT("vldm        %[MASK], {q10-q11}")                // q10  = q11 = mask
+                __ASM_EMIT("vmov        q9, q8")                            // q9   = alpha
+
+                __ASM_EMIT("subs        %[count], #32")
+                __ASM_EMIT("blo         2f")
+                // 32x blocks
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vldm        %[src]!, {q0-q7}")
+                __ASM_EMIT("vbif        q0, q8, q10")
+                __ASM_EMIT("vbif        q1, q9, q11")
+                __ASM_EMIT("vbif        q2, q8, q10")
+                __ASM_EMIT("vbif        q3, q9, q11")
+                __ASM_EMIT("vbif        q4, q8, q10")
+                __ASM_EMIT("vbif        q5, q9, q11")
+                __ASM_EMIT("vbif        q6, q8, q10")
+                __ASM_EMIT("vbif        q7, q9, q11")
+                __ASM_EMIT("subs        %[count], #32")
+                __ASM_EMIT("vstm        %[dst]!, {q0-q7}")
+                __ASM_EMIT("bhs         1b")
+                // 16x block
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds        %[count], #16")
+                __ASM_EMIT("blt         4f")
+                __ASM_EMIT("vldm        %[src]!, {q0-q3}")
+                __ASM_EMIT("vbif        q0, q8, q10")
+                __ASM_EMIT("vbif        q1, q9, q11")
+                __ASM_EMIT("vbif        q2, q8, q10")
+                __ASM_EMIT("vbif        q3, q9, q11")
+                __ASM_EMIT("sub         %[count], #16")
+                __ASM_EMIT("vstm        %[dst]!, {q0-q3}")
+                // 8x block
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds        %[count], #8")
+                __ASM_EMIT("blt         6f")
+                __ASM_EMIT("vldm        %[src]!, {q0-q1}")
+                __ASM_EMIT("vbif        q0, q8, q10")
+                __ASM_EMIT("vbif        q1, q9, q11")
+                __ASM_EMIT("sub         %[count], #8")
+                __ASM_EMIT("vstm        %[dst]!, {q0-q1}")
+                // 4x block
+                __ASM_EMIT("6:")
+                __ASM_EMIT("adds        %[count], #4")
+                __ASM_EMIT("blt         8f")
+                __ASM_EMIT("vldm        %[src]!, {q0}")
+                __ASM_EMIT("vbif        q0, q8, q10")
+                __ASM_EMIT("sub         %[count], #4")
+                __ASM_EMIT("vstm        %[dst]!, {q0}")
+                // 1x blocks
+                __ASM_EMIT("8:")
+                __ASM_EMIT("adds        %[count], #3")
+                __ASM_EMIT("blt         10f")
+                __ASM_EMIT("9:")
+                __ASM_EMIT("vld1.32     {d0[], d1[]}, [%[src]]!")
+                __ASM_EMIT("vbif        q0, q8, q10")
+                __ASM_EMIT("subs        %[count], #1")
+                __ASM_EMIT("vst1.32     {d0[0]}, [%[dst]]!")
+                __ASM_EMIT("bge         9b")
+                // End
+                __ASM_EMIT("10:")
+
+                : [dst] "+r"(dst), [src] "+r"(src),
+                  [count] "+r" (count)
+                : [MASK] "r" (&pabc32_set_alpha_const[0]),
+                  [a] "r" (&a)
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
+    } /* namespace neon_d32 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_GRAPHICS_PIXELFMT_H_ */

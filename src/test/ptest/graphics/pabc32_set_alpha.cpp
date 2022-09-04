@@ -55,14 +55,14 @@ namespace lsp
             void pabc32_set_alpha(void *dst, const void *src, uint8_t alpha, size_t count);
         }
     )
-//
-//    IF_ARCH_ARM(
-//        namespace neon_d32
-//        {
-//            void pabc32_set_alpha(void *dst, const void *src, uint8_t alpha, size_t count);
-//        }
-//    )
-//
+
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void pabc32_set_alpha(void *dst, const void *src, uint8_t alpha, size_t count);
+        }
+    )
+
 //    IF_ARCH_AARCH64(
 //        namespace asimd
 //        {
@@ -114,7 +114,7 @@ PTEST_BEGIN("dsp.graphics", pabc32_set_alpha, 5, 5000)
             IF_ARCH_X86(CALL(sse2::pabc32_set_alpha));
             IF_ARCH_X86(CALL(avx::pabc32_set_alpha));
             IF_ARCH_X86(CALL(avx2::pabc32_set_alpha));
-//            IF_ARCH_ARM(CALL(neon_d32::pabc32_set_alpha));
+            IF_ARCH_ARM(CALL(neon_d32::pabc32_set_alpha));
 //            IF_ARCH_AARCH64(CALL(asimd::pabc32_set_alpha));
 
             PTEST_SEPARATOR;
