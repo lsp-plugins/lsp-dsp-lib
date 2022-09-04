@@ -34,8 +34,8 @@
         #define X86_GREG        "m"
         #define X86_PGREG       "+m"
     #else
-        #define X86_GREG        "r"
-        #define X86_PGREG       "+r"
+        #define X86_GREG        "g"
+        #define X86_PGREG       "+g"
     #endif /* COMPILER_CLANG */
 #else
     #define X86_GREG        "r"
