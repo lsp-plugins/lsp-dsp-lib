@@ -396,6 +396,8 @@
                 EXPORT1(convolve);
 
                 EXPORT1(abgr32_to_bgrff32);
+                EXPORT2(pbgra32_set_alpha, pabc32_set_alpha);
+                EXPORT2(prgba32_set_alpha, pabc32_set_alpha);
 
                 EXPORT1(lin_inter_set);
                 EXPORT1(lin_inter_mul2);
