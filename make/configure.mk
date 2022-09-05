@@ -154,12 +154,8 @@ endef
 
 define binconfig =
   $(eval name=$(1))
-<<<<<<< Updated upstream
-  $(eval $(call _modconfig,$(1),$(1)))
-=======
   $(eval publisher=1)
-  $(eval $(call _modconfig,$(1),))
->>>>>>> Stashed changes
+  $(eval $(call _modconfig,$(name),$(publisher)))
 endef
 
 define hdrconfig =

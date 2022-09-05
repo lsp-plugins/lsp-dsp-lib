@@ -78,8 +78,8 @@ $(ALL_SRC_MODULES) $(ALL_HDR_MODULES):
 	test -f "$($(@)_PATH)/.git/config" || $(GIT) clone "$($(@)_URL)" "$($(@)_PATH)"
 	mkdir -p $(dir $($(@)_PATH))
 	$(GIT) -C "$($(@)_PATH)" reset --hard
-	$(GIT) -C "$($(@)_PATH)" fetch origin --force
-	$(GIT) -C "$($(@)_PATH)" fetch origin '+refs/heads/*:refs/tags/*' --force
+	$(GIT) -C "$($(@)_PATH)" fetch origin --force --prune --prune-tags
+	$(GIT) -C "$($(@)_PATH)" fetch origin 'refs/tags/*:refs/tags/*' --force
 	$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout -B "$($(@)_BRANCH)" "origin/$($(@)_BRANCH)" || \
 	$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout "refs/tags/$($(@)_BRANCH)" || \
 	$(GIT) -c advice.detachedHead=false -C "$($(@)_PATH)" checkout -B "$($(@)_NAME)-$($(@)_BRANCH)" "origin/$($(@)_NAME)-$($(@)_BRANCH)" || \
