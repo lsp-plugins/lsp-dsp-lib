@@ -50,44 +50,38 @@
 
     // Include ASIMD-specific definitions
     #define PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL
-        #include <private/dsp/arch/aarch64/asimd/copy.h>
-        #include <private/dsp/arch/aarch64/asimd/float.h>
-
-        #include <private/dsp/arch/aarch64/asimd/pmath/op_kx.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/op_vv.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/fmop_kx.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/fmop_vv.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/abs_vv.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/log.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/exp.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/minmax.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/pow.h>
-
-        #include <private/dsp/arch/aarch64/asimd/hmath/hsum.h>
-        #include <private/dsp/arch/aarch64/asimd/hmath/hdotp.h>
-
-        #include <private/dsp/arch/aarch64/asimd/mix.h>
-        #include <private/dsp/arch/aarch64/asimd/msmatrix.h>
-        #include <private/dsp/arch/aarch64/asimd/search/minmax.h>
-        #include <private/dsp/arch/aarch64/asimd/search/iminmax.h>
-        #include <private/dsp/arch/aarch64/asimd/resampling.h>
-        #include <private/dsp/arch/aarch64/asimd/convolution.h>
-
         #include <private/dsp/arch/aarch64/asimd/complex.h>
-        #include <private/dsp/arch/aarch64/asimd/pcomplex.h>
-
-        #include <private/dsp/arch/aarch64/asimd/fft.h>
-        #include <private/dsp/arch/aarch64/asimd/pfft.h>
+        #include <private/dsp/arch/aarch64/asimd/convolution.h>
+        #include <private/dsp/arch/aarch64/asimd/copy.h>
         #include <private/dsp/arch/aarch64/asimd/fastconv.h>
-
-        #include <private/dsp/arch/aarch64/asimd/filters/static.h>
+        #include <private/dsp/arch/aarch64/asimd/fft.h>
         #include <private/dsp/arch/aarch64/asimd/filters/dynamic.h>
+        #include <private/dsp/arch/aarch64/asimd/filters/static.h>
         #include <private/dsp/arch/aarch64/asimd/filters/transfer.h>
         #include <private/dsp/arch/aarch64/asimd/filters/transform.h>
-
-        #include <private/dsp/arch/aarch64/asimd/graphics.h>
-
+        #include <private/dsp/arch/aarch64/asimd/float.h>
+        #include <private/dsp/arch/aarch64/asimd/graphics/axis.h>
+        #include <private/dsp/arch/aarch64/asimd/graphics/effects.h>
+        #include <private/dsp/arch/aarch64/asimd/graphics/pixelfmt.h>
+        #include <private/dsp/arch/aarch64/asimd/hmath/hsum.h>
+        #include <private/dsp/arch/aarch64/asimd/hmath/hdotp.h>
         #include <private/dsp/arch/aarch64/asimd/interpolation/linear.h>
+        #include <private/dsp/arch/aarch64/asimd/mix.h>
+        #include <private/dsp/arch/aarch64/asimd/msmatrix.h>
+        #include <private/dsp/arch/aarch64/asimd/pcomplex.h>
+        #include <private/dsp/arch/aarch64/asimd/pfft.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/abs_vv.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/exp.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/fmop_kx.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/fmop_vv.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/log.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/minmax.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/op_kx.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/op_vv.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/pow.h>
+        #include <private/dsp/arch/aarch64/asimd/resampling.h>
+        #include <private/dsp/arch/aarch64/asimd/search/minmax.h>
+        #include <private/dsp/arch/aarch64/asimd/search/iminmax.h>
     #undef PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL
 
     #define EXPORT2(function, export) \
