@@ -286,8 +286,9 @@ $(LSP_DSP_LIB_BIN)/main/arm/neon-d32.o: main/arm/neon-d32.cpp \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/filters/transform.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/float.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/graphics/axis.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/graphics/pixelfmt.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/graphics/colors.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/graphics/effects.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/graphics/pixelfmt.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/hmath/hdotp.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/hmath/hsum.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/interpolation/linear.h \
