@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.7 ===
-
+* Implemented axis_apply_log1 and axis_apply_log2 optimized for AArch64 ASIMD.
 
 === 1.0.6 ===
 * Updated build scripts.
