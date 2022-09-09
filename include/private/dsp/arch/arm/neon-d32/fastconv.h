@@ -26,6 +26,7 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL */
 
+#include <private/dsp/arch/arm/neon-d32/fft/const.h>
 #include <private/dsp/arch/arm/neon-d32/fastconv/parse.h>
 #include <private/dsp/arch/arm/neon-d32/fastconv/restore.h>
 #include <private/dsp/arch/arm/neon-d32/fastconv/apply.h>
