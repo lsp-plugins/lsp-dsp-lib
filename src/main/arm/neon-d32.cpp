@@ -59,6 +59,7 @@
         #include <private/dsp/arch/arm/neon-d32/filters/transform.h>
         #include <private/dsp/arch/arm/neon-d32/float.h>
         #include <private/dsp/arch/arm/neon-d32/graphics/axis.h>
+        #include <private/dsp/arch/arm/neon-d32/graphics/colors.h>
         #include <private/dsp/arch/arm/neon-d32/graphics/effects.h>
         #include <private/dsp/arch/arm/neon-d32/graphics/pixelfmt.h>
         #include <private/dsp/arch/arm/neon-d32/hmath/hdotp.h>

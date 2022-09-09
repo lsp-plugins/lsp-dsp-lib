@@ -61,6 +61,7 @@
         #include <private/dsp/arch/aarch64/asimd/filters/transform.h>
         #include <private/dsp/arch/aarch64/asimd/float.h>
         #include <private/dsp/arch/aarch64/asimd/graphics/axis.h>
+        #include <private/dsp/arch/aarch64/asimd/graphics/colors.h>
         #include <private/dsp/arch/aarch64/asimd/graphics/effects.h>
         #include <private/dsp/arch/aarch64/asimd/graphics/pixelfmt.h>
         #include <private/dsp/arch/aarch64/asimd/hmath/hsum.h>

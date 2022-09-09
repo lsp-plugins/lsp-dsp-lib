@@ -19,8 +19,8 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PRIVATE_DSP_ARCH_AARCH64_ASIMD_GRAPHICS_EFFECTS_H_
-#define PRIVATE_DSP_ARCH_AARCH64_ASIMD_GRAPHICS_EFFECTS_H_
+#ifndef PRIVATE_DSP_ARCH_AARCH64_ASIMD_GRAPHICS_COLORS_H_
+#define PRIVATE_DSP_ARCH_AARCH64_ASIMD_GRAPHICS_COLORS_H_
 
 #ifndef PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL
     #error "This header should not be included directly"
@@ -34,4 +34,4 @@ namespace lsp
     } /* namespace asimd */
 } /* namespace lsp */
 
-#endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_GRAPHICS_EFFECTS_H_ */
+#endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_GRAPHICS_COLORS_H_ */
