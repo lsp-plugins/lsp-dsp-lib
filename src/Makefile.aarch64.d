@@ -281,6 +281,7 @@ $(LSP_DSP_LIB_BIN)/main/aarch64/asimd.o: main/aarch64/asimd.cpp \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/aarch64/asimd/filters/transform.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/aarch64/asimd/float.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/aarch64/asimd/graphics/axis.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/aarch64/asimd/graphics/colors.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/aarch64/asimd/graphics/effects.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/aarch64/asimd/graphics/pixelfmt.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/aarch64/asimd/hmath/hsum.h \
