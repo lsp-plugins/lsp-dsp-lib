@@ -26,6 +26,8 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL */
 
+#include <private/dsp/arch/aarch64/asimd/filters/static.h>
+
 namespace lsp
 {
     namespace asimd
