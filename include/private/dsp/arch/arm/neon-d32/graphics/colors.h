@@ -113,37 +113,33 @@ namespace lsp
 
         #undef FILL4_CORE
 
-        #define FVEC4(x)    x, x, x, x
-
         IF_ARCH_ARM(
             static const float HSL_RGB[] =
             {
-                FVEC4(0.5f),                // 1/2
-                FVEC4(0.333333333333f),     // 1/3
-                FVEC4(1.0f),                // 1
-                FVEC4(6.0f),                // 6
-                FVEC4(0.166666666667f),     // 1/6
-                FVEC4(0.666666666667f)      // 2/3
+                LSP_DSP_VEC4(0.5f),                // 1/2
+                LSP_DSP_VEC4(0.333333333333f),     // 1/3
+                LSP_DSP_VEC4(1.0f),                // 1
+                LSP_DSP_VEC4(6.0f),                // 6
+                LSP_DSP_VEC4(0.166666666667f),     // 1/6
+                LSP_DSP_VEC4(0.666666666667f)      // 2/3
             };
 
             static const float RGB_HSL[] =
             {
-                FVEC4(4.0f),
-                FVEC4(2.0f),
-                FVEC4(6.0f),
-                FVEC4(1.0f),
-                FVEC4(0.5f),
-                FVEC4(0.166666666667f)      // 1/6
+                LSP_DSP_VEC4(4.0f),
+                LSP_DSP_VEC4(2.0f),
+                LSP_DSP_VEC4(6.0f),
+                LSP_DSP_VEC4(1.0f),
+                LSP_DSP_VEC4(0.5f),
+                LSP_DSP_VEC4(0.166666666667f)      // 1/6
             };
 
             static const float RGBA_TO_BGRA32[] =
             {
-                FVEC4(255.0f),
-                FVEC4(255.0f)
+                LSP_DSP_VEC4(255.0f),
+                LSP_DSP_VEC4(255.0f)
             };
         )
-
-        #undef FVEC4
 
         #define HSLA_TO_RGBA_CORE   \
             /*  q10 = 1/2, q11 = 1/3, q12 = 1, q13 = 6, q14 = 1/6, q15 = 2/3 */ \
