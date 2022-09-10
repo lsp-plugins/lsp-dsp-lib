@@ -122,6 +122,398 @@ namespace lsp
         }
 
         #undef FILL4_CORE
+
+        #define HSLA_TO_RGBA_CORE   \
+            /*  v10 = 1/2, v11 = 1/3, v12 = 1, v13 = 6, v14 = 1/6, v15 = 2/3 */ \
+            /*  v0 = h0 h1 h2 h3 = H */ \
+            /*  v1 = s0 s1 s2 s3 = S */ \
+            /*  v2 = l0 l1 l2 l3 = L */ \
+            /*  v3 = a0 a1 a2 a3 = A */ \
+            /*  Calc temp1 (T1) and temp2 (T2) */ \
+            __ASM_EMIT("fadd            v4.4s, v2.4s, v1.4s")       /* v4 = L+S */ \
+            __ASM_EMIT("fadd            v9.4s, v2.4s, v2.4s")       /* v9 = L+L */ \
+            __ASM_EMIT("fmul            v5.4s, v2.4s, v1.4s")       /* v5 = L*S */ \
+            __ASM_EMIT("fsub            v4.4s, v4.4s, v5.4s")       /* v4 = L+S - L*S */ \
+            __ASM_EMIT("fadd            v7.4s, v2.4s, v5.4s")       /* v7 = L + L*S */ \
+            __ASM_EMIT("fcmgt           v8.4s, v10.4s, v2.4s")      /* v8 = [L < 0.5] */ \
+            __ASM_EMIT("bit             v4.16b, v7.16b, v8.16b")    /* v4 = T2 = ((L+L*S) & [L<0.5]) | ((L+S-L*S) & [L>=0.5]) */ \
+            __ASM_EMIT("mov             v1.16b, v0.16b")            /* v1 = TG = H */ \
+            __ASM_EMIT("fsub            v5.4s, v9.4s, v4.4s")       /* v5 = T1 = L+L-T2 */ \
+            __ASM_EMIT("fadd            v0.4s, v0.4s, v11.4s")      /* v0 = H + 1/3 */ \
+            __ASM_EMIT("fsub            v2.4s, v1.4s, v11.4s")      /* v2 = H - 1/3 */ \
+            __ASM_EMIT("fcmgt           v9.4s, v0.4s, v12.4s")      /* v9 = [H+1/3 > 1] */ \
+            __ASM_EMIT("fsub            v6.4s, v0.4s, v12.4s")      /* v6 = H + 1/3 - 1 */ \
+            __ASM_EMIT("fadd            v7.4s, v2.4s, v12.4s")      /* v7 = H - 1/3 + 1 */ \
+            __ASM_EMIT("fcmlt           v8.4s, v2.4s, #0.0")        /* v8 = [H - 1/3 < 0] */ \
+            __ASM_EMIT("bit             v0.16b, v6.16b, v9.16b")    /* v0 = TR = ((H+1/3) & [H+1/3 <= 1]) | ((H+1/3-1) & [H+1/3 > 1]) */ \
+            __ASM_EMIT("bit             v2.16b, v7.16b, v8.16b")    /* v2 = TB = ((H-1/3) & [H-1/3 >= 0]) | ((H-1/3+1) & [H-1/3 < 0]) */ \
+            __ASM_EMIT("fsub            v6.4s, v4.4s, v5.4s")       /* v6 = T2 - T1 */ \
+            __ASM_EMIT("fmul            v6.4s, v6.4s, v13.4s")      /* v6 = K = (T2 - T1)*6 */ \
+            /* v0 = TR */ \
+            /* v1 = TG */ \
+            /* v2 = TB */ \
+            /* v3 = A */ \
+            /* v4 = T2 */ \
+            /* v5 = T1 */ \
+            /* v6 = K */ \
+            /* Process red color */ \
+            __ASM_EMIT("mov             v7.16b, v5.16b")            /* v7 = T1 */ \
+            __ASM_EMIT("mov             v8.16b, v5.16b")            /* v8 = T1 */ \
+            __ASM_EMIT("fsub            v9.4s, v15.4s, v0.4s")      /* v9 = 2/3 - TR */ \
+            __ASM_EMIT("fmla            v7.4s, v6.4s, v0.4s")       /* v7 = KTR = T1 + K*TR */ \
+            __ASM_EMIT("fmla            v8.4s, v6.4s, v9.4s")       /* v8 = RTR = T1 + K*(2/3-TR) */ \
+            __ASM_EMIT("fcmgt           v9.4s, v14.4s, v0.4s")      /* v9 = [TR < 1/6] */ \
+            __ASM_EMIT("bif             v7.16b, v4.16b, v9.16b")    /* v7 = (KTR & [TR < 1/6]) | ((T2) & (TR >= 1/6)) */ \
+            __ASM_EMIT("fcmgt           v9.4s, v15.4s, v0.4s")      /* v9 = [TR < 2/3] */ \
+            __ASM_EMIT("bif             v8.16b, v5.16b, v9.16b")    /* v8 = (RTR & [TR < 2/3]) | ((T1) & (TR >= 2/3)) */ \
+            __ASM_EMIT("fcmgt           v9.4s, v10.4s, v0.4s")      /* v9 = [TR < 1/2] */ \
+            __ASM_EMIT("and             v0.16b, v7.16b, v9.16b")    /* v0 = (KTR & [TR < 1/6] & [TR < 1/2]) | ((T2) & (TR >= 1/6) & [TR < 1/2]) */ \
+            __ASM_EMIT("bif             v0.16b, v8.16b, v9.16b")    /* v0 = (KTR & [TR < 1/6] & [TR < 1/2]) | ((T2) & (TR >= 1/6) & [TR < 1/2]) | (RTR & [TR < 2/3] & [TR >= 1/2]) | ((T1) & (TR >= 2/3) & [TR >= 1/2]) */ \
+            /* Process green color */ \
+            __ASM_EMIT("mov             v7.16b, v5.16b")            /* v7 = T1 */ \
+            __ASM_EMIT("mov             v8.16b, v5.16b")            /* v8 = T1 */ \
+            __ASM_EMIT("fsub            v9.4s, v15.4s, v1.4s")      /* v9 = 2/3 - TG */ \
+            __ASM_EMIT("fmla            v7.4s, v6.4s, v1.4s")       /* v7 = KTG = T1 + K*TG */ \
+            __ASM_EMIT("fmla            v8.4s, v6.4s, v9.4s")       /* v8 = RTG = T1 + K*(2/3-TG) */ \
+            __ASM_EMIT("fcmgt           v9.4s, v14.4s, v1.4s")      /* v9 = [TG < 1/6] */ \
+            __ASM_EMIT("bif             v7.16b, v4.16b, v9.16b")    /* v7 = (KTG & [TG < 1/6]) | ((T2) & (TG >= 1/6)) */ \
+            __ASM_EMIT("fcmgt           v9.4s, v15.4s, v1.4s")      /* v9 = [TG < 2/3] */ \
+            __ASM_EMIT("bif             v8.16b, v5.16b, v9.16b")    /* v8 = (RTG & [TG < 2/3]) | ((T1) & (TG >= 2/3)) */ \
+            __ASM_EMIT("fcmgt           v9.4s, v10.4s, v1.4s")      /* v9 = [TG < 1/2] */ \
+            __ASM_EMIT("and             v1.16b, v7.16b, v9.16b")    /* v1 = (KTG & [TG < 1/6] & [TG < 1/2]) | ((T2) & (TG >= 1/6) & [TG < 1/2]) */ \
+            __ASM_EMIT("bif             v1.16b, v8.16b, v9.16b")    /* v1 = (KTG & [TG < 1/6] & [TG < 1/2]) | ((T2) & (TG >= 1/6) & [TG < 1/2]) | (RTG & [TG < 2/3] & [TG >= 1/2]) | ((T1) & (TG >= 2/3) & [TG >= 1/2]) */ \
+            /* Process blue color */ \
+            __ASM_EMIT("mov             v7.16b, v5.16b")            /* v7 = T1 */ \
+            __ASM_EMIT("mov             v8.16b, v5.16b")            /* v8 = T1 */ \
+            __ASM_EMIT("fsub            v9.4s, v15.4s, v2.4s")      /* v9 = 2/3 - TB */ \
+            __ASM_EMIT("fmla            v7.4s, v6.4s, v2.4s")       /* v7 = KTB = T1 + K*TB */ \
+            __ASM_EMIT("fmla            v8.4s, v6.4s, v9.4s")       /* v8 = RTB = T1 + K*(2/3-TB) */ \
+            __ASM_EMIT("fcmgt           v9.4s, v14.4s, v2.4s")      /* v9 = [TB < 1/6] */ \
+            __ASM_EMIT("bif             v7.16b, v4.16b, v9.16b")    /* v7 = (KTB & [TB < 1/6]) | ((T2) & (TB >= 1/6)) */ \
+            __ASM_EMIT("fcmgt           v9.4s, v15.4s, v2.4s")      /* v9 = [TB < 2/3] */ \
+            __ASM_EMIT("bif             v8.16b, v5.16b, v9.16b")    /* v8 = (RTB & [TB < 2/3]) | ((T1) & (TB >= 2/3)) */ \
+            __ASM_EMIT("fcmgt           v9.4s, v10.4s, v2.4s")      /* v9 = [TB < 1/2] */ \
+            __ASM_EMIT("and             v2.16b, v7.16b, v9.16b")    /* v2 = (KTB & [TB < 1/6] & [TB < 1/2]) | ((T2) & (TB >= 1/6) & [TB < 1/2]) */ \
+            __ASM_EMIT("bif             v2.16b, v8.16b, v9.16b")    /* v2 = (KTB & [TB < 1/6] & [TB < 1/2]) | ((T2) & (TB >= 1/6) & [TB < 1/2]) | (RTB & [TB < 2/3] & [TB >= 1/2]) | ((T1) & (TB >= 2/3) & [TB >= 1/2]) */ \
+            /*  v0 = R */ \
+            /*  v1 = G */ \
+            /*  v2 = B */ \
+            /*  v3 = A */ \
+
+        /*
+                //Set the temporary values
+                if  (L < HSL_RGB_0_5)
+                    temp2 = L + (L * S);
+                else
+                    temp2 = (L + S) - (L * S);
+
+                temp1 = L + L - temp2;
+
+                tempr = H + HSL_RGB_1_3;
+                tempg = H;
+                tempb = H - HSL_RGB_1_3;
+
+                if (tempr > 1.0f)
+                    tempr   -= 1.0f;
+                if (tempb < 0.0f)
+                    tempb   += 1.0f;
+
+                k = (temp2 - temp1) * 6.0f;
+
+                //Red
+                if (tempr < HSL_RGB_0_5)
+                    R = (tempr < HSL_RGB_1_6) ? temp1 + k * tempr : temp2;
+                else
+                    R = (tempr < HSL_RGB_2_3) ? temp1 + k * (HSL_RGB_2_3 - tempr) : temp1;
+
+                //Green
+                if (tempg < HSL_RGB_0_5)
+                    G = (tempg < HSL_RGB_1_6) ? temp1 + k * tempg : temp2;
+                else
+                    G = (tempg < HSL_RGB_2_3) ? temp1 + k * (HSL_RGB_2_3 - tempg) : temp1;
+
+                //Blue
+                if (tempb < HSL_RGB_0_5)
+                    B = (tempb < HSL_RGB_1_6) ? temp1 + k * tempb : temp2;
+                else
+                    B = (tempb < HSL_RGB_2_3) ? temp1 + k * (HSL_RGB_2_3 - tempb) : temp1;
+        */
+
+        IF_ARCH_AARCH64(
+            static const float HSL_RGB[] =
+            {
+                LSP_DSP_VEC4(0.5f),                // 1/2
+                LSP_DSP_VEC4(0.333333333333f),     // 1/3
+                LSP_DSP_VEC4(1.0f),                // 1
+                LSP_DSP_VEC4(6.0f),                // 6
+                LSP_DSP_VEC4(0.166666666667f),     // 1/6
+                LSP_DSP_VEC4(0.666666666667f)      // 2/3
+            };
+        )
+
+        void hsla_to_rgba(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                __ASM_EMIT("ldp             q10, q11, [%[XC], 0x00]")   // v10 = 1/2, v11 = 1/3
+                __ASM_EMIT("ldp             q12, q13, [%[XC], 0x20]")   // v12 = 1, v13 = 6
+                __ASM_EMIT("ldp             q14, q15, [%[XC], 0x40]")   // v14 = 1/6, v15 = 2/3
+                __ASM_EMIT("subs            %[count], %[count], #4")
+                __ASM_EMIT("b.lo            2f")
+
+                //-----------------------------------------------------------------
+                // 4x blocks
+                __ASM_EMIT("1:")
+                __ASM_EMIT("ld4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[src]]")    // v0 = h0 h1 h2 h3, v1 = s0 s1 s2 s3, v2 = l0 l1 l2 l3, v3 = a0 a1 a2 a3
+
+                HSLA_TO_RGBA_CORE
+
+                __ASM_EMIT("st4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[dst]]")
+                __ASM_EMIT("subs            %[count], %[count], #4")
+                __ASM_EMIT("add             %[src], %[src], #0x40")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
+                __ASM_EMIT("b.hs            1b")
+
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds            %[count], %[count], #4")
+                __ASM_EMIT("b.ls            10f")
+
+                //-----------------------------------------------------------------
+                // 1x-3x block
+                __ASM_EMIT("tst             %[count], #2")
+                __ASM_EMIT("b.eq            4f")
+                __ASM_EMIT("ld4             {v0.2s, v1.2s, v2.2s, v3.2s}, [%[src]]")
+                __ASM_EMIT("add             %[src], %[src], #0x20")
+                __ASM_EMIT("4:")
+                __ASM_EMIT("tst             %[count], #1")
+                __ASM_EMIT("b.eq            6f")
+                __ASM_EMIT("ld4             {v0.s, v1.s, v2.s, v3.s}[2], [%[src]]")
+                __ASM_EMIT("6:")
+
+                HSLA_TO_RGBA_CORE
+
+                __ASM_EMIT("tst             %[count], #2")
+                __ASM_EMIT("b.eq            8f")
+                __ASM_EMIT("st4             {v0.2s, v1.2s, v2.2s, v3.2s}, [%[dst]]")
+                __ASM_EMIT("add             %[dst], %[dst], #0x20")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("tst             %[count], #1")
+                __ASM_EMIT("beq             10f")
+                __ASM_EMIT("st4             {v0.s, v1.s, v2.s, v3.s}[2], [%[dst]]")
+
+                __ASM_EMIT("10:")
+
+                : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
+                : [XC] "r" (&HSL_RGB[0])
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15"
+            );
+        }
+
+        #undef HSLA_TO_RGBA_CORE
+
+        #define RGBA_TO_HSLA_CORE \
+            /*  v0   = R */ \
+            /*  v1   = G */ \
+            /*  v2   = B */ \
+            /*  v3   = A */ \
+            /*  v10  = 4, v11 = 2, v12 = 6, v13 = 1, v14 = 1/2, v15 = 1/6 */ \
+            __ASM_EMIT("fmax            v4.4s, v0.4s, v1.4s")       /* v4   = max(R, G) */ \
+            __ASM_EMIT("fmin            v5.4s, v0.4s, v1.4s")       /* v5   = min(R, G) */ \
+            __ASM_EMIT("fmax            v4.4s, v4.4s, v2.4s")       /* v4   = CMAX = max(R, G, B) */ \
+            __ASM_EMIT("fmin            v5.4s, v5.4s, v2.4s")       /* v5   = CMIN = min(R, G, B) */ \
+            __ASM_EMIT("fsub            v6.4s, v4.4s, v5.4s")       /* v6   = D = CMAX - CMIN */ \
+            __ASM_EMIT("fadd            v5.4s, v4.4s, v5.4s")       /* v5   = CMAX + CMIN */ \
+            \
+            __ASM_EMIT("frecpe          v9.4s, v6.4s")              /* v9   = RD */ \
+            __ASM_EMIT("frecps          v8.4s, v9.4s, v6.4s")       /* v8   = (2 - RD*D) */ \
+            __ASM_EMIT("fmul            v9.4s, v8.4s, v9.4s")       /* v9   = d' = RD * (2 - RD*D) */ \
+            __ASM_EMIT("frecps          v8.4s, v9.4s, v6.4s")       /* v8   = (2 - RD*d') */ \
+            __ASM_EMIT("fmul            v9.4s, v8.4s, v9.4s")       /* v9   = 1/D = d' * (2 - RD*d') */  \
+            \
+            /* v0  = R */ \
+            /* v1  = G */ \
+            /* v2  = B */ \
+            /* v3  = A */ \
+            /* v4  = CMAX */ \
+            /* v5  = CMAX + CMIN */ \
+            /* v6  = D */ \
+            /* v9  = 1/D */ \
+            __ASM_EMIT("fsub            v7.4s, v2.4s, v0.4s")       /* v7   = B-R */ \
+            __ASM_EMIT("fsub            v8.4s, v0.4s, v1.4s")       /* v8   = R-G */ \
+            __ASM_EMIT("fsub            v16.4s, v1.4s, v2.4s")      /* v16  = G-B */ \
+            __ASM_EMIT("fmul            v7.4s, v7.4s, v9.4s")       /* v7   = (B-R)/D */ \
+            __ASM_EMIT("fmul            v16.4s, v16.4s, v9.4s")     /* v16  = (G-B)/D */ \
+            __ASM_EMIT("fmul            v8.4s, v8.4s, v9.4s")       /* v8   = (R-G)/D */ \
+            __ASM_EMIT("fcmlt           v17.4s, v16.4s, #0.0")      /* v17  = [(G-B)/D < 0] */ \
+            __ASM_EMIT("fadd            v7.4s, v7.4s, v11.4s")      /* v7   = HG = (B-R)/D + 2 */ \
+            __ASM_EMIT("and             v17.16b, v17.16b, v12.16b") /* v17  = [(G-B)/D < 0] & 6 */ \
+            __ASM_EMIT("fadd            v8.4s, v8.4s, v10.4s")      /* v8   = HB = (R-G)/D + 4 */ \
+            __ASM_EMIT("fadd            v9.4s, v16.4s, v17.4s")     /* v9   = HR = (G-B)/D + [(G-B)/D < 0] & 6 */ \
+            /* v0  = R */ \
+            /* v1  = G */ \
+            /* v2  = B */ \
+            /* v3  = A */ \
+            /* v4  = CMAX */ \
+            /* v5  = CMAX + CMIN */ \
+            /* v6  = D */ \
+            /* v7  = HG */ \
+            /* v8  = HB */ \
+            /* v9  = HR */ \
+            __ASM_EMIT("fcmeq           v1.4s, v1.4s, v4.4s")       /* v1 = [G == CMAX] */ \
+            __ASM_EMIT("fcmeq           v0.4s, v0.4s, v4.4s")       /* v0 = [R == CMAX] */ \
+            __ASM_EMIT("bsl             v1.16b, v7.16b, v8.16b")    /* v1 = (HG & [G == CMAX]) | (HB & [G != CMAX]) */ \
+            __ASM_EMIT("bsl             v0.16b, v9.16b, v1.16b")    /* v0 = (HR & [R == CMAX]) | (HG & [G == CMAX] & [R != CMAX]) | (HB & [G != CMAX] & [R != CMAX]) */ \
+            __ASM_EMIT("fcmeq           v4.4s, v6.4s, #0.0")        /* v4 = [ D == 0 ] */ \
+            __ASM_EMIT("fmul            v2.4s, v5.4s, v14.4s")      /* v2 = L = (CMAX + CMIN) * 0.5 */ \
+            __ASM_EMIT("fsub            v1.4s, v13.4s, v2.4s")      /* v1 = X = 1 - L */ \
+            __ASM_EMIT("bic             v0.16b, v0.16b, v4.16b")    /* v0 = H = [D != 0] & ((HR & [R == CMAX]) | (HG & [G == CMAX] & [R != CMAX]) | (HB & [G != CMAX] & [R != CMAX])) */ \
+            \
+            __ASM_EMIT("frecpe          v5.4s, v2.4s")              /* v5 = RL */ \
+            __ASM_EMIT("frecpe          v9.4s, v1.4s")              /* v9 = RX */ \
+            __ASM_EMIT("frecps          v4.4s, v5.4s, v2.4s")       /* v4 = (2 - RL*L) */ \
+            __ASM_EMIT("frecps          v8.4s, v9.4s, v1.4s")       /* v8 = (2 - RX*X) */ \
+            __ASM_EMIT("fmul            v5.4s, v4.4s, v5.4s")       /* v5 = l' = L * (2 - RL*L) */ \
+            __ASM_EMIT("fmul            v9.4s, v8.4s, v9.4s")       /* v9 = x' = X * (2 - RX*X) */ \
+            __ASM_EMIT("frecps          v4.4s, v5.4s, v2.4s")       /* v4 = (2 - RL*l') */ \
+            __ASM_EMIT("frecps          v8.4s, v9.4s, v1.4s")       /* v8 = (2 - RX*X') */ \
+            __ASM_EMIT("fmul            v5.4s, v4.4s, v5.4s")       /* v5 = 1/L = l' * (2 - RL*l') */  \
+            __ASM_EMIT("fmul            v9.4s, v8.4s, v9.4s")       /* v9 = 1/X = x' * (2 - RX*x') */  \
+            __ASM_EMIT("fmul            v1.4s, v6.4s, v5.4s")       /* v1 = D/L */ \
+            __ASM_EMIT("fmul            v4.4s, v6.4s, v9.4s")       /* v4 = D/X */ \
+            __ASM_EMIT("eor             v5.16b, v5.16b, v5.16b")    /* v5 = 0 */ \
+            \
+            __ASM_EMIT("fcmge           v6.4s, v14.4s, v2.4s")      /* v6 = [L <= 0.5] */ \
+            __ASM_EMIT("fcmeq           v7.4s, v1.4s, v5.4s")       /* v7 = [L == 0] */ \
+            __ASM_EMIT("fcmgt           v8.4s, v2.4s, v14.4s")      /* v8 = [L > 0.5] */ \
+            __ASM_EMIT("bit             v6.16b, v5.16b, v7.16b")    /* v6 = [L <= 0.5] & [L != 0] */ \
+            __ASM_EMIT("and             v8.16b, v8.16b, v4.16b")    /* v8 = D/X & [L > 0.5] */ \
+            __ASM_EMIT("and             v6.16b, v6.16b, v1.16b")    /* v6 = D/L & [L <= 0.5] & [L != 0] */ \
+            __ASM_EMIT("orr             v1.16b, v8.16b, v6.16b")    /* v1 = S = (D/L & [L <= 0.5] & [L != 0]) | (D/X & [L > 0.5]) */ \
+            __ASM_EMIT("fmul            v0.4s, v0.4s, v15.4s")      /* v0 = H * 1/6 */ \
+            __ASM_EMIT("fmul            v1.4s, v1.4s, v14.4s")      /* v1 = S * 1/2 */ \
+
+        /*
+            float cmax = (R < G) ? ((B < G) ? G : B) : ((B < R) ? R : B);
+            float cmin = (R < G) ? ((B < R) ? B : R) : ((B < G) ? B : G);
+            float d = cmax - cmin;
+
+            H = 0.0f;
+            S = 0.0f;
+            L = HSL_RGB_0_5 * (cmax + cmin);
+
+            // Calculate hue
+            HR = ((G - B) / d) + ((H < 0.0f) ? 6.0f : 0.0f);
+            HG = (B - R) / d + 2.0f;
+            HB = (R - G) / d + 4.0f;
+            if (D == 0)
+                H = 0;
+            else if (R == cmax)
+                H = HR;
+            else if (G == cmax)
+                H = HG;
+            else
+                H = HB;
+
+            // Calculate saturation
+            if (L < 0.5f)
+                S = (L != 0.0f) ? d / L : 0.0f;
+            else
+                S = (L != 1.0f) ? d / (1.0f - L) : 0.0f;
+
+            // Normalize hue and saturation
+            H  *= HSL_RGB_1_6;
+            S  *= HSL_RGB_0_5;
+         */
+
+        IF_ARCH_AARCH64(
+            static const float RGB_HSL[] =
+            {
+                LSP_DSP_VEC4(4.0f),
+                LSP_DSP_VEC4(2.0f),
+                LSP_DSP_VEC4(6.0f),
+                LSP_DSP_VEC4(1.0f),
+                LSP_DSP_VEC4(0.5f),
+                LSP_DSP_VEC4(0.166666666667f)      // 1/6
+            };
+        )
+
+        void rgba_to_hsla(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                __ASM_EMIT("ldp             q10, q11, [%[XC], 0x00]")   // v10 = 4, v11 = 2
+                __ASM_EMIT("ldp             q12, q13, [%[XC], 0x20]")   // v12 = 6, v13 = 1
+                __ASM_EMIT("ldp             q14, q15, [%[XC], 0x40]")   // v14 = 1/2, v15 = 1/6
+                __ASM_EMIT("subs            %[count], %[count], #4")
+                __ASM_EMIT("b.lo            2f")
+
+                //-----------------------------------------------------------------
+                // 4x blocks
+                __ASM_EMIT("1:")
+                __ASM_EMIT("ld4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[src]]")    // v0 = r0 r1 r2 r3, v1 = g0 g1 g2 g3, v2 = b0 b1 b2 b3, v3 = a0 a1 a2 a3
+
+                RGBA_TO_HSLA_CORE
+
+                __ASM_EMIT("st4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[dst]]")
+                __ASM_EMIT("subs            %[count], %[count], #4")
+                __ASM_EMIT("add             %[src], %[src], #0x40")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
+                __ASM_EMIT("b.hs            1b")
+
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds            %[count], %[count], #4")
+                __ASM_EMIT("b.ls            10f")
+
+                //-----------------------------------------------------------------
+                // 1x-3x block
+                __ASM_EMIT("tst             %[count], #2")
+                __ASM_EMIT("b.eq            4f")
+                __ASM_EMIT("ld4             {v0.2s, v1.2s, v2.2s, v3.2s}, [%[src]]")
+                __ASM_EMIT("add             %[src], %[src], #0x20")
+                __ASM_EMIT("4:")
+                __ASM_EMIT("tst             %[count], #1")
+                __ASM_EMIT("b.eq            6f")
+                __ASM_EMIT("ld4             {v0.s, v1.s, v2.s, v3.s}[2], [%[src]]")
+                __ASM_EMIT("6:")
+
+                RGBA_TO_HSLA_CORE
+
+                __ASM_EMIT("tst             %[count], #2")
+                __ASM_EMIT("b.eq            8f")
+                __ASM_EMIT("st4             {v0.2s, v1.2s, v2.2s, v3.2s}, [%[dst]]")
+                __ASM_EMIT("add             %[dst], %[dst], #0x20")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("tst             %[count], #1")
+                __ASM_EMIT("beq             10f")
+                __ASM_EMIT("st4             {v0.s, v1.s, v2.s, v3.s}[2], [%[dst]]")
+
+                __ASM_EMIT("10:")
+
+                : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
+                : [XC] "r" (&RGB_HSL[0])
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17"
+            );
+        }
+
+#undef RGBA_TO_HSLA_CORE
+
+//        IF_ARCH_AARCH64(
+//            static const float RGBA_TO_BGRA32[] =
+//            {
+//                LSP_DSP_VEC4(255.0f),
+//                LSP_DSP_VEC4(255.0f)
+//            };
+//        )
+
     } /* namespace asimd */
 } /* namespace lsp */
 

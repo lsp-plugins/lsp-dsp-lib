@@ -44,6 +44,13 @@ namespace lsp
         }
     )
 
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void hsla_to_rgba(float *dst, const float *src, size_t count);
+        }
+    )
+
     typedef void (* hsla_to_rgba_t)(float *dst, const float *src, size_t count);
 }
 
@@ -135,6 +142,7 @@ UTEST_BEGIN("dsp.graphics", hsla_to_rgba)
     {
         IF_ARCH_X86(call("sse2::hsla_to_rgba", 16, sse2::hsla_to_rgba));
         IF_ARCH_ARM(call("neon_d32::hsla_to_rgba", 16, neon_d32::hsla_to_rgba));
+        IF_ARCH_AARCH64(call("asimd::hsla_to_rgba", 16, asimd::hsla_to_rgba));
     }
 
 UTEST_END;

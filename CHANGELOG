@@ -5,6 +5,7 @@
 === 1.0.7 ===
 * Implemented axis_apply_log1 and axis_apply_log2 optimized for AArch64 ASIMD.
 * Implemented fill_rgba and fill_hsla for AArch64 ASIMD.
+* Implemented rgba_to_hsla and hsla_to_rgba for AArch64 ASIMD.
 
 === 1.0.6 ===
 * Updated build scripts.
