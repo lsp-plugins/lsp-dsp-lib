@@ -550,31 +550,28 @@ namespace lsp
             __ASM_EMIT("vswp            d14, d11") \
             \
             /* q0 = r, q1 = g, q2 = b, q3 = a */ \
-            __ASM_EMIT("vswp            q0, q2")                        /* q0   = b, q2 = r */ \
-            __ASM_EMIT("vswp            q4, q6") \
-            __ASM_EMIT("vmul.f32        q8, q3, q14")                   /* q8   = a * 255 */ \
-            __ASM_EMIT("vmul.f32        q9, q7, q15") \
-            __ASM_EMIT("vsub.f32        q3, q14, q8")                   /* q3   = A = 255 - a*255 * */ \
-            __ASM_EMIT("vsub.f32        q7, q15, q9") \
-            __ASM_EMIT("veor            q12, q12")                      /* q12  = 0 */ \
-            __ASM_EMIT("veor            q13, q13") \
-            __ASM_EMIT("vmul.f32        q0, q0, q3")                    /* q0   = B = b * A */ \
-            __ASM_EMIT("vmul.f32        q4, q4, q7") \
-            __ASM_EMIT("vmul.f32        q1, q1, q3")                    /* q1   = G = g * A */ \
-            __ASM_EMIT("vmul.f32        q5, q5, q7") \
-            __ASM_EMIT("vmul.f32        q2, q2, q3")                    /* q2   = R = r * A */ \
-            __ASM_EMIT("vmul.f32        q6, q6, q7") \
-            __ASM_EMIT("vcge.f32        q8, q0, q12")                   /* q8   = [B >= 0] */ \
-            __ASM_EMIT("vcge.f32        q9, q4, q13") \
-            __ASM_EMIT("vcge.f32        q10, q1, q12")                  /* q10  = [G >= 0] */ \
-            __ASM_EMIT("vcge.f32        q11, q5, q13") \
-            __ASM_EMIT("vcge.f32        q12, q2, q12")                  /* q11  = [R >= 0] */ \
-            __ASM_EMIT("vcge.f32        q13, q6, q13") \
+            __ASM_EMIT("vmul.f32        q3, q3, q14")                   /* q3   = a * 255 */ \
+            __ASM_EMIT("vmul.f32        q7, q7, q15") \
+            __ASM_EMIT("vsub.f32        q3, q14, q3")                   /* q3   = A = 255 - a*255 * */ \
+            __ASM_EMIT("vsub.f32        q7, q15, q7") \
+            __ASM_EMIT("vmul.f32        q8, q2, q3")                    /* q8   = B = b * A */ \
+            __ASM_EMIT("vmul.f32        q11, q6, q7") \
+            __ASM_EMIT("vmul.f32        q9, q1, q3")                    /* q9   = G = g * A */ \
+            __ASM_EMIT("vmul.f32        q12, q5, q7") \
+            __ASM_EMIT("veor            q6, q6")                        /* q6   = 0 */ \
+            __ASM_EMIT("vmul.f32        q10, q0, q3")                   /* q10  = R = r * A */ \
+            __ASM_EMIT("vmul.f32        q13, q4, q7") \
+            __ASM_EMIT("vcge.f32        q0, q8, q6")                    /* q0   = [B >= 0] */ \
+            __ASM_EMIT("vcge.f32        q4, q11, q6") \
+            __ASM_EMIT("vcge.f32        q1, q9, q6")                    /* q1   = [G >= 0] */ \
+            __ASM_EMIT("vcge.f32        q5, q12, q6") \
+            __ASM_EMIT("vcge.f32        q2, q10, q6")                   /* q2   = [R >= 0] */ \
+            __ASM_EMIT("vcge.f32        q6, q13, q6") \
             __ASM_EMIT("vand            q0, q0, q8")                    /* q0   = B & [B >= 0] */ \
-            __ASM_EMIT("vand            q4, q4, q9") \
-            __ASM_EMIT("vand            q1, q1, q10")                   /* q1   = G & [G >= 0] */ \
-            __ASM_EMIT("vand            q5, q5, q11") \
-            __ASM_EMIT("vand            q2, q2, q12")                   /* q2   = R & [R >= 0] */ \
+            __ASM_EMIT("vand            q4, q4, q11") \
+            __ASM_EMIT("vand            q1, q1, q9")                    /* q1   = G & [G >= 0] */ \
+            __ASM_EMIT("vand            q5, q5, q12") \
+            __ASM_EMIT("vand            q2, q2, q10")                   /* q2   = R & [R >= 0] */ \
             __ASM_EMIT("vand            q6, q6, q13") \
             \
             /* Transpose back */ \
@@ -620,19 +617,18 @@ namespace lsp
             __ASM_EMIT("vswp            d6, d3") \
             \
             /* q0 = r, q1 = g, q2 = b, q3 = a */ \
-            __ASM_EMIT("vswp            q0, q2")                        /* q0   = b, q2 = r */ \
-            __ASM_EMIT("vmul.f32        q8, q3, q14")                   /* q8   = a * 255 */ \
-            __ASM_EMIT("vsub.f32        q3, q14, q8")                   /* q3   = A = 255 - a*255 * */ \
-            __ASM_EMIT("veor            q12, q12")                      /* q12  = 0 */ \
-            __ASM_EMIT("vmul.f32        q0, q0, q3")                    /* q0   = B = b * A */ \
-            __ASM_EMIT("vmul.f32        q1, q1, q3")                    /* q1   = G = g * A */ \
-            __ASM_EMIT("vmul.f32        q2, q2, q3")                    /* q2   = R = r * A */ \
-            __ASM_EMIT("vcge.f32        q8, q0, q12")                   /* q8   = [B >= 0] */ \
-            __ASM_EMIT("vcge.f32        q10, q1, q12")                  /* q10  = [G >= 0] */ \
-            __ASM_EMIT("vcge.f32        q12, q2, q12")                  /* q11  = [R >= 0] */ \
+            __ASM_EMIT("vmul.f32        q3, q3, q14")                   /* q3   = a * 255 */ \
+            __ASM_EMIT("vsub.f32        q3, q14, q3")                   /* q3   = A = 255 - a*255 * */ \
+            __ASM_EMIT("vmul.f32        q8, q2, q3")                    /* q8   = B = b * A */ \
+            __ASM_EMIT("vmul.f32        q9, q1, q3")                    /* q9   = G = g * A */ \
+            __ASM_EMIT("vmul.f32        q10, q0, q3")                   /* q10  = R = r * A */ \
+            __ASM_EMIT("veor            q6, q6")                        /* q6   = 0 */ \
+            __ASM_EMIT("vcge.f32        q0, q8, q6")                    /* q0   = [B >= 0] */ \
+            __ASM_EMIT("vcge.f32        q1, q9, q6")                    /* q1   = [G >= 0] */ \
+            __ASM_EMIT("vcge.f32        q2, q10, q6")                   /* q2   = [R >= 0] */ \
             __ASM_EMIT("vand            q0, q0, q8")                    /* q0   = B & [B >= 0] */ \
-            __ASM_EMIT("vand            q1, q1, q10")                   /* q1   = G & [G >= 0] */ \
-            __ASM_EMIT("vand            q2, q2, q12")                   /* q2   = R & [R >= 0] */ \
+            __ASM_EMIT("vand            q1, q1, q9")                    /* q1   = G & [G >= 0] */ \
+            __ASM_EMIT("vand            q2, q2, q10")                   /* q2   = R & [R >= 0] */ \
             \
             /* Transpose back */ \
             __ASM_EMIT("vtrn.32         q0, q1") \
