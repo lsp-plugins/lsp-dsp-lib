@@ -48,44 +48,38 @@
     }
 
     #define PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL
-        #include <private/dsp/arch/arm/neon-d32/copy.h>
         #include <private/dsp/arch/arm/neon-d32/complex.h>
-        #include <private/dsp/arch/arm/neon-d32/pcomplex.h>
         #include <private/dsp/arch/arm/neon-d32/convolution.h>
-
-        #include <private/dsp/arch/arm/neon-d32/graphics.h>
+        #include <private/dsp/arch/arm/neon-d32/copy.h>
+        #include <private/dsp/arch/arm/neon-d32/fastconv.h>
+        #include <private/dsp/arch/arm/neon-d32/fft.h>
+        #include <private/dsp/arch/arm/neon-d32/filters/dynamic.h>
+        #include <private/dsp/arch/arm/neon-d32/filters/static.h>
+        #include <private/dsp/arch/arm/neon-d32/filters/transfer.h>
+        #include <private/dsp/arch/arm/neon-d32/filters/transform.h>
+        #include <private/dsp/arch/arm/neon-d32/float.h>
+        #include <private/dsp/arch/arm/neon-d32/graphics/axis.h>
+        #include <private/dsp/arch/arm/neon-d32/graphics/colors.h>
         #include <private/dsp/arch/arm/neon-d32/graphics/effects.h>
-
-        #include <private/dsp/arch/arm/neon-d32/pmath/op_kx.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/op_vv.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/fmop_kx.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/fmop_vv.h>
+        #include <private/dsp/arch/arm/neon-d32/graphics/pixelfmt.h>
+        #include <private/dsp/arch/arm/neon-d32/hmath/hdotp.h>
+        #include <private/dsp/arch/arm/neon-d32/hmath/hsum.h>
+        #include <private/dsp/arch/arm/neon-d32/interpolation/linear.h>
+        #include <private/dsp/arch/arm/neon-d32/mix.h>
+        #include <private/dsp/arch/arm/neon-d32/msmatrix.h>
+        #include <private/dsp/arch/arm/neon-d32/pcomplex.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/abs_vv.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/exp.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/fmop_kx.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/fmop_vv.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/log.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/minmax.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/op_kx.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/op_vv.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/pow.h>
-
-        #include <private/dsp/arch/arm/neon-d32/hmath/hsum.h>
-        #include <private/dsp/arch/arm/neon-d32/hmath/hdotp.h>
-
-        #include <private/dsp/arch/arm/neon-d32/search/minmax.h>
-        #include <private/dsp/arch/arm/neon-d32/search/iminmax.h>
-
-        #include <private/dsp/arch/arm/neon-d32/float.h>
-        #include <private/dsp/arch/arm/neon-d32/msmatrix.h>
         #include <private/dsp/arch/arm/neon-d32/resampling.h>
-
-        #include <private/dsp/arch/arm/neon-d32/filters/static.h>
-        #include <private/dsp/arch/arm/neon-d32/filters/dynamic.h>
-        #include <private/dsp/arch/arm/neon-d32/filters/transform.h>
-        #include <private/dsp/arch/arm/neon-d32/filters/transfer.h>
-
-        #include <private/dsp/arch/arm/neon-d32/fft.h>
-        #include <private/dsp/arch/arm/neon-d32/fastconv.h>
-        #include <private/dsp/arch/arm/neon-d32/mix.h>
-
-        #include <private/dsp/arch/arm/neon-d32/interpolation/linear.h>
+        #include <private/dsp/arch/arm/neon-d32/search/iminmax.h>
+        #include <private/dsp/arch/arm/neon-d32/search/minmax.h>
     #undef PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL
 
 
@@ -379,8 +373,8 @@
                 EXPORT1(lin_inter_frmadd2);
                 EXPORT1(lin_inter_fmadd3);
             }
-        }
-    }
+        } /* namespace neon_d32 */
+    } /* namespace lsp */
 
 #endif /* ARCH_ARM */
 

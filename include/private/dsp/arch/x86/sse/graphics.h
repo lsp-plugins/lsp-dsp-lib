@@ -45,19 +45,15 @@ namespace lsp
         /* 8x blocks */ \
         __ASM_EMIT("sub         $8, %[count]") \
         __ASM_EMIT("jb          2f") \
-        __ASM_EMIT("movaps      %%xmm0, %%xmm4") \
-        __ASM_EMIT("movaps      %%xmm1, %%xmm5") \
-        __ASM_EMIT("movaps      %%xmm0, %%xmm6") \
-        __ASM_EMIT("movaps      %%xmm1, %%xmm7") \
         __ASM_EMIT("1:") \
         __ASM_EMIT("movups      %%xmm0, 0x00(%[dst])") \
         __ASM_EMIT("movups      %%xmm1, 0x10(%[dst])") \
         __ASM_EMIT("movups      %%xmm2, 0x20(%[dst])") \
         __ASM_EMIT("movups      %%xmm3, 0x30(%[dst])") \
-        __ASM_EMIT("movups      %%xmm4, 0x40(%[dst])") \
-        __ASM_EMIT("movups      %%xmm5, 0x50(%[dst])") \
-        __ASM_EMIT("movups      %%xmm6, 0x60(%[dst])") \
-        __ASM_EMIT("movups      %%xmm7, 0x70(%[dst])") \
+        __ASM_EMIT("movups      %%xmm0, 0x40(%[dst])") \
+        __ASM_EMIT("movups      %%xmm1, 0x50(%[dst])") \
+        __ASM_EMIT("movups      %%xmm2, 0x60(%[dst])") \
+        __ASM_EMIT("movups      %%xmm3, 0x70(%[dst])") \
         __ASM_EMIT("add         $0x80, %[dst]") \
         __ASM_EMIT("sub         $8, %[count]") \
         __ASM_EMIT("jae         1b") \
@@ -94,8 +90,7 @@ namespace lsp
                 : [dst] "+r" (dst), [count] "+r" (count)
                 : [c0] "m" (r), [c1] "m" (g), [c2] "m" (b), [c3] "m" (a)
                 : "cc", "memory",
-                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3"
             );
         }
 
@@ -107,8 +102,7 @@ namespace lsp
                 : [dst] "+r" (dst), [count] "+r" (count)
                 : [c0] "m" (h), [c1] "m" (s), [c2] "m" (l), [c3] "m" (a)
                 : "cc", "memory",
-                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3"
             );
         }
 

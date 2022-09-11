@@ -57,6 +57,14 @@ namespace lsp
         }
     )
 
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void axis_apply_log1(float *x, const float *v, float zero, float norm_x, size_t count);
+            void axis_apply_log2(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
+        }
+    )
+
     typedef void (* axis_apply_log1_t)(float *x, const float *v, float zero, float norm_x, size_t count);
     typedef void (* axis_apply_log2_t)(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
 }
@@ -159,6 +167,8 @@ UTEST_BEGIN("dsp.graphics", axis)
 
         IF_ARCH_ARM(CALL(neon_d32::axis_apply_log1, 16));
         IF_ARCH_ARM(CALL(neon_d32::axis_apply_log2, 16));
+        IF_ARCH_AARCH64(CALL(asimd::axis_apply_log1, 16));
+        IF_ARCH_AARCH64(CALL(asimd::axis_apply_log2, 16));
     }
 
 UTEST_END;

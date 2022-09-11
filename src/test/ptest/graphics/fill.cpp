@@ -51,6 +51,14 @@ namespace lsp
         }
     )
 
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void fill_rgba(float *dst, float r, float g, float b, float a, size_t count);
+            void fill_hsla(float *dst, float h, float s, float l, float a, size_t count);
+        }
+    )
+
     typedef void (* hsla_to_fill_t)(float *dst, float c1, float c2, float c3, float c4, size_t count);
 }
 
@@ -90,6 +98,9 @@ PTEST_BEGIN("dsp.graphics", fill, 5, 5000)
 
             IF_ARCH_ARM(call("neon_d32::fill_rgba", dst, count, neon_d32::fill_rgba));
             IF_ARCH_ARM(call("neon_d32::fill_hsla", dst, count, neon_d32::fill_hsla));
+
+            IF_ARCH_AARCH64(call("asimd::fill_rgba", dst, count, asimd::fill_rgba));
+            IF_ARCH_AARCH64(call("asimd::fill_hsla", dst, count, asimd::fill_hsla));
 
             PTEST_SEPARATOR;
         }

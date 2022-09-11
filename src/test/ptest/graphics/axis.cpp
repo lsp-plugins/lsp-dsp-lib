@@ -60,6 +60,14 @@ namespace lsp
         }
     )
 
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void axis_apply_log1(float *x, const float *v, float zero, float norm_x, size_t count);
+            void axis_apply_log2(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
+        }
+    )
+
     typedef void (* axis_apply_log1_t)(float *x, const float *v, float zero, float norm_x, size_t count);
     typedef void (* axis_apply_log2_t)(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count);
 }
@@ -122,12 +130,14 @@ PTEST_BEGIN("dsp.graphics", axis, 5, 1000)
             IF_ARCH_X86(CALL1(sse2::axis_apply_log1));
             IF_ARCH_X86_64(CALL1(sse3::x64_axis_apply_log1));
             IF_ARCH_ARM(CALL1(neon_d32::axis_apply_log1));
+            IF_ARCH_AARCH64(CALL1(asimd::axis_apply_log1));
             PTEST_SEPARATOR;
 
             CALL2(generic::axis_apply_log2);
             IF_ARCH_X86(CALL2(sse2::axis_apply_log2));
             IF_ARCH_X86_64(CALL2(sse3::x64_axis_apply_log2));
             IF_ARCH_ARM(CALL2(neon_d32::axis_apply_log2));
+            IF_ARCH_AARCH64(CALL2(asimd::axis_apply_log2));
             PTEST_SEPARATOR2;
         }
 
