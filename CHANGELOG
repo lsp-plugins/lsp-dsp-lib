@@ -6,6 +6,7 @@
 * Implemented axis_apply_log1 and axis_apply_log2 optimized for AArch64 ASIMD.
 * Implemented fill_rgba and fill_hsla for AArch64 ASIMD.
 * Implemented rgba_to_hsla, hsla_to_rgba, rgba_to_bgra32, rgba32_to_bgra32 for AArch64 ASIMD.
+* Implemented eff_hsla_hue for AArch64 ASIMD.
 
 === 1.0.6 ===
 * Updated build scripts.
