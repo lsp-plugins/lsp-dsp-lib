@@ -504,16 +504,220 @@ namespace lsp
             );
         }
 
-#undef RGBA_TO_HSLA_CORE
+        #undef RGBA_TO_HSLA_CORE
 
-//        IF_ARCH_AARCH64(
-//            static const float RGBA_TO_BGRA32[] =
-//            {
-//                LSP_DSP_VEC4(255.0f),
-//                LSP_DSP_VEC4(255.0f)
-//            };
-//        )
+        #define RGBA_TO_BGRA32_CORE_X8 \
+            /* v0   = r1    */ \
+            /* v1   = g1    */ \
+            /* v2   = b1    */ \
+            /* v3   = a1    */ \
+            /* v4   = r2    */ \
+            /* v5   = g2    */ \
+            /* v6   = b2    */ \
+            /* v7   = a2    */ \
+            /* v14  = 255.0 */ \
+            /* v15  = 255.0 */ \
+            __ASM_EMIT("fmul            v3.4s, v3.4s, v14.4s")          /* v3   = a * 255 */ \
+            __ASM_EMIT("fmul            v7.4s, v7.4s, v15.4s") \
+            __ASM_EMIT("fsub            v3.4s, v14.4s, v3.4s")          /* v3   = A = 255 - a*255 */ \
+            __ASM_EMIT("fsub            v7.4s, v15.4s, v7.4s") \
+            __ASM_EMIT("fmul            v8.4s, v2.4s, v3.4s")           /* v8   = B = b * A */ \
+            __ASM_EMIT("fmul            v11.4s, v6.4s, v7.4s") \
+            __ASM_EMIT("fmul            v9.4s, v1.4s, v3.4s")           /* v9   = G = g * A */ \
+            __ASM_EMIT("fmul            v12.4s, v5.4s, v7.4s") \
+            __ASM_EMIT("fmul            v10.4s, v0.4s, v3.4s")          /* v10  = R = r * A */ \
+            __ASM_EMIT("fmul            v13.4s, v4.4s, v7.4s") \
+            __ASM_EMIT("fcmge           v0.4s, v8.4s, #0.0")            /* v0   = [ B >= 0 ] */ \
+            __ASM_EMIT("fcmge           v4.4s, v11.4s, #0.0") \
+            __ASM_EMIT("fcmge           v1.4s, v9.4s, #0.0")            /* v1   = [ G >= 0 ] */ \
+            __ASM_EMIT("fcmge           v5.4s, v12.4s, #0.0") \
+            __ASM_EMIT("fcmge           v2.4s, v10.4s, #0.0")           /* v2   = [ R >= 0 ] */ \
+            __ASM_EMIT("fcmge           v6.4s, v13.4s, #0.0") \
+            __ASM_EMIT("and             v0.16b, v0.16b, v8.16b")        /* v0   = B & [ B >= 0 ] */ \
+            __ASM_EMIT("and             v4.16b, v4.16b, v11.16b") \
+            __ASM_EMIT("and             v1.16b, v1.16b, v9.16b")        /* v1   = G & [ G >= 0 ] */ \
+            __ASM_EMIT("and             v5.16b, v5.16b, v12.16b") \
+            __ASM_EMIT("and             v2.16b, v2.16b, v10.16b")       /* v2   = R & [ R >= 0 ] */ \
+            __ASM_EMIT("and             v6.16b, v6.16b, v13.16b") \
+            \
+            /* Transpose back (first part) */ \
+            __ASM_EMIT("trn1            v8.4s, v0.4s, v1.4s") \
+            __ASM_EMIT("trn1            v10.4s, v2.4s, v3.4s") \
+            __ASM_EMIT("trn2            v9.4s, v0.4s, v1.4s") \
+            __ASM_EMIT("trn2            v11.4s, v2.4s, v3.4s") \
+            __ASM_EMIT("trn1            v0.2d, v8.2d, v10.2d") \
+            __ASM_EMIT("trn1            v1.2d, v9.2d, v11.2d") \
+            __ASM_EMIT("trn2            v2.2d, v8.2d, v10.2d") \
+            __ASM_EMIT("trn2            v3.2d, v9.2d, v11.2d") \
+            /* Transpose back (second part) */ \
+            __ASM_EMIT("trn1            v8.4s, v4.4s, v5.4s") \
+            __ASM_EMIT("trn1            v10.4s, v6.4s, v7.4s") \
+            __ASM_EMIT("trn2            v9.4s, v4.4s, v5.4s") \
+            __ASM_EMIT("trn2            v11.4s, v6.4s, v7.4s") \
+            __ASM_EMIT("trn1            v4.2d, v8.2d, v10.2d") \
+            __ASM_EMIT("trn1            v5.2d, v9.2d, v11.2d") \
+            __ASM_EMIT("trn2            v6.2d, v8.2d, v10.2d") \
+            __ASM_EMIT("trn2            v7.2d, v9.2d, v11.2d") \
+            /* v0   = b0 g0 r0 a0   */ \
+            /* v1   = b1 g1 r1 a1   */ \
+            /* v2   = b2 g2 r2 a2   */ \
+            /* v3   = b3 g3 r3 a3   */ \
+            /* v4   = b4 g4 r4 a4   */ \
+            /* v5   = b5 g5 r5 a5   */ \
+            /* v6   = b6 g6 r6 a6   */ \
+            /* v7   = b7 g7 r7 a7   */ \
+            \
+            __ASM_EMIT("fcvtzu          v0.4s, v0.4s")                  /* v0 = i32(b0) i32(g0) i32(r0) i32(a0) */ \
+            __ASM_EMIT("fcvtzu          v1.4s, v1.4s") \
+            __ASM_EMIT("fcvtzu          v2.4s, v2.4s") \
+            __ASM_EMIT("fcvtzu          v3.4s, v3.4s") \
+            __ASM_EMIT("fcvtzu          v4.4s, v4.4s")                  /* v4 = i32(b4) i32(g4) i32(r4) i32(a4) */ \
+            __ASM_EMIT("fcvtzu          v5.4s, v5.4s") \
+            __ASM_EMIT("fcvtzu          v6.4s, v6.4s") \
+            __ASM_EMIT("fcvtzu          v7.4s, v7.4s") \
+            __ASM_EMIT("sqxtun          v8.4h, v0.4s")                  /* v8 = i16(b0) i16(g0) i16(r0) i16(a0) 0 0 0 0 */ \
+            __ASM_EMIT("sqxtun          v9.4h, v2.4s")                  /* v9 = i16(b2) i16(g2) i16(r2) i16(a2) 0 0 0 0 */ \
+            __ASM_EMIT("sqxtun2         v8.8h, v1.4s")                  /* v8 = i16(b0) i16(g0) i16(r0) i16(a0) i16(b1) i16(g1) i16(r1) i16(a1) */ \
+            __ASM_EMIT("sqxtun2         v9.8h, v3.4s")                  /* v8 = i16(b2) i16(g2) i16(r2) i16(a2) i16(b3) i16(g3) i16(r3) i16(a3) */ \
+            __ASM_EMIT("sqxtun          v10.4h, v4.4s") \
+            __ASM_EMIT("sqxtun          v11.4h, v6.4s") \
+            __ASM_EMIT("sqxtun2         v10.8h, v5.4s") \
+            __ASM_EMIT("sqxtun2         v11.8h, v7.4s") \
+            __ASM_EMIT("sqxtun          v0.8b, v8.8h")                  /* v0 = b0 g0 r0 a0 b1 g1 r1 a1 0 0 0 0 0 0 0 0 */ \
+            __ASM_EMIT("sqxtun          v1.8b, v10.8h") \
+            __ASM_EMIT("sqxtun2         v0.16b, v9.8h")                 /* v0 = b0 g0 r0 a0 b1 g1 r1 a1 b2 g2 r2 a2 b3 g3 r3 a3 */ \
+            __ASM_EMIT("sqxtun2         v1.16b, v11.8h")
 
+        #define RGBA_TO_BGRA32_CORE_X4 \
+            /* v0   = r     */ \
+            /* v1   = g     */ \
+            /* v2   = b     */ \
+            /* v3   = a     */ \
+            /* v14  = 255.0 */ \
+            /* v15  = 255.0 */ \
+            __ASM_EMIT("fmul            v3.4s, v3.4s, v14.4s")          /* v3   = a * 255 */ \
+            __ASM_EMIT("fsub            v3.4s, v15.4s, v3.4s")          /* v3   = A = 255 - a*255 */ \
+            __ASM_EMIT("fmul            v8.4s, v2.4s, v3.4s")           /* v8   = B = b * A */ \
+            __ASM_EMIT("fmul            v9.4s, v1.4s, v3.4s")           /* v9   = G = g * A */ \
+            __ASM_EMIT("fmul            v10.4s, v0.4s, v3.4s")          /* v10  = R = r * A */ \
+            __ASM_EMIT("fcmge           v0.4s, v8.4s, #0.0")            /* v0   = [ B >= 0 ] */ \
+            __ASM_EMIT("fcmge           v1.4s, v9.4s, #0.0")            /* v1   = [ G >= 0 ] */ \
+            __ASM_EMIT("fcmge           v2.4s, v10.4s, #0.0")           /* v2   = [ R >= 0 ] */ \
+            __ASM_EMIT("and             v0.16b, v0.16b, v8.16b")        /* v0   = B & [ B >= 0 ] */ \
+            __ASM_EMIT("and             v1.16b, v1.16b, v9.16b")        /* v1   = G & [ G >= 0 ] */ \
+            __ASM_EMIT("and             v2.16b, v2.16b, v10.16b")       /* v2   = R & [ R >= 0 ] */ \
+            \
+            /* v0   = b0 b1 b2 b3   */ \
+            /* v1   = g0 g1 g2 g3   */ \
+            /* v2   = r0 r1 r2 r3   */ \
+            /* v3   = a0 a1 a2 a3   */ \
+            __ASM_EMIT("trn1            v8.4s, v0.4s, v1.4s") \
+            __ASM_EMIT("trn1            v10.4s, v2.4s, v3.4s") \
+            __ASM_EMIT("trn2            v9.4s, v0.4s, v1.4s") \
+            __ASM_EMIT("trn2            v11.4s, v2.4s, v3.4s") \
+            /* v8   = b0 g0 b2 g2   */ \
+            /* v9   = b1 g1 b3 g3   */ \
+            /* v10  = r0 a0 r2 a2   */ \
+            /* v11  = r1 a1 r3 a3   */ \
+            __ASM_EMIT("trn1            v0.2d, v8.2d, v10.2d") \
+            __ASM_EMIT("trn1            v1.2d, v9.2d, v11.2d") \
+            __ASM_EMIT("trn2            v2.2d, v8.2d, v10.2d") \
+            __ASM_EMIT("trn2            v3.2d, v9.2d, v11.2d") \
+            /* v0   = b0 g0 r0 a0   */ \
+            /* v1   = b1 g1 r1 a1   */ \
+            /* v2   = b2 g2 r2 a2   */ \
+            /* v3   = b3 g3 r3 a3   */ \
+            \
+            __ASM_EMIT("fcvtzu          v0.4s, v0.4s")                  /* v0 = i32(b0) i32(g0) i32(r0) i32(a0) */ \
+            __ASM_EMIT("fcvtzu          v1.4s, v1.4s") \
+            __ASM_EMIT("fcvtzu          v2.4s, v2.4s") \
+            __ASM_EMIT("fcvtzu          v3.4s, v3.4s") \
+            __ASM_EMIT("sqxtun          v8.4h, v0.4s")                  /* v8 = i16(b0) i16(g0) i16(r0) i16(a0) 0 0 0 0 */ \
+            __ASM_EMIT("sqxtun          v9.4h, v2.4s")                  /* v9 = i16(b2) i16(g2) i16(r2) i16(a2) 0 0 0 0 */ \
+            __ASM_EMIT("sqxtun2         v8.8h, v1.4s")                  /* v8 = i16(b0) i16(g0) i16(r0) i16(a0) i16(b1) i16(g1) i16(r1) i16(a1) */ \
+            __ASM_EMIT("sqxtun2         v9.8h, v3.4s")                  /* v8 = i16(b2) i16(g2) i16(r2) i16(a2) i16(b3) i16(g3) i16(r3) i16(a3) */ \
+            __ASM_EMIT("sqxtun          v0.8b, v8.8h")                  /* v0 = b0 g0 r0 a0 b1 g1 r1 a1 0 0 0 0 0 0 0 0 */ \
+            __ASM_EMIT("sqxtun2         v0.16b, v9.8h")                 /* v0 = b0 g0 r0 a0 b1 g1 r1 a1 b2 g2 r2 a2 b3 g3 r3 a3 */
+
+        IF_ARCH_AARCH64(
+            static const float RGBA_TO_BGRA32[] =
+            {
+                LSP_DSP_VEC4(255.0f),
+                LSP_DSP_VEC4(255.0f)
+            };
+        )
+
+        void rgba_to_bgra32(void *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                __ASM_EMIT("ldp             q14, q15, [%[XC]]")         // v14 = 255.0, v15 = 255.0
+                __ASM_EMIT("subs            %[count], %[count], #8")
+                __ASM_EMIT("b.lo            2f")
+
+                //-----------------------------------------------------------------
+                // 8x blocks
+                __ASM_EMIT("1:")
+                __ASM_EMIT("ld4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[src]]")
+                __ASM_EMIT("add             %[src], %[src], #0x40")
+                __ASM_EMIT("ld4             {v4.4s, v5.4s, v6.4s, v7.4s}, [%[src]]")
+                __ASM_EMIT("add             %[src], %[src], #0x40")
+                RGBA_TO_BGRA32_CORE_X8
+                __ASM_EMIT("subs            %[count], %[count], #8")
+                __ASM_EMIT("stp             q0, q1, [%[dst]]")
+                __ASM_EMIT("add             %[dst], %[dst], #0x20")
+                __ASM_EMIT("b.hs            1b")
+
+                //-----------------------------------------------------------------
+                // 4x blocks
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds            %[count], %[count], #4")
+                __ASM_EMIT("b.lt            4f")
+                __ASM_EMIT("ld4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[src]]")
+                RGBA_TO_BGRA32_CORE_X4
+                __ASM_EMIT("sub             %[count], %[count], #4")
+                __ASM_EMIT("str             q0, [%[dst]]")
+                __ASM_EMIT("add             %[src], %[src], #0x40")
+                __ASM_EMIT("add             %[dst], %[dst], #0x10")
+
+                //-----------------------------------------------------------------
+                // 1x-3x block
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds            %[count], %[count], #4")
+                __ASM_EMIT("b.ls            12f")
+                __ASM_EMIT("tst             %[count], #2")
+                __ASM_EMIT("b.eq            6f")
+                __ASM_EMIT("ld4             {v0.2s, v1.2s, v2.2s, v3.2s}, [%[src]]")
+                __ASM_EMIT("add             %[src], %[src], #0x20")
+                __ASM_EMIT("6:")
+                __ASM_EMIT("tst             %[count], #1")
+                __ASM_EMIT("b.eq            8f")
+                __ASM_EMIT("ld4             {v0.s, v1.s, v2.s, v3.s}[2], [%[src]]")
+                __ASM_EMIT("8:")
+                RGBA_TO_BGRA32_CORE_X4
+                __ASM_EMIT("tst             %[count], #2")
+                __ASM_EMIT("beq             10f")
+                __ASM_EMIT("st1             {v0.d}[0], [%[dst]]")
+                __ASM_EMIT("add             %[dst], %[dst], 0x08")
+                __ASM_EMIT("10:")
+                __ASM_EMIT("tst             %[count], #1")
+                __ASM_EMIT("beq             12f")
+                __ASM_EMIT("st1             {v0.s}[2], [%[dst]]")
+                // End
+                __ASM_EMIT("12:")
+
+                : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
+                : [XC] "r" (&RGBA_TO_BGRA32[0])
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
+            );
+        }
+
+        #undef RGBA_TO_BGRA32_CORE_X8
+        #undef RGBA_TO_BGRA32_CORE_X4
     } /* namespace asimd */
 } /* namespace lsp */
 

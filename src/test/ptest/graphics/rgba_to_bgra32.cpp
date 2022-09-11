@@ -49,6 +49,13 @@ namespace lsp
         }
     )
 
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void rgba_to_bgra32(void *dst, const float *src, size_t count);
+        }
+    )
+
     typedef void (* rgba_to_bgra32_t)(void *dst, const float *src, size_t count);
 }
 
@@ -88,6 +95,7 @@ PTEST_BEGIN("dsp.graphics", rgba_to_bgra32, 5, 5000)
             call("generic::rgba_to_bgra32", dst, src, count, generic::rgba_to_bgra32);
             IF_ARCH_X86(call("sse2::rgba_to_bgra32", dst, src, count, sse2::rgba_to_bgra32));
             IF_ARCH_ARM(call("neon_d32::rgba_to_bgra32", dst, src, count, neon_d32::rgba_to_bgra32));
+            IF_ARCH_AARCH64(call("asimd::rgba_to_bgra32", dst, src, count, asimd::rgba_to_bgra32));
 
             PTEST_SEPARATOR;
         }
