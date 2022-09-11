@@ -413,7 +413,7 @@
                 EXPORT1(eff_hsla_hue);
                 EXPORT1(eff_hsla_sat);
                 EXPORT1(eff_hsla_light);
-//                EXPORT1(eff_hsla_alpha);
+                EXPORT1(eff_hsla_alpha);
             }
         } /* namespace asimd */
     } /* namespace lsp */
