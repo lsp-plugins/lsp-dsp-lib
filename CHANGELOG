@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.8 ===
-
+* Better optimizations of dsp::copy and dsp::move for SSE, SSE3 and AVX.
 
 === 1.0.7 ===
 * Implemented axis_apply_log1 and axis_apply_log2 optimized for AArch64 ASIMD.

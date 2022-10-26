@@ -51,11 +51,13 @@ namespace lsp
         namespace sse3
         {
             void copy(float *dst, const float *src, size_t count);
+            void move(float *dst, const float *src, size_t count);
         }
 
         namespace avx
         {
             void copy(float *dst, const float *src, size_t count);
+            void move(float *dst, const float *src, size_t count);
         }
     )
 
@@ -134,6 +136,8 @@ PTEST_BEGIN("dsp.copy", copy, 5, 1000)
             IF_ARCH_X86(call("sse3::copy", out, in, count, sse3::copy));
             IF_ARCH_X86(call("avx::copy", out, in, count, avx::copy));
             IF_ARCH_X86(call("sse::move", out, in, count, sse::move));
+            IF_ARCH_X86(call("sse3::move", out, in, count, sse3::move));
+            IF_ARCH_X86(call("avx::move", out, in, count, avx::move));
 
             IF_ARCH_ARM(call("neon_d32::copy", out, in, count, neon_d32::copy));
             IF_ARCH_ARM(call("neon_d32::move", out, in, count, neon_d32::move));
