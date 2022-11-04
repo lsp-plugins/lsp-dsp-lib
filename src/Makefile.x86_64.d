@@ -1,7 +1,14 @@
 $(LSP_DSP_LIB_BIN)/main/dsp.o: main/dsp.cpp \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/atomic.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/finally.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/x86/atomic.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/singletone.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/aarch64/features.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/features.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/features.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/features.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/version.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/types.h \
@@ -106,6 +113,7 @@ $(LSP_DSP_LIB_BIN)/main/generic/generic.o: main/generic/generic.cpp \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/dynarray.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/types.h \
  $(LSP_TEST_FW_INC)/lsp-plug.in/test-fw/main/status.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/features.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/context.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/copy.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/generic/complex.h \
