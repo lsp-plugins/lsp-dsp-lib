@@ -337,15 +337,12 @@
             }
             #define EXPORT1(function)                   EXPORT2(function, function)
 
-            void dsp_init()
+            void dsp_init(const arm::cpu_features_t *f)
             {
-                cpu_features_t f;
-                detect_cpu_features(&f);
-
                 // Export functions
                 EXPORT1(info);
 
-                if (f.hwcap & HWCAP_ARM_VFP)
+                if (f->hwcap & HWCAP_ARM_VFP)
                 {
                     // Save previous entry points
                     dsp_start                       = dsp::start;
@@ -357,7 +354,7 @@
                 }
 
                 // Initialize support of NEON functions with D-32 registers
-                neon_d32::dsp_init(&f);
+                neon_d32::dsp_init(f);
             }
         }
     }
