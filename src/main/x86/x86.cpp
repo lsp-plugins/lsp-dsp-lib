@@ -325,13 +325,14 @@
                 read_brand_string(&info, max_ext_cpuid, f->brand);
             }
 
-            void detect_options(cpu_features_t *f)
+            void detect_cpu_features(cpu_features_t *f)
             {
                 // Initialize structure
                 f->vendor       = CPU_VENDOR_UNKNOWN;
                 f->family       = 0;
                 f->model        = 0;
                 f->features     = 0;
+                bzero(f->brand, sizeof(f->brand));
 
                 // X86-family code
                 if (!cpuid_supported())
@@ -474,7 +475,7 @@
             dsp::info_t *info()
             {
                 cpu_features_t f;
-                detect_options(&f);
+                detect_cpu_features(&f);
 
                 char *model     = NULL;
                 int n = asprintf(&model, "vendor=%s, family=0x%x, model=0x%x", cpu_vendors[f.vendor], int(f.family), int(f.model));
@@ -546,12 +547,8 @@
             }
             #define EXPORT1(function)                   EXPORT2(function, function)
 
-            void dsp_init()
+            void dsp_init(const cpu_features_t *f)
             {
-                // Dectect CPU options
-                cpu_features_t f;
-                detect_options(&f);
-
                 // Save previous entry points
                 dsp_start                   = dsp::start;
                 dsp_finish                  = dsp::finish;
@@ -568,12 +565,12 @@
                 EXPORT2(pbgra32_set_alpha, pabc32_set_alpha);
 
                 // Initialize extensions
-                sse::dsp_init(&f);
-                sse2::dsp_init(&f);
-                sse3::dsp_init(&f);
-                sse4::dsp_init(&f);
-                avx::dsp_init(&f);
-                avx2::dsp_init(&f);
+                sse::dsp_init(f);
+                sse2::dsp_init(f);
+                sse3::dsp_init(f);
+                sse4::dsp_init(f);
+                avx::dsp_init(f);
+                avx2::dsp_init(f);
             }
 
             #undef EXPORT1

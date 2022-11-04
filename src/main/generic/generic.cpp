@@ -39,6 +39,8 @@ namespace lsp
 }
 
 #define PRIVATE_DSP_ARCH_GENERIC_IMPL
+    #include <private/dsp/arch/generic/features.h>
+
     #include <private/dsp/arch/generic/context.h>
     #include <private/dsp/arch/generic/copy.h>
     #include <private/dsp/arch/generic/complex.h>
