@@ -215,8 +215,7 @@ namespace lsp
 
         void normalize2(float *dst, const float *src, size_t count)
         {
-            IF_ARCH_X86( size_t off );
-            IF_ARCH_X86_64( size_t count2 );
+            IF_ARCH_X86( size_t off, count2 );
 
             ARCH_X86_ASM
             (
@@ -227,8 +226,7 @@ namespace lsp
                 __ASM_EMIT("xorps       %%xmm1, %%xmm1")        /* xmm1 = 0         */
                 __ASM_EMIT("movaps      0x00(%[MASK]), %%xmm2") /* xmm2 = abs mask  */
                 __ASM_EMIT("xor         %[off], %[off]")        /* off  = 0         */
-                __ASM_EMIT32("push      %[count]")
-                __ASM_EMIT64("mov       %[count], %[count2]")
+                __ASM_EMIT("mov         %[count], %[count2]")
 
                 /* Perform search of absolute max value */
                 __ASM_EMIT("sub         $16, %[count]")
@@ -292,8 +290,7 @@ namespace lsp
                 __ASM_EMIT("jge         7b")
                 __ASM_EMIT("8:")
                 /* xmm1 = max { abs{ src } } */
-                __ASM_EMIT32("pop       %[count]")              /* restore count */
-                __ASM_EMIT64("mov       %[count2], %[count]")   /* restore count */
+                __ASM_EMIT("mov         %[count2], %[count]")   /* restore count */
                 __ASM_EMIT("xorps       %%xmm0, %%xmm0")        /* xmm0 = 0.0f  */
                 __ASM_EMIT("xor         %[off], %[off]")        /* off  = 0         */
                 __ASM_EMIT("ucomiss     %%xmm1, %%xmm0")        /* abs mask <=> 0.0f */
@@ -453,9 +450,11 @@ namespace lsp
 
                 __ASM_EMIT("2000:")
 
-                : [off] "=&r" (off), [count] "+r" (count) __IF_64(, [count2] "=&r" (count2))
+                : [off] "=&r" (off), [count] "+r" (count)
+                  __IF_64(, [count2] "=&r" (count2))
                 : [dst] "r" (dst), [src] "r" (src),
                   [MASK] "r" (normalize_const)
+                  __IF_32(, [count2] "m" (count2))
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

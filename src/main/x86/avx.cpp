@@ -49,12 +49,7 @@
         #include <private/dsp/arch/x86/avx/complex.h>
         #include <private/dsp/arch/x86/avx/pcomplex.h>
 
-        #include <private/dsp/arch/x86/avx/pmath/op_kx.h>
-        #include <private/dsp/arch/x86/avx/pmath/op_vv.h>
-        #include <private/dsp/arch/x86/avx/pmath/fmop_kx.h>
-        #include <private/dsp/arch/x86/avx/pmath/fmop_vv.h>
-        #include <private/dsp/arch/x86/avx/pmath/abs_vv.h>
-        #include <private/dsp/arch/x86/avx/pmath/minmax.h>
+        #include <private/dsp/arch/x86/avx/pmath.h>
 
         #include <private/dsp/arch/x86/avx/hmath/hsum.h>
         #include <private/dsp/arch/x86/avx/hmath/hdotp.h>
@@ -362,6 +357,10 @@
 
                 CEXPORT2(favx, prgba32_set_alpha, pabc32_set_alpha);
                 CEXPORT2(favx, pbgra32_set_alpha, pabc32_set_alpha);
+
+                CEXPORT2(favx, normalize, normalize2);
+                CEXPORT1(favx, normalize1);
+                CEXPORT1(favx, normalize2);
 
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)

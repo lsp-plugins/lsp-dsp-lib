@@ -47,7 +47,7 @@ namespace lsp
                 for (size_t i=0; i<count; ++i)
                     dst[i] = src[i] * max;
             }
-            else
+            else if (dst != src)
             {
                 // Copy data
                 for (size_t i=0; i<count; ++i)
@@ -60,6 +60,11 @@ namespace lsp
 
     IF_ARCH_X86(
         namespace sse
+        {
+            void normalize2(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx
         {
             void normalize2(float *dst, const float *src, size_t count);
         }
@@ -135,6 +140,7 @@ UTEST_BEGIN("dsp.pmath", normalize2)
 
         IF_ARCH_X86(CALL(generic::normalize2, 16));
         IF_ARCH_X86(CALL(sse::normalize2, 16));
+        IF_ARCH_X86(CALL(avx::normalize2, 32));
     }
 UTEST_END
 

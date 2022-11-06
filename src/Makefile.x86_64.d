@@ -590,12 +590,14 @@ $(LSP_DSP_LIB_BIN)/main/x86/avx.o: main/x86/avx.cpp \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/float.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/complex.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/pcomplex.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/pmath/op_kx.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/pmath/op_vv.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/pmath.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/pmath/abs_vv.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/pmath/fmop_kx.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/pmath/fmop_vv.h \
- $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/pmath/abs_vv.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/pmath/minmax.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/pmath/normalize.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/pmath/op_kx.h \
+ $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/pmath/op_vv.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/hmath/hsum.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/hmath/hdotp.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/x86/avx/mix.h \
