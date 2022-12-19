@@ -39,6 +39,8 @@ namespace lsp
 }
 
 #define PRIVATE_DSP_ARCH_GENERIC_IMPL
+    #include <private/dsp/arch/generic/features.h>
+
     #include <private/dsp/arch/generic/context.h>
     #include <private/dsp/arch/generic/copy.h>
     #include <private/dsp/arch/generic/complex.h>
@@ -50,15 +52,6 @@ namespace lsp
     #include <private/dsp/arch/generic/graphics/interpolation.h>
 
     #include <private/dsp/arch/generic/pmath.h>
-    #include <private/dsp/arch/generic/pmath/op_kx.h>
-    #include <private/dsp/arch/generic/pmath/op_vv.h>
-    #include <private/dsp/arch/generic/pmath/fmop_kx.h>
-    #include <private/dsp/arch/generic/pmath/fmop_vv.h>
-    #include <private/dsp/arch/generic/pmath/abs_vv.h>
-    #include <private/dsp/arch/generic/pmath/exp.h>
-    #include <private/dsp/arch/generic/pmath/log.h>
-    #include <private/dsp/arch/generic/pmath/minmax.h>
-    #include <private/dsp/arch/generic/pmath/pow.h>
 
     #include <private/dsp/arch/generic/hmath/hsum.h>
     #include <private/dsp/arch/generic/hmath/hdotp.h>
@@ -159,7 +152,9 @@ namespace lsp
             EXPORT1(powvx2);
 
             EXPORT1(abs_normalized);
-            EXPORT1(normalize);
+            EXPORT2(normalize, normalize2);
+            EXPORT1(normalize1);
+            EXPORT1(normalize2);
 
             EXPORT1(min);
             EXPORT1(max);

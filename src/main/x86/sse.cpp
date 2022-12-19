@@ -45,12 +45,7 @@
         #include <private/dsp/arch/x86/sse/copy.h>
         #include <private/dsp/arch/x86/sse/float.h>
 
-        #include <private/dsp/arch/x86/sse/pmath/op_kx.h>
-        #include <private/dsp/arch/x86/sse/pmath/op_vv.h>
-        #include <private/dsp/arch/x86/sse/pmath/fmop_kx.h>
-        #include <private/dsp/arch/x86/sse/pmath/fmop_vv.h>
-        #include <private/dsp/arch/x86/sse/pmath/abs_vv.h>
-        #include <private/dsp/arch/x86/sse/pmath/minmax.h>
+        #include <private/dsp/arch/x86/sse/pmath.h>
 
         #include <private/dsp/arch/x86/sse/hmath/hsum.h>
         #include <private/dsp/arch/x86/sse/hmath/hdotp.h>
@@ -467,6 +462,10 @@
                 EXPORT1(lin_inter_fmadd2);
                 EXPORT1(lin_inter_frmadd2);
                 EXPORT1(lin_inter_fmadd3);
+
+                EXPORT2(normalize, normalize2);
+                EXPORT1(normalize1);
+                EXPORT1(normalize2);
             }
 
             #undef EXPORT1

@@ -2,6 +2,13 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.8 ===
+* Better optimizations of dsp::copy and dsp::move for SSE, SSE3 and AVX.
+* The function dsp::init() is now thread safe.
+* Additional optimization of dsp::normalize() function, added dsp::normalize1()
+  and dsp::normalize2() functions.
+* Updated build scripts.
+
 === 1.0.7 ===
 * Implemented axis_apply_log1 and axis_apply_log2 optimized for AArch64 ASIMD.
 * Implemented fill_rgba and fill_hsla for AArch64 ASIMD.

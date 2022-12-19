@@ -77,7 +77,8 @@
 
                 if (!feature_check(f, FEAT_FAST_MOVS))
                 {
-                    EXPORT2(copy, copy);
+                    EXPORT1(copy);
+                    EXPORT1(move);
                 }
                 else
                 {

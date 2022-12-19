@@ -49,12 +49,7 @@
         #include <private/dsp/arch/x86/avx/complex.h>
         #include <private/dsp/arch/x86/avx/pcomplex.h>
 
-        #include <private/dsp/arch/x86/avx/pmath/op_kx.h>
-        #include <private/dsp/arch/x86/avx/pmath/op_vv.h>
-        #include <private/dsp/arch/x86/avx/pmath/fmop_kx.h>
-        #include <private/dsp/arch/x86/avx/pmath/fmop_vv.h>
-        #include <private/dsp/arch/x86/avx/pmath/abs_vv.h>
-        #include <private/dsp/arch/x86/avx/pmath/minmax.h>
+        #include <private/dsp/arch/x86/avx/pmath.h>
 
         #include <private/dsp/arch/x86/avx/hmath/hsum.h>
         #include <private/dsp/arch/x86/avx/hmath/hdotp.h>
@@ -130,8 +125,6 @@
                 if (!(f->features & CPU_OPTION_AVX))
                     return;
 
-                TEST_EXPORT(avx::copy);
-
                 // This routine sucks on AMD Bulldozer processor family but is pretty great on Intel
                 // Not tested on AMD Processors above Bulldozer family
                 bool favx   = feature_check(f, FEAT_FAST_AVX);
@@ -139,6 +132,9 @@
 
                 CEXPORT2_X64(favx, reverse1, reverse1);
                 CEXPORT2_X64(favx, reverse2, reverse2);
+
+                CEXPORT1(favx, copy);
+                CEXPORT1(favx, move);
 
                 CEXPORT1(favx, limit1);
                 CEXPORT1(favx, limit2);
@@ -361,6 +357,10 @@
 
                 CEXPORT2(favx, prgba32_set_alpha, pabc32_set_alpha);
                 CEXPORT2(favx, pbgra32_set_alpha, pabc32_set_alpha);
+
+                CEXPORT2(favx, normalize, normalize2);
+                CEXPORT1(favx, normalize1);
+                CEXPORT1(favx, normalize2);
 
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)

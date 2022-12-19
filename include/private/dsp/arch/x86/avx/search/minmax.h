@@ -30,7 +30,7 @@ namespace lsp
 {
     namespace avx
     {
-    #define MINMAX_CORE(SRC, OP) \
+        #define MINMAX_CORE(SRC, OP) \
             __ASM_EMIT("vxorps          %%ymm0, %%ymm0, %%ymm0") \
             __ASM_EMIT("test            %[count], %[count]") \
             __ASM_EMIT("jz              10f") \

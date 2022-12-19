@@ -19,7 +19,16 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <lsp-plug.in/common/atomic.h>
+#include <lsp-plug.in/common/finally.h>
+#include <lsp-plug.in/common/singletone.h>
 #include <lsp-plug.in/common/types.h>
+
+#include <private/dsp/arch/aarch64/features.h>
+#include <private/dsp/arch/arm/features.h>
+#include <private/dsp/arch/generic/features.h>
+#include <private/dsp/arch/x86/features.h>
+
 
 #define LSP_DSP_LIB_SYMBOL(ret, name, ...) \
     namespace lsp { \
@@ -36,60 +45,40 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 
+#ifndef LSP_DSP_CPU_NAMESPACE
+    #define IF_ARCH_SPECIFIC_INIT(...)
+#else
+    #define IF_ARCH_SPECIFIC_INIT(...)          __VA_ARGS__
+#endif /* LSP_DSP_CPU_NAMESPACE */
+
 
 namespace lsp
 {
-    // Generic architecture initialization
-    namespace generic
-    {
-        void dsp_init();
-    }
-
-    // x86-specific architecture initialization
-    IF_ARCH_X86(
-        namespace x86
-        {
-            void dsp_init();
-        }
-    )
-
-    // ARM-specific 32-bit architecture initialization
-    IF_ARCH_ARM(
-        namespace arm
-        {
-            void dsp_init();
-        }
-    )
-
-    // AArch64-specific 64-bit architecture initialization
-    IF_ARCH_AARCH64(
-        namespace aarch64
-        {
-            void dsp_init();
-        }
-    )
-
     namespace dsp
     {
-        static bool is_initialized = false;
+        static lsp::singletone_t library;
 
         LSP_DSP_LIB_PUBLIC
         void init()
         {
-            // Check if we are already initialized
-            if (is_initialized)
+            // Check that library has already been initialized
+            if (library.initialized())
                 return;
 
-            // Initialize native functions
-            generic::dsp_init();
+            // Dectect CPU options
+            IF_ARCH_SPECIFIC_INIT(
+                LSP_DSP_CPU_NAMESPACE::cpu_features_t f;
+                LSP_DSP_CPU_NAMESPACE::detect_cpu_features(&f);
+            );
 
-            // Initialize architecture-dependent functions that utilize architecture-specific features
-            IF_ARCH_X86(x86::dsp_init());
-            IF_ARCH_ARM(arm::dsp_init());
-            IF_ARCH_AARCH64(aarch64::dsp_init());
+            // Write architecture-optimized pointers to functions
+            lsp_singletone_init(library) {
+                // Initialize native functions
+                generic::dsp_init();
 
-            // Mark that all DSP modules have been initialized
-            is_initialized = true;
+                // Initialize architecture-dependent functions that utilize architecture-specific features
+                IF_ARCH_SPECIFIC_INIT(LSP_DSP_CPU_NAMESPACE::dsp_init(&f));
+            };
         }
 
         extern "C"

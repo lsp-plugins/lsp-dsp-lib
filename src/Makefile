@@ -167,7 +167,7 @@ $(CXX_OBJ_MAIN) $(CXX_OBJ_EXPORT) $(CXX_OBJ_EXT) $(CXX_OBJ_TEST) $(CXX_OBJ_NOTES
 # Producing large object files
 $(ARTIFACT_OBJ): $(CXX_OBJ)
 	@echo "  $($(HOST)LD)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_OBJ))"
-	@$($(HOST)LD) -o $(ARTIFACT_OBJ) $($(HOST)LDFLAGS) $(CXX_OBJ)
+	$($(HOST)LD) -o $(ARTIFACT_OBJ) $($(HOST)LDFLAGS) $(CXX_OBJ)
 
 $(ARTIFACT_OBJ_TEST): $(CXX_OBJ_TEST)
 	echo "  $($(HOST)LD)   [$(ARTIFACT_NAME)] $(notdir $(ARTIFACT_OBJ_TEST))"

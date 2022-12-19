@@ -326,16 +326,13 @@ namespace lsp
         }
         #define EXPORT1(function)                   EXPORT2(function, function)
 
-        void dsp_init()
+        void dsp_init(const cpu_features_t *f)
         {
-            cpu_features_t f;
-            detect_cpu_features(&f);
-
             // Export functions
             EXPORT1(info);
 
             // Initialize Advanced SIMD support
-            asimd::dsp_init(&f);
+            asimd::dsp_init(f);
         }
     }
 }
