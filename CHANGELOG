@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.9 ===
+* Added Clang build for the CI.
+
 === 1.0.8 ===
 * Better optimizations of dsp::copy and dsp::move for SSE, SSE3 and AVX.
 * The function dsp::init() is now thread safe.

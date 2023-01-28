@@ -87,6 +87,28 @@ jobs:
             echo "***** MEMCHECK $test *****"; \
             valgrind ${{env.VALGRIND_ARGS}} .build/target/${{env.ARTIFACT}}/${{env.ARTIFACT}}-test utest --verbose --jobs 1 --nofork --debug $test; \
           done
+  opensuse_tumbleweed_clang:
+    runs-on: ubuntu-latest
+    container:
+      image: opensuse/tumbleweed:latest
+    steps:
+      - name: Install dependencies
+        run: zypper --non-interactive --no-gpg-checks in tar gzip git make valgrind gcc gcc-c++ libstdc++-devel clang
+      - uses: actions/checkout@v3
+      - name: Configure project
+        run: make config TEST=1 CC=clang CXX=clang++
+      - name: Fetch project dependencies
+        run: make fetch
+      - name: Build project
+        run: make VERBOSE=1
+      - name: Run unit tests
+        run: .build/target/${{env.ARTIFACT}}/${{env.ARTIFACT}}-test utest --verbose --jobs 1
+      - name: Run unit tests with memcheck
+        run: |
+          for test in $(.build/target/${{env.ARTIFACT}}/${{env.ARTIFACT}}-test utest --list --suppress); do \
+            echo "***** MEMCHECK $test *****"; \
+            valgrind ${{env.VALGRIND_ARGS}} .build/target/${{env.ARTIFACT}}/${{env.ARTIFACT}}-test utest --verbose --jobs 1 --nofork --debug $test; \
+          done
   debian_stable:
     runs-on: ubuntu-latest
     container:
