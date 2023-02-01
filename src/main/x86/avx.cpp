@@ -224,6 +224,22 @@
                 CEXPORT1(favx, fmmod4);
                 CEXPORT1(favx, fmrmod4);
 
+                CEXPORT1(favx, lramp_set1);
+                CEXPORT1(favx, lramp1);
+                CEXPORT1(favx, lramp2);
+                CEXPORT1(favx, lramp_add2);
+                CEXPORT1(favx, lramp_sub2);
+                CEXPORT1(favx, lramp_rsub2);
+                CEXPORT1(favx, lramp_mul2);
+                CEXPORT1(favx, lramp_div2);
+                CEXPORT1(favx, lramp_rdiv2);
+                CEXPORT1(favx, lramp_add3);
+                CEXPORT1(favx, lramp_sub3);
+                CEXPORT1(favx, lramp_rsub3);
+                CEXPORT1(favx, lramp_mul3);
+                CEXPORT1(favx, lramp_div3);
+                CEXPORT1(favx, lramp_rdiv3);
+
                 CEXPORT2_X64(favx, abs_add2, x64_abs_add2);
                 CEXPORT2_X64(favx, abs_sub2, x64_abs_sub2);
                 CEXPORT2_X64(favx, abs_rsub2, x64_abs_rsub2);

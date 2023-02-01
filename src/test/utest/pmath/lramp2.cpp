@@ -119,13 +119,13 @@ namespace lsp
 
         namespace avx
         {
-//            void lramp2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_add2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_sub2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_rsub2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_mul2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_div2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, uint32_t count);
+            void lramp2(float *dst, const float *src, float v1, float v2, uint32_t count);
+            void lramp_add2(float *dst, const float *src, float v1, float v2, uint32_t count);
+            void lramp_sub2(float *dst, const float *src, float v1, float v2, uint32_t count);
+            void lramp_rsub2(float *dst, const float *src, float v1, float v2, uint32_t count);
+            void lramp_mul2(float *dst, const float *src, float v1, float v2, uint32_t count);
+            void lramp_div2(float *dst, const float *src, float v1, float v2, uint32_t count);
+            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, uint32_t count);
         }
     )
 
@@ -258,13 +258,13 @@ UTEST_BEGIN("dsp.pmath", lramp2)
         IF_ARCH_X86(CALL(lramp_div2, sse::lramp_div2, 16));
         IF_ARCH_X86(CALL(lramp_rdiv2, sse::lramp_rdiv2, 16));
 
-//        IF_ARCH_X86(CALL(lramp2, avx::lramp2, 16));
-//        IF_ARCH_X86(CALL(lramp_add2, avx::lramp_add2, 16));
-//        IF_ARCH_X86(CALL(lramp_sub2, avx::lramp_sub2, 16));
-//        IF_ARCH_X86(CALL(lramp_rsub2, avx::lramp_rsub2, 16));
-//        IF_ARCH_X86(CALL(lramp_mul2, avx::lramp_mul2, 16));
-//        IF_ARCH_X86(CALL(lramp_div2, avx::lramp_div2, 16));
-//        IF_ARCH_X86(CALL(lramp_rdiv2, avx::lramp_rdiv2, 16));
+        IF_ARCH_X86(CALL(lramp2, avx::lramp2, 16));
+        IF_ARCH_X86(CALL(lramp_add2, avx::lramp_add2, 16));
+        IF_ARCH_X86(CALL(lramp_sub2, avx::lramp_sub2, 16));
+        IF_ARCH_X86(CALL(lramp_rsub2, avx::lramp_rsub2, 16));
+        IF_ARCH_X86(CALL(lramp_mul2, avx::lramp_mul2, 16));
+        IF_ARCH_X86(CALL(lramp_div2, avx::lramp_div2, 16));
+        IF_ARCH_X86(CALL(lramp_rdiv2, avx::lramp_rdiv2, 16));
 
 //        IF_ARCH_ARM(CALL(lramp2, neon_d32::lramp2, 16));
 //        IF_ARCH_ARM(CALL(lramp_add2, neon_d32::lramp_add2, 16));
