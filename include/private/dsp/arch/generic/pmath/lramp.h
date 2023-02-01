@@ -38,7 +38,7 @@ namespace lsp
                 dsp::fill(dst, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
@@ -54,7 +54,7 @@ namespace lsp
                 dsp::mul_k2(dst, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
@@ -70,7 +70,7 @@ namespace lsp
                 dsp::mul_k3(dst, src, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
@@ -86,7 +86,7 @@ namespace lsp
                 dsp::fmadd_k3(dst, src, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
@@ -102,7 +102,7 @@ namespace lsp
                 dsp::fmsub_k3(dst, src, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
@@ -118,7 +118,7 @@ namespace lsp
                 dsp::fmrsub_k3(dst, src, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
@@ -134,7 +134,7 @@ namespace lsp
                 dsp::fmmul_k3(dst, src, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
@@ -150,7 +150,7 @@ namespace lsp
                 dsp::fmdiv_k3(dst, src, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
@@ -166,7 +166,7 @@ namespace lsp
                 dsp::fmrdiv_k3(dst, src, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
@@ -182,7 +182,7 @@ namespace lsp
                 dsp::fmadd_k4(dst, a, b, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
@@ -198,12 +198,28 @@ namespace lsp
                 dsp::fmsub_k4(dst, a, b, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
             for (uint32_t i=0; i<count; ++i)
                 dst[i] = a[i] - b[i] * (v1 + delta * i);
+        }
+
+        void lramp_rsub3(float *dst, const float *a, const float *b, float v1, float v2, uint32_t count)
+        {
+            float delta = v2 - v1;
+            if (delta == 0.0f)
+            {
+                dsp::fmrsub_k4(dst, a, b, v1, count);
+                return;
+            }
+            if (count == 0)
+                return;
+
+            delta /= count;
+            for (uint32_t i=0; i<count; ++i)
+                dst[i] = b[i] * (v1 + delta * i) - a[i];
         }
 
         void lramp_mul3(float *dst, const float *a, const float *b, float v1, float v2, uint32_t count)
@@ -214,7 +230,7 @@ namespace lsp
                 dsp::fmmul_k4(dst, a, b, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
@@ -227,15 +243,31 @@ namespace lsp
             float delta = v2 - v1;
             if (delta == 0.0f)
             {
-                dsp::fmmul_k4(dst, a, b, v1, count);
+                dsp::fmdiv_k4(dst, a, b, v1, count);
                 return;
             }
-            else if (count == 0)
+            if (count == 0)
                 return;
 
             delta /= count;
             for (uint32_t i=0; i<count; ++i)
                 dst[i] = a[i] / (b[i] * (v1 + delta * i));
+        }
+
+        void lramp_rdiv3(float *dst, const float *a, const float *b, float v1, float v2, uint32_t count)
+        {
+            float delta = v2 - v1;
+            if (delta == 0.0f)
+            {
+                dsp::fmrdiv_k4(dst, a, b, v1, count);
+                return;
+            }
+            if (count == 0)
+                return;
+
+            delta /= count;
+            for (uint32_t i=0; i<count; ++i)
+                dst[i] = (b[i] * (v1 + delta * i)) / a[i];
         }
 
     } /* namespace generic */

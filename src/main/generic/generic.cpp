@@ -162,8 +162,10 @@ namespace lsp
             EXPORT1(lramp_rdiv2);
             EXPORT1(lramp_add3);
             EXPORT1(lramp_sub3);
+            EXPORT1(lramp_rsub3);
             EXPORT1(lramp_mul3);
             EXPORT1(lramp_div3);
+            EXPORT1(lramp_rdiv3);
 
             EXPORT1(abs_normalized);
             EXPORT2(normalize, normalize2);

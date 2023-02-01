@@ -102,6 +102,13 @@ LSP_DSP_LIB_SYMBOL(void, lramp_add3, float *dst, const float *a, const float *b,
  */
 LSP_DSP_LIB_SYMBOL(void, lramp_sub3, float *dst, const float *a, const float *b, float v1, float v2, uint32_t count);
 
+/** Apply linear ramping envelope: dst[i] = b[i] * (v1 + ((v2-v1)*i) / count) - a[i]
+ *
+ * @param dst destination vector
+ * @param count number of elements
+ */
+LSP_DSP_LIB_SYMBOL(void, lramp_rsub3, float *dst, const float *a, const float *b, float v1, float v2, uint32_t count);
+
 /** Apply linear ramping envelope: dst[i] = a[i] * b[i] * (v1 + ((v2-v1)*i) / count)
  *
  * @param dst destination vector
@@ -116,5 +123,11 @@ LSP_DSP_LIB_SYMBOL(void, lramp_mul3, float *dst, const float *a, const float *b,
  */
 LSP_DSP_LIB_SYMBOL(void, lramp_div3, float *dst, const float *a, const float *b, float v1, float v2, uint32_t count);
 
+/** Apply linear ramping envelope: dst[i] = (b[i] * (v1 + ((v2-v1)*i) / count)) / a[i]
+ *
+ * @param dst destination vector
+ * @param count number of elements
+ */
+LSP_DSP_LIB_SYMBOL(void, lramp_rdiv3, float *dst, const float *a, const float *b, float v1, float v2, uint32_t count);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_PMATH_LRAMP_H_ */
