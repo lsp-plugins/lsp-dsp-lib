@@ -151,6 +151,20 @@ namespace lsp
             EXPORT1(powvx1);
             EXPORT1(powvx2);
 
+            EXPORT1(lramp_set1);
+            EXPORT1(lramp1);
+            EXPORT1(lramp2);
+            EXPORT1(lramp_add2);
+            EXPORT1(lramp_sub2);
+            EXPORT1(lramp_rsub2);
+            EXPORT1(lramp_mul2);
+            EXPORT1(lramp_div2);
+            EXPORT1(lramp_rdiv2);
+            EXPORT1(lramp_add3);
+            EXPORT1(lramp_sub3);
+            EXPORT1(lramp_mul3);
+            EXPORT1(lramp_div3);
+
             EXPORT1(abs_normalized);
             EXPORT2(normalize, normalize2);
             EXPORT1(normalize1);

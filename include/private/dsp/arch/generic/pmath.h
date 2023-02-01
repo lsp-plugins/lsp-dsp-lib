@@ -31,6 +31,7 @@
 #include <private/dsp/arch/generic/pmath/fmop_kx.h>
 #include <private/dsp/arch/generic/pmath/fmop_vv.h>
 #include <private/dsp/arch/generic/pmath/log.h>
+#include <private/dsp/arch/generic/pmath/lramp.h>
 #include <private/dsp/arch/generic/pmath/minmax.h>
 #include <private/dsp/arch/generic/pmath/normalize.h>
 #include <private/dsp/arch/generic/pmath/op_kx.h>
