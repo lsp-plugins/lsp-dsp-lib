@@ -30,7 +30,7 @@ namespace lsp
 {
     namespace generic
     {
-        void lramp_set1(float *dst, float v1, float v2, uint32_t count)
+        void lramp_set1(float *dst, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -42,11 +42,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = v1 + delta * i;
         }
 
-        void lramp1(float *dst, float v1, float v2, uint32_t count)
+        void lramp1(float *dst, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -58,11 +58,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = dst[i] * (v1 + delta * i);
         }
 
-        void lramp2(float *dst, const float *src, float v1, float v2, uint32_t count)
+        void lramp2(float *dst, const float *src, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -74,11 +74,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = src[i] * (v1 + delta * i);
         }
 
-        void lramp_add2(float *dst, const float *src, float v1, float v2, uint32_t count)
+        void lramp_add2(float *dst, const float *src, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -90,11 +90,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = dst[i] + src[i] * (v1 + delta * i);
         }
 
-        void lramp_sub2(float *dst, const float *src, float v1, float v2, uint32_t count)
+        void lramp_sub2(float *dst, const float *src, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -106,11 +106,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = dst[i] - src[i] * (v1 + delta * i);
         }
 
-        void lramp_rsub2(float *dst, const float *src, float v1, float v2, uint32_t count)
+        void lramp_rsub2(float *dst, const float *src, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -122,11 +122,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = src[i] * (v1 + delta * i) - dst[i];
         }
 
-        void lramp_mul2(float *dst, const float *src, float v1, float v2, uint32_t count)
+        void lramp_mul2(float *dst, const float *src, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -138,11 +138,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = dst[i] * src[i] * (v1 + delta * i);
         }
 
-        void lramp_div2(float *dst, const float *src, float v1, float v2, uint32_t count)
+        void lramp_div2(float *dst, const float *src, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -154,11 +154,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = dst[i] / (src[i] * (v1 + delta * i));
         }
 
-        void lramp_rdiv2(float *dst, const float *src, float v1, float v2, uint32_t count)
+        void lramp_rdiv2(float *dst, const float *src, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -170,11 +170,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = (src[i] * (v1 + delta * i)) / dst[i];
         }
 
-        void lramp_add3(float *dst, const float *a, const float *b, float v1, float v2, uint32_t count)
+        void lramp_add3(float *dst, const float *a, const float *b, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -186,11 +186,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = a[i] + b[i] * (v1 + delta * i);
         }
 
-        void lramp_sub3(float *dst, const float *a, const float *b, float v1, float v2, uint32_t count)
+        void lramp_sub3(float *dst, const float *a, const float *b, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -202,11 +202,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = a[i] - b[i] * (v1 + delta * i);
         }
 
-        void lramp_rsub3(float *dst, const float *a, const float *b, float v1, float v2, uint32_t count)
+        void lramp_rsub3(float *dst, const float *a, const float *b, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -218,11 +218,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = b[i] * (v1 + delta * i) - a[i];
         }
 
-        void lramp_mul3(float *dst, const float *a, const float *b, float v1, float v2, uint32_t count)
+        void lramp_mul3(float *dst, const float *a, const float *b, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -234,11 +234,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = a[i] * b[i] * (v1 + delta * i);
         }
 
-        void lramp_div3(float *dst, const float *a, const float *b, float v1, float v2, uint32_t count)
+        void lramp_div3(float *dst, const float *a, const float *b, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -250,11 +250,11 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = a[i] / (b[i] * (v1 + delta * i));
         }
 
-        void lramp_rdiv3(float *dst, const float *a, const float *b, float v1, float v2, uint32_t count)
+        void lramp_rdiv3(float *dst, const float *a, const float *b, float v1, float v2, size_t count)
         {
             float delta = v2 - v1;
             if (delta == 0.0f)
@@ -266,7 +266,7 @@ namespace lsp
                 return;
 
             delta /= count;
-            for (uint32_t i=0; i<count; ++i)
+            for (size_t i=0; i<count; ++i)
                 dst[i] = (b[i] * (v1 + delta * i)) / a[i];
         }
 

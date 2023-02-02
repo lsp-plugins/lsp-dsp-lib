@@ -28,66 +28,66 @@
 
 namespace
 {
-    void lramp2(float *dst, const float *src, float v1, float v2, uint32_t count)
+    void lramp2(float *dst, const float *src, float v1, float v2, size_t count)
     {
         if (count == 0)
             return;
         float delta = (v2 - v1)/count;
-        for (uint32_t i=0; i<count; ++i)
+        for (size_t i=0; i<count; ++i)
             dst[i] = src[i] * (v1 + delta * i);
     }
 
-    void lramp_add2(float *dst, const float *src, float v1, float v2, uint32_t count)
+    void lramp_add2(float *dst, const float *src, float v1, float v2, size_t count)
     {
         if (count == 0)
             return;
         float delta = (v2 - v1)/count;
-        for (uint32_t i=0; i<count; ++i)
+        for (size_t i=0; i<count; ++i)
             dst[i] = dst[i] + src[i] * (v1 + delta * i);
     }
 
-    void lramp_sub2(float *dst, const float *src, float v1, float v2, uint32_t count)
+    void lramp_sub2(float *dst, const float *src, float v1, float v2, size_t count)
     {
         if (count == 0)
             return;
         float delta = (v2 - v1)/count;
-        for (uint32_t i=0; i<count; ++i)
+        for (size_t i=0; i<count; ++i)
             dst[i] = dst[i] - src[i] * (v1 + delta * i);
     }
 
-    void lramp_rsub2(float *dst, const float *src, float v1, float v2, uint32_t count)
+    void lramp_rsub2(float *dst, const float *src, float v1, float v2, size_t count)
     {
         if (count == 0)
             return;
         float delta = (v2 - v1)/count;
-        for (uint32_t i=0; i<count; ++i)
+        for (size_t i=0; i<count; ++i)
             dst[i] = src[i] * (v1 + delta * i) - dst[i];
     }
 
-    void lramp_mul2(float *dst, const float *src, float v1, float v2, uint32_t count)
+    void lramp_mul2(float *dst, const float *src, float v1, float v2, size_t count)
     {
         if (count == 0)
             return;
         float delta = (v2 - v1)/count;
-        for (uint32_t i=0; i<count; ++i)
+        for (size_t i=0; i<count; ++i)
             dst[i] = dst[i] * src[i] * (v1 + delta * i);
     }
 
-    void lramp_div2(float *dst, const float *src, float v1, float v2, uint32_t count)
+    void lramp_div2(float *dst, const float *src, float v1, float v2, size_t count)
     {
         if (count == 0)
             return;
         float delta = (v2 - v1)/count;
-        for (uint32_t i=0; i<count; ++i)
+        for (size_t i=0; i<count; ++i)
             dst[i] = dst[i] / (src[i] * (v1 + delta * i));
     }
 
-    void lramp_rdiv2(float *dst, const float *src, float v1, float v2, uint32_t count)
+    void lramp_rdiv2(float *dst, const float *src, float v1, float v2, size_t count)
     {
         if (count == 0)
             return;
         float delta = (v2 - v1)/count;
-        for (uint32_t i=0; i<count; ++i)
+        for (size_t i=0; i<count; ++i)
             dst[i] = (src[i] * (v1 + delta * i)) / dst[i];
     }
 }
@@ -96,67 +96,67 @@ namespace lsp
 {
     namespace generic
     {
-        void lramp2(float *dst, const float *src, float v1, float v2, uint32_t count);
-        void lramp_add2(float *dst, const float *src, float v1, float v2, uint32_t count);
-        void lramp_sub2(float *dst, const float *src, float v1, float v2, uint32_t count);
-        void lramp_rsub2(float *dst, const float *src, float v1, float v2, uint32_t count);
-        void lramp_mul2(float *dst, const float *src, float v1, float v2, uint32_t count);
-        void lramp_div2(float *dst, const float *src, float v1, float v2, uint32_t count);
-        void lramp_rdiv2(float *dst, const float *src, float v1, float v2, uint32_t count);
+        void lramp2(float *dst, const float *src, float v1, float v2, size_t count);
+        void lramp_add2(float *dst, const float *src, float v1, float v2, size_t count);
+        void lramp_sub2(float *dst, const float *src, float v1, float v2, size_t count);
+        void lramp_rsub2(float *dst, const float *src, float v1, float v2, size_t count);
+        void lramp_mul2(float *dst, const float *src, float v1, float v2, size_t count);
+        void lramp_div2(float *dst, const float *src, float v1, float v2, size_t count);
+        void lramp_rdiv2(float *dst, const float *src, float v1, float v2, size_t count);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
-            void lramp2(float *dst, const float *src, float v1, float v2, uint32_t count);
-            void lramp_add2(float *dst, const float *src, float v1, float v2, uint32_t count);
-            void lramp_sub2(float *dst, const float *src, float v1, float v2, uint32_t count);
-            void lramp_rsub2(float *dst, const float *src, float v1, float v2, uint32_t count);
-            void lramp_mul2(float *dst, const float *src, float v1, float v2, uint32_t count);
-            void lramp_div2(float *dst, const float *src, float v1, float v2, uint32_t count);
-            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, uint32_t count);
+            void lramp2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_add2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_sub2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_rsub2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_mul2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_div2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, size_t count);
         }
 
         namespace avx
         {
-            void lramp2(float *dst, const float *src, float v1, float v2, uint32_t count);
-            void lramp_add2(float *dst, const float *src, float v1, float v2, uint32_t count);
-            void lramp_sub2(float *dst, const float *src, float v1, float v2, uint32_t count);
-            void lramp_rsub2(float *dst, const float *src, float v1, float v2, uint32_t count);
-            void lramp_mul2(float *dst, const float *src, float v1, float v2, uint32_t count);
-            void lramp_div2(float *dst, const float *src, float v1, float v2, uint32_t count);
-            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, uint32_t count);
+            void lramp2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_add2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_sub2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_rsub2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_mul2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_div2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, size_t count);
         }
     )
 
     IF_ARCH_ARM(
         namespace neon_d32
         {
-//            void lramp2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_add2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_sub2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_rsub2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_mul2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_div2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, uint32_t count);
+//            void lramp2(float *dst, const float *src, float v1, float v2, size_t count);
+//            void lramp_add2(float *dst, const float *src, float v1, float v2, size_t count);
+//            void lramp_sub2(float *dst, const float *src, float v1, float v2, size_t count);
+//            void lramp_rsub2(float *dst, const float *src, float v1, float v2, size_t count);
+//            void lramp_mul2(float *dst, const float *src, float v1, float v2, size_t count);
+//            void lramp_div2(float *dst, const float *src, float v1, float v2, size_t count);
+//            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, size_t count);
         }
     )
 
     IF_ARCH_AARCH64(
         namespace asimd
         {
-//            void lramp2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_add2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_sub2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_rsub2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_mul2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_div2(float *dst, const float *src, float v1, float v2, uint32_t count);
-//            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, uint32_t count);
+//            void lramp2(float *dst, const float *src, float v1, float v2, size_t count);
+//            void lramp_add2(float *dst, const float *src, float v1, float v2, size_t count);
+//            void lramp_sub2(float *dst, const float *src, float v1, float v2, size_t count);
+//            void lramp_rsub2(float *dst, const float *src, float v1, float v2, size_t count);
+//            void lramp_mul2(float *dst, const float *src, float v1, float v2, size_t count);
+//            void lramp_div2(float *dst, const float *src, float v1, float v2, size_t count);
+//            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, size_t count);
         }
     )
 }
 
-typedef void (* lramp2_t)(float *dst, const float *src, float v1, float v2, uint32_t count);
+typedef void (* lramp2_t)(float *dst, const float *src, float v1, float v2, size_t count);
 
 UTEST_BEGIN("dsp.pmath", lramp2)
 

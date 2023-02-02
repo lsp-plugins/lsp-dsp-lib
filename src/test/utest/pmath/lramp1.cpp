@@ -28,21 +28,21 @@
 
 namespace
 {
-    void lramp_set1(float *dst, float v1, float v2, uint32_t count)
+    void lramp_set1(float *dst, float v1, float v2, size_t count)
     {
         if (count == 0)
             return;
         float delta = (v2 - v1)/count;
-        for (uint32_t i=0; i<count; ++i)
+        for (size_t i=0; i<count; ++i)
             dst[i] = v1 + delta * i;
     }
 
-    void lramp1(float *dst, float v1, float v2, uint32_t count)
+    void lramp1(float *dst, float v1, float v2, size_t count)
     {
         if (count == 0)
             return;
         float delta = (v2 - v1)/count;
-        for (uint32_t i=0; i<count; ++i)
+        for (size_t i=0; i<count; ++i)
             dst[i] = dst[i] * (v1 + delta * i);
     }
 }
@@ -51,42 +51,42 @@ namespace lsp
 {
     namespace generic
     {
-        void lramp_set1(float *dst, float v1, float v2, uint32_t count);
-        void lramp1(float *dst, float v1, float v2, uint32_t count);
+        void lramp_set1(float *dst, float v1, float v2, size_t count);
+        void lramp1(float *dst, float v1, float v2, size_t count);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
-            void lramp_set1(float *dst, float v1, float v2, uint32_t count);
-            void lramp1(float *dst, float v1, float v2, uint32_t count);
+            void lramp_set1(float *dst, float v1, float v2, size_t count);
+            void lramp1(float *dst, float v1, float v2, size_t count);
         }
 
         namespace avx
         {
-            void lramp_set1(float *dst, float v1, float v2, uint32_t count);
-            void lramp1(float *dst, float v1, float v2, uint32_t count);
+            void lramp_set1(float *dst, float v1, float v2, size_t count);
+            void lramp1(float *dst, float v1, float v2, size_t count);
         }
     )
 
     IF_ARCH_ARM(
         namespace neon_d32
         {
-//            void lramp_set1(float *dst, float v1, float v2, uint32_t count);
-//            void lramp1(float *dst, float v1, float v2, uint32_t count);
+//            void lramp_set1(float *dst, float v1, float v2, size_t count);
+//            void lramp1(float *dst, float v1, float v2, size_t count);
         }
     )
 
     IF_ARCH_AARCH64(
         namespace asimd
         {
-//            void lramp_set1(float *dst, float v1, float v2, uint32_t count);
-//            void lramp1(float *dst, float v1, float v2, uint32_t count);
+//            void lramp_set1(float *dst, float v1, float v2, size_t count);
+//            void lramp1(float *dst, float v1, float v2, size_t count);
         }
     )
 }
 
-typedef void (* lramp1_t)(float *dst, float v1, float v2, uint32_t count);
+typedef void (* lramp1_t)(float *dst, float v1, float v2, size_t count);
 
 UTEST_BEGIN("dsp.pmath", lramp1)
 
