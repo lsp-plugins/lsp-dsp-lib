@@ -145,13 +145,13 @@ namespace lsp
     IF_ARCH_AARCH64(
         namespace asimd
         {
-//            void lramp2(float *dst, const float *src, float v1, float v2, size_t count);
-//            void lramp_add2(float *dst, const float *src, float v1, float v2, size_t count);
-//            void lramp_sub2(float *dst, const float *src, float v1, float v2, size_t count);
-//            void lramp_rsub2(float *dst, const float *src, float v1, float v2, size_t count);
-//            void lramp_mul2(float *dst, const float *src, float v1, float v2, size_t count);
-//            void lramp_div2(float *dst, const float *src, float v1, float v2, size_t count);
-//            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_add2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_sub2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_rsub2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_mul2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_div2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, size_t count);
         }
     )
 }
@@ -274,13 +274,13 @@ UTEST_BEGIN("dsp.pmath", lramp2)
         IF_ARCH_ARM(CALL(lramp_div2, neon_d32::lramp_div2, 16));
         IF_ARCH_ARM(CALL(lramp_rdiv2, neon_d32::lramp_rdiv2, 16));
 
-//        IF_ARCH_AARCH64(CALL(lramp2, asimd::lramp2, 16));
-//        IF_ARCH_AARCH64(CALL(lramp_add2, asimd::lramp_add2, 16));
-//        IF_ARCH_AARCH64(CALL(lramp_sub2, asimd::lramp_sub2, 16));
-//        IF_ARCH_AARCH64(CALL(lramp_rsub2, asimd::lramp_rsub2, 16));
-//        IF_ARCH_AARCH64(CALL(lramp_mul2, asimd::lramp_mul2, 16));
-//        IF_ARCH_AARCH64(CALL(lramp_div2, asimd::lramp_div2, 16));
-//        IF_ARCH_AARCH64(CALL(lramp_rdiv2, asimd::lramp_rdiv2, 16));
+        IF_ARCH_AARCH64(CALL(lramp2, asimd::lramp2, 16));
+        IF_ARCH_AARCH64(CALL(lramp_add2, asimd::lramp_add2, 16));
+        IF_ARCH_AARCH64(CALL(lramp_sub2, asimd::lramp_sub2, 16));
+        IF_ARCH_AARCH64(CALL(lramp_rsub2, asimd::lramp_rsub2, 16));
+        IF_ARCH_AARCH64(CALL(lramp_mul2, asimd::lramp_mul2, 16));
+        IF_ARCH_AARCH64(CALL(lramp_div2, asimd::lramp_div2, 16));
+        IF_ARCH_AARCH64(CALL(lramp_rdiv2, asimd::lramp_rdiv2, 16));
     }
 UTEST_END
 

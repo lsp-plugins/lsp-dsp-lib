@@ -76,6 +76,7 @@
         #include <private/dsp/arch/aarch64/asimd/pmath/fmop_kx.h>
         #include <private/dsp/arch/aarch64/asimd/pmath/fmop_vv.h>
         #include <private/dsp/arch/aarch64/asimd/pmath/log.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/lramp.h>
         #include <private/dsp/arch/aarch64/asimd/pmath/minmax.h>
         #include <private/dsp/arch/aarch64/asimd/pmath/op_kx.h>
         #include <private/dsp/arch/aarch64/asimd/pmath/op_vv.h>
@@ -233,6 +234,22 @@
                 EXPORT1(fmrdiv4);
                 EXPORT1(fmmod4);
                 EXPORT1(fmrmod4);
+
+                EXPORT1(lramp_set1);
+                EXPORT1(lramp1);
+                EXPORT1(lramp2);
+                EXPORT1(lramp_add2);
+                EXPORT1(lramp_sub2);
+                EXPORT1(lramp_rsub2);
+                EXPORT1(lramp_mul2);
+                EXPORT1(lramp_div2);
+                EXPORT1(lramp_rdiv2);
+                EXPORT1(lramp_add3);
+                EXPORT1(lramp_sub3);
+                EXPORT1(lramp_rsub3);
+                EXPORT1(lramp_mul3);
+                EXPORT1(lramp_div3);
+                EXPORT1(lramp_rdiv3);
 
                 EXPORT1(abs1);
                 EXPORT1(abs2);
