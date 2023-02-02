@@ -53,8 +53,8 @@ namespace lsp
     IF_ARCH_ARM(
         namespace neon_d32
         {
-//            void lramp_set1(float *dst, float v1, float v2, size_t count);
-//            void lramp1(float *dst, float v1, float v2, size_t count);
+            void lramp_set1(float *dst, float v1, float v2, size_t count);
+            void lramp1(float *dst, float v1, float v2, size_t count);
         }
     )
 
@@ -107,14 +107,14 @@ PTEST_BEGIN("dsp.pmath", lramp1, 5, 1000)
             CALL(generic::lramp_set1);
             IF_ARCH_X86(CALL(sse::lramp_set1));
             IF_ARCH_X86(CALL(avx::lramp_set1));
-//            IF_ARCH_ARM(CALL(neon_d32::lramp_set1));
+            IF_ARCH_ARM(CALL(neon_d32::lramp_set1));
 //            IF_ARCH_AARCH64(CALL(asimd::lramp_set1));
             PTEST_SEPARATOR;
 
             CALL(generic::lramp1);
             IF_ARCH_X86(CALL(sse::lramp1));
             IF_ARCH_X86(CALL(avx::lramp1));
-//            IF_ARCH_ARM(CALL(neon_d32::lramp1));
+            IF_ARCH_ARM(CALL(neon_d32::lramp1));
 //            IF_ARCH_AARCH64(CALL(asimd::lramp1));
             PTEST_SEPARATOR2;
         }

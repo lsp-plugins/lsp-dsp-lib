@@ -73,6 +73,7 @@
         #include <private/dsp/arch/arm/neon-d32/pmath/fmop_kx.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/fmop_vv.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/log.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/lramp.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/minmax.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/op_kx.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/op_vv.h>
@@ -191,6 +192,22 @@
                 EXPORT1(mul3);
                 EXPORT1(div3);
                 EXPORT1(mod3);
+
+                EXPORT1(lramp_set1);
+                EXPORT1(lramp1);
+                EXPORT1(lramp2);
+                EXPORT1(lramp_add2);
+                EXPORT1(lramp_sub2);
+                EXPORT1(lramp_rsub2);
+                EXPORT1(lramp_mul2);
+                EXPORT1(lramp_div2);
+                EXPORT1(lramp_rdiv2);
+                EXPORT1(lramp_add3);
+                EXPORT1(lramp_sub3);
+                EXPORT1(lramp_rsub3);
+                EXPORT1(lramp_mul3);
+                EXPORT1(lramp_div3);
+                EXPORT1(lramp_rdiv3);
 
                 EXPORT1(pmin2);
                 EXPORT1(pmax2);
