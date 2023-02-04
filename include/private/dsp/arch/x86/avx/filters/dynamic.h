@@ -711,7 +711,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[d]), %%ymm6")                            // ymm6     = d0
                 __ASM_EMIT("vmovups         0x20(%[d]), %%ymm7")                            // ymm7     = d1
 
-                // Process first 3 steps
+                // Process first 7 steps
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vmovss          (%[src]), %%xmm0")                              // xmm0     = *src
                 __ASM_EMIT("add             $4, %[src]")                                    // src      ++
@@ -737,8 +737,7 @@ namespace lsp
                 __ASM_EMIT("jz              4f")                                            // jump to completion
                 __ASM_EMIT("lea             0x01(,%[mask], 2), %[mask]")                    // mask     = (mask << 1) | 1
                 __ASM_EMIT("vpermilps       $0x93, %%ymm5, %%ymm5")                         // ymm5     =  m[3]  m[0]  m[1]  m[2]  m[7]  m[4]  m[5]  m[6]
-                __ASM_EMIT("vextractf128    $0x01, %%ymm5, %%xmm3")                         // ymm3     =  m[7]  m[4]  m[5]  m[6] ? ? ? ?
-                __ASM_EMIT("vinsertf128     $0x01, %%xmm5, %%ymm3, %%ymm3")                 // ymm3     =  m[7]  m[4]  m[5]  m[6]  m[3]  m[0]  m[1]  m[2]
+                __ASM_EMIT("vperm2f128      $0x01, %%ymm5, %%ymm5, %%ymm3")                 // ymm3     =  m[7]  m[4]  m[5]  m[6]  m[3]  m[0]  m[1]  m[2]
                 __ASM_EMIT("vblendps        $0x11, %%ymm3, %%ymm5, %%ymm5")                 // ymm5     =  m[7]  m[0]  m[1]  m[2]  m[3]  m[4]  m[5]  m[6]
                 __ASM_EMIT("vorps           %[X_MASK], %%ymm5, %%ymm5")                     // ymm5     =  m[0]  m[0]  m[1]  m[2]  m[3]  m[4]  m[5]  m[6]
                 __ASM_EMIT("cmp             $0xff, %[mask]")
@@ -755,15 +754,15 @@ namespace lsp
                 __ASM_EMIT("vfmadd132ps     0x00(%[f]), %%ymm6, %%ymm1")                    // ymm1     = s*a0+d0 = s2
                 __ASM_EMIT("vfmadd231ps     0x60(%[f]), %%ymm1, %%ymm2")                    // ymm2     = s*a1 + s2*b1 = p1
                 __ASM_EMIT("vfmadd231ps     0x80(%[f]), %%ymm1, %%ymm3")                    // ymm3     = s*a2 + s2*b2 = p2
-                __ASM_EMIT("vaddps          %%ymm7, %%ymm2, %%ymm6")                        // ymm6     = p1 + d1
                 __ASM_EMIT("vpermilps       $0x93, %%ymm1, %%ymm1")                         // ymm1     = s2[3] s2[0] s2[1] s2[2] s2[7] s2[4] s2[5] s2[6]
-                __ASM_EMIT("vmovaps         %%ymm3, %%ymm7")                                // ymm7     = s*a2 + s2*b2 = p2
-                __ASM_EMIT("vextractf128    $0x01, %%ymm1, %%xmm0")                         // ymm0     = s2[7] s2[4] s2[5] s2[6] ? ? ? ?
-                __ASM_EMIT("vinsertf128     $0x01, %%xmm1, %%ymm0, %%ymm0")                 // ymm0     = s2[7] s2[4] s2[5] s2[6] s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("vaddps          %%ymm7, %%ymm2, %%ymm6")                        // ymm6     = p1 + d1
+                __ASM_EMIT("vperm2f128      $0x01, %%ymm1, %%ymm1, %%ymm0")                 // ymm0     = s2[7] s2[4] s2[5] s2[6] s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("vmovaps         %%ymm3, %%ymm7")                                // ymm7     = p2
                 __ASM_EMIT("vblendps        $0x11, %%ymm0, %%ymm1, %%ymm1")                 // ymm1     = s2[7] s2[0] s2[1] s2[2] s2[3] s2[4] s2[5] s2[6]
                 __ASM_EMIT("vmovss          %%xmm1, (%[dst])")                              // *dst     = s2[7]
 
                 // Repeat loop
+                __ASM_EMIT("add             $0xa0, %[f]")                                   // f++
                 __ASM_EMIT("add             $4, %[dst]")                                    // dst      ++
                 __ASM_EMIT64("dec           %[count]")
                 __ASM_EMIT32("decl          %[count]")
@@ -827,6 +826,7 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
+
     } /* namespace avx */
 } /* namespace lsp */
 
