@@ -416,7 +416,6 @@ namespace lsp
         void dyn_biquad_process_x4_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f)
         {
             IF_ARCH_X86(
-                float   MASK[4] __lsp_aligned16;
                 size_t  mask;
             )
 
@@ -428,11 +427,10 @@ namespace lsp
                 __ASM_EMIT("jz                  8f")
 
                 // Initialize mask
-                // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
+                // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm5=mask[4], xmm6=d0[4], xmm7=d1[4]
                 __ASM_EMIT("mov                 $1, %[mask]")
                 __ASM_EMIT("vmovaps             %[X_MASK], %%xmm5")
                 __ASM_EMIT("xorps               %%xmm1, %%xmm1")
-                __ASM_EMIT("vmovaps             %%xmm5, %[MASK]")
 
                 // Load delay buffer
                 __ASM_EMIT("vmovups             0x00(%[d]), %%xmm6")                                // xmm6     = d0
@@ -450,7 +448,6 @@ namespace lsp
                 __ASM_EMIT("vaddps              %%xmm7, %%xmm2, %%xmm2")                            // xmm2     = d1 + a1*s
                 __ASM_EMIT("vfmadd231ps         0x30(%[f]), %%xmm0, %%xmm2")                        // xmm2     = d0' = d1 + a1*s + b1*s'
                 __ASM_EMIT("vfmadd231ps         0x40(%[f]), %%xmm0, %%xmm3")                        // xmm3     = d1' = a2*s + b2*s'
-                __ASM_EMIT("vmovaps             %[MASK], %%xmm5")                                   // xmm5     = mask
                 __ASM_EMIT("vshufps             $0x90, %%xmm0, %%xmm0, %%xmm0")                     // xmm0     = s2[0] s2[0] s2[1] s2[2]
                 __ASM_EMIT("vblendvps           %%xmm5, %%xmm2, %%xmm6, %%xmm6")                    // xmm6     = (d0') & MASK | (d0 & ~MASK)
                 __ASM_EMIT("vblendvps           %%xmm5, %%xmm3, %%xmm7, %%xmm7")                    // xmm7     = (d1') & MASK | (d0 & ~MASK)
@@ -460,7 +457,6 @@ namespace lsp
                 __ASM_EMIT("jz                  4f")                                                // jump to completion
                 __ASM_EMIT("vshufps             $0x90, %%xmm5, %%xmm5, %%xmm5")                     // xmm5     = m[0] m[0] m[1] m[2]
                 __ASM_EMIT("lea                 0x01(,%[mask], 2), %[mask]")                        // mask     = (mask << 1) | 1
-                __ASM_EMIT("vmovaps             %%xmm5, %[MASK]")                                   // store mask
                 __ASM_EMIT("cmp                 $0x0f, %[mask]")
                 __ASM_EMIT("jne                 1b")
 
@@ -485,13 +481,11 @@ namespace lsp
                 __ASM_EMIT("jnz                 3b")
                 __ASM_EMIT("4:")
                 // Prepare last loop
-                __ASM_EMIT("vmovaps             %[MASK], %%xmm5")                                   // xmm5     = m[0] m[1] m[2] m[3]
                 __ASM_EMIT("vxorps              %%xmm2, %%xmm2, %%xmm2")                            // xmm2     = 0 0 0 0
                 __ASM_EMIT("vshufps             $0x90, %%xmm5, %%xmm5, %%xmm5")                     // xmm5     = m[0] m[0] m[1] m[2]
                 __ASM_EMIT("shl                 $1, %[mask]")                                       // mask     = mask << 1
                 __ASM_EMIT("vmovss              %%xmm2, %%xmm5, %%xmm5")                            // xmm0     = 0 m[0] m[1] m[2]
                 __ASM_EMIT("and                 $0x0f, %[mask]")                                    // mask     = (mask << 1) & 0x0f
-                __ASM_EMIT("vmovaps             %%xmm5, %[MASK]")
 
                 // Process steps
                 __ASM_EMIT(".align 16")
@@ -503,7 +497,6 @@ namespace lsp
                 __ASM_EMIT("vaddps              %%xmm7, %%xmm2, %%xmm2")                            // xmm2     = d1 + a1*s
                 __ASM_EMIT("vfmadd231ps         0x30(%[f]), %%xmm0, %%xmm2")                        // xmm2     = d0' = d1 + a1*s + b1*s'
                 __ASM_EMIT("vfmadd231ps         0x40(%[f]), %%xmm0, %%xmm3")                        // xmm3     = d1' = a2*s + b2*s'
-                __ASM_EMIT("vmovaps             %[MASK], %%xmm5")                                   // xmm5     = mask
                 __ASM_EMIT("vshufps             $0x93, %%xmm0, %%xmm0, %%xmm0")                     // xmm0     = s2[3] s2[0] s2[1] s2[2]
                 __ASM_EMIT("add                 $0x50, %[f]")
                 __ASM_EMIT("test                $0x8, %[mask]")
@@ -517,7 +510,6 @@ namespace lsp
                 __ASM_EMIT("shl                 $1, %[mask]")                                       // mask     = mask << 1
                 __ASM_EMIT("vshufps             $0x90, %%xmm5, %%xmm5, %%xmm5")                     // xmm0     = m[0] m[0] m[1] m[2]
                 __ASM_EMIT("and                 $0x0f, %[mask]")                                    // mask     = (mask << 1) & 0x0f
-                __ASM_EMIT("vmovaps             %%xmm5, %[MASK]")
                 __ASM_EMIT("jnz                 5b")                                                // check that mask is not zero
 
                 // Store delay buffer
@@ -529,8 +521,7 @@ namespace lsp
                   [mask] "=&r"(mask), [f] "+r" (f),
                   [count] X86_PGREG (count)
                 : [d] "r" (d),
-                  [X_MASK] "m" (dyn_biquad_x4_mask),
-                  [MASK] "m" (MASK)
+                  [X_MASK] "m" (dyn_biquad_x4_mask)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
