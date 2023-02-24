@@ -120,7 +120,7 @@ UTEST_BEGIN("dsp.search", iminmax)
                 if (a != b)
                 {
                     src.dump("src");
-                    UTEST_FAIL_MSG("Result of function 1 (%d) differs result of function 2 (%d)", int(a), int(b))
+                    UTEST_FAIL_MSG("Result of function 1 (%d) differs result of function 2 (%d)", int(a), int(b));
                 }
             }
         }
@@ -154,12 +154,12 @@ UTEST_BEGIN("dsp.search", iminmax)
                 if (min_a != min_b)
                 {
                     src.dump("src");
-                    UTEST_FAIL_MSG("Result of min differs (f1=%d vs f2=%d)", int(min_a), int(min_b))
+                    UTEST_FAIL_MSG("Result of min differs (f1=%d vs f2=%d)", int(min_a), int(min_b));
                 }
                 else if (max_a != max_b)
                 {
                     src.dump("src");
-                    UTEST_FAIL_MSG("Result of max differs (f1=%d vs f2=%d)", int(max_a), int(max_b))
+                    UTEST_FAIL_MSG("Result of max differs (f1=%d vs f2=%d)", int(max_a), int(max_b));
                 }
             }
         }

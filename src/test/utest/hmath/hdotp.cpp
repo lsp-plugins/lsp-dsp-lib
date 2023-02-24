@@ -108,7 +108,7 @@ UTEST_BEGIN("dsp.hmath", hdotp)
                 {
                     a.dump("A");
                     b.dump("B");
-                    UTEST_FAIL_MSG("%s: Result of function 1 (%f) differs result of function 2 (%f)", label, xa, xb)
+                    UTEST_FAIL_MSG("%s: Result of function 1 (%f) differs result of function 2 (%f)", label, xa, xb);
                 }
             }
         }
