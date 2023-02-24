@@ -133,3 +133,32 @@ jobs:
             echo "***** MEMCHECK $test *****"; \
             valgrind ${{env.VALGRIND_ARGS}} .build/target/${{env.ARTIFACT}}/${{env.ARTIFACT}}-test utest --verbose --jobs 1 --nofork --debug $test; \
           done
+  windows_mingw64:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: Setup MSYS2 and install dependencies
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          release: false
+          update: false
+          install: >-
+            base-devel
+            git
+            mingw-w64-x86_64-gcc
+      - uses: actions/checkout@v3
+      - name: Configure project
+        shell: msys2 {0}
+        run: make config TEST=1
+      - name: Fetch project dependencies
+        shell: msys2 {0}
+        run: make fetch
+      - name: Build project
+        shell: msys2 {0}
+        run: make VERBOSE=1
+      - name: Run unit tests
+        shell: msys2 {0}
+        run: .build/target/${{env.ARTIFACT}}/${{env.ARTIFACT}}-test.exe utest --verbose --jobs 1
