@@ -8,6 +8,7 @@
 * Fixed avx::dyn_biquad_process_x8_fma3 function implementation.
 * Slight optimizations of avx::biquad_process_x4_fma3 and avx::dyn_biquad_process_x4_fma3. 
 * Added test build for Windows using MSYS2.
+* Updated build scripts.
 
 === 1.0.9 ===
 * Added Clang build for the CI.
