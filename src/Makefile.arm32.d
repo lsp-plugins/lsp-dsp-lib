@@ -61,8 +61,8 @@ $(LSP_DSP_LIB_BIN)/main/generic/generic.o: main/generic/generic.cpp \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/finally.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/bits.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/armv7/bits.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/bits/reverse-armv7.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/bits/int_log2.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/types.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/3dmath.h \
@@ -288,8 +288,8 @@ $(LSP_DSP_LIB_BIN)/main/arm/neon-d32.o: main/arm/neon-d32.cpp \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/fft.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/fft/scramble.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/bits.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/bits.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/armv7/bits.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/bits/reverse-armv7.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/arm/bits/int_log2.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/fft/pscramble.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/fft/butterfly.h \
  $(LSP_DSP_LIB_INC)/private/dsp/arch/arm/neon-d32/fft/pbutterfly.h \
