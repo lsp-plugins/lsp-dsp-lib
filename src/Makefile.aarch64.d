@@ -61,7 +61,8 @@ $(LSP_DSP_LIB_BIN)/main/generic/generic.o: main/generic/generic.cpp \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/version.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/types.h \
  $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/finally.h \
- $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/aarch64/bits.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/aarch64/bits/reverse.h \
+ $(LSP_COMMON_LIB_INC)/lsp-plug.in/common/arch/aarch64/bits/int_log2.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/dsp.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/types.h \
  $(LSP_DSP_LIB_INC)/lsp-plug.in/dsp/common/3dmath.h \
