@@ -24,11 +24,13 @@
 
 #include <lsp-plug.in/common/types.h>
 
-#ifdef PLATFORM_POSIX
-    #include <sys/auxv.h>
-#endif /* PLATFORM_UNIX */
+#if defined(ARCH_ARM6) || defined(ARCH_ARM7)
 
-#ifdef ARCH_ARM
+    #ifdef PLATFORM_POSIX
+        #include <sys/auxv.h>
+    #endif /* PLATFORM_POSIX */
+
+
     /*
         Redefine constants to be compatible with GCC 6.x (Raspbian) and GCC 8.x (FreeBSD)
     */
@@ -122,6 +124,6 @@
 
     #define LSP_DSP_CPU_NAMESPACE           arm
 
-#endif /* ARCH_ARM */
+#endif /* defined(ARCH_ARM6) || defined(ARCH_ARM7) */
 
 #endif /* PRIVATE_DSP_ARCH_ARM_FEATURES_H_ */
