@@ -21,7 +21,7 @@
 
 #include <lsp-plug.in/common/types.h>
 
-#ifdef ARCH_ARM
+#if defined(ARCH_ARM6) || defined(ARCH_ARM7)
     #include <private/dsp/exports.h>
     #include <lsp-plug.in/dsp/dsp.h>
     #include <lsp-plug.in/stdlib/math.h>
@@ -359,6 +359,6 @@
         }
     }
 
-#endif /* ARCH_ARM */
+#endif /* defined(ARCH_ARM6) || defined(ARCH_ARM7) */
 
 
