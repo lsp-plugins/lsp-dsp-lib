@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 1.0.10 ===
+* ARM NEON-optimized code compiles now only for at least ARMv6 architecture.
 * Implemented linear ramping lramp_* functions optimized for
   i686, x86_64, ARM-32 and AArch64 architectures.
 * Fixed avx::dyn_biquad_process_x8_fma3 function implementation.
