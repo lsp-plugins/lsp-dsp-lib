@@ -51,6 +51,10 @@ intersection            = $(foreach v,$1,$(if $(findstring $(v),$2),$(v)))
 # $(call subtraction, list1, list2)
 subtraction             = $(foreach v,$2,$(if $(findstring $(v),$1),,$(v)))
 
+# Check feature presence in list
+# $(call fcheck, features-to-check, all-feature-list, action-if-enabled, action-if-disabled)
+fcheck                  = $(if $(call intersection,$1,$2),$3,$4)
+
 # Fetch different versions from version string
 # $(call vmajor, <version-string>)
 vmajor                  = $(shell echo "$(strip $1)" | sed -E 's/([0-9]+)\.([0-9]+)\.([0-9]+)(-(.*))?/\1/')
