@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.11 ===
+
+
 === 1.0.10 ===
 * ARM NEON-optimized code compiles now only for at least ARMv6 architecture.
 * Implemented linear ramping lramp_* functions optimized for
