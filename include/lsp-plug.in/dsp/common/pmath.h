@@ -29,6 +29,7 @@
 #include <lsp-plug.in/dsp/common/pmath/fmop_kx.h>
 #include <lsp-plug.in/dsp/common/pmath/fmop_vv.h>
 #include <lsp-plug.in/dsp/common/pmath/log.h>
+#include <lsp-plug.in/dsp/common/pmath/lramp.h>
 #include <lsp-plug.in/dsp/common/pmath/minmax.h>
 #include <lsp-plug.in/dsp/common/pmath/normalize.h>
 #include <lsp-plug.in/dsp/common/pmath/op_kx.h>

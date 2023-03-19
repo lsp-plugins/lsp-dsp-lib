@@ -108,7 +108,7 @@ UTEST_BEGIN("dsp.hmath", hsum)
                 if (!float_equals_adaptive(a, b, TOLERANCE))
                 {
                     src.dump("src1");
-                    UTEST_FAIL_MSG("Result of function 1 (%f) differs result of function 2 (%f)", a, b)
+                    UTEST_FAIL_MSG("Result of function 1 (%f) differs result of function 2 (%f)", a, b);
                 }
             }
         }

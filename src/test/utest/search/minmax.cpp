@@ -120,7 +120,7 @@ UTEST_BEGIN("dsp.search", minmax)
                 if (!float_equals_relative(a, b, 1e-5))
                 {
                     src.dump("src1");
-                    UTEST_FAIL_MSG("Result of function 1 (%f) differs result of function 2 (%f)", a, b)
+                    UTEST_FAIL_MSG("Result of function 1 (%f) differs result of function 2 (%f)", a, b);
                 }
             }
         }
@@ -154,7 +154,7 @@ UTEST_BEGIN("dsp.search", minmax)
                 if ((!float_equals_relative(min1, min2, 1e-5)) && (!float_equals_relative(max1, max2, 1e-5)))
                 {
                     src.dump("src1");
-                    UTEST_FAIL_MSG("Result of function 1 (%f, %f) differs result of function 2 (%f, %f)", min1, max1, min2, max2)
+                    UTEST_FAIL_MSG("Result of function 1 (%f, %f) differs result of function 2 (%f, %f)", min1, max1, min2, max2);
                 }
             }
         }
