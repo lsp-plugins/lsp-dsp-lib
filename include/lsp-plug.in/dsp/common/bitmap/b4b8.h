@@ -28,31 +28,31 @@
  * Put the source 4-bit bitmap to destination 8-bit bitmap,
  * the result pixel value will be computed as: result[i] = src[i]
  */
-LSP_DSP_LIB_SYMBOL(void, bitmap_put_b4b8, bitmap_t *dst, const bitmap_t *src, ssize_t x, ssize_t y);
+LSP_DSP_LIB_SYMBOL(void, bitmap_put_b4b8, LSP_DSP_LIB_TYPE(bitmap_t) *dst, const LSP_DSP_LIB_TYPE(bitmap_t) *src, ssize_t x, ssize_t y);
 
 /**
  * Put the source 4-bit bitmap to destination 8-bit bitmap,
  * the result pixel value will be computed as: result[i] = saturate(dst[i] + src[i])
  */
-LSP_DSP_LIB_SYMBOL(void, bitmap_add_b4b8, bitmap_t *dst, const bitmap_t *src, ssize_t x, ssize_t y);
+LSP_DSP_LIB_SYMBOL(void, bitmap_add_b4b8, LSP_DSP_LIB_TYPE(bitmap_t) *dst, const LSP_DSP_LIB_TYPE(bitmap_t) *src, ssize_t x, ssize_t y);
 
 /**
  * Put the source 4-bit bitmap to destination 8-bit bitmap,
  * the result pixel value will be computed as: result[i] = saturate(dst[i] - src[i])
  */
-LSP_DSP_LIB_SYMBOL(void, bitmap_sub_b4b8, bitmap_t *dst, const bitmap_t *src, ssize_t x, ssize_t y);
+LSP_DSP_LIB_SYMBOL(void, bitmap_sub_b4b8, LSP_DSP_LIB_TYPE(bitmap_t) *dst, const LSP_DSP_LIB_TYPE(bitmap_t) *src, ssize_t x, ssize_t y);
 
 /**
  * Put the source 4-bit bitmap to destination 8-bit bitmap,
  * the result pixel value will be computed as: result[i] = max(dst[i], src[i])
  */
-LSP_DSP_LIB_SYMBOL(void, bitmap_max_b4b8, bitmap_t *dst, const bitmap_t *src, ssize_t x, ssize_t y);
+LSP_DSP_LIB_SYMBOL(void, bitmap_max_b4b8, LSP_DSP_LIB_TYPE(bitmap_t) *dst, const LSP_DSP_LIB_TYPE(bitmap_t) *src, ssize_t x, ssize_t y);
 
 /**
  * Put the source 4-bit bitmap to destination 8-bit bitmap,
  * the result pixel value will be computed as: result[i] = min(dst[i], src[i])
  */
-LSP_DSP_LIB_SYMBOL(void, bitmap_min_b4b8, bitmap_t *dst, const bitmap_t *src, ssize_t x, ssize_t y);
+LSP_DSP_LIB_SYMBOL(void, bitmap_min_b4b8, LSP_DSP_LIB_TYPE(bitmap_t) *dst, const LSP_DSP_LIB_TYPE(bitmap_t) *src, ssize_t x, ssize_t y);
 
 
 

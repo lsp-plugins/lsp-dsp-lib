@@ -575,6 +575,30 @@ namespace lsp
             EXPORT1(lin_inter_fmadd2);
             EXPORT1(lin_inter_frmadd2);
             EXPORT1(lin_inter_fmadd3);
+
+            EXPORT1(bitmap_put_b1b8)
+            EXPORT1(bitmap_add_b1b8)
+            EXPORT1(bitmap_sub_b1b8)
+            EXPORT1(bitmap_min_b1b8)
+            EXPORT1(bitmap_max_b1b8)
+
+            EXPORT1(bitmap_put_b2b8)
+            EXPORT1(bitmap_add_b2b8)
+            EXPORT1(bitmap_sub_b2b8)
+            EXPORT1(bitmap_min_b2b8)
+            EXPORT1(bitmap_max_b2b8)
+
+            EXPORT1(bitmap_put_b4b8)
+            EXPORT1(bitmap_add_b4b8)
+            EXPORT1(bitmap_sub_b4b8)
+            EXPORT1(bitmap_min_b4b8)
+            EXPORT1(bitmap_max_b4b8)
+
+            EXPORT1(bitmap_put_b8b8)
+            EXPORT1(bitmap_add_b8b8)
+            EXPORT1(bitmap_sub_b8b8)
+            EXPORT1(bitmap_min_b8b8)
+            EXPORT1(bitmap_max_b8b8)
         }
 
         #undef EXPORT1

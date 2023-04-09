@@ -33,10 +33,7 @@ namespace lsp
 
         void bitmap_put_b1b8(bitmap_t *dst, const bitmap_t *src, ssize_t x, ssize_t y)
         {
-            bitmap_part_t part;
-            if (!test_bitmap_put(&part, dst, src, x, y))
-                return;
-
+            bitmap_part_t part = bitmap_clip_rect(dst, src, x, y);
             uint8_t *dptr = &dst->data[part.dst_y * dst->stride + part.dst_x];
             const uint8_t *sptr = &src->data[part.src_x * src->stride];
 
@@ -56,10 +53,7 @@ namespace lsp
 
         void bitmap_add_b1b8(bitmap_t *dst, const bitmap_t *src, ssize_t x, ssize_t y)
         {
-            bitmap_part_t part;
-            if (!test_bitmap_put(&part, dst, src, x, y))
-                return;
-
+            bitmap_part_t part = bitmap_clip_rect(dst, src, x, y);
             uint8_t *dptr = &dst->data[part.dst_y * dst->stride + part.dst_x];
             const uint8_t *sptr = &src->data[part.src_y * src->stride];
 
@@ -80,10 +74,7 @@ namespace lsp
 
         void bitmap_sub_b1b8(bitmap_t *dst, const bitmap_t *src, ssize_t x, ssize_t y)
         {
-            bitmap_part_t part;
-            if (!test_bitmap_put(&part, dst, src, x, y))
-                return;
-
+            bitmap_part_t part = bitmap_clip_rect(dst, src, x, y);
             uint8_t *dptr = &dst->data[part.dst_y * dst->stride + part.dst_x];
             const uint8_t *sptr = &src->data[part.src_y * src->stride];
 
@@ -104,10 +95,7 @@ namespace lsp
 
         void bitmap_max_b1b8(bitmap_t *dst, const bitmap_t *src, ssize_t x, ssize_t y)
         {
-            bitmap_part_t part;
-            if (!test_bitmap_put(&part, dst, src, x, y))
-                return;
-
+            bitmap_part_t part = bitmap_clip_rect(dst, src, x, y);
             uint8_t *dptr = &dst->data[part.dst_y * dst->stride + part.dst_x];
             const uint8_t *sptr = &src->data[part.src_y * src->stride];
 
@@ -127,10 +115,7 @@ namespace lsp
 
         void bitmap_min_b1b8(bitmap_t *dst, const bitmap_t *src, ssize_t x, ssize_t y)
         {
-            bitmap_part_t part;
-            if (!test_bitmap_put(&part, dst, src, x, y))
-                return;
-
+            bitmap_part_t part = bitmap_clip_rect(dst, src, x, y);
             uint8_t *dptr = &dst->data[part.dst_y * dst->stride + part.dst_x];
             const uint8_t *sptr = &src->data[part.src_y * src->stride];
 

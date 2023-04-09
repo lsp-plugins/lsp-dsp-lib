@@ -22,6 +22,8 @@
 #ifndef PRIVATE_DSP_ARCH_GENERIC_BITMAP_HELPERS_H_
 #define PRIVATE_DSP_ARCH_GENERIC_BITMAP_HELPERS_H_
 
+#include <lsp-plug.in/common/types.h>
+
 #ifndef PRIVATE_DSP_ARCH_GENERIC_IMPL
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_GENERIC_IMPL */
@@ -40,39 +42,23 @@ namespace lsp
             ssize_t     count_y;
         } bitmap_part_t;
 
-        inline bool test_bitmap_put(bitmap_part_t *dst, const bitmap_t *a, const bitmap_t *b, ssize_t x, ssize_t y)
+        static inline bitmap_part_t bitmap_clip_rect(const bitmap_t *dst, const bitmap_t *src, ssize_t x, ssize_t y)
         {
-            if ((x >= a->width) || (y >= a->height))
-                return false;
-            if ((x <= -b->width) || (y <= -b->height))
-                return false;
+            bitmap_part_t rect;
 
-            if (x >= 0)
-            {
-                dst->src_x      = 0;
-                dst->dst_x      = x;
-            }
-            else
-            {
-                dst->src_x      = -x;
-                dst->dst_x      = 0;
-            }
+            rect.dst_x      = lsp_max(0, x);
+            rect.dst_y      = lsp_max(0, y);
+            rect.src_x      = rect.dst_x - x;
+            rect.src_y      = rect.dst_y - y;
+            rect.count_y    = lsp_min(dst->height - rect.dst_y, src->height - rect.src_y);
+            rect.count_x    = lsp_min(dst->width  - rect.dst_x, src->width  - rect.src_x);
 
-            if (y >= 0)
-            {
-                dst->src_y      = 0;
-                dst->dst_y      = y;
-            }
-            else
-            {
-                dst->src_x      = -y;
-                dst->dst_x      = 0;
-            }
+            return rect;
+        }
 
-            dst->count_x    = lsp_min(dst->src_x + b->width,  dst->dst_x + a->width ) - dst->src_x;
-            dst->count_y    = lsp_min(dst->src_y + b->height, dst->dst_y + a->height) - dst->src_y;
-
-            return true;
+        static inline uint8_t b8_saturate(int value)
+        {
+            return (value < 0) ? 0x00 : (value > 0xff) ? 0xff : value;
         }
 
     } /* namespace generic */
