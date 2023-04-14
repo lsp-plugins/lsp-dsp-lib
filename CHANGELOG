@@ -3,7 +3,8 @@
 *******************************************************************************
 
 === 1.0.11 ===
-
+* Small math optimizations for dsp::smooth_cubic_linear and dsp::smooth_cubic_log
+  functions.
 
 === 1.0.10 ===
 * ARM NEON-optimized code compiles now only for at least ARMv6 architecture.
