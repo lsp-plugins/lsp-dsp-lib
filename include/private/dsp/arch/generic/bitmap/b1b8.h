@@ -35,7 +35,7 @@ namespace lsp
         {
             bitmap_part_t part = bitmap_clip_rect(dst, src, x, y);
             uint8_t *dptr = &dst->data[part.dst_y * dst->stride + part.dst_x];
-            const uint8_t *sptr = &src->data[part.src_x * src->stride];
+            const uint8_t *sptr = &src->data[part.src_y * src->stride];
 
             for (ssize_t y=0; y<part.count_y; ++y)
             {
@@ -65,7 +65,7 @@ namespace lsp
                     uint8_t b       = sptr[xx >> 3];
                     size_t mask     = 0x80 >> (xx & 0x7);
                     int16_t res     = dptr[x] + ((b & mask) ? 0xff : 0x00);
-                    dptr[x]         = (res > 0) ? 0xff : 0x00;
+                    dptr[x]         = (res > 0xff) ? 0xff : res;
                 }
                 dptr       += dst->stride;
                 sptr       += src->stride;
@@ -86,7 +86,7 @@ namespace lsp
                     uint8_t b       = sptr[xx >> 3];
                     size_t mask     = 0x80 >> (xx & 0x7);
                     int16_t res     = dptr[x] - ((b & mask) ? 0xff : 0x00);
-                    dptr[x]         = (res > 0) ? 0xff : 0x00;
+                    dptr[x]         = (res < 0) ? 0x00 : res;
                 }
                 dptr       += dst->stride;
                 sptr       += src->stride;

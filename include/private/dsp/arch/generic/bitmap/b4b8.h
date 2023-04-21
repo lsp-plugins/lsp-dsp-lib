@@ -42,7 +42,7 @@ namespace lsp
         {
             bitmap_part_t part = bitmap_clip_rect(dst, src, x, y);
             uint8_t *dptr = &dst->data[part.dst_y * dst->stride + part.dst_x];
-            const uint8_t *sptr = &src->data[part.src_x * src->stride];
+            const uint8_t *sptr = &src->data[part.src_y * src->stride];
 
             for (ssize_t y=0; y<part.count_y; ++y)
             {
