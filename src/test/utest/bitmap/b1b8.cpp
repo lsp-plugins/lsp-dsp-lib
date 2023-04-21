@@ -1075,7 +1075,7 @@ UTEST_BEGIN("dsp.bitmap", b1b8)
         tmp.height  = bitmap.height;
         tmp.stride  = tmp.width;
         tmp.data    = bbuf.data();
-        memset(bbuf.data(), 0x88, bitmap.width * bitmap.height);
+        memset(bbuf.data(), pattern->fill, bitmap.width * bitmap.height);
 
         func(&tmp, &bitmap, pattern->x, pattern->y);
 

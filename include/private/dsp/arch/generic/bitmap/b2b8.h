@@ -66,7 +66,7 @@ namespace lsp
                 {
                     size_t xx       = part.src_x + x;
                     uint8_t b       = (sptr[xx >> 2] >> ((0x3 - (xx & 0x3)) << 1)) & 0x3;
-                    dptr[x]         = b8_saturate(int(dptr[x]) + b2b8_palette[b]);
+                    dptr[x]         = lsp_min(int(dptr[x]) + b2b8_palette[b], 0xff);
                 }
                 dptr       += dst->stride;
                 sptr       += src->stride;
@@ -85,7 +85,7 @@ namespace lsp
                 {
                     size_t xx       = part.src_x + x;
                     uint8_t b       = (sptr[xx >> 2] >> ((0x3 - (xx & 0x3)) << 1)) & 0x3;
-                    dptr[x]         = b8_saturate(int(dptr[x]) - b2b8_palette[b]);
+                    dptr[x]         = lsp_max(int(dptr[x]) - b2b8_palette[b], 0);
                 }
                 dptr       += dst->stride;
                 sptr       += src->stride;
