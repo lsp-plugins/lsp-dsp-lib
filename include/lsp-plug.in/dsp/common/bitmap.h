@@ -33,9 +33,9 @@ namespace lsp
 
         typedef struct LSP_DSP_LIB_TYPE(bitmap_t)
         {
-            ssize_t     width;
-            ssize_t     height;
-            ssize_t     stride;
+            int32_t     width;
+            int32_t     height;
+            int32_t     stride;
             uint8_t    *data;
         } LSP_DSP_LIB_TYPE(bitmap_t);
 
