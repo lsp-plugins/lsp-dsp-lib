@@ -39,6 +39,12 @@ namespace lsp
             uint8_t    *data;
         } LSP_DSP_LIB_TYPE(bitmap_t);
 
+
+        typedef void (* LSP_DSP_LIB_TYPE(bitmap_render_func_t))(
+            LSP_DSP_LIB_TYPE(bitmap_t) *dst,
+            const LSP_DSP_LIB_TYPE(bitmap_t) *src,
+            ssize_t x,
+            ssize_t y);
 #ifdef __cplusplus
     } /* namespace dsp */
 } /* namespace lsp */
