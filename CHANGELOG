@@ -3,7 +3,8 @@
 *******************************************************************************
 
 === 1.0.12 ===
-
+* Added series of functions for processing 1-bit, 2-bit, 4-bit and 8-bit grayscale
+  bitmaps which can be useful for quick text rendering using glyph images.
 
 === 1.0.11 ===
 * Small math optimizations for dsp::smooth_cubic_linear and dsp::smooth_cubic_log
