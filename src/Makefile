@@ -91,6 +91,12 @@ CXX_OBJ_NEON_D32        = $(ARTIFACT_BIN)/main/arm/neon-d32.o
 CXX_OBJ_AARCH64         = $(ARTIFACT_BIN)/main/aarch64/aarch64.o
 CXX_OBJ_ASIMD           = $(ARTIFACT_BIN)/main/aarch64/asimd.o
 CXX_OBJ                 = $(CXX_OBJ_MAIN) $(CXX_OBJ_EXT)
+CXX_OBJ_ALL             = \
+  $(CXX_OBJ_MAIN) \
+  $(CXX_OBJ_EXPORT) \
+  $(CXX_OBJ_EXT) \
+  $(CXX_OBJ_TEST) \
+  $(CXX_OBJ_NOTEST)
 
 ifeq ($(ARCHITECTURE_FAMILY),ia32)
   CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2)
@@ -107,6 +113,7 @@ CXX_FILE                = $(patsubst $(ARTIFACT_BIN)/%.o,%.cpp, $(@))
 CXX_HDR_PATHS           = $(foreach hdr,$(ARTIFACT_HEADERS),$(ARTIFACT_INC)/$(hdr))
 CXX_HEADERS             = $(foreach path,$(CXX_HDR_PATHS),$(call rwildcard, $(path), *.h))
 CXX_INSTHEADERS         = $(patsubst $(ARTIFACT_INC)/%,$(DESTDIR)$(INCDIR)/%,$(CXX_HEADERS))
+DEP_FILE                = $(patsubst %.o,%.d, $(@))
 
 CXX_SSE_CFLAGS          = -mmmx -m3dnow -msse
 CXX_SSE2_CFLAGS         = $(CXX_SSE_CFLAGS) -msse2
@@ -128,30 +135,10 @@ DEP_CXX_FILE            = $(patsubst $(ARTIFACT_BIN)/%.d,%.cpp,$(@))
 DEP_DEP_FILE            = $(patsubst $(ARTIFACT_BIN)/%.d,%.o,$(@))
 
 .DEFAULT_GOAL = all
-.PHONY: compile depend dep_clean all install uninstall
+.PHONY: compile all install uninstall
 .PHONY: $(ARTIFACT_DEPS)
 
-# Dependencies
-dep_clean:
-
-$(DEP_CXX): dep_clean
-	echo "  dep  [$(ARTIFACT_NAME)] $(DEP_CXX_FILE)"
-	mkdir -p $(dir $(@))
-	$(CXX) -MM -MT "\$$($(ARTIFACT_ID)_BIN)/$(DEP_DEP_FILE)" -MF $(@) $(DEP_CXX_FILE) $(CXXFLAGS) $(INCLUDE) $(ARTIFACT_DEPFLAGS)
-
-depend: $(DEP_CXX)
-	$(foreach dep,$(ARTIFACT_DEP_LIST),\
-	  $(if $($(dep)_INC), \
-	    $(eval REPLACEMENT = $(shell echo "$($(dep)_INC)" | sed -E "s/\//\\\\\\\\\//g")) \
-	    $(eval SED_RULES += s/$(REPLACEMENT)/\$$$$\\($(dep)_INC\\)/g;)\
-	  )\
-	  $(if $($(dep)_BIN), \
-	    $(eval REPLACEMENT = $(shell echo "$($(dep)_BIN)" | sed -E "s/\//\\\\\\\\\//g")) \
-	    $(eval SED_RULES += s/$(REPLACEMENT)/\\$$$$\\($(dep)_BIN\\)/g;)\
-	  )\
-	)
-	cat $(DEP_CXX) | sed -E "$(SED_RULES)" >Makefile.$(ARCHITECTURE_FAMILY).d
-
+# Compile dependencies
 $(ARTIFACT_DEPS):
 	echo "make $(notdir $($(@)_OBJ))"
 	$(MAKE) -C "$($(@)_PATH)" compile VERBOSE="$(VERBOSE)" CONFIG="$(CONFIG)" DEMO_TEST="0" BUILD_HOST="$(BUILD_HOST)"
@@ -159,10 +146,10 @@ $(ARTIFACT_DEPS):
 # Compilation
 compile: $(ARTIFACT_OBJ)
 
-$(CXX_OBJ_MAIN) $(CXX_OBJ_EXPORT) $(CXX_OBJ_EXT) $(CXX_OBJ_TEST) $(CXX_OBJ_NOTEST):
+$(CXX_OBJ_ALL):
 	echo "  $($(HOST)CXX)  [$(ARTIFACT_NAME)] $(CXX_FILE)"
 	mkdir -p $(dir $@)
-	$($(HOST)CXX) -o $(@) -c $(CXX_FILE) -fPIC $($(HOST)CXXFLAGS) $(ARTIFACT_MFLAGS) $($(HOST)EXT_FLAGS) $(INCLUDE) $(ARTIFACT_CFLAGS)
+	$($(HOST)CXX) -o $(@) -c $(CXX_FILE) -fPIC $($(HOST)CXXFLAGS) $(ARTIFACT_MFLAGS) $($(HOST)EXT_FLAGS) $(INCLUDE) $(ARTIFACT_CFLAGS) -MMD -MP -MF $(DEP_FILE) -MT $(@)
 	
 # Producing large object files
 $(ARTIFACT_OBJ): $(CXX_OBJ)
@@ -235,4 +222,4 @@ $(CXX_OBJ_NEON_D32):   EXT_FLAGS=$(CXX_NEON_D32_CFLAGS)
 $(CXX_OBJ_ASIMD):      EXT_FLAGS=$(CXX_ASIMD_CFLAGS)
 
 # Dependencies
--include $(CURDIR)/Makefile.$(ARCHITECTURE_FAMILY).d
+-include $(foreach objfile,$(CXX_OBJ_ALL),$(patsubst %.o,%.d,$(objfile)))
