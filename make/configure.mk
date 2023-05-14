@@ -37,15 +37,6 @@ include $(BASEDIR)/make/tools.mk
 include $(BASEDIR)/modules.mk
 include $(BASEDIR)/dependencies.mk
 
-# Definitions
-ifeq ($(PLATFORM),Windows)
-  PREFIX                     := $(BASEDIR)/INSTALL
-  ETCDIR                     := $(BASEDIR)/etc
-else
-  PREFIX                     := /usr/local
-  ETCDIR                     := /etc
-endif
-
 ifeq ($(DEVEL),1)
   X_URL_SUFFIX                = _RW
 else

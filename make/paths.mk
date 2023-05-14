@@ -18,6 +18,24 @@
 # along with lsp-dsp-lib.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+# Installation prefix
+ifndef PREFIX
+  ifeq ($(PLATFORM),Windows)
+    PREFIX                     := $(BASEDIR)/INSTALL
+  else
+    PREFIX                     := /usr/local
+  endif
+endif
+
+# Path to configuration
+ifndef ETCDIR
+  ifeq ($(PLATFORM),Windows)
+    ETCDIR                     := $(PREFIX)/etc
+  else
+    ETCDIR                     := /etc
+  endif
+endif
+
 LIBDIR                     := $(PREFIX)/lib
 BINDIR                     := $(PREFIX)/bin
 SHAREDDIR                  := $(PREFIX)/share
@@ -27,15 +45,6 @@ TARGET_BUILDDIR            := $(BUILDDIR)/target
 HOST_BUILDDIR              := $(BUILDDIR)/host
 MODULES                    := $(BASEDIR)/modules
 CONFIG                     := $(BASEDIR)/.config.mk
-
-# Installation prefix
-ifndef PREFIX
-  ifeq ($(PLATFORM),Windows)
-    PREFIX                   := $(ProgramFiles)
-  else
-    PREFIX                   := /usr/local
-  endif
-endif
 
 # Library prefix
 ifndef LIBDIR
