@@ -46,9 +46,9 @@ DISTSRC_PATH                = $(BUILDDIR)/distsrc
 DISTSRC                     = $(DISTSRC_PATH)/$(ARTIFACT_NAME)
 
 .DEFAULT_GOAL              := all
-.PHONY: all compile install uninstall depend clean
+.PHONY: all compile install uninstall clean
 
-compile all install uninstall depend:
+compile all install uninstall:
 	$(CHK_CONFIG)
 	$(MAKE) -C "$(BASEDIR)/src" $(@) VERBOSE="$(VERBOSE)" CONFIG="$(CONFIG)" DESTDIR="$(DESTDIR)"
 
@@ -107,7 +107,6 @@ help:
 	echo "  all                       Build all binaries"
 	echo "  clean                     Clean all build files and configuration file"
 	echo "  config                    Configure build"
-	echo "  depend                    Update build dependencies for current project"
 	echo "  distsrc                   Make tarball with source code for packagers"
 	echo "  fetch                     Fetch all desired source code dependencies from git"
 	echo "  help                      Print this help message"

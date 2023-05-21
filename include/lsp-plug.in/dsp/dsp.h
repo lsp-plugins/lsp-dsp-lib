@@ -43,6 +43,7 @@
 // Include all partial definitions
 #include <lsp-plug.in/dsp/common/types.h>
 #include <lsp-plug.in/dsp/common/3dmath.h>
+#include <lsp-plug.in/dsp/common/bitmap.h>
 #include <lsp-plug.in/dsp/common/coding.h>
 #include <lsp-plug.in/dsp/common/complex.h>
 #include <lsp-plug.in/dsp/common/context.h>
