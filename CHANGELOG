@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.13 ===
-
+* Updated build scripts.
 
 === 1.0.12 ===
 * Added series of functions for processing 1-bit, 2-bit, 4-bit and 8-bit grayscale

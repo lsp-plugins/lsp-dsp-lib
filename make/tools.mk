@@ -102,6 +102,11 @@ ifeq ($(TRACE),1)
   CXXFLAGS_EXT       += -DLSP_TRACE
 endif
 
+ifeq ($(STRICT),1)
+  CFLAGS_EXT         += -Werror
+  CXXFLAGS_EXT       += -Werror
+endif
+
 ifeq ($(TEST),1)
   CFLAGS_EXT         += -DLSP_TESTING
   CXXFLAGS_EXT       += -DLSP_TESTING
