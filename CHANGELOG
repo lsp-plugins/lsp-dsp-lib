@@ -7,6 +7,7 @@
   bitmaps which can be useful for quick text rendering using glyph images.
 * Removed Makefile.d. Dependencies are now automatically generated at the build stage.
 * Updated build scripts.
+* Updated module versions in dependencies.
 
 === 1.0.11 ===
 * Small math optimizations for dsp::smooth_cubic_linear and dsp::smooth_cubic_log
