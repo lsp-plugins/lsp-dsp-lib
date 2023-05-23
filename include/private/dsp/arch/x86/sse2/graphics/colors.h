@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
- * Created on: 31 мар. 2020 г.
+ * Created on: 23 мая 2023 г.
  *
  * lsp-dsp-lib is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,14 +19,12 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PRIVATE_DSP_ARCH_X86_SSE2_GRAPHICS_H_
-#define PRIVATE_DSP_ARCH_X86_SSE2_GRAPHICS_H_
+#ifndef PRIVATE_DSP_ARCH_X86_SSE2_GRAPHICS_COLORS_H_
+#define PRIVATE_DSP_ARCH_X86_SSE2_GRAPHICS_COLORS_H_
 
 #ifndef PRIVATE_DSP_ARCH_X86_SSE2_IMPL
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_X86_SSE2_IMPL */
-
-#include <private/dsp/arch/x86/sse2/graphics/pixelfmt.h>
 
 namespace lsp
 {
@@ -673,7 +671,9 @@ namespace lsp
     #undef RGBA_TO_RGBA32_CORE
 
     #undef HSLA_TRANSPOSE
-    }
-}
+    } /* namespace sse2 */
+} /* namespace lsp */
 
-#endif /* PRIVATE_DSP_ARCH_X86_SSE2_GRAPHICS_H_ */
+
+
+#endif /* PRIVATE_DSP_ARCH_X86_SSE2_GRAPHICS_COLORS_H_ */

@@ -46,9 +46,10 @@
 
         #include <private/dsp/arch/x86/sse2/search/iminmax.h>
 
-        #include <private/dsp/arch/x86/sse2/graphics.h>
-        #include <private/dsp/arch/x86/sse2/graphics/effects.h>
         #include <private/dsp/arch/x86/sse2/graphics/axis.h>
+        #include <private/dsp/arch/x86/sse2/graphics/colors.h>
+        #include <private/dsp/arch/x86/sse2/graphics/effects.h>
+        #include <private/dsp/arch/x86/sse2/graphics/pixelfmt.h>
 
         #include <private/dsp/arch/x86/sse2/pmath/op_kx.h>
         #include <private/dsp/arch/x86/sse2/pmath/op_vv.h>
