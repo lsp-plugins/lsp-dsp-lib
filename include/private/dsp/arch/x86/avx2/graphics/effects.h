@@ -26,6 +26,8 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_X86_AVX2_IMPL */
 
+#include <private/dsp/arch/x86/avx2/graphics/transpose.h>
+
 namespace lsp
 {
     namespace avx2

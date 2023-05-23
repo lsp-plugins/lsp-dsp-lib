@@ -53,7 +53,8 @@
 
         #include <private/dsp/arch/x86/avx2/search/iminmax.h>
 
-        #include <private/dsp/arch/x86/avx2/graphics.h>
+        #include <private/dsp/arch/x86/avx2/graphics/effects.h>
+        #include <private/dsp/arch/x86/avx2/graphics/pixelfmt.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX2_IMPL
 
     namespace lsp
