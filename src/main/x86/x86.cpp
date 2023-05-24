@@ -81,6 +81,11 @@
             extern void dsp_init(const x86::cpu_features_t *f);
         }
 
+        namespace avx512
+        {
+            extern void dsp_init(const x86::cpu_features_t *f);
+        }
+
         namespace x86
         {
         #pragma pack(push, 1)
@@ -595,6 +600,7 @@
                 sse4::dsp_init(f);
                 avx::dsp_init(f);
                 avx2::dsp_init(f);
+                avx512::dsp_init(f);
             }
 
             #undef EXPORT1

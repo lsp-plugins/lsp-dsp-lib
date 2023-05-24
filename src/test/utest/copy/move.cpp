@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
- * Created on: 31 мар. 2020 г.
+ * Created on: 24 мая 2023 г.
  *
  * lsp-dsp-lib is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,56 +28,51 @@ namespace lsp
 {
     namespace generic
     {
-        void copy(float *dst, const float *src, size_t count);
+        void move(float *dst, const float *src, size_t count);
     }
 
     IF_ARCH_X86(
-        namespace x86
-        {
-            void copy(float *dst, const float *src, size_t count);
-        }
-
         namespace sse
         {
-            void copy(float *dst, const float *src, size_t count);
-            void copy_movntps(float *dst, const float *src, size_t count);
+            void move(float *dst, const float *src, size_t count);
         }
 
         namespace sse3
         {
-            void copy(float *dst, const float *src, size_t count);
+            void move(float *dst, const float *src, size_t count);
         }
 
         namespace avx
         {
-            void copy(float *dst, const float *src, size_t count);
+            void move(float *dst, const float *src, size_t count);
         }
 
         namespace avx512
         {
-            void copy(float *dst, const float *src, size_t count);
+            void move(float *dst, const float *src, size_t count);
         }
     )
 
     IF_ARCH_ARM(
         namespace neon_d32
         {
-            void copy(float *dst, const float *src, size_t count);
+            void move(float *dst, const float *src, size_t count);
         }
     )
 
     IF_ARCH_AARCH64(
         namespace asimd
         {
-            void copy(float *dst, const float *src, size_t count);
+            void move(float *dst, const float *src, size_t count);
         }
     )
 }
 
-typedef void (* copy_t)(float *dst, const float *src, size_t count);
+typedef void (* move_t)(float *dst, const float *src, size_t count);
 
-UTEST_BEGIN("dsp.copy", copy)
-    void call(const char *label, size_t align, copy_t func)
+UTEST_BEGIN("dsp.copy", move)
+
+    void call(const char *label, size_t align, move_t func)
     {
         if (!UTEST_SUPPORTED(func))
             return;
@@ -91,7 +86,7 @@ UTEST_BEGIN("dsp.copy", copy)
                 FloatBuffer dst2(dst1);
 
                 printf("Testing %s, of %d samples, mask=%x\n", label, int(count), int(mask));
-                generic::copy(dst1, src, count);
+                generic::move(dst1, src, count);
                 func(dst2, src, count);
 
                 UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");
@@ -106,8 +101,8 @@ UTEST_BEGIN("dsp.copy", copy)
 
                 printf("Testing %s, of %d samples from %d offset, mask=%x\n", label, int(count >> 1), int(count >> 2), int(mask));
                 float *dptr1 = dst1, *dptr2 = dst2;
-                generic::copy(dptr1, &dptr1[count >> 2], count >> 1);
-                func(dptr2, &dptr2[count >> 2], count >> 1);
+                generic::move(&dptr1[count >> 2], dptr1, count >> 1);
+                func(&dptr2[count >> 2], dptr2, count >> 1);
 
                 UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");
                 UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
@@ -124,19 +119,15 @@ UTEST_BEGIN("dsp.copy", copy)
 
     UTEST_MAIN
     {
-        IF_ARCH_X86(call("x86::copy", 16, x86::copy));
-        IF_ARCH_X86(call("sse::copy", 16, sse::copy));
-        IF_ARCH_X86(call("sse::copy_movntps", 16, sse::copy_movntps));
-        IF_ARCH_X86(call("sse3::copy", 16, sse3::copy));
-        IF_ARCH_X86(call("avx::copy", 32, avx::copy));
-        IF_ARCH_X86(call("avx512::copy", 64, avx512::copy));
-        IF_ARCH_ARM(call("neon_d32::copy", 16, neon_d32::copy));
-        IF_ARCH_AARCH64(call("asimd::copy", 16, asimd::copy));
+        IF_ARCH_X86(call("sse::move", 16, sse::move));
+        IF_ARCH_X86(call("sse3::move", 16, sse3::move));
+        IF_ARCH_X86(call("avx::move", 32, avx::move));
+        IF_ARCH_X86(call("avx512::move", 64, avx512::move));
+        IF_ARCH_ARM(call("neon_d32::move", 16, neon_d32::move));
+        IF_ARCH_AARCH64(call("asimd::move", 16, asimd::move));
     }
 
 UTEST_END;
-
-
 
 
 
