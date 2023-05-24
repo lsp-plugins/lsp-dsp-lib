@@ -106,10 +106,8 @@ namespace lsp
         __ASM_EMIT("vsubps          0x40(%[XC]), %%ymm0, %%ymm6")           /* ymm6 = H + 1/3 - 1 */ \
         __ASM_EMIT("vcmpps          $6, 0x40(%[XC]), %%ymm0, %%ymm7")       /* ymm7 = [(H + 1/3) > 1] */ \
         __ASM_EMIT("vblendvps       %%ymm7, %%ymm6, %%ymm0, %%ymm0")        /* ymm0 = TR = ((H + 1/3) & [(H + 1/3) <= 1]) | ((H + 1/3 - 1) & [(H + 1/3) > 1]) */ \
-        __ASM_EMIT("vxorps          %%ymm7, %%ymm7, %%ymm7")                /* ymm7 = 0 */ \
         __ASM_EMIT("vaddps          0x40(%[XC]), %%ymm2, %%ymm6")           /* ymm6 = H - 1/3 + 1 */ \
-        __ASM_EMIT("vcmpps          $1, %%ymm7, %%ymm2, %%ymm7")            /* ymm7 = [(H - 1/3) < 0] */ \
-        __ASM_EMIT("vblendvps       %%ymm7, %%ymm6, %%ymm2, %%ymm2")        /* ymm2 = TB = ((H - 1/3) & [(H - 1/3) >= 0]) | ((H - 1/3 + 1) & [(H - 1/3) < 0]) */ \
+        __ASM_EMIT("vblendvps       %%ymm2, %%ymm6, %%ymm2, %%ymm2")        /* ymm2 = TB = [(H - 1/3) < 0] ? (H - 1/3 + 1) : (H - 1/3) */ \
         __ASM_EMIT("vsubps          %%ymm5, %%ymm4, %%ymm6")                /* ymm6 = T2 - T1 */ \
         __ASM_EMIT("vmulps          0x60(%[XC]), %%ymm6, %%ymm6")           /* ymm6 = K = (T2 - T1)*6.0 */ \
         /*  ymm0 = TR */ \

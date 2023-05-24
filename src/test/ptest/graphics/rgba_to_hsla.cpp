@@ -26,7 +26,7 @@
 #include <lsp-plug.in/test-fw/ptest.h>
 
 #define MIN_RANK 6
-#define MAX_RANK 14
+#define MAX_RANK 16
 
 namespace lsp
 {
