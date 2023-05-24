@@ -146,7 +146,7 @@ UTEST_BEGIN("dsp.graphics", hsla_to_rgba)
     UTEST_MAIN
     {
     #define CALL(func, align) \
-        call(#func, 16, func)
+        call(#func, align, func)
 
         IF_ARCH_X86(CALL(sse2::hsla_to_rgba, 16));
         IF_ARCH_X86(CALL(avx2::hsla_to_rgba, 32));

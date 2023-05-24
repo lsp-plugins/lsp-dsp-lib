@@ -40,6 +40,11 @@ namespace lsp
         {
             void rgba_to_hsla(float *dst, const float *src, size_t count);
         }
+
+        namespace avx2
+        {
+            void rgba_to_hsla(float *dst, const float *src, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -91,10 +96,14 @@ PTEST_BEGIN("dsp.graphics", rgba_to_hsla, 5, 5000)
         {
             size_t count = 1 << i;
 
-            call("generic::rgba_to_hsla", dst, src, count, generic::rgba_to_hsla);
-            IF_ARCH_X86(call("sse2::rgba_to_hsla", dst, src, count, sse2::rgba_to_hsla));
-            IF_ARCH_ARM(call("neon_d32::rgba_to_hsla", dst, src, count, neon_d32::rgba_to_hsla));
-            IF_ARCH_AARCH64(call("asimd::rgba_to_hsla", dst, src, count, asimd::rgba_to_hsla));
+            #define CALL(func) \
+                call(#func, dst, src, count, func)
+
+            CALL(generic::rgba_to_hsla);
+            IF_ARCH_X86(CALL(sse2::rgba_to_hsla));
+            IF_ARCH_X86(CALL(avx2::rgba_to_hsla));
+            IF_ARCH_ARM(CALL(neon_d32::rgba_to_hsla));
+            IF_ARCH_AARCH64(CALL(asimd::rgba_to_hsla));
 
             PTEST_SEPARATOR;
         }

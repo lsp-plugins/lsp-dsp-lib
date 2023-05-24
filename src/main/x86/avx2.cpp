@@ -176,6 +176,7 @@
                 CEXPORT2_X64(favx, eff_hsla_alpha, x64_eff_hsla_alpha);
 
                 CEXPORT2(favx, hsla_to_rgba, hsla_to_rgba);
+                CEXPORT2(favx, rgba_to_hsla, rgba_to_hsla);
 
                 CEXPORT1(favx, normalize_fft2);
                 CEXPORT1(favx, abgr32_to_bgrff32);
