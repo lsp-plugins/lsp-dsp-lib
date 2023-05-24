@@ -96,7 +96,6 @@ namespace lsp
     #define HSLA_TO_RGBA_CORE_X8   \
         /*  Transpose */\
         MAT4_TRANSPOSE("%%ymm0", "%%ymm1", "%%ymm2", "%%ymm3", "%%ymm4", "%%ymm5") \
-        MAT4X2_INTERLEAVE("0", "1", "2", "3", "4", "5") \
         \
         /*  ymm0 = h0 h1 h2 h3 h4 h5 h6 h7 = H */ \
         /*  ymm1 = s0 s1 s2 s3 s4 s5 s6 s7 = S */ \
@@ -140,18 +139,17 @@ namespace lsp
         __ASM_EMIT("vmovaps         0xa0(%[XC]), %%ymm7")                   /* ymm7 = 2/3 */ \
         __ASM_EMIT("vmulps          %%ymm6, %%ymm0, %%ymm0")                /* ymm0 = K * TR */ \
         __ASM_EMIT("vmulps          %%ymm6, %%ymm1, %%ymm1")                /* ymm1 = K * TG */ \
-        __ASM_EMIT("vmulps          %%ymm6, %%ymm7, %%ymm7")                /* ymm7 = K * 2/3 */ \
         __ASM_EMIT("vmulps          %%ymm6, %%ymm2, %%ymm2")                /* ymm2 = K * TB */ \
-        __ASM_EMIT("vmovaps         %%ymm5, %%ymm6")                        /* ymm6 = T1 */ \
+        __ASM_EMIT("vmulps          %%ymm6, %%ymm7, %%ymm7")                /* ymm7 = K * 2/3 */ \
         __ASM_EMIT("vsubps          %%ymm0, %%ymm7, %%ymm3")                /* ymm3 = K * (2/3 - TR) */ \
         __ASM_EMIT("vsubps          %%ymm1, %%ymm7, %%ymm4")                /* ymm4 = K * (2/3 - TG) */ \
-        __ASM_EMIT("vsubps          %%ymm2, %%ymm7, %%ymm5")                /* ymm5 = K * (2/3 - TB) */ \
+        __ASM_EMIT("vsubps          %%ymm2, %%ymm7, %%ymm6")                /* ymm6 = K * (2/3 - TB) */ \
         __ASM_EMIT("vaddps          %%ymm5, %%ymm0, %%ymm0")                /* ymm0 = KTR = K * TR + T1 */ \
         __ASM_EMIT("vaddps          %%ymm5, %%ymm1, %%ymm1")                /* ymm1 = KTG = K * TG + T1 */ \
         __ASM_EMIT("vaddps          %%ymm5, %%ymm2, %%ymm2")                /* ymm2 = KTB = K * TG + T1 */ \
         __ASM_EMIT("vaddps          %%ymm5, %%ymm3, %%ymm3")                /* ymm3 = RTR = K * (2/3 - TR) + T1 */ \
         __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")                /* ymm4 = RTG = K * (2/3 - TG) + T1 */ \
-        __ASM_EMIT("vaddps          %%ymm5, %%ymm5, %%ymm5")                /* ymm5 = RTB = K * (2/3 - TG) + T1 */ \
+        __ASM_EMIT("vaddps          %%ymm5, %%ymm6, %%ymm5")                /* ymm5 = RTB = K * (2/3 - TG) + T1 */ \
         \
         /*  Process red */ \
         __ASM_EMIT("vmovaps         0x00(%[HSLM]), %%ymm7")                 /* ymm7 = TR */ \
@@ -170,7 +168,7 @@ namespace lsp
         __ASM_EMIT("vcmpps          $5, 0x00(%[XC]), %%ymm7, %%ymm6")       /* ymm6 = [TG >= 0.5] */ \
         __ASM_EMIT("vblendvps       %%ymm6, %%ymm4, %%ymm1, %%ymm1")        /* ymm1 = G = ([TG < 0.5f] & KG1) | ([TG >= 0.5f] & KG2)  */ \
         /*  Process blue */ \
-        __ASM_EMIT("vmovaps         0x60(%[HSLM]), %%ymm7")                 /* ymm7 = TB */ \
+        __ASM_EMIT("vmovaps         0x40(%[HSLM]), %%ymm7")                 /* ymm7 = TB */ \
         __ASM_EMIT("vcmpps          $5, 0x80(%[XC]), %%ymm7, %%ymm6")       /* ymm6 = [TB >= 1/6] */ \
         __ASM_EMIT("vblendvps       %%ymm6, 0x80(%[HSLM]), %%ymm2, %%ymm2") /* ymm2 = KB1 = ([TB >= 1/6] & T2) | ([TB < 1/6] & KTB)  */ \
         __ASM_EMIT("vcmpps          $5, 0xa0(%[XC]), %%ymm7, %%ymm6")       /* ymm6 = [TB >= 2/3] */ \
@@ -178,10 +176,9 @@ namespace lsp
         __ASM_EMIT("vcmpps          $5, 0x00(%[XC]), %%ymm7, %%ymm6")       /* ymm6 = [TB >= 0.5] */ \
         __ASM_EMIT("vblendvps       %%ymm6, %%ymm5, %%ymm2, %%ymm2")        /* ymm2 = B = ([TB < 0.5f] & KB1) | ([TB >= 0.5f] & KB2)  */ \
         /* Process alpha */ \
-        __ASM_EMIT("vmovaps         0x80(%[HSLM]), %%ymm3")                 /* ymm3 = A */ \
+        __ASM_EMIT("vmovaps         0x60(%[HSLM]), %%ymm3")                 /* ymm3 = A */ \
         /*  Transpose final result back */ \
         MAT4_TRANSPOSE("%%ymm0", "%%ymm1", "%%ymm2", "%%ymm3", "%%ymm4", "%%ymm5") \
-        MAT4X2_INTERLEAVE("0", "1", "2", "3", "4", "5") \
 
     #define HSLA_TO_RGBA_CORE_X4   \
         /*  Transpose */\
@@ -229,18 +226,17 @@ namespace lsp
         __ASM_EMIT("vmovaps         0xa0(%[XC]), %%xmm7")                   /* xmm7 = 2/3 */ \
         __ASM_EMIT("vmulps          %%xmm6, %%xmm0, %%xmm0")                /* xmm0 = K * TR */ \
         __ASM_EMIT("vmulps          %%xmm6, %%xmm1, %%xmm1")                /* xmm1 = K * TG */ \
-        __ASM_EMIT("vmulps          %%xmm6, %%xmm7, %%xmm7")                /* xmm7 = K * 2/3 */ \
         __ASM_EMIT("vmulps          %%xmm6, %%xmm2, %%xmm2")                /* xmm2 = K * TB */ \
-        __ASM_EMIT("vmovaps         %%xmm5, %%xmm6")                        /* xmm6 = T1 */ \
+        __ASM_EMIT("vmulps          %%xmm6, %%xmm7, %%xmm7")                /* xmm7 = K * 2/3 */ \
         __ASM_EMIT("vsubps          %%xmm0, %%xmm7, %%xmm3")                /* xmm3 = K * (2/3 - TR) */ \
         __ASM_EMIT("vsubps          %%xmm1, %%xmm7, %%xmm4")                /* xmm4 = K * (2/3 - TG) */ \
-        __ASM_EMIT("vsubps          %%xmm2, %%xmm7, %%xmm5")                /* xmm5 = K * (2/3 - TB) */ \
+        __ASM_EMIT("vsubps          %%xmm2, %%xmm7, %%xmm6")                /* xmm6 = K * (2/3 - TB) */ \
         __ASM_EMIT("vaddps          %%xmm5, %%xmm0, %%xmm0")                /* xmm0 = KTR = K * TR + T1 */ \
         __ASM_EMIT("vaddps          %%xmm5, %%xmm1, %%xmm1")                /* xmm1 = KTG = K * TG + T1 */ \
         __ASM_EMIT("vaddps          %%xmm5, %%xmm2, %%xmm2")                /* xmm2 = KTB = K * TG + T1 */ \
         __ASM_EMIT("vaddps          %%xmm5, %%xmm3, %%xmm3")                /* xmm3 = RTR = K * (2/3 - TR) + T1 */ \
         __ASM_EMIT("vaddps          %%xmm5, %%xmm4, %%xmm4")                /* xmm4 = RTG = K * (2/3 - TG) + T1 */ \
-        __ASM_EMIT("vaddps          %%xmm5, %%xmm5, %%xmm5")                /* xmm5 = RTB = K * (2/3 - TG) + T1 */ \
+        __ASM_EMIT("vaddps          %%xmm5, %%xmm6, %%xmm5")                /* xmm5 = RTB = K * (2/3 - TG) + T1 */ \
         \
         /*  Process red */ \
         __ASM_EMIT("vmovaps         0x00(%[HSLM]), %%xmm7")                 /* xmm7 = TR */ \
@@ -259,7 +255,7 @@ namespace lsp
         __ASM_EMIT("vcmpps          $5, 0x00(%[XC]), %%xmm7, %%xmm6")       /* xmm6 = [TG >= 0.5] */ \
         __ASM_EMIT("vblendvps       %%xmm6, %%xmm4, %%xmm1, %%xmm1")        /* xmm1 = G = ([TG < 0.5f] & KG1) | ([TG >= 0.5f] & KG2)  */ \
         /*  Process blue */ \
-        __ASM_EMIT("vmovaps         0x60(%[HSLM]), %%xmm7")                 /* xmm7 = TB */ \
+        __ASM_EMIT("vmovaps         0x40(%[HSLM]), %%xmm7")                 /* xmm7 = TB */ \
         __ASM_EMIT("vcmpps          $5, 0x80(%[XC]), %%xmm7, %%xmm6")       /* xmm6 = [TB >= 1/6] */ \
         __ASM_EMIT("vblendvps       %%xmm6, 0x80(%[HSLM]), %%xmm2, %%xmm2") /* xmm2 = KB1 = ([TB >= 1/6] & T2) | ([TB < 1/6] & KTB)  */ \
         __ASM_EMIT("vcmpps          $5, 0xa0(%[XC]), %%xmm7, %%xmm6")       /* xmm6 = [TB >= 2/3] */ \
@@ -267,7 +263,7 @@ namespace lsp
         __ASM_EMIT("vcmpps          $5, 0x00(%[XC]), %%xmm7, %%xmm6")       /* xmm6 = [TB >= 0.5] */ \
         __ASM_EMIT("vblendvps       %%xmm6, %%xmm5, %%xmm2, %%xmm2")        /* xmm2 = B = ([TB < 0.5f] & KB1) | ([TB >= 0.5f] & KB2)  */ \
         /* Process alpha */ \
-        __ASM_EMIT("vmovaps         0x80(%[HSLM]), %%xmm3")                 /* xmm3 = A */ \
+        __ASM_EMIT("vmovaps         0x60(%[HSLM]), %%xmm3")                 /* xmm3 = A */ \
         /*  Transpose final result back */ \
         MAT4_TRANSPOSE("%%xmm0", "%%xmm1", "%%xmm2", "%%xmm3", "%%xmm4", "%%xmm5")
 
@@ -282,11 +278,10 @@ namespace lsp
 
             ARCH_X86_ASM
             (
-                __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jb              2f")
-
                 //-----------------------------------------------------------------
                 // 8x blocks
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("jb              2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")      // ymm0 = h0 s0 l0 a0 h1 s1 l1 a1
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm1")      // ymm1 = h2 s2 l2 a2 h3 s3 l3 a3
@@ -307,13 +302,35 @@ namespace lsp
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("jae             1b")
 
+                //-----------------------------------------------------------------
+                // 4x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("add             $8, %[count]")
-                __ASM_EMIT("jle             10f")
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
+                __ASM_EMIT("vmovups         0x10(%[src]), %%xmm1")
+                __ASM_EMIT("vmovups         0x20(%[src]), %%xmm2")
+                __ASM_EMIT("vmovups         0x30(%[src]), %%xmm3")
+
+                HSLA_TO_RGBA_CORE_X4
+
+                // Store result
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%xmm1, 0x10(%[dst])")
+                __ASM_EMIT("vmovups         %%xmm2, 0x20(%[dst])")
+                __ASM_EMIT("vmovups         %%xmm3, 0x30(%[dst])")
+
+                // Update pointers
+                __ASM_EMIT("add             $0x40, %[src]")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
 
                 //-----------------------------------------------------------------
                 // 1x - 3x block
                 // Load last variable-sized chunk
+                __ASM_EMIT("4:")
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              10f")
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              4f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
@@ -348,7 +365,8 @@ namespace lsp
             );
         }
 
-    #undef HSLA_TO_RGBA_CORE
+    #undef HSLA_TO_RGBA_CORE_X8
+    #undef HSLA_TO_RGBA_CORE_X4
 
 
     } /* namespace avx2 */
