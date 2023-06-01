@@ -4,6 +4,7 @@
 
 === 1.0.13 ===
 * Implemented AVX2-optimized hsla_to_rgba and rgba_to_hsla functions.
+* Implemented high-precision lanczos 2x, 3x, 4x, 6x and 8x oversampling functions.
 * Updated build scripts.
 
 === 1.0.12 ===
