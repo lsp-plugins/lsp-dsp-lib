@@ -52,7 +52,7 @@ namespace lsp
  */
 #define LSP_DSP_RESAMPLING_RSV_SAMPLES              1024
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+/** Perform 2x lanczos oversampling (2 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*2 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -61,7 +61,7 @@ namespace lsp
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x2, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+/** Perform 2x lanczos oversampling (3 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*2 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -70,7 +70,7 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x2, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x3, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+/** Perform 2x lanczos oversampling (4 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*2 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -79,11 +79,35 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x3, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x4, float *dst, const float *src, size_t count);
 
+/** Perform 2x lanczos oversampling (4 lobes for 12-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*2 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x12bit, float *dst, const float *src, size_t count);
+
+/** Perform 2x lanczos oversampling (10 lobes for 16-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*2 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x16bit, float *dst, const float *src, size_t count);
+
+/** Perform 2x lanczos oversampling (62 lobes for 24-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*2 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x24bit, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+
+/** Perform 3x lanczos oversampling (2 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*3 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -92,7 +116,7 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x24bit, float *dst, const float *src,
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x2, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+/** Perform 3x lanczos oversampling (3 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*3 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -101,7 +125,7 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x2, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x3, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+/** Perform 3x lanczos oversampling (4 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*3 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -110,11 +134,35 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x3, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x4, float *dst, const float *src, size_t count);
 
+/** Perform 3x lanczos oversampling (4 lobes for 12-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*3 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x12bit, float *dst, const float *src, size_t count);
+
+/** Perform 3x lanczos oversampling (10 lobes for 16-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*3 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x16bit, float *dst, const float *src, size_t count);
+
+/** Perform 3x lanczos oversampling (62 lobes for 24-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*3 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x24bit, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+
+/** Perform 4x lanczos oversampling (2 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*4 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -123,7 +171,7 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x24bit, float *dst, const float *src,
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x2, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+/** Perform 4x lanczos oversampling (3 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*4 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -132,7 +180,7 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x2, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x3, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+/** Perform 4x lanczos oversampling (4 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*4 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -141,11 +189,35 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x3, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x4, float *dst, const float *src, size_t count);
 
+/** Perform 4x lanczos oversampling (4 lobes for 12-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*4 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x12bit, float *dst, const float *src, size_t count);
+
+/** Perform 4x lanczos oversampling (4 lobes for 16-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*4 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x16bit, float *dst, const float *src, size_t count);
+
+/** Perform 4x lanczos oversampling (4 lobes for 24-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*4 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x24bit, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+
+/** Perform 6x lanczos oversampling (2 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*6 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -154,7 +226,7 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x24bit, float *dst, const float *src,
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x2, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+/** Perform 6x lanczos oversampling (3 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*6 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -163,7 +235,7 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x2, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x3, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+/** Perform 6x lanczos oversampling (4 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*6 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -172,11 +244,35 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x3, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x4, float *dst, const float *src, size_t count);
 
+/** Perform 6x lanczos oversampling (4 lobes for 12-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*6 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x12bit, float *dst, const float *src, size_t count);
+
+/** Perform 6x lanczos oversampling (10 lobes for 16-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*6 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x16bit, float *dst, const float *src, size_t count);
+
+/** Perform 6x lanczos oversampling (62 lobes for 24-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*6 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x24bit, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+
+/** Perform 8x lanczos oversampling (2 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*8 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -185,7 +281,7 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x24bit, float *dst, const float *src,
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x2, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+/** Perform 8x lanczos oversampling (3 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*8 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -194,7 +290,7 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x2, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x3, float *dst, const float *src, size_t count);
 
-/** Perform lanczos resampling, destination buffer must be cleared and contain only
+/** Perform 8x lanczos oversampling (4 lobes), destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
  * @param dst destination buffer of count*8 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
@@ -203,8 +299,31 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x3, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x4, float *dst, const float *src, size_t count);
 
+/** Perform 8x lanczos oversampling (4 lobes for 12-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*8 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x12bit, float *dst, const float *src, size_t count);
+
+/** Perform 8x lanczos oversampling (10 lobes for 16-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*8 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x16bit, float *dst, const float *src, size_t count);
+
+/** Perform 8x lanczos oversampling (62 lobes for 24-bit sample precision), destination buffer must be cleared and contain only
+ * resampling tail from previous resampling
+ *
+ * @param dst destination buffer of count*8 samples + LSP_DSP_RESAMPLING_RSV_SAMPLES samples for convolution tail
+ * @param src source buffer of count samples
+ * @param count number of samples
+ */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x24bit, float *dst, const float *src, size_t count);
 
 /** Copy each even sample to output buffer
