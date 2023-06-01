@@ -50,7 +50,7 @@ namespace lsp
 /**
  * The number of additionally reserved samples at the tail of the buffer
  */
-#define LSP_DSP_RESAMPLING_RSV_SAMPLES              64
+#define LSP_DSP_RESAMPLING_RSV_SAMPLES              1024
 
 /** Perform lanczos resampling, destination buffer must be cleared and contain only
  * resampling tail from previous resampling
@@ -79,6 +79,10 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x3, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x4, float *dst, const float *src, size_t count);
 
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x12bit, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x16bit, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_2x24bit, float *dst, const float *src, size_t count);
+
 /** Perform lanczos resampling, destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
@@ -105,6 +109,10 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x3, float *dst, const float *src, siz
  * @param count number of samples
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x4, float *dst, const float *src, size_t count);
+
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x12bit, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x16bit, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_3x24bit, float *dst, const float *src, size_t count);
 
 /** Perform lanczos resampling, destination buffer must be cleared and contain only
  * resampling tail from previous resampling
@@ -133,6 +141,10 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x3, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x4, float *dst, const float *src, size_t count);
 
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x12bit, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x16bit, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_4x24bit, float *dst, const float *src, size_t count);
+
 /** Perform lanczos resampling, destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
@@ -160,6 +172,10 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x3, float *dst, const float *src, siz
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x4, float *dst, const float *src, size_t count);
 
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x12bit, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x16bit, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_6x24bit, float *dst, const float *src, size_t count);
+
 /** Perform lanczos resampling, destination buffer must be cleared and contain only
  * resampling tail from previous resampling
  *
@@ -186,6 +202,10 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x3, float *dst, const float *src, siz
  * @param count number of samples
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x4, float *dst, const float *src, size_t count);
+
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x12bit, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x16bit, float *dst, const float *src, size_t count);
+LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x24bit, float *dst, const float *src, size_t count);
 
 /** Copy each even sample to output buffer
  *
