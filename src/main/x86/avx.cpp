@@ -343,18 +343,27 @@
                 CEXPORT1(favx, lanczos_resample_2x2);
                 CEXPORT1(favx, lanczos_resample_2x3);
                 CEXPORT1(favx, lanczos_resample_2x4);
+                CEXPORT2(favx, lanczos_resample_2x12bit, lanczos_resample_2x4);
+
                 CEXPORT1(favx, lanczos_resample_3x2);
                 CEXPORT1(favx, lanczos_resample_3x3);
                 CEXPORT1(favx, lanczos_resample_3x4);
+                CEXPORT2(favx, lanczos_resample_3x12bit, lanczos_resample_3x4);
+
                 CEXPORT1(favx, lanczos_resample_4x2);
                 CEXPORT1(favx, lanczos_resample_4x3);
                 CEXPORT1(favx, lanczos_resample_4x4);
+                CEXPORT2(favx, lanczos_resample_4x12bit, lanczos_resample_4x4);
+
                 CEXPORT1(favx, lanczos_resample_6x2);
                 CEXPORT1(favx, lanczos_resample_6x3);
                 CEXPORT1(favx, lanczos_resample_6x4);
+                CEXPORT2(favx, lanczos_resample_6x12bit, lanczos_resample_6x4);
+
                 CEXPORT1(favx, lanczos_resample_8x2);
                 CEXPORT1(favx, lanczos_resample_8x3);
                 CEXPORT1(favx, lanczos_resample_8x4);
+                CEXPORT2(favx, lanczos_resample_8x12bit, lanczos_resample_8x4);
 
                 CEXPORT1(favx, downsample_2x);
                 CEXPORT1(favx, downsample_3x);
