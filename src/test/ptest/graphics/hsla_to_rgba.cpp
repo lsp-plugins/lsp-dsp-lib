@@ -41,6 +41,11 @@ namespace lsp
         {
             void hsla_to_rgba(float *dst, const float *src, size_t count);
         }
+
+        namespace avx2
+        {
+            void hsla_to_rgba(float *dst, const float *src, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -93,10 +98,14 @@ PTEST_BEGIN("dsp.graphics", hsla_to_rgba, 5, 5000)
             size_t count = 1 << i;
             size_t scale = (i < SCALE_RANK) ? (1 << (SCALE_RANK - i)) : 1;
 
-            call("generic::hsla_to_rgba", dst, src, count, scale, generic::hsla_to_rgba);
-            IF_ARCH_X86(call("sse2::hsla_to_rgba", dst, src, count, scale, sse2::hsla_to_rgba));
-            IF_ARCH_ARM(call("neon_d32::hsla_to_rgba", dst, src, count, scale, neon_d32::hsla_to_rgba));
-            IF_ARCH_AARCH64(call("asimd::hsla_to_rgba", dst, src, count, scale, asimd::hsla_to_rgba));
+            #define CALL(func) \
+                call(#func, dst, src, count, scale, func)
+
+            CALL(generic::hsla_to_rgba);
+            IF_ARCH_X86(CALL(sse2::hsla_to_rgba));
+            IF_ARCH_X86(CALL(avx2::hsla_to_rgba));
+            IF_ARCH_ARM(CALL(neon_d32::hsla_to_rgba));
+            IF_ARCH_AARCH64(CALL(asimd::hsla_to_rgba));
 
             PTEST_SEPARATOR;
         }
