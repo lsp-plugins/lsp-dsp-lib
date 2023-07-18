@@ -330,7 +330,7 @@ LSP_DSP_LIB_SYMBOL(void, lanczos_resample_8x24bit, float *dst, const float *src,
  *
  * @param dst destination buffer
  * @param src source buffer
- * @param count number of samples to process
+ * @param count number of samples to produce
  */
 LSP_DSP_LIB_SYMBOL(void, downsample_2x, float *dst, const float *src, size_t count);
 
@@ -338,7 +338,7 @@ LSP_DSP_LIB_SYMBOL(void, downsample_2x, float *dst, const float *src, size_t cou
  *
  * @param dst destination buffer
  * @param src source buffer
- * @param count number of samples to process
+ * @param count number of samples to produce
  */
 LSP_DSP_LIB_SYMBOL(void, downsample_3x, float *dst, const float *src, size_t count);
 
@@ -346,7 +346,7 @@ LSP_DSP_LIB_SYMBOL(void, downsample_3x, float *dst, const float *src, size_t cou
  *
  * @param dst destination buffer
  * @param src source buffer
- * @param count number of samples to process
+ * @param count number of samples to produce
  */
 LSP_DSP_LIB_SYMBOL(void, downsample_4x, float *dst, const float *src, size_t count);
 
@@ -354,7 +354,7 @@ LSP_DSP_LIB_SYMBOL(void, downsample_4x, float *dst, const float *src, size_t cou
  *
  * @param dst destination buffer
  * @param src source buffer
- * @param count number of samples to process
+ * @param count number of samples to produce
  */
 LSP_DSP_LIB_SYMBOL(void, downsample_6x, float *dst, const float *src, size_t count);
 
@@ -362,7 +362,7 @@ LSP_DSP_LIB_SYMBOL(void, downsample_6x, float *dst, const float *src, size_t cou
  *
  * @param dst destination buffer
  * @param src source buffer
- * @param count number of samples to process
+ * @param count number of samples to produce
  */
 LSP_DSP_LIB_SYMBOL(void, downsample_8x, float *dst, const float *src, size_t count);
 

@@ -1407,7 +1407,6 @@ namespace lsp
             -0.0000449862367299f,
             -0.0000420749334770f,
             -0.0000147567119155f,
-            -0.0000000000000000f,
         };
 
         static const float lanczos_6x16bit[] =
@@ -4159,7 +4158,7 @@ namespace lsp
                 src     += 8;
             }
         }
-    }
-}
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_RESAMPLING_H_ */
