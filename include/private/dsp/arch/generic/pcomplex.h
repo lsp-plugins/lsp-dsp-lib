@@ -350,7 +350,7 @@ namespace lsp
         {
             for (size_t i=0; i<count; ++i)
             {
-                float k     = src[0] / (dst[0] * dst[0] + dst[1] * dst[1]);
+                float k     = src[i] / (dst[0] * dst[0] + dst[1] * dst[1]);
 
                 dst[0]      = k * dst[0];
                 dst[1]      = -k * dst[1];
