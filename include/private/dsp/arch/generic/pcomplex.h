@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -296,7 +296,68 @@ namespace lsp
                 dst            += 2;
             }
         }
-    }
-}
+
+
+        void pcomplex_r2c_add2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                dst[0]     += src[i];
+                dst        += 2;
+            }
+        }
+
+        void pcomplex_r2c_sub2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                dst[0]     -= src[i];
+                dst        += 2;
+            }
+        }
+
+        void pcomplex_r2c_rsub2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                dst[0]      = src[i] - dst[0];
+                dst[1]      = -dst[1];
+                dst        += 2;
+            }
+        }
+
+        void pcomplex_r2c_mul2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                dst[0]     *= src[i];
+                dst[1]     *= src[i];
+                dst        += 2;
+            }
+        }
+
+        void pcomplex_r2c_div2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                dst[0]     /= src[i];
+                dst[1]     /= src[i];
+                dst        += 2;
+            }
+        }
+
+        void pcomplex_r2c_rdiv2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                float k     = src[0] / (dst[0] * dst[0] + dst[1] * dst[1]);
+
+                dst[0]      = k * dst[0];
+                dst[1]      = -k * dst[1];
+                dst        += 2;
+            }
+        }
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_PCOMPLEX_H_ */
