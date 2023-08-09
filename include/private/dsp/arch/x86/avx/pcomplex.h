@@ -773,9 +773,10 @@ namespace lsp
                 __ASM_EMIT("add                     $3, %[count]")
                 __ASM_EMIT("jl                      8f")
                 __ASM_EMIT("7:")
-                __ASM_EMIT("vmovss                  0x00(%[src], %[off]), %%xmm0")              /* xmm0 = s0 */
-                __ASM_EMIT("vsubss                  0x00(%[dst], %[off], 2), %%xmm0, %%xmm0")   /* xmm0 = r0 - s0 */
-                __ASM_EMIT("vmovss                  %%xmm0, 0x00(%[dst], %[off], 2)")
+                __ASM_EMIT("vmovss                  0x00(%[src], %[off]), %%xmm0")              /* xmm0 = s0 0 */
+                __ASM_EMIT("vmovlps                 0x00(%[dst], %[off], 2), %%xmm4, %%xmm4")
+                __ASM_EMIT("vsubps                  %%xmm4, %%xmm0, %%xmm0")                    /* xmm0 = s0-r0 -i0 */
+                __ASM_EMIT("vmovlps                 %%xmm0, 0x00(%[dst], %[off], 2)")
                 __ASM_EMIT("add                     $0x04, %[off]")
                 __ASM_EMIT("dec                     %[count]")
                 __ASM_EMIT("jge                     7b")
