@@ -36,10 +36,10 @@ namespace lsp
             void pcomplex_r2c_rsub2(float *dst, const float *src, size_t count);
         }
 
-//        namespace avx
-//        {
-//            void pcomplex_r2c_rsub2(float *dst, const float *src, size_t count);
-//        }
+        namespace avx
+        {
+            void pcomplex_r2c_rsub2(float *dst, const float *src, size_t count);
+        }
     )
 
 //    IF_ARCH_ARM(
@@ -88,7 +88,7 @@ UTEST_BEGIN("dsp.pcomplex", r2c_rsub)
                 UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
 
                 // Compare buffers
-                if (!dst1.equals_relative(dst2, 1e-4))
+                if (!dst1.equals_absolute(dst2, 1e-4))
                 {
                     src.dump("src ");
                     dst1.dump("dst1");
@@ -105,7 +105,7 @@ UTEST_BEGIN("dsp.pcomplex", r2c_rsub)
             call(#func, align, generic::pcomplex_r2c_rsub2, func)
 
         IF_ARCH_X86(CALL(sse::pcomplex_r2c_rsub2, 16));
-//        IF_ARCH_X86(CALL(avx::pcomplex_r2c_rsub2, 32));
+        IF_ARCH_X86(CALL(avx::pcomplex_r2c_rsub2, 32));
 //        IF_ARCH_ARM(CALL(neon_d32::pcomplex_r2c_rsub2, 16));
 //        IF_ARCH_AARCH64(CALL(asimd::pcomplex_r2c_rsub2, 16));
     }

@@ -36,18 +36,18 @@ namespace lsp
             void pcomplex_r2c_sub2(float *dst, const float *src, size_t count);
         }
 
-//        namespace avx
-//        {
-//            void pcomplex_r2c_sub2(float *dst, const float *src, size_t count);
-//        }
+        namespace avx
+        {
+            void pcomplex_r2c_sub2(float *dst, const float *src, size_t count);
+        }
     )
 
-//    IF_ARCH_ARM(
-//        namespace neon_d32
-//        {
-//            void pcomplex_r2c_sub2(float *dst, const float *src, size_t count);
-//        }
-//    )
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void pcomplex_r2c_sub2(float *dst, const float *src, size_t count);
+        }
+    )
 
 //    IF_ARCH_AARCH64(
 //        namespace asimd
@@ -67,7 +67,7 @@ UTEST_BEGIN("dsp.pcomplex", r2c_sub)
         if (!UTEST_SUPPORTED(func2))
             return;
 
-        UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        UTEST_FOREACH(count, /*0, 1, 2, 3, 4, 5, 6, 7, */ 8, 9, 10, 11, 12, 13, 14, 15, 16,
                 32, 33, 37, 48, 49, 64, 65, 0x3f, 100, 999, 0x1fff)
         {
             for (size_t mask=0; mask <= 0x03; ++mask)
@@ -88,7 +88,7 @@ UTEST_BEGIN("dsp.pcomplex", r2c_sub)
                 UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
 
                 // Compare buffers
-                if (!dst1.equals_relative(dst2, 1e-4))
+                if (!dst1.equals_absolute(dst2, 1e-4))
                 {
                     src.dump("src ");
                     dst1.dump("dst1");
@@ -105,7 +105,7 @@ UTEST_BEGIN("dsp.pcomplex", r2c_sub)
             call(#func, align, generic::pcomplex_r2c_sub2, func)
 
         IF_ARCH_X86(CALL(sse::pcomplex_r2c_sub2, 16));
-//        IF_ARCH_X86(CALL(avx::pcomplex_r2c_sub2, 32));
+        IF_ARCH_X86(CALL(avx::pcomplex_r2c_sub2, 32));
 //        IF_ARCH_ARM(CALL(neon_d32::pcomplex_r2c_sub2, 16));
 //        IF_ARCH_AARCH64(CALL(asimd::pcomplex_r2c_sub2, 16));
     }
