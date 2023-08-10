@@ -54,12 +54,12 @@ namespace lsp
         }
     )
 
-//    IF_ARCH_AARCH64(
-//        namespace asimd
-//        {
-//            void pcomplex_r2c_sub2(float *dst, const float *src, size_t count);
-//        }
-//    )
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void pcomplex_r2c_sub2(float *dst, const float *src, size_t count);
+        }
+    )
 
     typedef void (* pcomplex_r2c_op2_t)(float *dst, const float *src, size_t count);
 }
@@ -105,7 +105,7 @@ PTEST_BEGIN("dsp.pcomplex", r2c_sub, 5, 1000)
             IF_ARCH_X86(CALL(sse::pcomplex_r2c_sub2));
             IF_ARCH_X86(CALL(avx::pcomplex_r2c_sub2));
             IF_ARCH_ARM(CALL(neon_d32::pcomplex_r2c_sub2));
-//            IF_ARCH_AARCH64(CALL(asimd::pcomplex_r2c_sub2));
+            IF_ARCH_AARCH64(CALL(asimd::pcomplex_r2c_sub2));
 
             PTEST_SEPARATOR;
         }

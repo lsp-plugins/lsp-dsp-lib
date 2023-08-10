@@ -1290,6 +1290,76 @@ namespace lsp
                   "v16", "v17", "v18", "v19"
             );
         }
+
+        void pcomplex_r2c_sub2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                // x16 blocks
+                __ASM_EMIT("subs        %[count], %[count], #16")
+                __ASM_EMIT("b.lo        2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("ld2         {v0.4s, v1.4s}, [%[dst]], #0x20")
+                __ASM_EMIT("ld2         {v2.4s, v3.4s}, [%[dst]], #0x20")
+                __ASM_EMIT("ld2         {v4.4s, v5.4s}, [%[dst]], #0x20")
+                __ASM_EMIT("ld2         {v6.4s, v7.4s}, [%[dst]], #0x20")
+                __ASM_EMIT("ld1         {v16.4s-v19.4s}, [%[src]], #0x40")
+                __ASM_EMIT("fsub        v0.4s, v0.4s, v16.4s")
+                __ASM_EMIT("fsub        v2.4s, v2.4s, v17.4s")
+                __ASM_EMIT("fsub        v4.4s, v4.4s, v18.4s")
+                __ASM_EMIT("fsub        v6.4s, v6.4s, v19.4s")
+                __ASM_EMIT("sub         %[dst], %[dst], #0x80")
+                __ASM_EMIT("subs        %[count], %[count], #16")
+                __ASM_EMIT("st2         {v0.4s, v1.4s}, [%[dst]], #0x20")
+                __ASM_EMIT("st2         {v2.4s, v3.4s}, [%[dst]], #0x20")
+                __ASM_EMIT("st2         {v4.4s, v5.4s}, [%[dst]], #0x20")
+                __ASM_EMIT("st2         {v6.4s, v7.4s}, [%[dst]], #0x20")
+                __ASM_EMIT("b.hs        1b")
+                // x8 block
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds        %[count], %[count], #8")
+                __ASM_EMIT("b.lt        4f")
+                __ASM_EMIT("ld2         {v0.4s, v1.4s}, [%[dst]], #0x20")
+                __ASM_EMIT("ld2         {v2.4s, v3.4s}, [%[dst]], #0x20")
+                __ASM_EMIT("ld1         {v16.4s-v17.4s}, [%[src]], #0x20")
+                __ASM_EMIT("fsub        v0.4s, v0.4s, v16.4s")
+                __ASM_EMIT("fsub        v2.4s, v2.4s, v17.4s")
+                __ASM_EMIT("sub         %[dst], %[dst], #0x40")
+                __ASM_EMIT("sub         %[count], %[count], #8")
+                __ASM_EMIT("st2         {v0.4s, v1.4s}, [%[dst]], #0x20")
+                __ASM_EMIT("st2         {v2.4s, v3.4s}, [%[dst]], #0x20")
+                // x4 block
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds        %[count], %[count], #4")
+                __ASM_EMIT("b.lt        6f")
+                __ASM_EMIT("ld2         {v0.4s, v1.4s}, [%[dst]]")
+                __ASM_EMIT("ld1         {v16.4s}, [%[src]], #0x10")
+                __ASM_EMIT("fsub        v0.4s, v0.4s, v16.4s")
+                __ASM_EMIT("sub         %[count], %[count], #4")
+                __ASM_EMIT("st2         {v0.4s, v1.4s}, [%[dst]], #0x20")
+                // x1 blocks
+                __ASM_EMIT("6:")
+                __ASM_EMIT("adds        %[count], %[count], #3")
+                __ASM_EMIT("b.lt        8f")
+                __ASM_EMIT("7:")
+                __ASM_EMIT("ld2r        {v0.4s, v1.4s}, [%[dst]]")
+                __ASM_EMIT("ld1r        {v16.4s}, [%[src]], #0x04")
+                __ASM_EMIT("fsub        v0.4s, v0.4s, v16.4s")
+                __ASM_EMIT("subs        %[count], %[count], #1")
+                __ASM_EMIT("st2         {v0.s, v1.s}[0], [%[dst]], #0x08")
+                __ASM_EMIT("b.ge        7b")
+
+                __ASM_EMIT("8:")
+
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19"
+            );
+        }
+
     } /* namespace asimd */
 } /* namespace lsp */
 
