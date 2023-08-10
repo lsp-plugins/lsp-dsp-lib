@@ -135,6 +135,7 @@
                 EXPORT1(pcomplex_r2c_sub2);
                 EXPORT1(pcomplex_r2c_rsub2);
                 EXPORT1(pcomplex_r2c_mul2);
+                EXPORT1(pcomplex_r2c_div2);
 
                 EXPORT1(convolve);
 
