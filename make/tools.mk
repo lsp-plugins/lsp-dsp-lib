@@ -85,13 +85,18 @@ else ifeq ($(PLATFORM),BSD)
 endif
 
 ifeq ($(DEBUG),1)
-  CFLAGS_EXT         += -Og -g3 -DLSP_DEBUG -fsanitize=address
-  CXXFLAGS_EXT       += -Og -g3 -DLSP_DEBUG -fsanitize=address
-  EXE_FLAGS_EXT      += -fsanitize=address
-  SO_FLAGS_EXT       += -fsanitize=address
+  CFLAGS_EXT         += -Og -g3 -DLSP_DEBUG
+  CXXFLAGS_EXT       += -Og -g3 -DLSP_DEBUG
 else
   CFLAGS_EXT         += -O2
   CXXFLAGS_EXT       += -O2
+endif
+
+ifeq ($(ASAN),1)
+  CFLAGS_EXT         += -fsanitize=address
+  CXXFLAGS_EXT       += -fsanitize=address
+  EXE_FLAGS_EXT      += -fsanitize=address
+  SO_FLAGS_EXT       += -fsanitize=address
 endif
 
 ifeq ($(PROFILE),1)
