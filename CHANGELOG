@@ -4,6 +4,7 @@
 
 === 1.0.14 ===
 * Implemented pcomplex_r2c instruction set.
+* Updated build scripts.
 
 === 1.0.13 ===
 * Implemented AVX2-optimized hsla_to_rgba and rgba_to_hsla functions.
