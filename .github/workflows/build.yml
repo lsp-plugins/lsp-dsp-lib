@@ -65,7 +65,7 @@ jobs:
             echo "***** MEMCHECK $test *****"; \
             .build/target/${{env.ARTIFACT}}/${{env.ARTIFACT}}-test utest --verbose --jobs 1 --nofork --debug $test; \
           done
-  arch_linux_debug:
+  arch_linux_valgrind:
     runs-on: ubuntu-latest
     container:
       image: archlinux:latest
