@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.15 ===
+
+
 === 1.0.14 ===
 * Implemented pcomplex_r2c instruction set.
 * Updated build scripts.

@@ -25,7 +25,7 @@
 // Define version of headers
 #define LSP_DSP_LIB_MAJOR           1
 #define LSP_DSP_LIB_MINOR           0
-#define LSP_DSP_LIB_MICRO           14
+#define LSP_DSP_LIB_MICRO           15
 
 #if defined(__WINDOWS__) || defined(__WIN32__) || defined(__WIN64__) || defined(_WIN64) || defined(_WIN32) || defined(__WINNT) || defined(__WINNT__)
     #define LSP_DSP_LIB_EXPORT_MODIFIER     __declspec(dllexport)
