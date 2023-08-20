@@ -131,6 +131,13 @@
                 EXPORT1(pcomplex_rcp1);
                 EXPORT1(pcomplex_rcp2);
 
+                EXPORT1(pcomplex_r2c_add2);
+                EXPORT1(pcomplex_r2c_sub2);
+                EXPORT1(pcomplex_r2c_rsub2);
+                EXPORT1(pcomplex_r2c_mul2);
+                EXPORT1(pcomplex_r2c_div2);
+                EXPORT1(pcomplex_r2c_rdiv2);
+
                 EXPORT1(convolve);
 
                 EXPORT1(axis_apply_log1);

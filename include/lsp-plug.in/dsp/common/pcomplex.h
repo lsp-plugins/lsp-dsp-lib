@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -197,5 +197,53 @@ LSP_DSP_LIB_SYMBOL(void, pcomplex_c2r_div2, float *dst, const float *src, size_t
  * @param count number of elements
  */
 LSP_DSP_LIB_SYMBOL(void, pcomplex_c2r_rdiv2, float *dst, const float *src, size_t count);
+
+/**
+ * Calculate: dst[i] = dst[i] + pcomplex{src[i], 0}
+ * @param dst destination real number array
+ * @param src source packed complex number array
+ * @param count number of elements
+ */
+LSP_DSP_LIB_SYMBOL(void, pcomplex_r2c_add2, float *dst, const float *src, size_t count);
+
+/**
+ * Calculate: dst[i] = dst[i] - pcomplex{src[i], 0}
+ * @param dst destination real number array
+ * @param src source packed complex number array
+ * @param count number of elements
+ */
+LSP_DSP_LIB_SYMBOL(void, pcomplex_r2c_sub2, float *dst, const float *src, size_t count);
+
+/**
+* Calculate: dst[i] = pcomplex{src[i], 0} - dst[i]
+ * @param dst destination real number array
+ * @param src source packed complex number array
+ * @param count number of elements
+ */
+LSP_DSP_LIB_SYMBOL(void, pcomplex_r2c_rsub2, float *dst, const float *src, size_t count);
+
+/**
+ * Calculate: dst[i] = dst[i] * pcomplex{src[i], 0}
+ * @param dst destination real number array
+ * @param src source packed complex number array
+ * @param count number of elements
+ */
+LSP_DSP_LIB_SYMBOL(void, pcomplex_r2c_mul2, float *dst, const float *src, size_t count);
+
+/**
+ * Calculate: dst[i] = dst[i] / pcomplex{src[i], 0}
+ * @param dst destination real number array
+ * @param src source packed complex number array
+ * @param count number of elements
+ */
+LSP_DSP_LIB_SYMBOL(void, pcomplex_r2c_div2, float *dst, const float *src, size_t count);
+
+/**
+ * Calculate: dst[i] = pcomplex{src[i], 0} / dst[i]
+ * @param dst destination real number array
+ * @param src source packed complex number array
+ * @param count number of elements
+ */
+LSP_DSP_LIB_SYMBOL(void, pcomplex_r2c_rdiv2, float *dst, const float *src, size_t count);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_PCOMPLEX_H_ */

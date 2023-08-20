@@ -92,6 +92,13 @@ else
   CXXFLAGS_EXT       += -O2
 endif
 
+ifeq ($(ASAN),1)
+  CFLAGS_EXT         += -fsanitize=address
+  CXXFLAGS_EXT       += -fsanitize=address
+  EXE_FLAGS_EXT      += -fsanitize=address
+  SO_FLAGS_EXT       += -fsanitize=address
+endif
+
 ifeq ($(PROFILE),1)
   CFLAGS_EXT         += -pg -DLSP_PROFILE
   CXXFLAGS_EXT       += -pg -DLSP_PROFILE
