@@ -194,101 +194,93 @@
 #define LSP_DSP_BIQUAD_ALIGN            0x40
 #define LSP_DSP_BIQUAD_D_ITEMS          16
 
-#ifdef __cplusplus
-namespace lsp
+LSP_DSP_LIB_BEGIN_NAMESPACE
+
+#pragma pack(push, 1)
+
+/**
+ * Analog filter cascade transfer function:
+ *
+ *              t0 + t1*s + t2*s^2
+ *     H[s] = ──────────────────────
+ *              b0 + b1*s + b2*s^2
+ */
+typedef struct LSP_DSP_LIB_TYPE(f_cascade_t)
 {
-    namespace dsp
+    float       t[4];       // Top part of polynom (zeros): T[p] = t[0] + t[1] * p + t[2] * p^2
+    float       b[4];       // Bottom part of polynom (poles): B[p] = b[0] + b[1] * p + b[2] * p^2
+} LSP_DSP_LIB_TYPE(f_cascade_t);
+
+/**
+ * Biquad filter bank for 1 digital biquad filter
+ * Non-used elements should be filled with zeros
+ */
+typedef struct LSP_DSP_LIB_TYPE(biquad_x1_t)
+{
+    float   b0, b1, b2;     //  b0 b1 b2
+    float   a1, a2;         //  a1 a2
+    float   p0, p1, p2;     //  padding (not used), SHOULD be zero
+} LSP_DSP_LIB_TYPE(biquad_x1_t);
+
+/**
+ * Biquad filter bank for 2 digital biquad filters
+ * Non-used elements should be filled with zeros
+ */
+typedef struct LSP_DSP_LIB_TYPE(biquad_x2_t)
+{
+    float   b0[2];
+    float   b1[2];
+    float   b2[2];
+    float   a1[2];
+    float   a2[2];
+    float   p[2];           // padding (not used), SHOULD be zero
+} LSP_DSP_LIB_TYPE(biquad_x2_t);
+
+/**
+ * Biquad filter bank for 4 digital biquad filters
+ */
+typedef struct LSP_DSP_LIB_TYPE(biquad_x4_t)
+{
+    float   b0[4];
+    float   b1[4];
+    float   b2[4];
+    float   a1[4];
+    float   a2[4];
+} LSP_DSP_LIB_TYPE(biquad_x4_t);
+
+/**
+ * Biquad filter bank for 8 digital biquad filters
+ */
+typedef struct LSP_DSP_LIB_TYPE(biquad_x8_t)
+{
+    float   b0[8];
+    float   b1[8];
+    float   b2[8];
+    float   a1[8];
+    float   a2[8];
+} LSP_DSP_LIB_TYPE(biquad_x8_t);
+
+/**
+ * This is main filter structure with memory elements
+ * It should be aligned at least to 16-byte boundary due to
+ * alignment restrictions of some different hardware architectures
+ * For best purpose it should be aligned to 64-byte boundary
+ */
+typedef struct LSP_DSP_LIB_TYPE(biquad_t)
+{
+    float   d[LSP_DSP_BIQUAD_D_ITEMS];
+    union
     {
-#endif /* __cplusplus */
+        LSP_DSP_LIB_TYPE(biquad_x1_t) x1;
+        LSP_DSP_LIB_TYPE(biquad_x2_t) x2;
+        LSP_DSP_LIB_TYPE(biquad_x4_t) x4;
+        LSP_DSP_LIB_TYPE(biquad_x8_t) x8;
+    };
+    float   __pad[8];
+} __lsp_aligned(LSP_DSP_BIQUAD_ALIGN) LSP_DSP_LIB_TYPE(biquad_t);
 
-    #pragma pack(push, 1)
+#pragma pack(pop)
 
-        /**
-         * Analog filter cascade transfer function:
-         *
-         *              t0 + t1*s + t2*s^2
-         *     H[s] = ──────────────────────
-         *              b0 + b1*s + b2*s^2
-         */
-        typedef struct LSP_DSP_LIB_TYPE(f_cascade_t)
-        {
-            float       t[4];       // Top part of polynom (zeros): T[p] = t[0] + t[1] * p + t[2] * p^2
-            float       b[4];       // Bottom part of polynom (poles): B[p] = b[0] + b[1] * p + b[2] * p^2
-        } LSP_DSP_LIB_TYPE(f_cascade_t);
-
-        /**
-         * Biquad filter bank for 1 digital biquad filter
-         * Non-used elements should be filled with zeros
-         */
-        typedef struct LSP_DSP_LIB_TYPE(biquad_x1_t)
-        {
-            float   b0, b1, b2;     //  b0 b1 b2
-            float   a1, a2;         //  a1 a2
-            float   p0, p1, p2;     //  padding (not used), SHOULD be zero
-        } LSP_DSP_LIB_TYPE(biquad_x1_t);
-
-        /**
-         * Biquad filter bank for 2 digital biquad filters
-         * Non-used elements should be filled with zeros
-         */
-        typedef struct LSP_DSP_LIB_TYPE(biquad_x2_t)
-        {
-            float   b0[2];
-            float   b1[2];
-            float   b2[2];
-            float   a1[2];
-            float   a2[2];
-            float   p[2];           // padding (not used), SHOULD be zero
-        } LSP_DSP_LIB_TYPE(biquad_x2_t);
-
-        /**
-         * Biquad filter bank for 4 digital biquad filters
-         */
-        typedef struct LSP_DSP_LIB_TYPE(biquad_x4_t)
-        {
-            float   b0[4];
-            float   b1[4];
-            float   b2[4];
-            float   a1[4];
-            float   a2[4];
-        } LSP_DSP_LIB_TYPE(biquad_x4_t);
-
-        /**
-         * Biquad filter bank for 8 digital biquad filters
-         */
-        typedef struct LSP_DSP_LIB_TYPE(biquad_x8_t)
-        {
-            float   b0[8];
-            float   b1[8];
-            float   b2[8];
-            float   a1[8];
-            float   a2[8];
-        } LSP_DSP_LIB_TYPE(biquad_x8_t);
-
-        /**
-         * This is main filter structure with memory elements
-         * It should be aligned at least to 16-byte boundary due to
-         * alignment restrictions of some different hardware architectures
-         * For best purpose it should be aligned to 64-byte boundary
-         */
-        typedef struct LSP_DSP_LIB_TYPE(biquad_t)
-        {
-            float   d[LSP_DSP_BIQUAD_D_ITEMS];
-            union
-            {
-                LSP_DSP_LIB_TYPE(biquad_x1_t) x1;
-                LSP_DSP_LIB_TYPE(biquad_x2_t) x2;
-                LSP_DSP_LIB_TYPE(biquad_x4_t) x4;
-                LSP_DSP_LIB_TYPE(biquad_x8_t) x8;
-            };
-            float   __pad[8];
-        } __lsp_aligned(LSP_DSP_BIQUAD_ALIGN) LSP_DSP_LIB_TYPE(biquad_t);
-
-    #pragma pack(pop)
-
-#ifdef __cplusplus
-    }
-}
-#endif /* __cplusplus */
+LSP_DSP_LIB_END_NAMESPACE
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_FILTERS_TYPES_H_ */

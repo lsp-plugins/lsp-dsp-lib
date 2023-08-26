@@ -24,31 +24,24 @@
 
 #include <lsp-plug.in/dsp/common/types.h>
 
-#ifdef __cplusplus
-namespace lsp
+LSP_DSP_LIB_BEGIN_NAMESPACE
+
+typedef struct LSP_DSP_LIB_TYPE(bitmap_t)
 {
-    namespace dsp
-    {
-#endif /* __cplusplus */
-
-        typedef struct LSP_DSP_LIB_TYPE(bitmap_t)
-        {
-            int32_t     width;
-            int32_t     height;
-            int32_t     stride;
-            uint8_t    *data;
-        } LSP_DSP_LIB_TYPE(bitmap_t);
+    int32_t     width;
+    int32_t     height;
+    int32_t     stride;
+    uint8_t    *data;
+} LSP_DSP_LIB_TYPE(bitmap_t);
 
 
-        typedef void (* LSP_DSP_LIB_TYPE(bitmap_render_func_t))(
-            LSP_DSP_LIB_TYPE(bitmap_t) *dst,
-            const LSP_DSP_LIB_TYPE(bitmap_t) *src,
-            ssize_t x,
-            ssize_t y);
-#ifdef __cplusplus
-    } /* namespace dsp */
-} /* namespace lsp */
-#endif /* __cplusplus */
+typedef void (* LSP_DSP_LIB_TYPE(bitmap_render_func_t))(
+    LSP_DSP_LIB_TYPE(bitmap_t) *dst,
+    const LSP_DSP_LIB_TYPE(bitmap_t) *src,
+    ssize_t x,
+    ssize_t y);
+
+LSP_DSP_LIB_END_NAMESPACE
 
 #include <lsp-plug.in/dsp/common/bitmap/b1b8.h>
 #include <lsp-plug.in/dsp/common/bitmap/b2b8.h>

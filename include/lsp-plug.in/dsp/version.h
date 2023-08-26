@@ -45,10 +45,23 @@
 
 #define LSP_DSP_LIB_MANGLE(name)    lsp_dsp_ ## name
 
-#ifdef __cplusplus
+// Determine what interface to use (C or C++)
+#if defined(LSP_DSP_LIB_USE_C_IFACE)
+    #ifdef LSP_DSP_LIB_USE_CXX_IFACE
+        #undef LSP_DSP_LIB_USE_CXX_IFACE
+    #endif /* LSP_DSP_LIB_USE_CXX_IFACE */
+#elif defined(__cplusplus) && !defined(LSP_DSP_LIB_USE_CXX_IFACE)
+    #define LSP_DSP_LIB_USE_CXX_IFACE
+#endif /* LSP_DSP_LIB_USE_C_IFACE */
+
+#ifdef LSP_DSP_LIB_USE_CXX_IFACE
     #define LSP_DSP_LIB_TYPE(name)      name
+    #define LSP_DSP_LIB_BEGIN_NAMESPACE namespace lsp { namespace dsp {
+    #define LSP_DSP_LIB_END_NAMESPACE   } }
 #else
     #define LSP_DSP_LIB_TYPE(name)      LSP_DSP_LIB_MANGLE(name)
+    #define LSP_DSP_LIB_BEGIN_NAMESPACE
+    #define LSP_DSP_LIB_END_NAMESPACE
 #endif
 
 #endif /* LSP_PLUG_IN_DSP_VERSION_H_ */

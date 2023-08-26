@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -10,7 +10,7 @@
  * the Free Software Foundation, either version 3 of the License, or
  * any later version.
  *
- * ${project_name} is distributed in the hope that it will be useful,
+ * lsp-dsp-lib is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
@@ -25,7 +25,7 @@
 #include <lsp-plug.in/dsp/version.h>
 
 #ifndef LSP_DSP_LIB_SYMBOL
-    #ifdef __cplusplus
+    #ifdef LSP_DSP_LIB_USE_CXX_IFACE
         #define LSP_DSP_LIB_SYMBOL(ret, name, ...) \
             namespace lsp { \
                 namespace dsp { \
@@ -37,7 +37,7 @@
         #define LSP_DSP_LIB_SYMBOL(ret, name, ...) \
             LSP_DSP_LIB_PUBLIC \
             extern ret (* LSP_DSP_LIB_MANGLE(name))(__VA_ARGS__);
-    #endif /* __cplusplus */
+    #endif /* LSP_DSP_LIB_USE_CXX_IFACE */
 #endif /* LSP_DSP_LIB_SYMBOL */
 
 // Include all partial definitions
@@ -63,7 +63,5 @@
 #include <lsp-plug.in/dsp/common/search.h>
 #include <lsp-plug.in/dsp/common/smath.h>
 #include <lsp-plug.in/dsp/common/interpolation.h>
-
-#undef LSP_DSP_LIB_CXX_IFACE
 
 #endif /* LSP_PLUG_IN_DSP_DSP_H_ */

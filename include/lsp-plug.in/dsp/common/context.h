@@ -24,42 +24,34 @@
 
 #include <lsp-plug.in/dsp/common/types.h>
 
-#ifdef __cplusplus
-namespace lsp
+LSP_DSP_LIB_BEGIN_NAMESPACE
+
+#pragma pack(push, 1)
+/**
+ * DSP context to store and restore machine state
+ */
+typedef struct LSP_DSP_LIB_TYPE(context_t)
 {
-    namespace dsp
-    {
-#endif /* __cplusplus */
+    uint32_t        top;
+    uint32_t        data[15];
+} LSP_DSP_LIB_TYPE(context_t);
+#pragma pack(pop)
 
-        #pragma pack(push, 1)
-        /**
-         * DSP context to store and restore machine state
-         */
-        typedef struct LSP_DSP_LIB_TYPE(context_t)
-        {
-            uint32_t        top;
-            uint32_t        data[15];
-        } LSP_DSP_LIB_TYPE(context_t);
-        #pragma pack(pop)
+typedef struct LSP_DSP_LIB_TYPE(info_t)
+{
+    const char     *arch;       /* Architecture information */
+    const char     *cpu;        /* CPU information */
+    const char     *model;      /* CPU model information */
+    const char     *features;   /* CPU features */
+} LSP_DSP_LIB_TYPE(info_t);
 
-        typedef struct LSP_DSP_LIB_TYPE(info_t)
-        {
-            const char     *arch;       /* Architecture information */
-            const char     *cpu;        /* CPU information */
-            const char     *model;      /* CPU model information */
-            const char     *features;   /* CPU features */
-        } LSP_DSP_LIB_TYPE(info_t);
+// Start and finish types
+typedef void (* LSP_DSP_LIB_TYPE(start_t))(LSP_DSP_LIB_TYPE(context_t) *ctx);
+typedef void (* LSP_DSP_LIB_TYPE(finish_t))(LSP_DSP_LIB_TYPE(context_t) *ctx);
 
-        // Start and finish types
-        typedef void (* LSP_DSP_LIB_TYPE(start_t))(LSP_DSP_LIB_TYPE(context_t) *ctx);
-        typedef void (* LSP_DSP_LIB_TYPE(finish_t))(LSP_DSP_LIB_TYPE(context_t) *ctx);
+LSP_DSP_LIB_END_NAMESPACE
 
-#ifdef __cplusplus
-    }
-}
-#endif /* __cplusplus */
-
-#ifdef __cplusplus
+#ifdef LSP_DSP_LIB_USE_CXX_IFACE
 namespace lsp
 {
     namespace dsp
@@ -77,7 +69,7 @@ namespace lsp
      */
     LSP_DSP_LIB_PUBLIC
     void LSP_DSP_LIB_MANGLE(init());
-#endif /* __cplusplus */
+#endif /* LSP_DSP_LIB_USE_CXX_IFACE */
 
 
 /** Start DSP processing, save machine context
