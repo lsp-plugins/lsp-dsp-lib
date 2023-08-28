@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -31,50 +31,40 @@ namespace lsp
 {
     namespace generic
     {
-        float h_sum(const float *src, size_t count);
         float h_sqr_sum(const float *src, size_t count);
-        float h_abs_sum(const float *src, size_t count);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
-            float h_sum(const float *src, size_t count);
             float h_sqr_sum(const float *src, size_t count);
-            float h_abs_sum(const float *src, size_t count);
         }
 
         namespace avx
         {
-            float h_sum(const float *src, size_t count);
             float h_sqr_sum(const float *src, size_t count);
             float h_sqr_sum_fma3(const float *src, size_t count);
-            float h_abs_sum(const float *src, size_t count);
         }
     )
 
     IF_ARCH_ARM(
         namespace neon_d32
         {
-            float h_sum(const float *src, size_t count);
             float h_sqr_sum(const float *src, size_t count);
-            float h_abs_sum(const float *src, size_t count);
         }
     )
 
     IF_ARCH_AARCH64(
         namespace asimd
         {
-            float h_sum(const float *src, size_t count);
             float h_sqr_sum(const float *src, size_t count);
-            float h_abs_sum(const float *src, size_t count);
         }
     )
 
     typedef float (* h_sum_t)(const float *src, size_t count);
 }
 
-PTEST_BEGIN("dsp.hmath", hsum, 5, 10000)
+PTEST_BEGIN("dsp.hmath", h_sqr_sum, 5, 10000)
 
     void call(const char *label, float *src, size_t count, h_sum_t func)
     {
@@ -106,13 +96,6 @@ PTEST_BEGIN("dsp.hmath", hsum, 5, 10000)
         {
             size_t count = 1 << i;
 
-            CALL(generic::h_sum);
-            IF_ARCH_X86(CALL(sse::h_sum));
-            IF_ARCH_X86(CALL(avx::h_sum));
-            IF_ARCH_ARM(CALL(neon_d32::h_sum));
-            IF_ARCH_AARCH64(CALL(asimd::h_sum));
-            PTEST_SEPARATOR;
-
             CALL(generic::h_sqr_sum);
             IF_ARCH_X86(CALL(sse::h_sqr_sum));
             IF_ARCH_X86(CALL(avx::h_sqr_sum));
@@ -120,13 +103,6 @@ PTEST_BEGIN("dsp.hmath", hsum, 5, 10000)
             IF_ARCH_ARM(CALL(neon_d32::h_sqr_sum));
             IF_ARCH_AARCH64(CALL(asimd::h_sqr_sum));
             PTEST_SEPARATOR;
-
-            CALL(generic::h_abs_sum);
-            IF_ARCH_X86(CALL(sse::h_abs_sum));
-            IF_ARCH_X86(CALL(avx::h_abs_sum));
-            IF_ARCH_ARM(CALL(neon_d32::h_abs_sum));
-            IF_ARCH_AARCH64(CALL(asimd::h_abs_sum));
-            PTEST_SEPARATOR2;
         }
 
         free_aligned(data);

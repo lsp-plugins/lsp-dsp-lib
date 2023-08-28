@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -116,12 +116,18 @@
 
 //-------------------------------------------------------------------------
 // Different processor families
+
+#define INTEL_FAMILY_686_CORE                   0x06
+
 #define AMD_FAMILY_K8_HAMMER                    0x0f
 #define AMD_FAMILY_K10                          0x10
 #define AMD_FAMILY_BOBCAT                       0x14
 #define AMD_FAMILY_BULLDOZER                    0x15
 #define AMD_FAMILY_JAGUAR                       0x16
 #define AMD_FAMILY_ZEN_1_2                      0x17
+#define AMD_FAMILY_DHYANA                       0x18
+#define AMD_FAMILY_ZEN_3_4                      0x19
+#define AMD_FAMILY_ZEN_5                        0x1a
 
 #define AMD_MODEL_ZEN_2                         0x31
 
@@ -191,8 +197,9 @@ namespace lsp
         }
 
         uint64_t read_xcr(umword_t xcr_id);
-    }
-}
+
+    } /* namespace x86 */
+} /* namespace lsp */
 
 
 #endif /* PRIVATE_DSP_ARCH_X86_CPUID_H_ */

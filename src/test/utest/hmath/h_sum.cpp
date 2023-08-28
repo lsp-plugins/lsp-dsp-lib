@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -37,24 +37,17 @@ namespace lsp
     namespace generic
     {
         float h_sum(const float *src, size_t count);
-        float h_sqr_sum(const float *src, size_t count);
-        float h_abs_sum(const float *src, size_t count);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
             float h_sum(const float *src, size_t count);
-            float h_sqr_sum(const float *src, size_t count);
-            float h_abs_sum(const float *src, size_t count);
         }
 
         namespace avx
         {
             float h_sum(const float *src, size_t count);
-            float h_sqr_sum(const float *src, size_t count);
-            float h_sqr_sum_fma3(const float *src, size_t count);
-            float h_abs_sum(const float *src, size_t count);
         }
     )
 
@@ -62,8 +55,6 @@ namespace lsp
         namespace neon_d32
         {
             float h_sum(const float *src, size_t count);
-            float h_sqr_sum(const float *src, size_t count);
-            float h_abs_sum(const float *src, size_t count);
         }
     )
 
@@ -71,15 +62,13 @@ namespace lsp
         namespace asimd
         {
             float h_sum(const float *src, size_t count);
-            float h_sqr_sum(const float *src, size_t count);
-            float h_abs_sum(const float *src, size_t count);
         }
     )
 
     typedef float (* h_sum_t)(const float *src, size_t count);
 }
 
-UTEST_BEGIN("dsp.hmath", hsum)
+UTEST_BEGIN("dsp.hmath", h_sum)
 
     void call(const char *label, size_t align, h_sum_t func1, h_sum_t func2)
     {
@@ -120,20 +109,8 @@ UTEST_BEGIN("dsp.hmath", hsum)
             call(#func, align, generic, func);
 
         IF_ARCH_X86(CALL(generic::h_sum, sse::h_sum, 16));
-        IF_ARCH_X86(CALL(generic::h_sqr_sum, sse::h_sqr_sum, 16));
-        IF_ARCH_X86(CALL(generic::h_abs_sum, sse::h_abs_sum, 16));
-
         IF_ARCH_X86(CALL(generic::h_sum, avx::h_sum, 32));
-        IF_ARCH_X86(CALL(generic::h_sqr_sum, avx::h_sqr_sum, 32));
-        IF_ARCH_X86(CALL(generic::h_sqr_sum, avx::h_sqr_sum_fma3, 32));
-        IF_ARCH_X86(CALL(generic::h_abs_sum, avx::h_abs_sum, 32));
-
         IF_ARCH_ARM(CALL(generic::h_sum, neon_d32::h_sum, 16));
-        IF_ARCH_ARM(CALL(generic::h_sqr_sum, neon_d32::h_sqr_sum, 16));
-        IF_ARCH_ARM(CALL(generic::h_abs_sum, neon_d32::h_abs_sum, 16));
-
         IF_ARCH_AARCH64(CALL(generic::h_sum, asimd::h_sum, 16));
-        IF_ARCH_AARCH64(CALL(generic::h_sqr_sum, asimd::h_sqr_sum, 16));
-        IF_ARCH_AARCH64(CALL(generic::h_abs_sum, asimd::h_abs_sum, 16));
     }
 UTEST_END

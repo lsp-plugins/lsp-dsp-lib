@@ -5,6 +5,7 @@
 === 1.0.15 ===
 * Fixed syntax error in C interface, covered with tests.
 * Bugfix in horizontal summing functions (invalid register clobber list).
+* Some AMD-related optimizations.
 
 === 1.0.14 ===
 * Implemented pcomplex_r2c instruction set.
