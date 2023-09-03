@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -44,28 +44,32 @@ namespace lsp
 
         dsp::info_t *info()
         {
-            size_t size     =
-                    sizeof(dsp::info_t) +
+            size_t szof_dsp_info    = sizeof(dsp::info_t);
+            size_t size             =
+                    szof_dsp_info +
                     strlen(ARCH_STRING) + 1 +
                     strlen("native cpu") + 1 +
                     strlen("unknown") + 1;
 
-            dsp::info_t *res = reinterpret_cast<dsp::info_t *>(malloc(size));
-            if (res == NULL)
-                return res;
+            uint8_t *ptr        = static_cast<uint8_t *>(malloc(size));
+            if (ptr == NULL)
+                return NULL;
 
-            char *text  = reinterpret_cast<char *>(&res[1]);
-            res->arch       = text;
-            text            = stpcpy(text, ARCH_STRING) + 1;
-            res->cpu        = text;
-            text            = stpcpy(text, "native cpu") + 1;
-            res->model      = text;
-            text            = stpcpy(text, "unknown");
-            res->features   = text; // Empty string
+            dsp::info_t *res    = reinterpret_cast<dsp::info_t *>(ptr);
+            ptr                += szof_dsp_info;
+
+            char *text          = reinterpret_cast<char *>(ptr);
+            res->arch           = text;
+            text                = stpcpy(text, ARCH_STRING) + 1;
+            res->cpu            = text;
+            text                = stpcpy(text, "native cpu") + 1;
+            res->model          = text;
+            text                = stpcpy(text, "unknown");
+            res->features       = text; // Empty string
 
             return res;
         }
-    }
-}
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_CONTEXT_H_ */

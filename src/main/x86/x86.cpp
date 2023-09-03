@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -521,23 +521,12 @@
                                 return true;
                         }
                         break;
+
                     case FEAT_FAST_AVX:
-                        if (f->vendor == CPU_VENDOR_INTEL) // Any Intel CPU is good enough with AVX
-                            return true;
-                        // Only starting with ZEN 1 architecture AMD's implementation of AVX is fast enough
-                        if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON))
-                        {
-                            if (f->family < AMD_FAMILY_ZEN_1_2)
-                                return false;
-                            if (f->family == AMD_FAMILY_DHYANA)
-                                return false;
-                            return true;
-                        }
-                        break;
                     case FEAT_FAST_FMA3:
                         if (f->vendor == CPU_VENDOR_INTEL) // Any Intel CPU is good enough with AVX
                             return true;
-                        // Starting with ZEN 2 FMA3 operations are fast enough on AMD
+                        // Only starting with ZEN 1 architecture AMD's implementation of AVX is fast enough
                         if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON))
                         {
                             if (f->family < AMD_FAMILY_ZEN_1_2)
