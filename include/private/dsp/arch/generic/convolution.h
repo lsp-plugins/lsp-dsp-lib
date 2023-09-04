@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -71,10 +71,9 @@ namespace lsp
                     } while (clen >= 4);
 
                     // Apply tail
-                    d[0]   += /*  0  */ + k[1]*p[3] + k[2]*p[2] + k[3]*p[1];
-                    d[1]   += /*  0  */ + /*  0  */ + k[2]*p[3] + k[3]*p[2];
-                    d[2]   += /*  0  */ + /*  0  */ + /*  0  */ + k[3]*p[3];
-    //                d[3]   += /*  0  */ + /*  0  */ + /*  0  */ + /*  0  */;
+                    d[0]   += /*  0  */   k[1]*p[3] + k[2]*p[2] + k[3]*p[1];
+                    d[1]   += /*  0  */   /*  0  */   k[2]*p[3] + k[3]*p[2];
+                    d[2]   += /*  0  */   /*  0  */   /*  0  */   k[3]*p[3];
                 }
 
                 // Apply tail
@@ -119,7 +118,7 @@ namespace lsp
                 k++;
             }
         }
-    }
-}
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_CONVOLUTION_H_ */
