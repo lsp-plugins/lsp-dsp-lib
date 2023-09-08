@@ -148,37 +148,205 @@ namespace lsp
         __ASM_EMIT("12:")
 
 
-    void limit1(float *dst, float min, float max, size_t count)
-    {
-        IF_ARCH_X86(size_t off);
-        ARCH_X86_ASM(
-            LIMIT_BODY("dst", "dst")
-            : [count] "+r" (count), [off] "=&r" (off)
-            : [dst] "r" (dst),
-              [min] "m" (min), [max] "m" (max)
-            : "cc", "memory",
-              "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-              "%xmm6", "%xmm7",
-              "%k4", "%k5", "%k6", "%k7"
-        );
-    }
+        void limit1(float *dst, float min, float max, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM(
+                LIMIT_BODY("dst", "dst")
+                : [count] "+r" (count), [off] "=&r" (off)
+                : [dst] "r" (dst),
+                  [min] "m" (min), [max] "m" (max)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm6", "%xmm7",
+                  "%k4", "%k5", "%k6", "%k7"
+            );
+        }
 
-    void limit2(float *dst, const float *src, float min, float max, size_t count)
-    {
-        IF_ARCH_X86(size_t off);
-        ARCH_X86_ASM(
-            LIMIT_BODY("dst", "src")
-            : [count] "+r" (count), [off] "=&r" (off)
-            : [dst] "r" (dst), [src] "r" (src),
-              [min] "m" (min), [max] "m" (max)
-            : "cc", "memory",
-              "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-              "%xmm6", "%xmm7",
-              "%k4", "%k5", "%k6", "%k7"
-        );
-    }
+        void limit2(float *dst, const float *src, float min, float max, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM(
+                LIMIT_BODY("dst", "src")
+                : [count] "+r" (count), [off] "=&r" (off)
+                : [dst] "r" (dst), [src] "r" (src),
+                  [min] "m" (min), [max] "m" (max)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm6", "%xmm7",
+                  "%k4", "%k5", "%k6", "%k7"
+            );
+        }
 
     #undef LIMIT_BODY
+
+    #define SANITIZE_BODY(DST, SRC) \
+        __ASM_EMIT("xor             %[off], %[off]") \
+        /* 64x blocks */ \
+        __ASM_EMIT("sub             $64, %[count]") \
+        __ASM_EMIT("jb              2f") \
+        __ASM_EMIT("1:") \
+        __ASM_EMIT("vmovups         0x00(%[" SRC "], %[off]), %%zmm0")      /* xmm0 = s */ \
+        __ASM_EMIT("vmovups         0x40(%[" SRC "], %[off]), %%zmm1") \
+        __ASM_EMIT("vmovups         0x80(%[" SRC "], %[off]), %%zmm2") \
+        __ASM_EMIT("vmovups         0xc0(%[" SRC "], %[off]), %%zmm3") \
+        __ASM_EMIT("vpandd          0x00(%[CVAL]), %%zmm0, %%zmm4")         /* xmm4 = abs(s) */ \
+        __ASM_EMIT("vpandd          0x00(%[CVAL]), %%zmm1, %%zmm5") \
+        __ASM_EMIT("vpandd          0x00(%[CVAL]), %%zmm2, %%zmm6") \
+        __ASM_EMIT("vpandd          0x00(%[CVAL]), %%zmm3, %%zmm7") \
+        __ASM_EMIT("vpcmpgtd        0x40(%[CVAL]), %%zmm4, %%k4")           /* k4   = [abs(s) > X_MAX] */ \
+        __ASM_EMIT("vpcmpgtd        0x40(%[CVAL]), %%zmm5, %%k5") \
+        __ASM_EMIT("vpcmpgtd        0x40(%[CVAL]), %%zmm6, %%k6") \
+        __ASM_EMIT("vpcmpgtd        0x40(%[CVAL]), %%zmm7, %%k7") \
+        __ASM_EMIT("vpcmpgtd        0x80(%[CVAL]), %%zmm4, %%k0")           /* k0   = [abs(s) > X_MIN] */ \
+        __ASM_EMIT("vpcmpgtd        0x80(%[CVAL]), %%zmm5, %%k1") \
+        __ASM_EMIT("vpcmpgtd        0x80(%[CVAL]), %%zmm6, %%k2") \
+        __ASM_EMIT("vpcmpgtd        0x80(%[CVAL]), %%zmm7, %%k3") \
+        __ASM_EMIT("kandnw          %%k0, %%k4, %%k4")                      /* k4   = [(abs(s) > X_MAX) & (abs(s) <= X_MIN)] */ \
+        __ASM_EMIT("kandnw          %%k1, %%k5, %%k5") \
+        __ASM_EMIT("kandnw          %%k2, %%k6, %%k6") \
+        __ASM_EMIT("kandnw          %%k3, %%k7, %%k7") \
+        __ASM_EMIT("vpandd          0xc0(%[CVAL]), %%zmm0, %%zmm4")         /* zmm4 = sign(s) */ \
+        __ASM_EMIT("vpandd          0xc0(%[CVAL]), %%zmm1, %%zmm5") \
+        __ASM_EMIT("vpandd          0xc0(%[CVAL]), %%zmm2, %%zmm6") \
+        __ASM_EMIT("vpandd          0xc0(%[CVAL]), %%zmm3, %%zmm7") \
+        __ASM_EMIT("vblendmps       %%zmm0, %%zmm4, %%zmm0%{%%k4%}")        /* zmm0 = ([(abs(s) > X_MAX) & (abs(s) <= X_MIN)]) ? s : sign(s) */ \
+        __ASM_EMIT("vblendmps       %%zmm1, %%zmm5, %%zmm1%{%%k5%}") \
+        __ASM_EMIT("vblendmps       %%zmm2, %%zmm6, %%zmm2%{%%k6%}") \
+        __ASM_EMIT("vblendmps       %%zmm3, %%zmm7, %%zmm3%{%%k7%}") \
+        __ASM_EMIT("vmovups         %%zmm0, 0x00(%[" DST "], %[off])")      /* zmm0 = s' */ \
+        __ASM_EMIT("vmovups         %%zmm1, 0x40(%[" DST "], %[off])") \
+        __ASM_EMIT("vmovups         %%zmm2, 0x80(%[" DST "], %[off])") \
+        __ASM_EMIT("vmovups         %%zmm3, 0xc0(%[" DST "], %[off])") \
+        __ASM_EMIT("add             $0x100, %[off]") \
+        __ASM_EMIT("sub             $64, %[count]") \
+        __ASM_EMIT("jae             1b") \
+        __ASM_EMIT("2:") \
+        /* 32x block */ \
+        __ASM_EMIT("add             $32, %[count]") \
+        __ASM_EMIT("jl              4f") \
+        __ASM_EMIT("vmovups         0x00(%[" SRC "], %[off]), %%zmm0")      /* xmm0 = s */ \
+        __ASM_EMIT("vmovups         0x40(%[" SRC "], %[off]), %%zmm1") \
+        __ASM_EMIT("vpandd          0x00(%[CVAL]), %%zmm0, %%zmm4")         /* xmm4 = abs(s) */ \
+        __ASM_EMIT("vpandd          0x00(%[CVAL]), %%zmm1, %%zmm5") \
+        __ASM_EMIT("vpcmpgtd        0x40(%[CVAL]), %%zmm4, %%k4")           /* k4   = [abs(s) > X_MAX] */ \
+        __ASM_EMIT("vpcmpgtd        0x40(%[CVAL]), %%zmm5, %%k5") \
+        __ASM_EMIT("vpcmpgtd        0x80(%[CVAL]), %%zmm4, %%k0")           /* k0   = [abs(s) > X_MIN] */ \
+        __ASM_EMIT("vpcmpgtd        0x80(%[CVAL]), %%zmm5, %%k1") \
+        __ASM_EMIT("kandnw          %%k0, %%k4, %%k4")                      /* k4   = [(abs(s) > X_MAX) & (abs(s) <= X_MIN)] */ \
+        __ASM_EMIT("kandnw          %%k1, %%k5, %%k5") \
+        __ASM_EMIT("vpandd          0xc0(%[CVAL]), %%zmm0, %%zmm4")         /* zmm4 = sign(s) */ \
+        __ASM_EMIT("vpandd          0xc0(%[CVAL]), %%zmm1, %%zmm5") \
+        __ASM_EMIT("vblendmps       %%zmm0, %%zmm4, %%zmm0%{%%k4%}")        /* zmm0 = ([(abs(s) > X_MAX) & (abs(s) <= X_MIN)]) ? s : sign(s) */ \
+        __ASM_EMIT("vblendmps       %%zmm1, %%zmm5, %%zmm1%{%%k5%}") \
+        __ASM_EMIT("vmovups         %%zmm0, 0x00(%[" DST "], %[off])")      /* zmm0 = s' */ \
+        __ASM_EMIT("vmovups         %%zmm1, 0x40(%[" DST "], %[off])") \
+        __ASM_EMIT("add             $0x80, %[off]") \
+        __ASM_EMIT("sub             $32, %[count]") \
+        __ASM_EMIT("4:") \
+        /* 8x blocks */ \
+        __ASM_EMIT("add             $24, %[count]") \
+        __ASM_EMIT("jl              6f") \
+        __ASM_EMIT("5:") \
+        __ASM_EMIT("vmovdqu         0x00(%[" SRC "], %[off]), %%xmm0")      /* xmm0 = s */ \
+        __ASM_EMIT("vmovdqu         0x10(%[" SRC "], %[off]), %%xmm4") \
+        __ASM_EMIT("vpand           0x00(%[CVAL]), %%xmm0, %%xmm1")         /* xmm1 = abs(s) */ \
+        __ASM_EMIT("vpand           0x00(%[CVAL]), %%xmm4, %%xmm5") \
+        __ASM_EMIT("vpand           0xc0(%[CVAL]), %%xmm0, %%xmm2")         /* xmm2 = sign(s) */ \
+        __ASM_EMIT("vpand           0xc0(%[CVAL]), %%xmm4, %%xmm6") \
+        __ASM_EMIT("vpcmpgtd        0x40(%[CVAL]), %%xmm1, %%xmm3")         /* xmm3 = abs(s) > X_MAX  */ \
+        __ASM_EMIT("vpcmpgtd        0x40(%[CVAL]), %%xmm5, %%xmm7") \
+        __ASM_EMIT("vpcmpgtd        0x80(%[CVAL]), %%xmm1, %%xmm1")         /* xmm1 = abs(s) > X_MIN  */ \
+        __ASM_EMIT("vpcmpgtd        0x80(%[CVAL]), %%xmm5, %%xmm5") \
+        __ASM_EMIT("vpandn          %%xmm1, %%xmm3, %%xmm1")                /* xmm1 = (abs(s) > X_MIN) & (abs(s) <= X_MAX) */ \
+        __ASM_EMIT("vpandn          %%xmm5, %%xmm7, %%xmm5") \
+        __ASM_EMIT("vblendvps       %%xmm1, %%xmm0, %%xmm2, %%xmm0")        /* xmm0 = ((abs(s) > X_MIN) & (abs(s) <= X_MAX))) ? s : sign(s) */ \
+        __ASM_EMIT("vblendvps       %%xmm5, %%xmm4, %%xmm6, %%xmm4") \
+        __ASM_EMIT("vmovdqu         %%xmm0, 0x00(%[" DST "], %[off])")      /* xmm0 = s */ \
+        __ASM_EMIT("vmovdqu         %%xmm4, 0x10(%[" DST "], %[off])") \
+        __ASM_EMIT("add             $0x20, %[off]") \
+        __ASM_EMIT("sub             $8, %[count]") \
+        __ASM_EMIT("jge             5b") \
+        __ASM_EMIT("6:") \
+        /* 4x block */ \
+        __ASM_EMIT("add             $4, %[count]") \
+        __ASM_EMIT("jl              8f") \
+        __ASM_EMIT("vmovdqu         0x00(%[" SRC "], %[off]), %%xmm0")      /* xmm0 = s */ \
+        __ASM_EMIT("vpand           0x00(%[CVAL]), %%xmm0, %%xmm1")         /* xmm1 = abs(s) */ \
+        __ASM_EMIT("vpand           0xc0(%[CVAL]), %%xmm0, %%xmm2")         /* xmm2 = sign(s) */ \
+        __ASM_EMIT("vpcmpgtd        0x40(%[CVAL]), %%xmm1, %%xmm3")         /* xmm3 = abs(s) > X_MAX  */ \
+        __ASM_EMIT("vpcmpgtd        0x80(%[CVAL]), %%xmm1, %%xmm1")         /* xmm1 = abs(s) > X_MIN  */ \
+        __ASM_EMIT("vpandn          %%xmm1, %%xmm3, %%xmm1")                /* xmm1 = (abs(s) > X_MIN) & (abs(s) <= X_MAX) */ \
+        __ASM_EMIT("vblendvps       %%xmm1, %%xmm0, %%xmm2, %%xmm0")        /* xmm0 = ((abs(s) > X_MIN) & (abs(s) <= X_MAX))) ? s : sign(s) */ \
+        __ASM_EMIT("vmovdqu         %%xmm0, 0x00(%[" DST "], %[off])")      /* xmm0 = s */ \
+        __ASM_EMIT("add             $0x10, %[off]") \
+        __ASM_EMIT("sub             $4, %[count]") \
+        __ASM_EMIT("8:") \
+        /* 1x blocks */ \
+        __ASM_EMIT("add             $3, %[count]") \
+        __ASM_EMIT("jl              10f") \
+        __ASM_EMIT("9:") \
+        __ASM_EMIT("vmovd           0x00(%[" SRC "], %[off]), %%xmm0")      /* xmm0 = s */ \
+        __ASM_EMIT("vpand           0x00(%[CVAL]), %%xmm0, %%xmm1")         /* xmm1 = abs(s) */ \
+        __ASM_EMIT("vpand           0xc0(%[CVAL]), %%xmm0, %%xmm2")         /* xmm2 = sign(s) */ \
+        __ASM_EMIT("vpcmpgtd        0x40(%[CVAL]), %%xmm1, %%xmm3")         /* xmm3 = abs(s) > X_MAX  */ \
+        __ASM_EMIT("vpcmpgtd        0x80(%[CVAL]), %%xmm1, %%xmm1")         /* xmm1 = abs(s) > X_MIN  */ \
+        __ASM_EMIT("vpandn          %%xmm1, %%xmm3, %%xmm1")                /* xmm1 = (abs(s) > X_MIN) & (abs(s) <= X_MAX) */ \
+        __ASM_EMIT("vblendvps       %%xmm1, %%xmm0, %%xmm2, %%xmm0")        /* xmm0 = ((abs(s) > X_MIN) & (abs(s) <= X_MAX))) ? s : sign(s) */ \
+        __ASM_EMIT("vmovd           %%xmm0, 0x00(%[" DST "], %[off])")      /* xmm0 = s */ \
+        __ASM_EMIT("add             $0x04, %[off]") \
+        __ASM_EMIT("dec             %[count]") \
+        __ASM_EMIT("jge             9b") \
+        __ASM_EMIT("10:") \
+        /* end */
+
+        IF_ARCH_X86(
+            static uint32_t SANITIZE_CVAL[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC16(0x7fffffff),              // X_ABS
+                LSP_DSP_VEC16(0x7f7fffff),              // X_MAX
+                LSP_DSP_VEC16(0x007fffff),              // X_MIN
+                LSP_DSP_VEC16(0x80000000),              // X_SIGN
+            };
+        )
+
+        void sanitize1(float *dst, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+
+            ARCH_X86_ASM
+            (
+                SANITIZE_BODY("dst", "dst")
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst),
+                  [CVAL] "r" (SANITIZE_CVAL)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+                  "%k0", "%k1", "%k2", "%k3",
+                  "%k4", "%k5", "%k6", "%k7"
+            );
+        }
+
+        void sanitize2(float *dst, const float *src, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+
+            ARCH_X86_ASM
+            (
+                SANITIZE_BODY("dst", "src")
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [src] "r" (src),
+                  [CVAL] "r" (SANITIZE_CVAL)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+                  "%k0", "%k1", "%k2", "%k3",
+                "%k4", "%k5", "%k6", "%k7"
+            );
+        }
+
+    #undef SANITIZE_BODY
 
     } /* namespace avx512 */
 } /* namespace lsp */
