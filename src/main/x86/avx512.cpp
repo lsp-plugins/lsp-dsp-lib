@@ -71,6 +71,8 @@
                 CEXPORT1(vl, limit2);
                 CEXPORT1(vl, sanitize1);
                 CEXPORT1(vl, sanitize2);
+                CEXPORT1(vl, saturate);
+                CEXPORT1(vl, copy_saturated);
             }
         } /* namespace avx2 */
     } /* namespace lsp */
