@@ -108,8 +108,8 @@ To build source code archive with all possible dependencies, run:
 make distsrc
 ```
 
-Usage
-======
+## Usage
+
 
 Here's the code snippet of how the library can be initialized and used in C++:
 
