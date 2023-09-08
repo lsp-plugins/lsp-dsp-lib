@@ -42,6 +42,7 @@
 
     #define PRIVATE_DSP_ARCH_X86_AVX512_IMPL
         #include <private/dsp/arch/x86/avx512/copy.h>
+        #include <private/dsp/arch/x86/avx512/float.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX512_IMPL
 
     namespace lsp
@@ -65,6 +66,9 @@
 
                 CEXPORT1(vl, copy);
                 CEXPORT1(vl, move);
+
+                CEXPORT1(vl, limit1);
+                CEXPORT1(vl, limit2);
             }
         } /* namespace avx2 */
     } /* namespace lsp */
