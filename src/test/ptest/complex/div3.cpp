@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -45,6 +45,11 @@ namespace lsp
         {
             void complex_div3(float *dst_re, float *dst_im, const float *t_re, const float *t_im, const float *b_re, const float *b_im, size_t count);
             void complex_div3_fma3(float *dst_re, float *dst_im, const float *t_re, const float *t_im, const float *b_re, const float *b_im, size_t count);
+        }
+
+        namespace avx512
+        {
+            void complex_div3(float *dst_re, float *dst_im, const float *t_re, const float *t_im, const float *b_re, const float *b_im, size_t count);
         }
     )
 
@@ -108,6 +113,7 @@ PTEST_BEGIN("dsp.complex", div3, 5, 1000)
             IF_ARCH_X86(CALL(sse::complex_div3));
             IF_ARCH_X86(CALL(avx::complex_div3));
             IF_ARCH_X86(CALL(avx::complex_div3_fma3));
+            IF_ARCH_X86(CALL(avx512::complex_div3));
             IF_ARCH_ARM(CALL(neon_d32::complex_div3));
             IF_ARCH_AARCH64(CALL(asimd::complex_div3));
 

@@ -80,6 +80,9 @@
                 CEXPORT1(vl, complex_mul2);
                 CEXPORT1(vl, complex_mul3);
                 CEXPORT1(vl, complex_mod);
+                CEXPORT1(vl, complex_div2);
+                CEXPORT1(vl, complex_rdiv2);
+                CEXPORT1(vl, complex_div3);
             }
         } /* namespace avx2 */
     } /* namespace lsp */
