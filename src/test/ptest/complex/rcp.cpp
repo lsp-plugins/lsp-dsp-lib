@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -50,6 +50,12 @@ namespace lsp
 
             void complex_rcp1_fma3(float *dst_re, float *dst_im, size_t count);
             void complex_rcp2_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+        }
+
+        namespace avx512
+        {
+            void complex_rcp1(float *dst_re, float *dst_im, size_t count);
+            void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
         }
     )
 
@@ -133,6 +139,7 @@ PTEST_BEGIN("dsp.complex", rcp, 5, 1000)
             IF_ARCH_X86(CALL1(sse::complex_rcp1));
             IF_ARCH_X86(CALL1(avx::complex_rcp1));
             IF_ARCH_X86(CALL1(avx::complex_rcp1_fma3));
+            IF_ARCH_X86(CALL1(avx512::complex_rcp1));
             IF_ARCH_ARM(CALL1(neon_d32::complex_rcp1));
             IF_ARCH_AARCH64(CALL1(asimd::complex_rcp1));
             PTEST_SEPARATOR;
@@ -141,6 +148,7 @@ PTEST_BEGIN("dsp.complex", rcp, 5, 1000)
             IF_ARCH_X86(CALL2(sse::complex_rcp2));
             IF_ARCH_X86(CALL2(avx::complex_rcp2));
             IF_ARCH_X86(CALL2(avx::complex_rcp2_fma3));
+            IF_ARCH_X86(CALL2(avx512::complex_rcp2));
             IF_ARCH_ARM(CALL2(neon_d32::complex_rcp2));
             IF_ARCH_AARCH64(CALL2(asimd::complex_rcp2));
             PTEST_SEPARATOR2;

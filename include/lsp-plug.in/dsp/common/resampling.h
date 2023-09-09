@@ -24,28 +24,20 @@
 
 #include <lsp-plug.in/dsp/common/types.h>
 
-#ifdef __cplusplus
-namespace lsp
-{
-    namespace dsp
-    {
-#endif /* __cplusplus */
+LSP_DSP_LIB_BEGIN_NAMESPACE
 
-        /** Resampling/oversampling funtion type.
-         * Remember that destination buffer must be times greater and have additional gap (>=64 samples) at
-         * the tail to contain complete convolution tail after resampling.
-         * Consider using LSP_DSP_RESAMPLING_RSV_SAMPLES constant fo fullfill buffer requirements
-         *
-         * @param dst destination buffer
-         * @param src source buffer
-         * @param count number of samples to process
-         */
-        typedef void (* LSP_DSP_LIB_TYPE(resampling_function_t))(float *dst, const float *src, size_t count);
+/** Resampling/oversampling funtion type.
+ * Remember that destination buffer must be times greater and have additional gap (>=64 samples) at
+ * the tail to contain complete convolution tail after resampling.
+ * Consider using LSP_DSP_RESAMPLING_RSV_SAMPLES constant fo fullfill buffer requirements
+ *
+ * @param dst destination buffer
+ * @param src source buffer
+ * @param count number of samples to process
+ */
+typedef void (* LSP_DSP_LIB_TYPE(resampling_function_t))(float *dst, const float *src, size_t count);
 
-#ifdef __cplusplus
-    }
-}
-#endif /* __cplusplus */
+LSP_DSP_LIB_END_NAMESPACE
 
 /**
  * The number of additionally reserved samples at the tail of the buffer

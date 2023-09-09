@@ -45,6 +45,12 @@ namespace lsp
             void copy_saturated(float *dst, const float *src, size_t count);
             void saturate(float *dst, size_t count);
         }
+
+        namespace avx512
+        {
+            void copy_saturated(float *dst, const float *src, size_t count);
+            void saturate(float *dst, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -178,6 +184,8 @@ UTEST_BEGIN("dsp.float", saturation)
         IF_ARCH_X86(CALL(sse2::copy_saturated, 16));
         IF_ARCH_X86(CALL(avx2::saturate, 32));
         IF_ARCH_X86(CALL(avx2::copy_saturated, 32));
+        IF_ARCH_X86(CALL(avx512::saturate, 64));
+        IF_ARCH_X86(CALL(avx512::copy_saturated, 64));
 
         IF_ARCH_ARM(CALL(neon_d32::saturate, 16));
         IF_ARCH_ARM(CALL(neon_d32::copy_saturated, 16));

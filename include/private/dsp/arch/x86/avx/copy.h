@@ -327,6 +327,12 @@ namespace lsp
 
         void reverse2(float *dst, const float *src, size_t count)
         {
+            if (dst == src)
+            {
+                reverse1(dst, count);
+                return;
+            }
+
             ARCH_X86_ASM
             (
                 __ASM_EMIT("lea         (%[dst], %[count], 4), %[dst]")

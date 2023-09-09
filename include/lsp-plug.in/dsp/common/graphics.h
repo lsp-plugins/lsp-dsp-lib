@@ -24,42 +24,34 @@
 
 #include <lsp-plug.in/dsp/common/types.h>
 
-#ifdef __cplusplus
-namespace lsp
+LSP_DSP_LIB_BEGIN_NAMESPACE
+
+#pragma pack(push, 1)
+typedef struct LSP_DSP_LIB_TYPE(hsla_hue_eff_t)
 {
-    namespace dsp
-    {
-#endif /* __cplusplus */
+    float h, s, l, a;   // Hue, saturation, lightness, alpha
+    float thresh;       // alpha threshold
+} LSP_DSP_LIB_TYPE(hsla_hue_eff_t);
 
-    #pragma pack(push, 1)
-        typedef struct LSP_DSP_LIB_TYPE(hsla_hue_eff_t)
-        {
-            float h, s, l, a;   // Hue, saturation, lightness, alpha
-            float thresh;       // alpha threshold
-        } LSP_DSP_LIB_TYPE(hsla_hue_eff_t);
+typedef struct hsla_alpha_eff_t
+{
+    float h, s, l, a;   // Hue, saturation, lightness, alpha
+} LSP_DSP_LIB_TYPE(hsla_alpha_eff_t);
 
-        typedef struct hsla_alpha_eff_t
-        {
-            float h, s, l, a;   // Hue, saturation, lightness, alpha
-        } LSP_DSP_LIB_TYPE(hsla_alpha_eff_t);
+typedef struct LSP_DSP_LIB_TYPE(hsla_sat_eff_t)
+{
+    float h, s, l, a;   // Hue, saturation, lightness, alpha
+    float thresh;       // alpha threshold
+} LSP_DSP_LIB_TYPE(hsla_sat_eff_t);
 
-        typedef struct LSP_DSP_LIB_TYPE(hsla_sat_eff_t)
-        {
-            float h, s, l, a;   // Hue, saturation, lightness, alpha
-            float thresh;       // alpha threshold
-        } LSP_DSP_LIB_TYPE(hsla_sat_eff_t);
+typedef struct LSP_DSP_LIB_TYPE(hsla_light_eff_t)
+{
+    float h, s, l, a;   // Hue, saturation, lightness, alpha
+    float thresh;       // alpha threshold
+} LSP_DSP_LIB_TYPE(hsla_light_eff_t);
+#pragma pack(pop)
 
-        typedef struct LSP_DSP_LIB_TYPE(hsla_light_eff_t)
-        {
-            float h, s, l, a;   // Hue, saturation, lightness, alpha
-            float thresh;       // alpha threshold
-        } LSP_DSP_LIB_TYPE(hsla_light_eff_t);
-    #pragma pack(pop)
-
-#ifdef __cplusplus
-    }
-}
-#endif /* __cplusplus */
+LSP_DSP_LIB_END_NAMESPACE
 
 /** Do logarithmic vector apply for 1D-schema:
  *  x[i] = x[i] + norm_x * logf(absf(v[i]*zero))

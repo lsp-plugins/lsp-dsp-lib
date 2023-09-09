@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -33,17 +33,17 @@ namespace lsp
         float h_sum(const float *src, size_t count)
         {
             float result    = 0.0f;
-            while (count--)
-                result         += *(src++);
+            for (size_t i=0; i<count; ++i)
+                result         += src[i];
             return result;
         }
 
         float h_sqr_sum(const float *src, size_t count)
         {
             float result    = 0.0f;
-            while (count--)
+            for (size_t i=0; i<count; ++i)
             {
-                float tmp       = *(src++);
+                float tmp       = src[i];
                 result         += tmp * tmp;
             }
             return result;
@@ -52,17 +52,11 @@ namespace lsp
         float h_abs_sum(const float *src, size_t count)
         {
             float result    = 0.0f;
-            while (count--)
-            {
-                float tmp       = *(src++);
-                if (tmp < 0.0f)
-                    result         -= tmp;
-                else
-                    result         += tmp;
-            }
+            for (size_t i=0; i<count; ++i)
+                result         += fabsf(src[i]);
             return result;
         }
-    }
-}
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_HMATH_HSUM_H_ */

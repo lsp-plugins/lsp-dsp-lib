@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -77,6 +77,11 @@
         }
 
         namespace avx2
+        {
+            extern void dsp_init(const x86::cpu_features_t *f);
+        }
+
+        namespace avx512
         {
             extern void dsp_init(const x86::cpu_features_t *f);
         }
@@ -516,21 +521,34 @@
                     case FEAT_FAST_MOVS:
                         if (f->vendor == CPU_VENDOR_INTEL)
                         {
-                            if ((f->family == 0x6) && (f->model >= 0x5e)) // Should be some Core i3 microarchitecture...
+                            // Should be some Core i3 microarchitecture...
+                            if ((f->family == INTEL_FAMILY_686_CORE) && (f->model >= 0x5e))
                                 return true;
                         }
                         break;
+
                     case FEAT_FAST_AVX:
-                        if (f->vendor == CPU_VENDOR_INTEL) // Any Intel CPU is good enough with AVX
-                            return true;
-                        if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON))
-                            return (f->family >= AMD_FAMILY_ZEN_1_2); // Only starting with ZEN 1 architecture AMD's implementation of AVX is fast enough
-                        break;
                     case FEAT_FAST_FMA3:
                         if (f->vendor == CPU_VENDOR_INTEL) // Any Intel CPU is good enough with AVX
                             return true;
-                        if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON)) // Starting with ZEN 2 FMA3 operations are fast enough on AMD
-                            return (f->family >= AMD_FAMILY_ZEN_1_2) && (f->model >= AMD_MODEL_ZEN_2);
+                        // Only starting with ZEN 1 architecture AMD's implementation of AVX is fast enough
+                        if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON))
+                        {
+                            if (f->family < AMD_FAMILY_ZEN_1_2)
+                                return false;
+                            if (f->family == AMD_FAMILY_DHYANA)
+                                return false;
+                            return true;
+                        }
+                        break;
+
+                    case FEAT_BELOW_ZEN3: // Test that this is AMD and below Zen 3 architecture
+                        if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON))
+                        {
+                            if (f->family < AMD_FAMILY_ZEN_3_4)
+                                return true;
+                            return false;
+                        }
                         break;
                     default:
                         break;
@@ -571,6 +589,7 @@
                 sse4::dsp_init(f);
                 avx::dsp_init(f);
                 avx2::dsp_init(f);
+                avx512::dsp_init(f);
             }
 
             #undef EXPORT1

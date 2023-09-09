@@ -6,8 +6,8 @@ This library provides set of functions that perform SIMD-optimized
 computing on several hardware architectures.
 
 Currently supported set of SIMD extensions:
-  * i586 architecture (32-bit): SSE, SSE2, SSE3, AVX, AVX2 and FMA3;
-  * x86_64 architecture (64-bit): SSE, SSE2, SSE3, AVX, AVX2 and FMA3;
+  * i586 architecture (32-bit): SSE, SSE2, SSE3, AVX, AVX2, FMA3 and AVX512;
+  * x86_64 architecture (64-bit): SSE, SSE2, SSE3, AVX, AVX2, FMA3 and AVX512;
   * armv7 architecture (32-bit): NEON;
   * AArch64 architecture (64-bit): ASIMD.
 
@@ -32,8 +32,7 @@ Current set of functions provided:
   * Interpolation functions;
   * Some set of function to work with 3D mathematics.
 
-Supported platforms
-======
+## Supported platforms
 
 The build and correct unit test execution has been confirmed for following platforms:
 * FreeBSD
@@ -42,29 +41,26 @@ The build and correct unit test execution has been confirmed for following platf
 * Windows 32-bit
 * Windows 64-bit
 
-Supported architectures
-======
+## Supported architectures
 
 The support of following list of hardware architectures has been implemented:
-* i386 (32-bit) - full support.
-* x86_64 (64-bit) - full support.
+* i386 (32-bit) - full support (AVX-512 on the way).
+* x86_64 (64-bit) - full support (AVX-512 on the way).
 * ARMv6A - full support.
 * ARMv7A - full support.
-* AArch64 - most functions.
+* AArch64 - full support.
 
 For all other architectures the generic implementation of algorithms is used, without any
 architecture-specific optimizations. 
 
-Requirements
-======
+## Requirements
 
 The following packages need to be installed for building:
 
 * gcc >= 4.9
 * make >= 4.0
 
-Building
-======
+## Building
 
 To build the library, perform the following commands:
 
@@ -112,8 +108,8 @@ To build source code archive with all possible dependencies, run:
 make distsrc
 ```
 
-Usage
-======
+## Usage
+
 
 Here's the code snippet of how the library can be initialized and used in C++:
 
@@ -203,4 +199,6 @@ int main(int argc, const char **argv)
 
 ```
 
+## SAST Tools
 
+* [PVS-Studio](https://pvs-studio.com/en/pvs-studio/?utm_source=website&utm_medium=github&utm_campaign=open_source) - static analyzer for C, C++, C#, and Java code.

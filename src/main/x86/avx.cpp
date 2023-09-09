@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -127,8 +127,9 @@
 
                 // This routine sucks on AMD Bulldozer processor family but is pretty great on Intel
                 // Not tested on AMD Processors above Bulldozer family
-                bool favx   = feature_check(f, FEAT_FAST_AVX);
-                bool ffma   = favx && feature_check(f, FEAT_FAST_FMA3);
+                bool favx       = feature_check(f, FEAT_FAST_AVX);
+                bool ffma       = favx && feature_check(f, FEAT_FAST_FMA3);
+                bool below_zen3 = feature_check(f, FEAT_BELOW_ZEN3);
 
                 CEXPORT2_X64(favx, reverse1, reverse1);
                 CEXPORT2_X64(favx, reverse2, reverse2);
@@ -448,7 +449,10 @@
                     CEXPORT2(favx, pcomplex_rdiv2, pcomplex_rdiv2_fma3);
                     CEXPORT2(favx, pcomplex_div3, pcomplex_div3_fma3);
 
-                    CEXPORT2(favx, h_sqr_sum, h_sqr_sum_fma3);
+                    if (!below_zen3)
+                    {
+                        CEXPORT2(favx, h_sqr_sum, h_sqr_sum_fma3);
+                    }
 
                     CEXPORT2(favx, direct_fft, direct_fft_fma3);
                     CEXPORT2(favx, reverse_fft, reverse_fft_fma3);

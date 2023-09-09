@@ -89,7 +89,8 @@
             {
                 FEAT_FAST_MOVS,         // Processor implements optimized MOVS instruction
                 FEAT_FAST_AVX,          // Fast AVX implementation
-                FEAT_FAST_FMA3          // Fast FMA3 implementation
+                FEAT_FAST_FMA3,         // Fast FMA3 implementation
+                FEAT_BELOW_ZEN3         // CPU has AMD architecture and is below Zen3
             };
 
             /**
