@@ -83,6 +83,8 @@
                 CEXPORT1(vl, complex_div2);
                 CEXPORT1(vl, complex_rdiv2);
                 CEXPORT1(vl, complex_div3);
+                CEXPORT1(vl, complex_rcp1);
+                CEXPORT1(vl, complex_rcp2);
             }
         } /* namespace avx2 */
     } /* namespace lsp */

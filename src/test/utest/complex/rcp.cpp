@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -45,6 +45,12 @@ namespace lsp
 
             void complex_rcp1_fma3(float *dst_re, float *dst_im, size_t count);
             void complex_rcp2_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+        }
+
+        namespace avx512
+        {
+            void complex_rcp1(float *dst_re, float *dst_im, size_t count);
+            void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
         }
     )
 
@@ -165,6 +171,8 @@ UTEST_BEGIN("dsp.complex", rcp)
         IF_ARCH_X86(CALL(avx::complex_rcp2, 32));
         IF_ARCH_X86(CALL(avx::complex_rcp1_fma3, 32));
         IF_ARCH_X86(CALL(avx::complex_rcp2_fma3, 32));
+        IF_ARCH_X86(CALL(avx512::complex_rcp1, 64));
+        IF_ARCH_X86(CALL(avx512::complex_rcp2, 64));
 
         IF_ARCH_ARM(CALL(neon_d32::complex_rcp1, 16));
         IF_ARCH_ARM(CALL(neon_d32::complex_rcp2, 16));

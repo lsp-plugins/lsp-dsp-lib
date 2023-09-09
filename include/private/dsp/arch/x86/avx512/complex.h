@@ -689,6 +689,169 @@ namespace lsp
 
     #undef COMPLEX_DIV2_CORE
 
+    #define COMPLEX_RCP_CORE(DST, SRC, SEL) \
+        __ASM_EMIT  ("xor           %[off], %[off]") \
+        __ASM_EMIT  ("vmovaps       0x00 + %[CC], %%zmm6")                              /* zmm6 = 1 */ \
+        /* x32 blocks */ \
+        __ASM_EMIT32("subl          $32, %[count]") \
+        __ASM_EMIT64("sub           $32, %[count]") \
+        __ASM_EMIT  ("jb            2f") \
+        __ASM_EMIT  ("1:") \
+        __ASM_EMIT  ("vmovups       0x00(%[" SRC "_re], %[off]), %%zmm0")               /* zmm0 = ar */ \
+        __ASM_EMIT  ("vmovups       0x40(%[" SRC "_re], %[off]), %%zmm1") \
+        __ASM_EMIT  ("vmovups       0x00(%[" SRC "_im], %[off]), %%zmm2")               /* zmm2 = ai */ \
+        __ASM_EMIT  ("vmovups       0x40(%[" SRC "_im], %[off]), %%zmm3") \
+        __ASM_EMIT  ("vmulps        %%zmm0, %%zmm0, %%zmm4")                            /* zmm4 = ar*ar */ \
+        __ASM_EMIT  ("vmulps        %%zmm1, %%zmm1, %%zmm5") \
+        __ASM_EMIT  ("vfmadd231ps   %%zmm2, %%zmm2, %%zmm4")                            /* zmm4 = R = ar*ar+ai*ai */ \
+        __ASM_EMIT  ("vfmadd231ps   %%zmm3, %%zmm3, %%zmm5") \
+        __ASM_EMIT  ("vdivps        %%zmm4, %%zmm6, %%zmm4")                            /* zmm4 = 1/R */ \
+        __ASM_EMIT  ("vdivps        %%zmm5, %%zmm6, %%zmm5") \
+        __ASM_EMIT  ("vpxord        0x40 + %[CC], %%zmm2, %%zmm2")                      /* zmm2 = -ai */ \
+        __ASM_EMIT  ("vpxord        0x40 + %[CC], %%zmm3, %%zmm3") \
+        __ASM_EMIT  ("vmulps        %%zmm4, %%zmm0, %%zmm0")                            /* zmm0 = ar/R */ \
+        __ASM_EMIT  ("vmulps        %%zmm5, %%zmm1, %%zmm1") \
+        __ASM_EMIT  ("vmulps        %%zmm4, %%zmm2, %%zmm2")                            /* zmm1 = -ai/R */ \
+        __ASM_EMIT  ("vmulps        %%zmm5, %%zmm3, %%zmm3") \
+        __ASM_EMIT  ("vmovups       %%zmm0, 0x00(%[" DST "_re], %[off])") \
+        __ASM_EMIT  ("vmovups       %%zmm1, 0x40(%[" DST "_re], %[off])") \
+        __ASM_EMIT  ("vmovups       %%zmm2, 0x00(%[" DST "_im], %[off])") \
+        __ASM_EMIT  ("vmovups       %%zmm3, 0x40(%[" DST "_im], %[off])") \
+        __ASM_EMIT  ("add           $0x80, %[off]") \
+        __ASM_EMIT32("subl          $32, %[count]") \
+        __ASM_EMIT64("sub           $32, %[count]") \
+        __ASM_EMIT  ("jae           1b") \
+        __ASM_EMIT  ("2:") \
+        /* x16 blocks */ \
+        __ASM_EMIT32("addl          $16, %[count]") \
+        __ASM_EMIT64("add           $16, %[count]") \
+        __ASM_EMIT  ("jl            4f") \
+        __ASM_EMIT  ("vmovups       0x00(%[" SRC "_re], %[off]), %%ymm0")               /* ymm0 = ar */ \
+        __ASM_EMIT  ("vmovups       0x20(%[" SRC "_re], %[off]), %%ymm1") \
+        __ASM_EMIT  ("vmovups       0x00(%[" SRC "_im], %[off]), %%ymm2")               /* ymm2 = ai */ \
+        __ASM_EMIT  ("vmovups       0x20(%[" SRC "_im], %[off]), %%ymm3") \
+        __ASM_EMIT  ("vmulps        %%ymm0, %%ymm0, %%ymm4")                            /* ymm4 = ar*ar */ \
+        __ASM_EMIT  ("vmulps        %%ymm1, %%ymm1, %%ymm5") \
+        __ASM_EMIT  ("vfmadd231ps   %%ymm2, %%ymm2, %%ymm4")                            /* ymm4 = R = ar*ar+ai*ai */ \
+        __ASM_EMIT  ("vfmadd231ps   %%ymm3, %%ymm3, %%ymm5") \
+        __ASM_EMIT  ("vdivps        %%ymm4, %%ymm6, %%ymm4")                            /* ymm4 = 1/R */ \
+        __ASM_EMIT  ("vdivps        %%ymm5, %%ymm6, %%ymm5") \
+        __ASM_EMIT  ("vpxord        0x40 + %[CC], %%ymm2, %%ymm2")                      /* ymm2 = -ai */ \
+        __ASM_EMIT  ("vpxord        0x40 + %[CC], %%ymm3, %%ymm3") \
+        __ASM_EMIT  ("vmulps        %%ymm4, %%ymm0, %%ymm0")                            /* ymm0 = ar/R */ \
+        __ASM_EMIT  ("vmulps        %%ymm5, %%ymm1, %%ymm1") \
+        __ASM_EMIT  ("vmulps        %%ymm4, %%ymm2, %%ymm2")                            /* ymm1 = -ai/R */ \
+        __ASM_EMIT  ("vmulps        %%ymm5, %%ymm3, %%ymm3") \
+        __ASM_EMIT  ("vmovups       %%ymm0, 0x00(%[" DST "_re], %[off])") \
+        __ASM_EMIT  ("vmovups       %%ymm1, 0x20(%[" DST "_re], %[off])") \
+        __ASM_EMIT  ("vmovups       %%ymm2, 0x00(%[" DST "_im], %[off])") \
+        __ASM_EMIT  ("vmovups       %%ymm3, 0x20(%[" DST "_im], %[off])") \
+        __ASM_EMIT  ("add           $0x40, %[off]") \
+        __ASM_EMIT32("subl          $16, %[count]") \
+        __ASM_EMIT64("sub           $16, %[count]") \
+        __ASM_EMIT  ("jae           1b") \
+        __ASM_EMIT  ("4:") \
+        /* 8x block */ \
+        __ASM_EMIT32("addl          $8, %[count]") \
+        __ASM_EMIT64("add           $8, %[count]") \
+        __ASM_EMIT  ("jl            6f") \
+        __ASM_EMIT  ("vmovups       0x00(%[" SRC "_re], %[off]), %%xmm0")               /* xmm0 = ar */ \
+        __ASM_EMIT  ("vmovups       0x10(%[" SRC "_re], %[off]), %%xmm1") \
+        __ASM_EMIT  ("vmovups       0x00(%[" SRC "_im], %[off]), %%xmm2")               /* xmm2 = ai */ \
+        __ASM_EMIT  ("vmovups       0x10(%[" SRC "_im], %[off]), %%xmm3") \
+        __ASM_EMIT  ("vmulps        %%xmm0, %%xmm0, %%xmm4")                            /* xmm4 = ar*ar */ \
+        __ASM_EMIT  ("vmulps        %%xmm1, %%xmm1, %%xmm5") \
+        __ASM_EMIT  ("vfmadd231ps   %%xmm2, %%xmm2, %%xmm4")                            /* xmm4 = R = ar*ar+ai*ai */ \
+        __ASM_EMIT  ("vfmadd231ps   %%xmm3, %%xmm3, %%xmm5") \
+        __ASM_EMIT  ("vdivps        %%xmm4, %%xmm6, %%xmm4")                            /* xmm4 = 1/R */ \
+        __ASM_EMIT  ("vdivps        %%xmm5, %%xmm6, %%xmm5") \
+        __ASM_EMIT  ("vpxord        0x40 + %[CC], %%xmm2, %%xmm2")                      /* xmm2 = -ai */ \
+        __ASM_EMIT  ("vpxord        0x40 + %[CC], %%xmm3, %%xmm3") \
+        __ASM_EMIT  ("vmulps        %%xmm4, %%xmm0, %%xmm0")                            /* xmm0 = ar/R */ \
+        __ASM_EMIT  ("vmulps        %%xmm5, %%xmm1, %%xmm1") \
+        __ASM_EMIT  ("vmulps        %%xmm4, %%xmm2, %%xmm2")                            /* xmm1 = -ai/R */ \
+        __ASM_EMIT  ("vmulps        %%xmm5, %%xmm3, %%xmm3") \
+        __ASM_EMIT  ("vmovups       %%xmm0, 0x00(%[" DST "_re], %[off])") \
+        __ASM_EMIT  ("vmovups       %%xmm1, 0x10(%[" DST "_re], %[off])") \
+        __ASM_EMIT  ("vmovups       %%xmm2, 0x00(%[" DST "_im], %[off])") \
+        __ASM_EMIT  ("vmovups       %%xmm3, 0x10(%[" DST "_im], %[off])") \
+        __ASM_EMIT32("subl          $8, %[count]") \
+        __ASM_EMIT64("sub           $8, %[count]") \
+        __ASM_EMIT  ("add           $0x20, %[off]") \
+        __ASM_EMIT  ("6:") \
+        /* 4x block */ \
+        __ASM_EMIT32("addl          $4, %[count]") \
+        __ASM_EMIT64("add           $4, %[count]") \
+        __ASM_EMIT  ("jl            8f") \
+        __ASM_EMIT  ("vmovups       0x00(%[" SRC "_re], %[off]), %%xmm0")               /* xmm0 = ar */ \
+        __ASM_EMIT  ("vmovups       0x00(%[" SRC "_im], %[off]), %%xmm2")               /* xmm2 = ai */ \
+        __ASM_EMIT  ("vmulps        %%xmm0, %%xmm0, %%xmm4")                            /* xmm4 = ar*ar */ \
+        __ASM_EMIT  ("vfmadd231ps   %%xmm2, %%xmm2, %%xmm4")                            /* xmm4 = R = ar*ar+ai*ai */ \
+        __ASM_EMIT  ("vdivps        %%xmm4, %%xmm6, %%xmm4")                            /* xmm4 = 1/R */ \
+        __ASM_EMIT  ("vpxord        0x40 + %[CC], %%xmm2, %%xmm2")                      /* xmm2 = -ai */ \
+        __ASM_EMIT  ("vmulps        %%xmm4, %%xmm0, %%xmm0")                            /* xmm0 = ar/R */ \
+        __ASM_EMIT  ("vmulps        %%xmm4, %%xmm2, %%xmm2")                            /* xmm1 = -ai/R */ \
+        __ASM_EMIT  ("vmovups       %%xmm0, 0x00(%[" DST "_re], %[off])") \
+        __ASM_EMIT  ("vmovups       %%xmm2, 0x00(%[" DST "_im], %[off])") \
+        __ASM_EMIT32("subl          $4, %[count]") \
+        __ASM_EMIT64("sub           $4, %[count]") \
+        __ASM_EMIT  ("add           $0x10, %[off]") \
+        __ASM_EMIT  ("8:") \
+        /* 1x blocks */ \
+        __ASM_EMIT32("addl          $3, %[count]") \
+        __ASM_EMIT64("add           $3, %[count]") \
+        __ASM_EMIT  ("jl            10f") \
+        __ASM_EMIT  ("9:") \
+        __ASM_EMIT  ("vmovss        0x00(%[" SRC "_re], %[off]), %%xmm0")               /* xmm0 = ar */ \
+        __ASM_EMIT  ("vmovss        0x00(%[" SRC "_im], %[off]), %%xmm2")               /* xmm2 = ai */ \
+        __ASM_EMIT  ("vmulss        %%xmm0, %%xmm0, %%xmm4")                            /* xmm4 = ar*ar */ \
+        __ASM_EMIT  ("vfmadd231ss   %%xmm2, %%xmm2, %%xmm4")                            /* xmm4 = R = ar*ar+ai*ai */ \
+        __ASM_EMIT  ("vdivss        %%xmm4, %%xmm6, %%xmm4")                            /* xmm4 = 1/R */ \
+        __ASM_EMIT  ("vpxord        0x40 + %[CC], %%xmm2, %%xmm2")                      /* xmm2 = -ai */ \
+        __ASM_EMIT  ("vmulss        %%xmm4, %%xmm0, %%xmm0")                            /* xmm0 = ar/R */ \
+        __ASM_EMIT  ("vmulss        %%xmm4, %%xmm2, %%xmm2")                            /* xmm1 = -ai/R */ \
+        __ASM_EMIT  ("vmovss        %%xmm0, 0x00(%[" DST "_re], %[off])") \
+        __ASM_EMIT  ("vmovss        %%xmm2, 0x00(%[" DST "_im], %[off])") \
+        __ASM_EMIT  ("add           $0x04, %[off]") \
+        __ASM_EMIT32("decl          %[count]") \
+        __ASM_EMIT64("dec           %[count]") \
+        __ASM_EMIT  ("jge           9b") \
+        __ASM_EMIT  ("10:")
+
+        void complex_rcp1(float *dst_re, float *dst_im, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                COMPLEX_RCP_CORE("dst", "dst", FMA_OFF)
+                : [count] "+r" (count), [off] "=&r" (off)
+                : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
+                  [CC] "o" (complex_div_const)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
+        void complex_rcp2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                COMPLEX_RCP_CORE("dst", "src", FMA_OFF)
+                : [count] X86_PGREG (count),
+                  [off] "=&r" (off)
+                : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
+                  [src_re] "r" (src_re), [src_im] "r" (src_im),
+                  [CC] "o" (complex_div_const)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
+    #undef COMPLEX_RCP_CORE
+
 
     } /* namespace avx512 */
 } /* namespace lsp */
