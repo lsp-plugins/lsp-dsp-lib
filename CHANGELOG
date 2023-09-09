@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.16 ===
-
+* Fixed improper AVX-512 detection which causes crash for several functions.
 
 === 1.0.15 ===
 * Several functions optimized for AVX-512 support.

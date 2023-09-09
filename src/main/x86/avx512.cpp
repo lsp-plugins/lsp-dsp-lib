@@ -55,16 +55,19 @@
 
             #define CEXPORT2(cond, function, export)    \
             { \
-                TEST_EXPORT(avx512::export); \
                 if (cond) \
+                { \
+                    TEST_EXPORT(avx512::export); \
                     dsp::function = avx512::export; \
+                } \
             }
 
             #define CEXPORT1(cond, export) CEXPORT2(cond, export, export)
 
             void dsp_init(const cpu_features_t *f)
             {
-                const bool vl = (f->features & (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL)) != (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL);
+                const bool vl = (f->features & (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL)) ==
+                                (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL);
 
                 CEXPORT1(vl, copy);
                 CEXPORT1(vl, move);
