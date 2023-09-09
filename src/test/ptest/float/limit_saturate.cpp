@@ -49,6 +49,12 @@ namespace lsp
             void limit_saturate1(float *dst, size_t count);
             void limit_saturate2(float *dst, const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            void limit_saturate1(float *dst, size_t count);
+            void limit_saturate2(float *dst, const float *src, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -135,6 +141,7 @@ PTEST_BEGIN("dsp.float", limit_saturate, 5, 10000)
             CALL(generic::limit_saturate1);
             IF_ARCH_X86(CALL(sse2::limit_saturate1));
             IF_ARCH_X86(CALL(avx2::limit_saturate1));
+            IF_ARCH_X86(CALL(avx512::limit_saturate1));
             IF_ARCH_ARM(CALL(neon_d32::limit_saturate1));
             IF_ARCH_AARCH64(CALL(asimd::limit_saturate1));
             PTEST_SEPARATOR;
@@ -142,6 +149,7 @@ PTEST_BEGIN("dsp.float", limit_saturate, 5, 10000)
             CALL(generic::limit_saturate2);
             IF_ARCH_X86(CALL(sse2::limit_saturate2));
             IF_ARCH_X86(CALL(avx2::limit_saturate2));
+            IF_ARCH_X86(CALL(avx512::limit_saturate2));
             IF_ARCH_ARM(CALL(neon_d32::limit_saturate2));
             IF_ARCH_AARCH64(CALL(asimd::limit_saturate2));
             PTEST_SEPARATOR2;

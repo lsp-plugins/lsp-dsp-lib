@@ -51,6 +51,12 @@ namespace lsp
             void sanitize1(float *dst, size_t count);
             void sanitize2(float *dst, const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            void sanitize1(float *dst, size_t count);
+            void sanitize2(float *dst, const float *src, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -215,6 +221,9 @@ UTEST_BEGIN("dsp.float", sanitize)
 
         IF_ARCH_X86(CALL(avx2::sanitize1, 32));
         IF_ARCH_X86(CALL(avx2::sanitize2, 32));
+
+        IF_ARCH_X86(CALL(avx512::sanitize1, 64));
+        IF_ARCH_X86(CALL(avx512::sanitize2, 64));
 
         IF_ARCH_ARM(CALL(neon_d32::sanitize1, 16));
         IF_ARCH_ARM(CALL(neon_d32::sanitize2, 16));

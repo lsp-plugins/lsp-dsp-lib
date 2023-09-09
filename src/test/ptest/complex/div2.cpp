@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -50,6 +50,12 @@ namespace lsp
 
             void complex_div2_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
             void complex_rdiv2_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+        }
+
+        namespace avx512
+        {
+            void complex_div2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
+            void complex_rdiv2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count);
         }
     )
 
@@ -119,6 +125,8 @@ PTEST_BEGIN("dsp.complex", div2, 5, 1000)
             IF_ARCH_X86(CALL(avx::complex_rdiv2));
             IF_ARCH_X86(CALL(avx::complex_div2_fma3));
             IF_ARCH_X86(CALL(avx::complex_rdiv2_fma3));
+            IF_ARCH_X86(CALL(avx512::complex_div2));
+            IF_ARCH_X86(CALL(avx512::complex_rdiv2));
 
             IF_ARCH_ARM(CALL(neon_d32::complex_div2));
             IF_ARCH_ARM(CALL(neon_d32::complex_rdiv2));

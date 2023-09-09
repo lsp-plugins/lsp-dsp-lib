@@ -6,8 +6,8 @@ This library provides set of functions that perform SIMD-optimized
 computing on several hardware architectures.
 
 Currently supported set of SIMD extensions:
-  * i586 architecture (32-bit): SSE, SSE2, SSE3, AVX, AVX2 and FMA3;
-  * x86_64 architecture (64-bit): SSE, SSE2, SSE3, AVX, AVX2 and FMA3;
+  * i586 architecture (32-bit): SSE, SSE2, SSE3, AVX, AVX2, FMA3 and AVX512;
+  * x86_64 architecture (64-bit): SSE, SSE2, SSE3, AVX, AVX2, FMA3 and AVX512;
   * armv7 architecture (32-bit): NEON;
   * AArch64 architecture (64-bit): ASIMD.
 
@@ -44,11 +44,11 @@ The build and correct unit test execution has been confirmed for following platf
 ## Supported architectures
 
 The support of following list of hardware architectures has been implemented:
-* i386 (32-bit) - full support.
-* x86_64 (64-bit) - full support.
+* i386 (32-bit) - full support (AVX-512 on the way).
+* x86_64 (64-bit) - full support (AVX-512 on the way).
 * ARMv6A - full support.
 * ARMv7A - full support.
-* AArch64 - most functions.
+* AArch64 - full support.
 
 For all other architectures the generic implementation of algorithms is used, without any
 architecture-specific optimizations. 

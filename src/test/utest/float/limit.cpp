@@ -44,6 +44,12 @@ namespace lsp
             void limit1(float *dst, float min, float max, size_t count);
             void limit2(float *dst, const float *src, float min, float max, size_t count);
         }
+
+        namespace avx512
+        {
+            void limit1(float *dst, float min, float max, size_t count);
+            void limit2(float *dst, const float *src, float min, float max, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -191,6 +197,9 @@ UTEST_BEGIN("dsp.float", limit)
 
         IF_ARCH_X86(CALL(avx::limit1, 32));
         IF_ARCH_X86(CALL(avx::limit2, 32));
+
+        IF_ARCH_X86(CALL(avx512::limit1, 64));
+        IF_ARCH_X86(CALL(avx512::limit2, 64));
 
         IF_ARCH_ARM(CALL(neon_d32::limit1, 16));
         IF_ARCH_ARM(CALL(neon_d32::limit2, 16));

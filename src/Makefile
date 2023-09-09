@@ -84,6 +84,7 @@ CXX_OBJ_SSE3            = $(ARTIFACT_BIN)/main/x86/sse3.o
 CXX_OBJ_SSE4            = $(ARTIFACT_BIN)/main/x86/sse4.o
 CXX_OBJ_AVX             = $(ARTIFACT_BIN)/main/x86/avx.o
 CXX_OBJ_AVX2            = $(ARTIFACT_BIN)/main/x86/avx2.o
+CXX_OBJ_AVX512          = $(ARTIFACT_BIN)/main/x86/avx512.o
 CXX_OBJ_ARM             = $(ARTIFACT_BIN)/main/arm/arm.o
 CXX_OBJ_NEON_D32        = $(ARTIFACT_BIN)/main/arm/neon-d32.o
 CXX_OBJ_AARCH64         = $(ARTIFACT_BIN)/main/aarch64/aarch64.o
@@ -97,9 +98,9 @@ CXX_OBJ_ALL             = \
   $(CXX_OBJ_NOTEST)
 
 ifeq ($(ARCHITECTURE_FAMILY),ia32)
-  CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2)
+  CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2) $(CXX_OBJ_AVX512)
 else ifeq ($(ARCHITECTURE_FAMILY),x86_64)
-  CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2)
+  CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2) $(CXX_OBJ_AVX512)
 else ifeq ($(ARCHITECTURE_FAMILY),arm32)
   CXX_OBJ_EXT            += $(CXX_OBJ_ARM) $(CXX_OBJ_NEON_D32)
 else ifeq ($(ARCHITECTURE_FAMILY),aarch64)
@@ -119,6 +120,7 @@ CXX_SSE3_CFLAGS         = $(CXX_SSE2_CFLAGS) -msse3 -mssse3
 CXX_SSE4_CFLAGS         = $(CXX_SSE3_CFLAGS) -msse4 -msse4a -msse4.1 -msse4.2
 CXX_AVX_CFLAGS          = -mavx -mvzeroupper
 CXX_AVX2_CFLAGS         = $(CXX_AVX_CFLAGS) -mavx2
+CXX_AVX512_CFLAGS       = -mavx512f -mavx512vl
 CXX_NEON_D32_CFLAGS     = -mfpu=neon-vfpv4
 CXX_ASIMD_CFLAGS      	= -march=armv8-a+simd
 
@@ -216,6 +218,7 @@ $(CXX_OBJ_SSE3):       EXT_FLAGS=$(CXX_SSE3_CFLAGS)
 $(CXX_OBJ_SSE4):       EXT_FLAGS=$(CXX_SSE4_CFLAGS)
 $(CXX_OBJ_AVX):        EXT_FLAGS=$(CXX_AVX_CFLAGS)
 $(CXX_OBJ_AVX2):       EXT_FLAGS=$(CXX_AVX2_CFLAGS)
+$(CXX_OBJ_AVX512):     EXT_FLAGS=$(CXX_AVX512_CFLAGS)
 $(CXX_OBJ_NEON_D32):   EXT_FLAGS=$(CXX_NEON_D32_CFLAGS)
 $(CXX_OBJ_ASIMD):      EXT_FLAGS=$(CXX_ASIMD_CFLAGS)
 
