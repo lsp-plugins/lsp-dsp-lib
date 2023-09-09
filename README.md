@@ -46,11 +46,11 @@ Supported architectures
 ======
 
 The support of following list of hardware architectures has been implemented:
-* i386 (32-bit) - full support.
-* x86_64 (64-bit) - full support.
+* i386 (32-bit) - full support (AVX-512 on the way).
+* x86_64 (64-bit) - full support (AVX-512 on the way).
 * ARMv6A - full support.
 * ARMv7A - full support.
-* AArch64 - most functions.
+* AArch64 - full support.
 
 For all other architectures the generic implementation of algorithms is used, without any
 architecture-specific optimizations. 
