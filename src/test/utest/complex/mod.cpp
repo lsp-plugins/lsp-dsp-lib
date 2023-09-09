@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -40,6 +40,11 @@ namespace lsp
         {
             void complex_mod(float *dst_mod, const float *src_re, const float *src_im, size_t count);
             void complex_mod_fma3(float *dst_mod, const float *src_re, const float *src_im, size_t count);
+        }
+
+        namespace avx512
+        {
+            void complex_mod(float *dst_mod, const float *src_re, const float *src_im, size_t count);
         }
     )
 
@@ -108,8 +113,9 @@ UTEST_BEGIN("dsp.complex", mod)
             call(#func, align, func)
 
         IF_ARCH_X86(CALL(sse::complex_mod, 16));
-        IF_ARCH_X86(CALL(avx::complex_mod, 16));
-        IF_ARCH_X86(CALL(avx::complex_mod_fma3, 16));
+        IF_ARCH_X86(CALL(avx::complex_mod, 32));
+        IF_ARCH_X86(CALL(avx::complex_mod_fma3, 32));
+        IF_ARCH_X86(CALL(avx512::complex_mod, 64));
         IF_ARCH_ARM(CALL(neon_d32::complex_mod, 16));
         IF_ARCH_AARCH64(CALL(asimd::complex_mod, 16));
     }
