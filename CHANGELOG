@@ -8,6 +8,7 @@
 * Fixed syntax error in C interface, covered with tests.
 * Bugfix in horizontal summing functions (invalid register clobber list).
 * Some AMD-related optimizations.
+* Updated module versions in dependencies.
 
 === 1.0.14 ===
 * Implemented pcomplex_r2c instruction set.
