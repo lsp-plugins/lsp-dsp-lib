@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.17 ===
+
+
 === 1.0.16 ===
 * Fixed improper AVX-512 detection which causes crash for several functions.
 
