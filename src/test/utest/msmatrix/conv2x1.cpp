@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -46,6 +46,14 @@ namespace lsp
         }
 
         namespace avx
+        {
+            void    lr_to_mid(float *m, const float *l, const float *r, size_t count);
+            void    lr_to_side(float *s, const float *l, const float *r, size_t count);
+            void    ms_to_left(float *l, const float *m, const float *s, size_t count);
+            void    ms_to_right(float *r, const float *m, const float *s, size_t count);
+        }
+
+        namespace avx512
         {
             void    lr_to_mid(float *m, const float *l, const float *r, size_t count);
             void    lr_to_side(float *s, const float *l, const float *r, size_t count);
@@ -138,6 +146,11 @@ UTEST_BEGIN("dsp.msmatrix", conv2x1)
         IF_ARCH_X86(CALL(generic::lr_to_side, avx::lr_to_side, 32));
         IF_ARCH_X86(CALL(generic::ms_to_left, avx::ms_to_left, 32));
         IF_ARCH_X86(CALL(generic::ms_to_right, avx::ms_to_right, 32));
+
+        IF_ARCH_X86(CALL(generic::lr_to_mid, avx512::lr_to_mid, 64));
+        IF_ARCH_X86(CALL(generic::lr_to_side, avx512::lr_to_side, 64));
+        IF_ARCH_X86(CALL(generic::ms_to_left, avx512::ms_to_left, 64));
+        IF_ARCH_X86(CALL(generic::ms_to_right, avx512::ms_to_right, 64));
 
         IF_ARCH_ARM(CALL(generic::lr_to_mid, neon_d32::lr_to_mid, 16));
         IF_ARCH_ARM(CALL(generic::lr_to_side, neon_d32::lr_to_side, 16));
