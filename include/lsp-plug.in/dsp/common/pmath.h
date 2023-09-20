@@ -35,5 +35,7 @@
 #include <lsp-plug.in/dsp/common/pmath/op_kx.h>
 #include <lsp-plug.in/dsp/common/pmath/op_vv.h>
 #include <lsp-plug.in/dsp/common/pmath/pow.h>
+#include <lsp-plug.in/dsp/common/pmath/sqr.h>
+#include <lsp-plug.in/dsp/common/pmath/sqrt.h>
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_PMATH_H_ */

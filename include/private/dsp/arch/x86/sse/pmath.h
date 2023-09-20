@@ -19,8 +19,8 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_PRIVATE_DSP_ARCH_X86_SSE_PMATH_H_
-#define INCLUDE_PRIVATE_DSP_ARCH_X86_SSE_PMATH_H_
+#ifndef PRIVATE_DSP_ARCH_X86_SSE_PMATH_H_
+#define PRIVATE_DSP_ARCH_X86_SSE_PMATH_H_
 
 #ifndef PRIVATE_DSP_ARCH_X86_SSE_IMPL
     #error "This header should not be included directly"
@@ -34,5 +34,7 @@
 #include <private/dsp/arch/x86/sse/pmath/normalize.h>
 #include <private/dsp/arch/x86/sse/pmath/op_kx.h>
 #include <private/dsp/arch/x86/sse/pmath/op_vv.h>
+#include <private/dsp/arch/x86/sse/pmath/sqr.h>
+#include <private/dsp/arch/x86/sse/pmath/ssqrt.h>
 
-#endif /* INCLUDE_PRIVATE_DSP_ARCH_X86_SSE_PMATH_H_ */
+#endif /* PRIVATE_DSP_ARCH_X86_SSE_PMATH_H_ */

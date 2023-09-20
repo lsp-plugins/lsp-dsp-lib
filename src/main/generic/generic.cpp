@@ -152,6 +152,11 @@ namespace lsp
             EXPORT1(powvx1);
             EXPORT1(powvx2);
 
+            EXPORT1(sqr1);
+            EXPORT1(sqr2);
+            EXPORT1(ssqrt1);
+            EXPORT1(ssqrt2);
+
             EXPORT1(lramp_set1);
             EXPORT1(lramp1);
             EXPORT1(lramp2);

@@ -225,6 +225,11 @@
                 CEXPORT1(favx, fmmod4);
                 CEXPORT1(favx, fmrmod4);
 
+                CEXPORT1(favx, sqr1);
+                CEXPORT1(favx, sqr2);
+                CEXPORT1(favx, ssqrt1);
+                CEXPORT1(favx, ssqrt2);
+
                 CEXPORT1(favx, lramp_set1);
                 CEXPORT1(favx, lramp1);
                 CEXPORT1(favx, lramp2);
