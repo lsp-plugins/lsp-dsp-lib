@@ -34,28 +34,18 @@ namespace lsp
         __ASM_EMIT("xor         %[off], %[off]") \
         /* 32x blocks */ \
         __ASM_EMIT("sub         $32, %[count]") \
-        __ASM_EMIT("jb          2f") \
-        __ASM_EMIT("1:") \
-        __ASM_EMIT("vmovups     0x00(%[" SRC "], %[off]), %%ymm0") \
-        __ASM_EMIT("vmovups     0x20(%[" SRC "], %[off]), %%ymm1") \
-        __ASM_EMIT("vmovups     0x40(%[" SRC "], %[off]), %%ymm2") \
-        __ASM_EMIT("vmovups     0x60(%[" SRC "], %[off]), %%ymm3") \
-        __ASM_EMIT("vxorps      %%ymm4, %%ymm4, %%ymm4") \
-        __ASM_EMIT("vxorps      %%ymm5, %%ymm5, %%ymm5") \
         __ASM_EMIT("vxorps      %%ymm6, %%ymm6, %%ymm6") \
         __ASM_EMIT("vxorps      %%ymm7, %%ymm7, %%ymm7") \
-        __ASM_EMIT("vcmpps      $2, %%ymm0, %%ymm4, %%ymm4") \
-        __ASM_EMIT("vcmpps      $2, %%ymm1, %%ymm5, %%ymm5") \
-        __ASM_EMIT("vcmpps      $2, %%ymm2, %%ymm6, %%ymm6") \
-        __ASM_EMIT("vcmpps      $2, %%ymm3, %%ymm7, %%ymm7") \
+        __ASM_EMIT("jb          2f") \
+        __ASM_EMIT("1:") \
+        __ASM_EMIT("vmaxps      0x00(%[" SRC "], %[off]), %%ymm6, %%ymm0") \
+        __ASM_EMIT("vmaxps      0x20(%[" SRC "], %[off]), %%ymm7, %%ymm1") \
+        __ASM_EMIT("vmaxps      0x40(%[" SRC "], %[off]), %%ymm6, %%ymm2") \
+        __ASM_EMIT("vmaxps      0x60(%[" SRC "], %[off]), %%ymm7, %%ymm3") \
         __ASM_EMIT("vsqrtps     %%ymm0, %%ymm0") \
         __ASM_EMIT("vsqrtps     %%ymm1, %%ymm1") \
         __ASM_EMIT("vsqrtps     %%ymm2, %%ymm2") \
         __ASM_EMIT("vsqrtps     %%ymm3, %%ymm3") \
-        __ASM_EMIT("vandps      %%ymm4, %%ymm0, %%ymm0") \
-        __ASM_EMIT("vandps      %%ymm5, %%ymm1, %%ymm1") \
-        __ASM_EMIT("vandps      %%ymm6, %%ymm2, %%ymm2") \
-        __ASM_EMIT("vandps      %%ymm7, %%ymm3, %%ymm3") \
         __ASM_EMIT("vmovups     %%ymm0, 0x00(%[" DST "], %[off])") \
         __ASM_EMIT("vmovups     %%ymm1, 0x20(%[" DST "], %[off])") \
         __ASM_EMIT("vmovups     %%ymm2, 0x40(%[" DST "], %[off])") \
@@ -67,16 +57,10 @@ namespace lsp
         /* 16x block */ \
         __ASM_EMIT("add         $16, %[count]") \
         __ASM_EMIT("jl          4f") \
-        __ASM_EMIT("vmovups     0x00(%[" SRC "], %[off]), %%ymm0") \
-        __ASM_EMIT("vmovups     0x20(%[" SRC "], %[off]), %%ymm1") \
-        __ASM_EMIT("vxorps      %%ymm4, %%ymm4, %%ymm4") \
-        __ASM_EMIT("vxorps      %%ymm5, %%ymm5, %%ymm5") \
-        __ASM_EMIT("vcmpps      $2, %%ymm0, %%ymm4, %%ymm4") \
-        __ASM_EMIT("vcmpps      $2, %%ymm1, %%ymm5, %%ymm5") \
+        __ASM_EMIT("vmaxps      0x00(%[" SRC "], %[off]), %%ymm6, %%ymm0") \
+        __ASM_EMIT("vmaxps      0x20(%[" SRC "], %[off]), %%ymm7, %%ymm1") \
         __ASM_EMIT("vsqrtps     %%ymm0, %%ymm0") \
         __ASM_EMIT("vsqrtps     %%ymm1, %%ymm1") \
-        __ASM_EMIT("vandps      %%ymm4, %%ymm0, %%ymm0") \
-        __ASM_EMIT("vandps      %%ymm5, %%ymm1, %%ymm1") \
         __ASM_EMIT("vmovups     %%ymm0, 0x00(%[" DST "], %[off])") \
         __ASM_EMIT("vmovups     %%ymm1, 0x20(%[" DST "], %[off])") \
         __ASM_EMIT("add         $0x40, %[off]") \
@@ -86,16 +70,12 @@ namespace lsp
         /* 8x block */ \
         __ASM_EMIT("add         $8, %[count]") \
         __ASM_EMIT("jl          6f") \
-        __ASM_EMIT("vmovups     0x00(%[" SRC "], %[off]), %%xmm0") \
-        __ASM_EMIT("vmovups     0x10(%[" SRC "], %[off]), %%xmm1") \
-        __ASM_EMIT("vxorps      %%xmm4, %%xmm4, %%xmm4") \
-        __ASM_EMIT("vxorps      %%xmm5, %%xmm5, %%xmm5") \
+        __ASM_EMIT("vmaxps      0x00(%[" SRC "], %[off]), %%xmm6, %%xmm0") \
+        __ASM_EMIT("vmaxps      0x10(%[" SRC "], %[off]), %%xmm7, %%xmm1") \
         __ASM_EMIT("vcmpps      $2, %%xmm0, %%xmm4, %%xmm4") \
         __ASM_EMIT("vcmpps      $2, %%xmm1, %%xmm5, %%xmm5") \
         __ASM_EMIT("vsqrtps     %%xmm0, %%xmm0") \
         __ASM_EMIT("vsqrtps     %%xmm1, %%xmm1") \
-        __ASM_EMIT("vandps      %%xmm4, %%xmm0, %%xmm0") \
-        __ASM_EMIT("vandps      %%xmm5, %%xmm1, %%xmm1") \
         __ASM_EMIT("vmovups     %%xmm0, 0x00(%[" DST "], %[off])") \
         __ASM_EMIT("vmovups     %%xmm1, 0x10(%[" DST "], %[off])") \
         __ASM_EMIT("sub         $8, %[count]") \
@@ -104,11 +84,8 @@ namespace lsp
         /* 4x block */ \
         __ASM_EMIT("add         $4, %[count]") \
         __ASM_EMIT("jl          8f") \
-        __ASM_EMIT("vmovups     0x00(%[" SRC "], %[off]), %%xmm0") \
-        __ASM_EMIT("vxorps      %%xmm4, %%xmm4, %%xmm4") \
-        __ASM_EMIT("vcmpps      $2, %%xmm0, %%xmm4, %%xmm4") \
+        __ASM_EMIT("vmaxps      0x00(%[" SRC "], %[off]), %%xmm6, %%xmm0") \
         __ASM_EMIT("vsqrtps     %%xmm0, %%xmm0") \
-        __ASM_EMIT("vandps      %%xmm4, %%xmm0, %%xmm0") \
         __ASM_EMIT("vmovups     %%xmm0, 0x00(%[" DST "], %[off])") \
         __ASM_EMIT("sub         $4, %[count]") \
         __ASM_EMIT("add         $0x10, %[off]") \
@@ -117,11 +94,8 @@ namespace lsp
         __ASM_EMIT("add         $3, %[count]") \
         __ASM_EMIT("jl          10f") \
         __ASM_EMIT("9:") \
-        __ASM_EMIT("vmovss      0x00(%[" SRC "], %[off]), %%xmm0") \
-        __ASM_EMIT("vxorps      %%xmm4, %%xmm4, %%xmm4") \
-        __ASM_EMIT("vcmpps      $2, %%xmm0, %%xmm4, %%xmm4") \
-        __ASM_EMIT("vsqrtps     %%xmm0, %%xmm0") \
-        __ASM_EMIT("vandps      %%xmm4, %%xmm0, %%xmm0") \
+        __ASM_EMIT("vmaxss      0x00(%[" SRC "], %[off]), %%xmm6, %%xmm0") \
+        __ASM_EMIT("vsqrtss     %%xmm0, %%xmm0, %%xmm0") \
         __ASM_EMIT("vmovss      %%xmm0, 0x00(%[" DST "], %[off])") \
         __ASM_EMIT("add         $0x04, %[off]") \
         __ASM_EMIT("dec         %[count]") \
