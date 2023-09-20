@@ -81,6 +81,8 @@
         #include <private/dsp/arch/aarch64/asimd/pmath/op_kx.h>
         #include <private/dsp/arch/aarch64/asimd/pmath/op_vv.h>
         #include <private/dsp/arch/aarch64/asimd/pmath/pow.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/sqr.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath/ssqrt.h>
         #include <private/dsp/arch/aarch64/asimd/resampling.h>
         #include <private/dsp/arch/aarch64/asimd/search/minmax.h>
         #include <private/dsp/arch/aarch64/asimd/search/iminmax.h>
@@ -292,6 +294,11 @@
                 EXPORT1(powvc2);
                 EXPORT1(powvx1);
                 EXPORT1(powvx2);
+
+                EXPORT1(sqr1);
+                EXPORT1(sqr2);
+                EXPORT1(ssqrt1);
+                EXPORT1(ssqrt2);
 
                 EXPORT1(mix2);
                 EXPORT1(mix3);

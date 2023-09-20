@@ -118,7 +118,7 @@ UTEST_BEGIN("dsp.pmath", ssqrt1)
 
         IF_ARCH_ARM(CALL(generic::ssqrt1, neon_d32::ssqrt1, 16));
 
-//        IF_ARCH_AARCH64(CALL(generic::ssqrt1, asimd::ssqrt1, 16));
+        IF_ARCH_AARCH64(CALL(generic::ssqrt1, asimd::ssqrt1, 16));
     }
 UTEST_END
 
