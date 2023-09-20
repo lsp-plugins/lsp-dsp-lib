@@ -78,6 +78,8 @@
         #include <private/dsp/arch/arm/neon-d32/pmath/op_kx.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/op_vv.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/pow.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/sqr.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/ssqrt.h>
         #include <private/dsp/arch/arm/neon-d32/resampling.h>
         #include <private/dsp/arch/arm/neon-d32/search/iminmax.h>
         #include <private/dsp/arch/arm/neon-d32/search/minmax.h>
@@ -293,6 +295,11 @@
                 EXPORT1(powvc2);
                 EXPORT1(powvx1);
                 EXPORT1(powvx2);
+
+                EXPORT1(sqr1);
+                EXPORT1(sqr2);
+                EXPORT1(ssqrt1);
+                EXPORT1(ssqrt2);
 
                 EXPORT1(h_sum);
                 EXPORT1(h_abs_sum);
