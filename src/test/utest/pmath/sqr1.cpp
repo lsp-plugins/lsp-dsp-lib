@@ -114,8 +114,8 @@ UTEST_BEGIN("dsp.pmath", sqr1)
 
         IF_ARCH_X86(CALL(generic::sqr1, sse::sqr1, 16));
         IF_ARCH_X86(CALL(generic::sqr1, avx::sqr1, 32));
-//        IF_ARCH_X86(CALL(generic::sqr1, avx512::sqr1, 64));
-//
+        IF_ARCH_X86(CALL(generic::sqr1, avx512::sqr1, 64));
+
 //        IF_ARCH_ARM(CALL(generic::sqr1, neon_d32::sqr1, 16));
 //
 //        IF_ARCH_AARCH64(CALL(generic::sqr1, asimd::sqr1, 16));

@@ -45,6 +45,7 @@
         #include <private/dsp/arch/x86/avx512/float.h>
         #include <private/dsp/arch/x86/avx512/complex.h>
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
+        #include <private/dsp/arch/x86/avx512/pmath.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX512_IMPL
 
     namespace lsp
@@ -96,6 +97,11 @@
                 CEXPORT1(vl, ms_to_lr);
                 CEXPORT1(vl, ms_to_left);
                 CEXPORT1(vl, ms_to_right);
+
+                CEXPORT1(vl, sqr1);
+                CEXPORT1(vl, sqr2);
+                CEXPORT1(vl, ssqrt1);
+                CEXPORT1(vl, ssqrt2);
             }
         } /* namespace avx2 */
     } /* namespace lsp */
