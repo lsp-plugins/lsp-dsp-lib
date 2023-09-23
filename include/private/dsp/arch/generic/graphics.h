@@ -32,6 +32,15 @@ namespace lsp
 {
     namespace generic
     {
+        void axis_apply_lin1(float *x, const float *v, float zero, float norm_x, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                float vec   = v[i];
+                x[i]       += norm_x * (vec + zero);
+            }
+        }
+
         void axis_apply_log2(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count)
         {
             for (size_t i=0; i<count; ++i)

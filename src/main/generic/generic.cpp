@@ -382,6 +382,7 @@ namespace lsp
             EXPORT1(matched_transform_x4);
             EXPORT1(matched_transform_x8);
 
+            EXPORT1(axis_apply_lin1);
             EXPORT1(axis_apply_log1);
             EXPORT1(axis_apply_log2);
             EXPORT1(rgba32_to_bgra32);

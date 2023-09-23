@@ -4,6 +4,7 @@
 
 === 1.0.17 ===
 * Implemented sqr1, sqr2, ssqr1 and ssqr2 functions.
+* Implemented axis_apply_lin1 function.
 
 === 1.0.16 ===
 * Fixed improper AVX-512 detection which causes crash for several functions.
