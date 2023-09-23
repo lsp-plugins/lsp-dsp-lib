@@ -30,6 +30,123 @@ namespace lsp
 {
     namespace asimd
     {
+        void axis_apply_lin1(float *x, const float *v, float zero, float norm, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                __ASM_EMIT("ld1r        {v24.4s}, [%[zero]]")           // v24 = zero
+                __ASM_EMIT("subs        %[count], %[count], #32")
+                __ASM_EMIT("ld1r        {v25.4s}, [%[norm]]")           // v25 = norm
+                __ASM_EMIT("blo         2f")
+                /* 32x blocks */
+                __ASM_EMIT("1:")
+                __ASM_EMIT("ldp         q0, q1, [%[x], #0x00]")         // v0   = x
+                __ASM_EMIT("ldp         q2, q3, [%[x], #0x20]")
+                __ASM_EMIT("ldp         q4, q5, [%[x], #0x40]")
+                __ASM_EMIT("ldp         q6, q7, [%[x], #0x60]")
+                __ASM_EMIT("ldp         q16, q17, [%[v], #0x00]")       // v16  = v
+                __ASM_EMIT("ldp         q18, q19, [%[v], #0x20]")
+                __ASM_EMIT("ldp         q20, q21, [%[v], #0x40]")
+                __ASM_EMIT("ldp         q22, q23, [%[v], #0x60]")
+                __ASM_EMIT("fadd        v16.4s, v16.4s, v24.4s")        // v16 = v + zero
+                __ASM_EMIT("fadd        v17.4s, v17.4s, v24.4s")
+                __ASM_EMIT("fadd        v18.4s, v18.4s, v24.4s")
+                __ASM_EMIT("fadd        v19.4s, v19.4s, v24.4s")
+                __ASM_EMIT("fadd        v20.4s, v20.4s, v24.4s")
+                __ASM_EMIT("fadd        v21.4s, v21.4s, v24.4s")
+                __ASM_EMIT("fadd        v22.4s, v22.4s, v24.4s")
+                __ASM_EMIT("fadd        v23.4s, v23.4s, v24.4s")
+                __ASM_EMIT("fmla        v0.4s, v16.4s, v25.4s")         // v0   = x + (v + zero) * norm
+                __ASM_EMIT("fmla        v1.4s, v17.4s, v25.4s")
+                __ASM_EMIT("fmla        v2.4s, v18.4s, v25.4s")
+                __ASM_EMIT("fmla        v3.4s, v19.4s, v25.4s")
+                __ASM_EMIT("fmla        v4.4s, v20.4s, v25.4s")
+                __ASM_EMIT("fmla        v5.4s, v21.4s, v25.4s")
+                __ASM_EMIT("fmla        v6.4s, v22.4s, v25.4s")
+                __ASM_EMIT("fmla        v7.4s, v23.4s, v25.4s")
+                __ASM_EMIT("stp         q0, q1, [%[x], #0x00]")
+                __ASM_EMIT("stp         q2, q3, [%[x], #0x20]")
+                __ASM_EMIT("stp         q4, q5, [%[x], #0x40]")
+                __ASM_EMIT("stp         q6, q7, [%[x], #0x60]")
+                __ASM_EMIT("subs        %[count], %[count], #32")
+                __ASM_EMIT("add         %[x], %[x], #0x80")
+                __ASM_EMIT("add         %[v], %[v], #0x80")
+                __ASM_EMIT("bhs         1b")
+                /* 16x block */
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds        %[count], %[count], #16") /* 32-16 */
+                __ASM_EMIT("blt         4f")
+                __ASM_EMIT("ldp         q0, q1, [%[x], #0x00]")
+                __ASM_EMIT("ldp         q2, q3, [%[x], #0x20]")
+                __ASM_EMIT("ldp         q16, q17, [%[v], #0x00]")
+                __ASM_EMIT("ldp         q18, q19, [%[v], #0x20]")
+                __ASM_EMIT("fadd        v16.4s, v16.4s, v24.4s")        // v16 = v + zero
+                __ASM_EMIT("fadd        v17.4s, v17.4s, v24.4s")
+                __ASM_EMIT("fadd        v18.4s, v18.4s, v24.4s")
+                __ASM_EMIT("fadd        v19.4s, v19.4s, v24.4s")
+                __ASM_EMIT("fmla        v0.4s, v16.4s, v25.4s")         // v0   = x + (v + zero) * norm
+                __ASM_EMIT("fmla        v1.4s, v17.4s, v25.4s")
+                __ASM_EMIT("fmla        v2.4s, v18.4s, v25.4s")
+                __ASM_EMIT("fmla        v3.4s, v19.4s, v25.4s")
+                __ASM_EMIT("stp         q0, q1, [%[x], #0x00]")
+                __ASM_EMIT("stp         q2, q3, [%[x], #0x20]")
+                __ASM_EMIT("sub         %[count], %[count], #16")
+                __ASM_EMIT("add         %[x], %[x], #0x40")
+                __ASM_EMIT("add         %[v], %[v], #0x40")
+                /* 8x block */
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds        %[count], %[count], #8") /* 16-8 */
+                __ASM_EMIT("blt         6f")
+                __ASM_EMIT("ldp         q0, q1, [%[x], #0x00]")
+                __ASM_EMIT("ldp         q16, q17, [%[v], #0x00]")
+                __ASM_EMIT("fadd        v16.4s, v16.4s, v24.4s")        // v16 = v + zero
+                __ASM_EMIT("fadd        v17.4s, v17.4s, v24.4s")
+                __ASM_EMIT("fmla        v0.4s, v16.4s, v25.4s")         // v0   = x + (v + zero) * norm
+                __ASM_EMIT("fmla        v1.4s, v17.4s, v25.4s")
+                __ASM_EMIT("stp         q0, q1, [%[x], #0x00]")
+                __ASM_EMIT("sub         %[count], %[count], #8")
+                __ASM_EMIT("add         %[x], %[x], #0x20")
+                __ASM_EMIT("add         %[v], %[v], #0x20")
+                /* 4x block */
+                __ASM_EMIT("6:")
+                __ASM_EMIT("adds        %[count], %[count], #4") /* 8 - 4 */
+                __ASM_EMIT("blt         8f")
+                __ASM_EMIT("ldr         q0, [%[x], #0x00]")
+                __ASM_EMIT("ldr         q16, [%[v], #0x00]")
+                __ASM_EMIT("fadd        v16.4s, v16.4s, v24.4s")        // v16 = v + zero
+                __ASM_EMIT("fmla        v0.4s, v16.4s, v25.4s")         // v0   = x + (v + zero) * norm
+                __ASM_EMIT("str         q0, [%[x], #0x00]")
+                __ASM_EMIT("sub         %[count], %[count], #4")
+                __ASM_EMIT("add         %[x], %[x], #0x10")
+                __ASM_EMIT("add         %[v], %[v], #0x10")
+                /* 1x block */
+                __ASM_EMIT("8:")
+                __ASM_EMIT("adds        %[count], %[count], #3") /* 4 - 3 */
+                __ASM_EMIT("blt         10f")
+                __ASM_EMIT("9:")
+                __ASM_EMIT("ld1r        {v0.4s}, [%[x]]")
+                __ASM_EMIT("ld1r        {v16.4s}, [%[v]]")
+                __ASM_EMIT("fadd        v16.4s, v16.4s, v24.4s")        // v16 = v + zero
+                __ASM_EMIT("fmla        v0.4s, v16.4s, v25.4s")         // v0   = x + (v + zero) * norm
+                __ASM_EMIT("st1         {v0.s}[0], [%[x]]")
+                __ASM_EMIT("subs        %[count], %[count], #1")
+                __ASM_EMIT("add         %[x], %[x], #0x04")
+                __ASM_EMIT("add         %[v], %[v], #0x04")
+                __ASM_EMIT("bge         9b")
+                __ASM_EMIT("10:")
+                : [x] "+r" (x), [v] "+r" (v),
+                  [count] "+r" (count)
+                : [zero] "r" (&zero),
+                  [norm] "r" (&norm)
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23",
+                  "v24", "v25"
+            );
+        }
+
         IF_ARCH_AARCH64(
             static const uint32_t LOG_IARGS[] __lsp_aligned16 =
             {

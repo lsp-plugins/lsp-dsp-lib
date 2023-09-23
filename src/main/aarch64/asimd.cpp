@@ -442,6 +442,7 @@
                 EXPORT1(lin_inter_frmadd2);
                 EXPORT1(lin_inter_fmadd3);
 
+                EXPORT1(axis_apply_lin1);
                 EXPORT1(axis_apply_log1);
                 EXPORT1(axis_apply_log2);
                 EXPORT1(fill_rgba);

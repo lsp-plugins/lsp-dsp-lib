@@ -117,7 +117,7 @@ UTEST_BEGIN("dsp.graphics", axis_lin1)
         IF_ARCH_X86(CALL(avx512::axis_apply_lin1, 64));
 
         IF_ARCH_ARM(CALL(neon_d32::axis_apply_lin1, 16));
-//        IF_ARCH_AARCH64(CALL(asimd::axis_apply_lin1, 16));
+        IF_ARCH_AARCH64(CALL(asimd::axis_apply_lin1, 16));
     }
 
 UTEST_END;
