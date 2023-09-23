@@ -59,9 +59,9 @@ LSP_DSP_LIB_END_NAMESPACE
  * @param x destination vector for X coordinate
  * @param v delta vector to apply
  * @param zero graphics zero point shift
- * @param norm_x X norming factor
+ * @param norm X norming factor
  */
-LSP_DSP_LIB_SYMBOL(void, axis_apply_lin1, float *x, const float *v, float zero, float norm_x, size_t count);
+LSP_DSP_LIB_SYMBOL(void, axis_apply_lin1, float *x, const float *v, float zero, float norm, size_t count);
 
 /** Do logarithmic vector apply for 1D-schema:
  *  x[i] = x[i] + norm_x * logf(absf(v[i]*zero))
