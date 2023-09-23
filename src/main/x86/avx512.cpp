@@ -41,9 +41,10 @@
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
     #define PRIVATE_DSP_ARCH_X86_AVX512_IMPL
+        #include <private/dsp/arch/x86/avx512/complex.h>
         #include <private/dsp/arch/x86/avx512/copy.h>
         #include <private/dsp/arch/x86/avx512/float.h>
-        #include <private/dsp/arch/x86/avx512/complex.h>
+        #include <private/dsp/arch/x86/avx512/graphics/axis.h>
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
         #include <private/dsp/arch/x86/avx512/pmath.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX512_IMPL
@@ -102,6 +103,8 @@
                 CEXPORT1(vl, sqr2);
                 CEXPORT1(vl, ssqrt1);
                 CEXPORT1(vl, ssqrt2);
+
+                CEXPORT1(vl, axis_apply_lin1);
             }
         } /* namespace avx2 */
     } /* namespace lsp */

@@ -43,6 +43,11 @@ namespace lsp
             void axis_apply_lin1(float *x, const float *v, float zero, float norm_x, size_t count);
             void axis_apply_lin1_fma3(float *x, const float *v, float zero, float norm_x, size_t count);
         }
+
+        namespace avx512
+        {
+            void axis_apply_lin1(float *x, const float *v, float zero, float norm_x, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -109,6 +114,7 @@ UTEST_BEGIN("dsp.graphics", axis_lin1)
         IF_ARCH_X86(CALL(sse::axis_apply_lin1, 16));
         IF_ARCH_X86(CALL(avx::axis_apply_lin1, 32));
         IF_ARCH_X86(CALL(avx::axis_apply_lin1_fma3, 32));
+        IF_ARCH_X86(CALL(avx512::axis_apply_lin1, 64));
 
 //        IF_ARCH_ARM(CALL(neon_d32::axis_apply_lin1, 16));
 //        IF_ARCH_AARCH64(CALL(asimd::axis_apply_lin1, 16));

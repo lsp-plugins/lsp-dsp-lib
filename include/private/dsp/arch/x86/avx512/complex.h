@@ -22,6 +22,10 @@
 #ifndef PRIVATE_DSP_ARCH_X86_AVX512_COMPLEX_H_
 #define PRIVATE_DSP_ARCH_X86_AVX512_COMPLEX_H_
 
+#ifndef PRIVATE_DSP_ARCH_X86_AVX512_IMPL
+    #error "This header should not be included directly"
+#endif /* PRIVATE_DSP_ARCH_X86_AVX512_IMPL */
+
 namespace lsp
 {
     namespace avx512
