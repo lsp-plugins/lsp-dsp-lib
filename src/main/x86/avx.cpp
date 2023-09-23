@@ -72,6 +72,7 @@
 
         #include <private/dsp/arch/x86/avx/interpolation/linear.h>
 
+        #include <private/dsp/arch/x86/avx/graphics/axis.h>
         #include <private/dsp/arch/x86/avx/graphics/pixelfmt.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX_IMPL
 
@@ -396,6 +397,8 @@
                 CEXPORT2(favx, prgba32_set_alpha, pabc32_set_alpha);
                 CEXPORT2(favx, pbgra32_set_alpha, pabc32_set_alpha);
 
+                CEXPORT1(favx, axis_apply_lin1);
+
                 CEXPORT2(favx, normalize, normalize2);
                 CEXPORT1(favx, normalize1);
                 CEXPORT1(favx, normalize2);
@@ -476,6 +479,7 @@
 
                     CEXPORT2(favx, convolve, convolve_fma3);
 
+                    CEXPORT2(favx, axis_apply_lin1, axis_apply_lin1_fma3);
 
                     CEXPORT2(favx, biquad_process_x1, biquad_process_x1_fma3);
                     CEXPORT2(favx, biquad_process_x2, biquad_process_x2_fma3);
