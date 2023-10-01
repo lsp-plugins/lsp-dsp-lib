@@ -51,6 +51,11 @@ namespace lsp
         {
             void pcomplex_mod(float *dst_mod, const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            void pcomplex_mod(float *dst_mod, const float *src, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -113,6 +118,7 @@ PTEST_BEGIN("dsp.pcomplex", mod, 5, 1000)
             IF_ARCH_X86(CALL(sse3::pcomplex_mod));
             IF_ARCH_X86_64(CALL(sse3::x64_pcomplex_mod));
             IF_ARCH_X86(CALL(avx::pcomplex_mod));
+            IF_ARCH_X86(CALL(avx512::pcomplex_mod));
             IF_ARCH_ARM(CALL(neon_d32::pcomplex_mod));
             IF_ARCH_AARCH64(CALL(asimd::pcomplex_mod));
 

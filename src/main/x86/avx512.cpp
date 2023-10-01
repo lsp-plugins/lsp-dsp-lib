@@ -95,6 +95,7 @@
 
                 CEXPORT1(vl, pcomplex_mul2);
                 CEXPORT1(vl, pcomplex_mul3);
+                CEXPORT1(vl, pcomplex_mod);
 
                 CEXPORT1(vl, lr_to_ms);
                 CEXPORT1(vl, lr_to_mid);
