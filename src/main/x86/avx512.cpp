@@ -46,6 +46,7 @@
         #include <private/dsp/arch/x86/avx512/float.h>
         #include <private/dsp/arch/x86/avx512/graphics/axis.h>
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
+        #include <private/dsp/arch/x86/avx512/pcomplex.h>
         #include <private/dsp/arch/x86/avx512/pmath.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX512_IMPL
 
@@ -91,6 +92,9 @@
                 CEXPORT1(vl, complex_div3);
                 CEXPORT1(vl, complex_rcp1);
                 CEXPORT1(vl, complex_rcp2);
+
+                CEXPORT1(vl, pcomplex_mul2);
+                CEXPORT1(vl, pcomplex_mul3);
 
                 CEXPORT1(vl, lr_to_ms);
                 CEXPORT1(vl, lr_to_mid);
