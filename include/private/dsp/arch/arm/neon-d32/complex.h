@@ -419,15 +419,14 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
+                // x8 blocks
                 __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("blo             2f")
-
-                // x8 blocks
                 __ASM_EMIT("1:")
-                __ASM_EMIT("vld1.32         {q4-q5}, [%[t_re]]!")           // q4  = sr
-                __ASM_EMIT("vld1.32         {q6-q7}, [%[t_im]]!")           // q6  = si
-                __ASM_EMIT("vld1.32         {q8-q9}, [%[b_re]]!")           // q8  = dr
-                __ASM_EMIT("vld1.32         {q10-q11}, [%[b_im]]!")         // q10 = di
+                __ASM_EMIT("vld1.32         {q4-q5}, [%[b_re]]!")           // q4  = sr
+                __ASM_EMIT("vld1.32         {q6-q7}, [%[b_im]]!")           // q6  = si
+                __ASM_EMIT("vld1.32         {q8-q9}, [%[t_re]]!")           // q8  = dr
+                __ASM_EMIT("vld1.32         {q10-q11}, [%[t_im]]!")         // q10 = di
                 // q0  = sr*dr + si*di, q2 = -(sr*di + si*dr), q4 = sr*sr + si*si
                 __ASM_EMIT("vmul.f32        q0, q4, q8")                    // q0  = sr*dr
                 __ASM_EMIT("vmul.f32        q1, q5, q9")
@@ -435,14 +434,12 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q3, q5, q11")
                 __ASM_EMIT("vmla.f32        q0, q6, q10")                   // q0  = sr*dr + si*di
                 __ASM_EMIT("vmla.f32        q1, q7, q11")
-                __ASM_EMIT("vmla.f32        q2, q6, q8")                    // q2  = sr*di + si*dr
-                __ASM_EMIT("vmla.f32        q3, q7, q9")
-                __ASM_EMIT("vmul.f32        q4, q8, q8")                    // q4  = dr*dr
-                __ASM_EMIT("vmul.f32        q5, q9, q9")
-                __ASM_EMIT("vneg.f32        q2, q2")                        // q2 = -(sr*di + si*dr)
-                __ASM_EMIT("vneg.f32        q3, q3")
-                __ASM_EMIT("vmla.f32        q4, q10, q10")                  // q4  = dr*dr + di*di
-                __ASM_EMIT("vmla.f32        q5, q11, q11")
+                __ASM_EMIT("vmul.f32        q4, q4, q4")                    // q4  = sr*sr
+                __ASM_EMIT("vmul.f32        q5, q5, q5")
+                __ASM_EMIT("vmls.f32        q2, q6, q8")                    // q2  = sr*di - si*dr
+                __ASM_EMIT("vmls.f32        q3, q7, q9")
+                __ASM_EMIT("vmla.f32        q4, q6, q6")                    // q4  = sr*sr + si*si
+                __ASM_EMIT("vmla.f32        q5, q7, q7")
                 // q4 = 1 / (sr*sr + si*si)
                 __ASM_EMIT("vrecpe.f32      q6, q4")                        // q6 = x0
                 __ASM_EMIT("vrecpe.f32      q7, q5")
@@ -462,23 +459,21 @@ namespace lsp
                 __ASM_EMIT("vst1.32         {q2-q3}, [%[dst_im]]!")
                 __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("bhs             1b")
-
-                // x4 blocks
                 __ASM_EMIT("2:")
+                // x4 blocks
                 __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             4f")
-                __ASM_EMIT("vld1.32         {q4}, [%[t_re]]!")              // q4  = sr
-                __ASM_EMIT("vld1.32         {q6}, [%[t_im]]!")              // q6  = si
-                __ASM_EMIT("vld1.32         {q8}, [%[b_re]]!")              // q8  = dr
-                __ASM_EMIT("vld1.32         {q10}, [%[b_im]]!")             // q10 = di
+                __ASM_EMIT("vld1.32         {q4}, [%[b_re]]!")              // q4  = sr
+                __ASM_EMIT("vld1.32         {q6}, [%[b_im]]!")              // q6  = si
+                __ASM_EMIT("vld1.32         {q8}, [%[t_re]]!")              // q8  = dr
+                __ASM_EMIT("vld1.32         {q10}, [%[t_im]]!")             // q10 = di
                 // q0  = sr*dr + si*di, q2 = -(sr*di + si*dr), q4 = sr*sr + si*si
                 __ASM_EMIT("vmul.f32        q0, q4, q8")                    // q0  = sr*dr
                 __ASM_EMIT("vmul.f32        q2, q4, q10")                   // q2  = sr*di
                 __ASM_EMIT("vmla.f32        q0, q6, q10")                   // q0  = sr*dr + si*di
-                __ASM_EMIT("vmla.f32        q2, q6, q8")                    // q2  = sr*di + si*dr
-                __ASM_EMIT("vmul.f32        q4, q8, q8")                    // q4  = dr*dr
-                __ASM_EMIT("vneg.f32        q2, q2")                        // q2 = -(sr*di + si*dr)
-                __ASM_EMIT("vmla.f32        q4, q10, q10")                  // q4  = dr*dr + di*di
+                __ASM_EMIT("vmul.f32        q4, q4, q4")                    // q4  = sr*sr
+                __ASM_EMIT("vmls.f32        q2, q6, q8")                    // q2  = sr*di - si*dr
+                __ASM_EMIT("vmla.f32        q4, q6, q6")                    // q4  = sr*sr + si*si
                 // q4 = 1 / (sr*sr + si*si)
                 __ASM_EMIT("vrecpe.f32      q6, q4")                        // q6 = x0
                 __ASM_EMIT("vrecps.f32      q8, q6, q4")                    // q8 = (2 - R*x0)
@@ -490,29 +485,33 @@ namespace lsp
                 __ASM_EMIT("vst1.32         {q0}, [%[dst_re]]!")
                 __ASM_EMIT("vst1.32         {q2}, [%[dst_im]]!")
                 __ASM_EMIT("sub             %[count], #4")
-
-                // x1 blocks
                 __ASM_EMIT("4:")
+                // x1 blocks
                 __ASM_EMIT("adds            %[count], #3")
                 __ASM_EMIT("blt             6f")
                 __ASM_EMIT("5:")
-                __ASM_EMIT("vldm.32         %[t_re]!, {s4}")                // s4  = sr
-                __ASM_EMIT("vldm.32         %[t_im]!, {s6}")                // s6  = si
-                __ASM_EMIT("vldm.32         %[b_re]!, {s8}")                // s8  = dr
-                __ASM_EMIT("vldm.32         %[b_im]!, {s10}")               // s10 = di
-                __ASM_EMIT("vmul.f32        s0, s4, s8")                    // s0  = sr*dr
-                __ASM_EMIT("vmul.f32        s2, s4, s10")                   // s2  = sr*di
-                __ASM_EMIT("vmla.f32        s0, s6, s10")                   // s0  = sr*dr + si*di
-                __ASM_EMIT("vmul.f32        s4, s8, s8")                    // s4  = dr*dr
-                __ASM_EMIT("vnmla.f32       s2, s6, s8")                    // s2  = -(sr*di + si*dr)
-                __ASM_EMIT("vmla.f32        s4, s10, s10")                  // s4  = R = dr*dr + di*di
-                __ASM_EMIT("vdiv.f32        s0, s0, s4")                    // s0  = (sr*dr + si*di) / R
-                __ASM_EMIT("vdiv.f32        s2, s2, s4")                    // s2  = (sr*dr + si*di) / R
-                __ASM_EMIT("vstm.32         %[dst_re]!, {s0}")
-                __ASM_EMIT("vstm.32         %[dst_im]!, {s2}")
+                __ASM_EMIT("vld1.32         {d8[], d9[]}, [%[b_re]]!")      // q4  = sr
+                __ASM_EMIT("vld1.32         {d12[], d13[]}, [%[b_im]]!")    // q6  = si
+                __ASM_EMIT("vld1.32         {d16[], d17[]}, [%[t_re]]!")    // q8  = dr
+                __ASM_EMIT("vld1.32         {d20[], d21[]}, [%[t_im]]!")    // q10 = di
+                __ASM_EMIT("vmul.f32        q0, q4, q8")                    // q0  = sr*dr
+                __ASM_EMIT("vmul.f32        q2, q4, q10")                   // q2  = sr*di
+                __ASM_EMIT("vmla.f32        q0, q6, q10")                   // q0  = sr*dr + si*di
+                __ASM_EMIT("vmul.f32        q4, q4, q4")                    // q4  = sr*sr
+                __ASM_EMIT("vmls.f32        q2, q6, q8")                    // q2  = sr*di - si*dr
+                __ASM_EMIT("vmla.f32        q4, q6, q6")                    // q4  = sr*sr + si*si
+                // q4 = 1 / (sr*sr + si*si)
+                __ASM_EMIT("vrecpe.f32      q6, q4")                        // q6 = x0
+                __ASM_EMIT("vrecps.f32      q8, q6, q4")                    // q8 = (2 - R*x0)
+                __ASM_EMIT("vmul.f32        q6, q8, q6")                    // q6 = x1 = x0 * (2 - R*x0)
+                __ASM_EMIT("vrecps.f32      q8, q6, q4")                    // q8 = (2 - R*x1)
+                __ASM_EMIT("vmul.f32        q4, q8, q6")                    // q4 = x2 = x1 * (2 - R*x0)
+                __ASM_EMIT("vmul.f32        q0, q0, q4")
+                __ASM_EMIT("vmul.f32        q2, q2, q4")
+                __ASM_EMIT("vst1.32         {d0[0]}, [%[dst_re]]!")
+                __ASM_EMIT("vst1.32         {d4[0]}, [%[dst_im]]!")
                 __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("bge             5b")
-
                 __ASM_EMIT("6:")
 
                 : [dst_re] "+r" (dst_re), [dst_im] "+r" (dst_im),
