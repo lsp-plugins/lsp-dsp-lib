@@ -260,7 +260,7 @@ namespace lsp
                 float n         = 1.0f / (src[0] * src[0] + src[1] * src[1]);
 
                 dst[0]          = re * n;
-                dst[1]          = -im * n;
+                dst[1]          = im * n;
                 src            += 2;
                 dst            += 2;
             }
@@ -275,7 +275,7 @@ namespace lsp
                 float n         = 1.0f / (dst[0] * dst[0] + dst[1] * dst[1]);
 
                 dst[0]          = re * n;
-                dst[1]          = -im * n;
+                dst[1]          = im * n;
                 src            += 2;
                 dst            += 2;
             }
@@ -286,11 +286,11 @@ namespace lsp
             while (count--)
             {
                 float re        = t[0] * b[0] + t[1] * b[1];
-                float im        = t[0] * b[1] - t[1] * b[0];
+                float im        = t[1] * b[0] - t[0] * b[1];
                 float n         = 1.0f / (b[0] * b[0] + b[1] * b[1]);
 
                 dst[0]          = re * n;
-                dst[1]          = -im * n;
+                dst[1]          = im * n;
                 t              += 2;
                 b              += 2;
                 dst            += 2;

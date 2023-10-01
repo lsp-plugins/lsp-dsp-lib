@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -167,7 +167,7 @@ namespace lsp
             for (size_t i=0; i<count; ++i)
             {
                 float re        = t_re[i] * b_re[i] + t_im[i] * b_im[i];
-                float im        = t_re[i] * b_im[i] - t_im[i] * b_re[i];
+                float im        = t_im[i] * b_re[i] - t_re[i] * b_im[i];
                 float n         = 1.0f / (b_re[i] * b_re[i] + b_im[i] * b_im[i]);
 
                 dst_re[i]       = re * n;
