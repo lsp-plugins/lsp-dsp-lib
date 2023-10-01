@@ -254,7 +254,6 @@ namespace lsp
                 __ASM_EMIT("ld1         {v20.4s-v23.4s}, [%[src_im]], #0x40")   // v20-v23  = si
                 __ASM_EMIT("ld1         {v24.4s-v27.4s}, [%[dst_re]]")          // v24-v27  = dr
                 __ASM_EMIT("ld1         {v28.4s-v31.4s}, [%[dst_im]]")          // v28-v31  = di
-
                 __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")                 // v0   = sr*dr
                 __ASM_EMIT("fmul        v1.4s, v17.4s, v25.4s")
                 __ASM_EMIT("fmul        v2.4s, v18.4s, v26.4s")
@@ -271,34 +270,28 @@ namespace lsp
                 __ASM_EMIT("fmul        v17.4s, v17.4s, v17.4s")
                 __ASM_EMIT("fmul        v18.4s, v18.4s, v18.4s")
                 __ASM_EMIT("fmul        v19.4s, v19.4s, v19.4s")
-                __ASM_EMIT("fmla        v4.4s, v20.4s, v24.4s")                 // v4   = sr*di + si*dr
-                __ASM_EMIT("fmla        v5.4s, v21.4s, v25.4s")
-                __ASM_EMIT("fmla        v6.4s, v22.4s, v26.4s")
-                __ASM_EMIT("fmla        v7.4s, v23.4s, v27.4s")
+                __ASM_EMIT("fmls        v4.4s, v20.4s, v24.4s")                 // v4   = sr*di - si*dr
+                __ASM_EMIT("fmls        v5.4s, v21.4s, v25.4s")
+                __ASM_EMIT("fmls        v6.4s, v22.4s, v26.4s")
+                __ASM_EMIT("fmls        v7.4s, v23.4s, v27.4s")
                 __ASM_EMIT("fmla        v16.4s, v20.4s, v20.4s")                // v16  = sr*sr + si*si
                 __ASM_EMIT("fmla        v17.4s, v21.4s, v21.4s")
                 __ASM_EMIT("fmla        v18.4s, v22.4s, v22.4s")
                 __ASM_EMIT("fmla        v19.4s, v23.4s, v23.4s")
-                __ASM_EMIT("fneg        v4.4s, v4.4s")                          // v4   = -(sr*di + si*dr)
-                __ASM_EMIT("fneg        v5.4s, v5.4s")
-                __ASM_EMIT("fneg        v6.4s, v6.4s")
-                __ASM_EMIT("fneg        v7.4s, v7.4s")
                 __ASM_EMIT("fdiv        v0.4s, v0.4s, v16.4s")                  // v0   = (sr*dr + si*di)/(sr*sr + si*si)
                 __ASM_EMIT("fdiv        v1.4s, v1.4s, v17.4s")
                 __ASM_EMIT("fdiv        v2.4s, v2.4s, v18.4s")
                 __ASM_EMIT("fdiv        v3.4s, v3.4s, v19.4s")
-                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = -(sr*di + si*dr)/(sr*sr + si*si)
+                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = (sr*di - si*dr)/(sr*sr + si*si)
                 __ASM_EMIT("fdiv        v5.4s, v5.4s, v17.4s")
                 __ASM_EMIT("fdiv        v6.4s, v6.4s, v18.4s")
                 __ASM_EMIT("fdiv        v7.4s, v7.4s, v19.4s")
-
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("st1         {v0.4s-v3.4s}, [%[dst_re]], #0x40")
                 __ASM_EMIT("st1         {v4.4s-v7.4s}, [%[dst_im]], #0x40")
                 __ASM_EMIT("b.hs        1b")
-
-                // x8 blocks
                 __ASM_EMIT("2:")
+                // x8 blocks
                 __ASM_EMIT("adds        %[count], %[count], #8")
                 __ASM_EMIT("b.lt        4f")
                 __ASM_EMIT("ld1         {v16.4s, v17.4s}, [%[src_re]], #0x20")  // v16-v17  = sr
@@ -313,22 +306,19 @@ namespace lsp
                 __ASM_EMIT("fmla        v1.4s, v21.4s, v29.4s")
                 __ASM_EMIT("fmul        v16.4s, v16.4s, v16.4s")                // v16  = sr*sr
                 __ASM_EMIT("fmul        v17.4s, v17.4s, v17.4s")
-                __ASM_EMIT("fmla        v4.4s, v20.4s, v24.4s")                 // v4   = sr*di + si*dr
-                __ASM_EMIT("fmla        v5.4s, v21.4s, v25.4s")
+                __ASM_EMIT("fmls        v4.4s, v20.4s, v24.4s")                 // v4   = sr*di - si*dr
+                __ASM_EMIT("fmls        v5.4s, v21.4s, v25.4s")
                 __ASM_EMIT("fmla        v16.4s, v20.4s, v20.4s")                // v16  = sr*sr + si*si
                 __ASM_EMIT("fmla        v17.4s, v21.4s, v21.4s")
-                __ASM_EMIT("fneg        v4.4s, v4.4s")                          // v4   = -(sr*di + si*dr)
-                __ASM_EMIT("fneg        v5.4s, v5.4s")
                 __ASM_EMIT("fdiv        v0.4s, v0.4s, v16.4s")                  // v0   = (sr*dr + si*di)/(sr*sr + si*si)
                 __ASM_EMIT("fdiv        v1.4s, v1.4s, v17.4s")
-                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = -(sr*di + si*dr)/(sr*sr + si*si)
+                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = (sr*di - si*dr)/(sr*sr + si*si)
                 __ASM_EMIT("fdiv        v5.4s, v5.4s, v17.4s")
                 __ASM_EMIT("sub         %[count], %[count], #8")
                 __ASM_EMIT("st1         {v0.4s, v1.4s}, [%[dst_re]], #0x20")
                 __ASM_EMIT("st1         {v4.4s, v5.4s}, [%[dst_im]], #0x20")
-
-                // x4 blocks
                 __ASM_EMIT("4:")
+                // x4 blocks
                 __ASM_EMIT("adds        %[count], %[count], #4")
                 __ASM_EMIT("b.lt        6f")
                 __ASM_EMIT("ld1         {v16.4s}, [%[src_re]], #0x10")          // v16-v17  = sr
@@ -339,17 +329,15 @@ namespace lsp
                 __ASM_EMIT("fmul        v4.4s, v16.4s, v28.4s")                 // v4   = sr*di
                 __ASM_EMIT("fmla        v0.4s, v20.4s, v28.4s")                 // v0   = sr*dr + si*di
                 __ASM_EMIT("fmul        v16.4s, v16.4s, v16.4s")                // v16  = sr*sr
-                __ASM_EMIT("fmla        v4.4s, v20.4s, v24.4s")                 // v4   = sr*di + si*dr
+                __ASM_EMIT("fmls        v4.4s, v20.4s, v24.4s")                 // v4   = sr*di - si*dr
                 __ASM_EMIT("fmla        v16.4s, v20.4s, v20.4s")                // v16  = sr*sr + si*si
-                __ASM_EMIT("fneg        v4.4s, v4.4s")                          // v4   = -(sr*di + si*dr)
                 __ASM_EMIT("fdiv        v0.4s, v0.4s, v16.4s")                  // v0   = (sr*dr + si*di)/(sr*sr + si*si)
-                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = -(sr*di + si*dr)/(sr*sr + si*si)
+                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = (sr*di - si*dr)/(sr*sr + si*si)
                 __ASM_EMIT("sub         %[count], %[count], #4")
                 __ASM_EMIT("st1         {v0.4s}, [%[dst_re]], #0x10")
                 __ASM_EMIT("st1         {v4.4s}, [%[dst_im]], #0x10")
-
-                // x1 blocks
                 __ASM_EMIT("6:")
+                // x1 blocks
                 __ASM_EMIT("adds        %[count], %[count], #3")
                 __ASM_EMIT("b.lt        8f")
                 __ASM_EMIT("7:")
@@ -361,16 +349,14 @@ namespace lsp
                 __ASM_EMIT("fmul        v4.4s, v16.4s, v28.4s")                 // v4   = sr*di
                 __ASM_EMIT("fmla        v0.4s, v20.4s, v28.4s")                 // v0   = sr*dr + si*di
                 __ASM_EMIT("fmul        v16.4s, v16.4s, v16.4s")                // v16  = sr*sr
-                __ASM_EMIT("fmla        v4.4s, v20.4s, v24.4s")                 // v4   = sr*di + si*dr
+                __ASM_EMIT("fmls        v4.4s, v20.4s, v24.4s")                 // v4   = sr*di - si*dr
                 __ASM_EMIT("fmla        v16.4s, v20.4s, v20.4s")                // v16  = sr*sr + si*si
-                __ASM_EMIT("fneg        v4.4s, v4.4s")                          // v4   = -(sr*di + si*dr)
                 __ASM_EMIT("fdiv        v0.4s, v0.4s, v16.4s")                  // v0   = (sr*dr + si*di)/(sr*sr + si*si)
-                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = -(sr*di + si*dr)/(sr*sr + si*si)
+                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = (sr*di - si*dr)/(sr*sr + si*si)
                 __ASM_EMIT("str         s0, [%[dst_re]], #0x04")
                 __ASM_EMIT("str         s4, [%[dst_im]], #0x04")
                 __ASM_EMIT("subs        %[count], %[count], #1")
                 __ASM_EMIT("b.ge        7b")
-
                 __ASM_EMIT("8:")
 
                 : [dst_re] "+r" (dst_re), [dst_im] "+r" (dst_im),
@@ -389,111 +375,98 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
+                // x16 blocks
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("b.lo        2f")
-
-                // x16 blocks
                 __ASM_EMIT("1:")
                 __ASM_EMIT("ld1         {v24.4s-v27.4s}, [%[src_re]], #0x40")   // v24-v27  = sr
                 __ASM_EMIT("ld1         {v28.4s-v31.4s}, [%[src_im]], #0x40")   // v28-v31  = si
                 __ASM_EMIT("ld1         {v16.4s-v19.4s}, [%[dst_re]]")          // v16-v19  = dr
                 __ASM_EMIT("ld1         {v20.4s-v23.4s}, [%[dst_im]]")          // v20-v23  = di
-
-                __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")                 // v0   = dr*sr
+                __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")                 // v0   = sr*dr
                 __ASM_EMIT("fmul        v1.4s, v17.4s, v25.4s")
                 __ASM_EMIT("fmul        v2.4s, v18.4s, v26.4s")
                 __ASM_EMIT("fmul        v3.4s, v19.4s, v27.4s")
-                __ASM_EMIT("fmul        v4.4s, v16.4s, v28.4s")                 // v4   = dr*si
+                __ASM_EMIT("fmul        v4.4s, v16.4s, v28.4s")                 // v4   = sr*di
                 __ASM_EMIT("fmul        v5.4s, v17.4s, v29.4s")
                 __ASM_EMIT("fmul        v6.4s, v18.4s, v30.4s")
                 __ASM_EMIT("fmul        v7.4s, v19.4s, v31.4s")
-                __ASM_EMIT("fmla        v0.4s, v20.4s, v28.4s")                 // v0   = dr*sr + di*si
+                __ASM_EMIT("fmla        v0.4s, v20.4s, v28.4s")                 // v0   = sr*dr + si*di
                 __ASM_EMIT("fmla        v1.4s, v21.4s, v29.4s")
                 __ASM_EMIT("fmla        v2.4s, v22.4s, v30.4s")
                 __ASM_EMIT("fmla        v3.4s, v23.4s, v31.4s")
-                __ASM_EMIT("fmul        v16.4s, v16.4s, v16.4s")                // v16  = dr*dr
+                __ASM_EMIT("fmul        v16.4s, v16.4s, v16.4s")                // v16  = sr*sr
                 __ASM_EMIT("fmul        v17.4s, v17.4s, v17.4s")
                 __ASM_EMIT("fmul        v18.4s, v18.4s, v18.4s")
                 __ASM_EMIT("fmul        v19.4s, v19.4s, v19.4s")
-                __ASM_EMIT("fmla        v4.4s, v20.4s, v24.4s")                 // v4   = dr*si + di*sr
-                __ASM_EMIT("fmla        v5.4s, v21.4s, v25.4s")
-                __ASM_EMIT("fmla        v6.4s, v22.4s, v26.4s")
-                __ASM_EMIT("fmla        v7.4s, v23.4s, v27.4s")
-                __ASM_EMIT("fmla        v16.4s, v20.4s, v20.4s")                // v16  = dr*dr + di*di
+                __ASM_EMIT("fmls        v4.4s, v20.4s, v24.4s")                 // v4   = sr*di - si*dr
+                __ASM_EMIT("fmls        v5.4s, v21.4s, v25.4s")
+                __ASM_EMIT("fmls        v6.4s, v22.4s, v26.4s")
+                __ASM_EMIT("fmls        v7.4s, v23.4s, v27.4s")
+                __ASM_EMIT("fmla        v16.4s, v20.4s, v20.4s")                // v16  = sr*sr + si*si
                 __ASM_EMIT("fmla        v17.4s, v21.4s, v21.4s")
                 __ASM_EMIT("fmla        v18.4s, v22.4s, v22.4s")
                 __ASM_EMIT("fmla        v19.4s, v23.4s, v23.4s")
-                __ASM_EMIT("fneg        v4.4s, v4.4s")                          // v4   = -(dr*si + di*sr)
-                __ASM_EMIT("fneg        v5.4s, v5.4s")
-                __ASM_EMIT("fneg        v6.4s, v6.4s")
-                __ASM_EMIT("fneg        v7.4s, v7.4s")
-                __ASM_EMIT("fdiv        v0.4s, v0.4s, v16.4s")                  // v0   = (dr*sr + di*si)/(dr*dr + di*di)
+                __ASM_EMIT("fdiv        v0.4s, v0.4s, v16.4s")                  // v0   = (sr*dr + si*di)/(sr*sr + si*si)
                 __ASM_EMIT("fdiv        v1.4s, v1.4s, v17.4s")
                 __ASM_EMIT("fdiv        v2.4s, v2.4s, v18.4s")
                 __ASM_EMIT("fdiv        v3.4s, v3.4s, v19.4s")
-                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = -(dr*si + di*sr)/(dr*dr + di*di)
+                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = (sr*di - si*dr)/(sr*sr + si*si)
                 __ASM_EMIT("fdiv        v5.4s, v5.4s, v17.4s")
                 __ASM_EMIT("fdiv        v6.4s, v6.4s, v18.4s")
                 __ASM_EMIT("fdiv        v7.4s, v7.4s, v19.4s")
-
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("st1         {v0.4s-v3.4s}, [%[dst_re]], #0x40")
                 __ASM_EMIT("st1         {v4.4s-v7.4s}, [%[dst_im]], #0x40")
                 __ASM_EMIT("b.hs        1b")
-
-                // x8 blocks
                 __ASM_EMIT("2:")
+                // x8 blocks
                 __ASM_EMIT("adds        %[count], %[count], #8")
                 __ASM_EMIT("b.lt        4f")
                 __ASM_EMIT("ld1         {v24.4s, v25.4s}, [%[src_re]], #0x20")  // v24-v25  = sr
                 __ASM_EMIT("ld1         {v28.4s, v29.4s}, [%[src_im]], #0x20")  // v28-v29  = si
                 __ASM_EMIT("ld1         {v16.4s, v17.4s}, [%[dst_re]]")         // v16-v17  = dr
                 __ASM_EMIT("ld1         {v20.4s, v21.4s}, [%[dst_im]]")         // v20-v21  = di
-                __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")                 // v0   = dr*sr
+                __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")                 // v0   = sr*dr
                 __ASM_EMIT("fmul        v1.4s, v17.4s, v25.4s")
-                __ASM_EMIT("fmul        v4.4s, v16.4s, v28.4s")                 // v4   = dr*si
+                __ASM_EMIT("fmul        v4.4s, v16.4s, v28.4s")                 // v4   = sr*di
                 __ASM_EMIT("fmul        v5.4s, v17.4s, v29.4s")
-                __ASM_EMIT("fmla        v0.4s, v20.4s, v28.4s")                 // v0   = dr*sr + di*si
+                __ASM_EMIT("fmla        v0.4s, v20.4s, v28.4s")                 // v0   = sr*dr + si*di
                 __ASM_EMIT("fmla        v1.4s, v21.4s, v29.4s")
-                __ASM_EMIT("fmul        v16.4s, v16.4s, v16.4s")                // v16  = dr*dr
+                __ASM_EMIT("fmul        v16.4s, v16.4s, v16.4s")                // v16  = sr*sr
                 __ASM_EMIT("fmul        v17.4s, v17.4s, v17.4s")
-                __ASM_EMIT("fmla        v4.4s, v20.4s, v24.4s")                 // v4   = dr*si + di*sr
-                __ASM_EMIT("fmla        v5.4s, v21.4s, v25.4s")
-                __ASM_EMIT("fmla        v16.4s, v20.4s, v20.4s")                // v16  = dr*dr + di*di
+                __ASM_EMIT("fmls        v4.4s, v20.4s, v24.4s")                 // v4   = sr*di - si*dr
+                __ASM_EMIT("fmls        v5.4s, v21.4s, v25.4s")
+                __ASM_EMIT("fmla        v16.4s, v20.4s, v20.4s")                // v16  = sr*sr + si*si
                 __ASM_EMIT("fmla        v17.4s, v21.4s, v21.4s")
-                __ASM_EMIT("fneg        v4.4s, v4.4s")                          // v4   = -(dr*si + di*sr)
-                __ASM_EMIT("fneg        v5.4s, v5.4s")
-                __ASM_EMIT("fdiv        v0.4s, v0.4s, v16.4s")                  // v0   = (dr*sr + di*si)/(dr*dr + di*di)
+                __ASM_EMIT("fdiv        v0.4s, v0.4s, v16.4s")                  // v0   = (sr*dr + si*di)/(sr*sr + si*si)
                 __ASM_EMIT("fdiv        v1.4s, v1.4s, v17.4s")
-                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = -(dr*si + di*sr)/(dr*dr + di*di)
+                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = (sr*di - si*dr)/(sr*sr + si*si)
                 __ASM_EMIT("fdiv        v5.4s, v5.4s, v17.4s")
                 __ASM_EMIT("sub         %[count], %[count], #8")
                 __ASM_EMIT("st1         {v0.4s, v1.4s}, [%[dst_re]], #0x20")
                 __ASM_EMIT("st1         {v4.4s, v5.4s}, [%[dst_im]], #0x20")
-
-                // x4 blocks
                 __ASM_EMIT("4:")
+                // x4 blocks
                 __ASM_EMIT("adds        %[count], %[count], #4")
                 __ASM_EMIT("b.lt        6f")
                 __ASM_EMIT("ld1         {v24.4s}, [%[src_re]], #0x10")          // v24-v25  = sr
                 __ASM_EMIT("ld1         {v28.4s}, [%[src_im]], #0x10")          // v28-v29  = si
                 __ASM_EMIT("ld1         {v16.4s}, [%[dst_re]]")                 // v16-v17  = dr
                 __ASM_EMIT("ld1         {v20.4s}, [%[dst_im]]")                 // v20-v21  = di
-                __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")                 // v0   = dr*sr
-                __ASM_EMIT("fmul        v4.4s, v16.4s, v28.4s")                 // v4   = dr*si
-                __ASM_EMIT("fmla        v0.4s, v20.4s, v28.4s")                 // v0   = dr*sr + di*si
-                __ASM_EMIT("fmul        v16.4s, v16.4s, v16.4s")                // v16  = dr*dr
-                __ASM_EMIT("fmla        v4.4s, v20.4s, v24.4s")                 // v4   = dr*si + di*sr
-                __ASM_EMIT("fmla        v16.4s, v20.4s, v20.4s")                // v16  = dr*dr + di*di
-                __ASM_EMIT("fneg        v4.4s, v4.4s")                          // v4   = -(dr*si + di*sr)
-                __ASM_EMIT("fdiv        v0.4s, v0.4s, v16.4s")                  // v0   = (dr*sr + di*si)/(dr*dr + di*di)
-                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = -(dr*si + di*sr)/(dr*dr + di*di)
+                __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")                 // v0   = sr*dr
+                __ASM_EMIT("fmul        v4.4s, v16.4s, v28.4s")                 // v4   = sr*di
+                __ASM_EMIT("fmla        v0.4s, v20.4s, v28.4s")                 // v0   = sr*dr + si*di
+                __ASM_EMIT("fmul        v16.4s, v16.4s, v16.4s")                // v16  = sr*sr
+                __ASM_EMIT("fmls        v4.4s, v20.4s, v24.4s")                 // v4   = sr*di - si*dr
+                __ASM_EMIT("fmla        v16.4s, v20.4s, v20.4s")                // v16  = sr*sr + si*si
+                __ASM_EMIT("fdiv        v0.4s, v0.4s, v16.4s")                  // v0   = (sr*dr + si*di)/(sr*sr + si*si)
+                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = (sr*di - si*dr)/(sr*sr + si*si)
                 __ASM_EMIT("sub         %[count], %[count], #4")
                 __ASM_EMIT("st1         {v0.4s}, [%[dst_re]], #0x10")
                 __ASM_EMIT("st1         {v4.4s}, [%[dst_im]], #0x10")
-
-                // x1 blocks
                 __ASM_EMIT("6:")
+                // x1 blocks
                 __ASM_EMIT("adds        %[count], %[count], #3")
                 __ASM_EMIT("b.lt        8f")
                 __ASM_EMIT("7:")
@@ -501,20 +474,18 @@ namespace lsp
                 __ASM_EMIT("ld1r        {v28.4s}, [%[src_im]], #0x04")          // v28  = si
                 __ASM_EMIT("ld1r        {v16.4s}, [%[dst_re]]")                 // v16  = dr
                 __ASM_EMIT("ld1r        {v20.4s}, [%[dst_im]]")                 // v20  = di
-                __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")                 // v0   = dr*sr
-                __ASM_EMIT("fmul        v4.4s, v16.4s, v28.4s")                 // v4   = dr*si
-                __ASM_EMIT("fmla        v0.4s, v20.4s, v28.4s")                 // v0   = dr*sr + di*si
-                __ASM_EMIT("fmul        v16.4s, v16.4s, v16.4s")                // v16  = dr*dr
-                __ASM_EMIT("fmla        v4.4s, v20.4s, v24.4s")                 // v4   = dr*si + di*sr
-                __ASM_EMIT("fmla        v16.4s, v20.4s, v20.4s")                // v16  = dr*dr + di*di
-                __ASM_EMIT("fneg        v4.4s, v4.4s")                          // v4   = -(dr*si + di*sr)
-                __ASM_EMIT("fdiv        v0.4s, v0.4s, v16.4s")                  // v0   = (dr*sr + di*si)/(dr*dr + di*di)
-                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = -(dr*si + di*sr)/(dr*dr + di*di)
+                __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")                 // v0   = sr*dr
+                __ASM_EMIT("fmul        v4.4s, v16.4s, v28.4s")                 // v4   = sr*di
+                __ASM_EMIT("fmla        v0.4s, v20.4s, v28.4s")                 // v0   = sr*dr + si*di
+                __ASM_EMIT("fmul        v16.4s, v16.4s, v16.4s")                // v16  = sr*sr
+                __ASM_EMIT("fmls        v4.4s, v20.4s, v24.4s")                 // v4   = sr*di - si*dr
+                __ASM_EMIT("fmla        v16.4s, v20.4s, v20.4s")                // v16  = sr*sr + si*si
+                __ASM_EMIT("fdiv        v0.4s, v0.4s, v16.4s")                  // v0   = (sr*dr + si*di)/(sr*sr + si*si)
+                __ASM_EMIT("fdiv        v4.4s, v4.4s, v16.4s")                  // v4   = (sr*di - si*dr)/(sr*sr + si*si)
                 __ASM_EMIT("str         s0, [%[dst_re]], #0x04")
                 __ASM_EMIT("str         s4, [%[dst_im]], #0x04")
                 __ASM_EMIT("subs        %[count], %[count], #1")
                 __ASM_EMIT("b.ge        7b")
-
                 __ASM_EMIT("8:")
 
                 : [dst_re] "+r" (dst_re), [dst_im] "+r" (dst_im),
