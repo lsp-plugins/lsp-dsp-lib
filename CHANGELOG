@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 1.0.17 ===
+* Fixed improper formula for complex_div and pcomplex_div functions.
 * Implemented sqr1, sqr2, ssqr1 and ssqr2 functions.
 * Implemented axis_apply_lin1 function.
 
