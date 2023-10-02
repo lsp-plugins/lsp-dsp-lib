@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -30,80 +30,66 @@ namespace lsp
 {
     namespace sse3
     {
+    #define PCOMPLEX_MUL_CORE(DST, T, B) \
+        __ASM_EMIT("xor         %[off], %[off]") \
+        /* x4 blocks */ \
+        __ASM_EMIT("sub         $4, %[count]") \
+        __ASM_EMIT("jb          2f") \
+        __ASM_EMIT("1:") \
+        __ASM_EMIT("lddqu       0x00(%[" T "], %[off]), %%xmm0")    /* xmm0 = ar0 ai0 ar1 ai1 */ \
+        __ASM_EMIT("lddqu       0x10(%[" T "], %[off]), %%xmm4")    /* xmm4 = ar2 ai2 ar3 ai3 */ \
+        __ASM_EMIT("lddqu       0x00(%[" B "], %[off]), %%xmm1")    /* xmm1 = br0 bi0 br1 bi1 */ \
+        __ASM_EMIT("lddqu       0x10(%[" B "], %[off]), %%xmm5")    /* xmm5 = br2 bi2 br3 bi3 */ \
+        __ASM_EMIT("movsldup    %%xmm0, %%xmm2")                    /* xmm2 = ar0 ar0 ar1, ar1 */ \
+        __ASM_EMIT("movsldup    %%xmm4, %%xmm6")                    /* xmm6 = ar2 ar2 ar3, ar3 */ \
+        __ASM_EMIT("movshdup    %%xmm0, %%xmm0")                    /* xmm0 = ai0 ai0 ai1, ai1 */ \
+        __ASM_EMIT("movshdup    %%xmm4, %%xmm4")                    /* xmm4 = ai2 ai2 ai3, ai3 */ \
+        __ASM_EMIT("mulps       %%xmm1, %%xmm0")                    /* xmm0 = ai0*br0 ai0*bi0 ai1*br1 ai1*bi1 */ \
+        __ASM_EMIT("mulps       %%xmm5, %%xmm4")                    /* xmm4 = ai2*br2 ai2*bi2 ai3*br3 ai3*bi3 */ \
+        __ASM_EMIT("mulps       %%xmm1, %%xmm2")                    /* xmm2 = ar0*br0 ar0*bi0 ar1*br1 ar1*bi1 */ \
+        __ASM_EMIT("mulps       %%xmm5, %%xmm6")                    /* xmm6 = ar2*br2 ar2*bi2 ar3*br3 ar3*bi3 */ \
+        __ASM_EMIT("shufps      $0xb1, %%xmm0, %%xmm0")             /* xmm0 = ai0*bi0 ai0*br0 ai1*bi1 ai1*br1 */ \
+        __ASM_EMIT("shufps      $0xb1, %%xmm4, %%xmm4")             /* xmm4 = ai2*bi2 ai2*br2 ai3*bi3 ai3*br3 */ \
+        __ASM_EMIT("addsubps    %%xmm0, %%xmm2")                    /* xmm2 = ar0*br0 - ai0*bi0 ar0*bi0 + ai0*br0 ar1*br1 - ai1*bi1 ar1*bi1 + ai1*br1 */ \
+        __ASM_EMIT("addsubps    %%xmm4, %%xmm6")                    /* xmm6 = ar2*br2 - ai2*bi2 ar2*bi2 + ai2*br2 ar3*br3 - ai3*bi3 ar3*bi3 + ai3*br3 */ \
+        __ASM_EMIT("movdqu      %%xmm2, 0x00(%[" DST "], %[off])") \
+        __ASM_EMIT("movdqu      %%xmm6, 0x10(%[" DST "], %[off])") \
+        __ASM_EMIT("add         $0x20, %[off]") \
+        __ASM_EMIT("sub         $4, %[count]") \
+        __ASM_EMIT("jae         1b") \
+        __ASM_EMIT("2:") \
+        /* Process scalar data */ \
+        __ASM_EMIT("add         $3, %[count]") \
+        __ASM_EMIT("jl          4f") \
+        __ASM_EMIT("3:") \
+        __ASM_EMIT("movss       0x00(%[" T "], %[off]), %%xmm0")    /* xmm0 = ar */ \
+        __ASM_EMIT("movss       0x04(%[" T "], %[off]), %%xmm2")    /* xmm2 = ai */ \
+        __ASM_EMIT("movss       0x00(%[" B "], %[off]), %%xmm4")    /* xmm4 = br */ \
+        __ASM_EMIT("movss       0x04(%[" B "], %[off]), %%xmm6")    /* xmm6 = bi */ \
+        __ASM_EMIT("movaps      %%xmm0, %%xmm1")                    /* xmm1 = ar */ \
+        __ASM_EMIT("mulss       %%xmm4, %%xmm0")                    /* xmm0 = ar*br */ \
+        __ASM_EMIT("mulss       %%xmm6, %%xmm1")                    /* xmm1 = ar*bi */ \
+        __ASM_EMIT("mulss       %%xmm2, %%xmm6")                    /* xmm6 = ai*bi */ \
+        __ASM_EMIT("mulss       %%xmm2, %%xmm4")                    /* xmm4 = ai*br */ \
+        __ASM_EMIT("addss       %%xmm4, %%xmm1")                    /* xmm1 = ar*bi + ai*br = i */ \
+        __ASM_EMIT("subss       %%xmm6, %%xmm0")                    /* xmm0 = ar*br - ai*bi = r */ \
+        __ASM_EMIT("movss       %%xmm0, 0x00(%[" DST "], %[off])") \
+        __ASM_EMIT("movss       %%xmm1, 0x04(%[" DST "], %[off])") \
+        __ASM_EMIT("add         $0x08, %[off]") \
+        __ASM_EMIT("dec         %[count]") \
+        __ASM_EMIT("jge         3b") \
+        __ASM_EMIT("4:")
+
         void pcomplex_mul3(float *dst, const float *src1, const float *src2, size_t count)
         {
             size_t off;
 
             ARCH_X86_ASM
             (
-                /* Check count */
-                __ASM_EMIT("xor         %[off], %[off]")
-                __ASM_EMIT("sub         $4, %[count]")
-                __ASM_EMIT("jb          3f")
-
-                __ASM_EMIT(".align 16")
-                __ASM_EMIT("2:")
-                /* Process vectorized data */
-                __ASM_EMIT("lddqu       0x00(%[src1], %[off]), %%xmm0")     /* xmm0 = ar0 ai0 ar1 ai1 */
-                __ASM_EMIT("lddqu       0x10(%[src1], %[off]), %%xmm4")     /* xmm4 = ar2 ai2 ar3 ai3 */
-                __ASM_EMIT("lddqu       0x00(%[src2], %[off]), %%xmm1")     /* xmm1 = br0 bi0 br1 bi1 */
-                __ASM_EMIT("lddqu       0x10(%[src2], %[off]), %%xmm5")     /* xmm5 = br2 bi2 br3 bi3 */
-                /* Calc multiplication */
-                __ASM_EMIT("movsldup    %%xmm0, %%xmm2")            /* xmm2 = ar0 ar0 ar1, ar1 */
-                __ASM_EMIT("movsldup    %%xmm4, %%xmm6")            /* xmm6 = ar2 ar2 ar3, ar3 */
-                __ASM_EMIT("movshdup    %%xmm0, %%xmm0")            /* xmm0 = ai0 ai0 ai1, ai1 */
-                __ASM_EMIT("movshdup    %%xmm4, %%xmm4")            /* xmm4 = ai2 ai2 ai3, ai3 */
-                __ASM_EMIT("mulps       %%xmm1, %%xmm0")            /* xmm0 = ai0*br0 ai0*bi0 ai1*br1 ai1*bi1 */
-                __ASM_EMIT("mulps       %%xmm5, %%xmm4")            /* xmm4 = ai2*br2 ai2*bi2 ai3*br3 ai3*bi3 */
-                __ASM_EMIT("mulps       %%xmm1, %%xmm2")            /* xmm2 = ar0*br0 ar0*bi0 ar1*br1 ar1*bi1 */
-                __ASM_EMIT("mulps       %%xmm5, %%xmm6")            /* xmm6 = ar2*br2 ar2*bi2 ar3*br3 ar3*bi3 */
-                __ASM_EMIT("shufps      $0xb1, %%xmm0, %%xmm0")     /* xmm0 = ai0*bi0 ai0*br0 ai1*bi1 ai1*br1 */
-                __ASM_EMIT("shufps      $0xb1, %%xmm4, %%xmm4")     /* xmm4 = ai2*bi2 ai2*br2 ai3*bi3 ai3*br3 */
-                __ASM_EMIT("addsubps    %%xmm0, %%xmm2")            /* xmm2 = ar0*br0 - ai0*bi0 ar0*bi0 + ai0*br0 ar1*br1 - ai1*bi1 ar1*bi1 + ai1*br1 */
-                __ASM_EMIT("addsubps    %%xmm4, %%xmm6")            /* xmm6 = ar2*br2 - ai2*bi2 ar2*bi2 + ai2*br2 ar3*br3 - ai3*bi3 ar3*bi3 + ai3*br3 */
-                /* Store */
-                __ASM_EMIT("movdqu      %%xmm2, 0x00(%[dst], %[off])")
-                __ASM_EMIT("movdqu      %%xmm6, 0x10(%[dst], %[off])")
-                /* Repeat loop */
-                __ASM_EMIT("add         $0x20, %[off]")
-                __ASM_EMIT("sub         $4, %[count]")
-                __ASM_EMIT("jae         2b")
-
-                /* Check count again */
-                __ASM_EMIT("3:")
-                __ASM_EMIT("add         $4, %[count]")
-                __ASM_EMIT("jle         5f")
-
-                /* Process scalar data */
-                __ASM_EMIT("4:")
-                /* Load */
-                __ASM_EMIT("movss       0x00(%[src1], %[off]), %%xmm0")     /* xmm0 = ar */
-                __ASM_EMIT("movss       0x04(%[src1], %[off]), %%xmm2")     /* xmm2 = ai */
-                __ASM_EMIT("movss       0x00(%[src2], %[off]), %%xmm4")     /* xmm4 = br */
-                __ASM_EMIT("movss       0x04(%[src2], %[off]), %%xmm6")     /* xmm6 = bi */
-                /* Calculate multiplication */
-                __ASM_EMIT("movaps      %%xmm0, %%xmm1")            /* xmm1 = ar */
-                __ASM_EMIT("mulss       %%xmm4, %%xmm0")            /* xmm0 = ar*br */
-                __ASM_EMIT("mulss       %%xmm6, %%xmm1")            /* xmm1 = ar*bi */
-                __ASM_EMIT("mulss       %%xmm2, %%xmm6")            /* xmm6 = ai*bi */
-                __ASM_EMIT("mulss       %%xmm2, %%xmm4")            /* xmm4 = ai*br */
-                __ASM_EMIT("addss       %%xmm4, %%xmm1")            /* xmm1 = ar*bi + ai*br = i */
-                __ASM_EMIT("subss       %%xmm6, %%xmm0")            /* xmm0 = ar*br - ai*bi = r */
-                /* Store */
-                __ASM_EMIT("movss       %%xmm0, 0x00(%[dst], %[off])")
-                __ASM_EMIT("movss       %%xmm1, 0x04(%[dst], %[off])")
-                /* Repeat loop */
-                __ASM_EMIT("add         $0x08, %[off]")
-                __ASM_EMIT("dec         %[count]")
-                __ASM_EMIT("jnz         4b")
-
-                /* Exit */
-                __ASM_EMIT("5:")
-
-                : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
-                  [off] "=&r" (off),
+                PCOMPLEX_MUL_CORE("dst", "src1", "src2")
+                : [off] "=&r" (off),
                   [count] "+r" (count)
-                :
+                : [dst] "r" (dst), [src1] "r" (src1), [src2] "r" (src2)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm4",
                   "%xmm5", "%xmm6"
@@ -116,74 +102,10 @@ namespace lsp
 
             ARCH_X86_ASM
             (
-                /* Check count */
-                __ASM_EMIT("xor         %[off], %[off]")
-                __ASM_EMIT("sub         $4, %[count]")
-                __ASM_EMIT("jb          3f")
-
-                __ASM_EMIT(".align 16")
-                __ASM_EMIT("2:")
-                /* Process vectorized data */
-                __ASM_EMIT("lddqu       0x00(%[dst], %[off]), %%xmm0")     /* xmm0 = ar0 ai0 ar1 ai1 */
-                __ASM_EMIT("lddqu       0x10(%[dst], %[off]), %%xmm4")     /* xmm4 = ar2 ai2 ar3 ai3 */
-                __ASM_EMIT("lddqu       0x00(%[src], %[off]), %%xmm1")     /* xmm1 = br0 bi0 br1 bi1 */
-                __ASM_EMIT("lddqu       0x10(%[src], %[off]), %%xmm5")     /* xmm5 = br2 bi2 br3 bi3 */
-                /* Calc multiplication */
-                __ASM_EMIT("movsldup    %%xmm0, %%xmm2")            /* xmm2 = ar0 ar0 ar1, ar1 */
-                __ASM_EMIT("movsldup    %%xmm4, %%xmm6")            /* xmm6 = ar2 ar2 ar3, ar3 */
-                __ASM_EMIT("movshdup    %%xmm0, %%xmm0")            /* xmm0 = ai0 ai0 ai1, ai1 */
-                __ASM_EMIT("movshdup    %%xmm4, %%xmm4")            /* xmm4 = ai2 ai2 ai3, ai3 */
-                __ASM_EMIT("mulps       %%xmm1, %%xmm0")            /* xmm0 = ai0*br0 ai0*bi0 ai1*br1 ai1*bi1 */
-                __ASM_EMIT("mulps       %%xmm5, %%xmm4")            /* xmm4 = ai2*br2 ai2*bi2 ai3*br3 ai3*bi3 */
-                __ASM_EMIT("mulps       %%xmm1, %%xmm2")            /* xmm2 = ar0*br0 ar0*bi0 ar1*br1 ar1*bi1 */
-                __ASM_EMIT("mulps       %%xmm5, %%xmm6")            /* xmm6 = ar2*br2 ar2*bi2 ar3*br3 ar3*bi3 */
-                __ASM_EMIT("shufps      $0xb1, %%xmm0, %%xmm0")     /* xmm0 = ai0*bi0 ai0*br0 ai1*bi1 ai1*br1 */
-                __ASM_EMIT("shufps      $0xb1, %%xmm4, %%xmm4")     /* xmm4 = ai2*bi2 ai2*br2 ai3*bi3 ai3*br3 */
-                __ASM_EMIT("addsubps    %%xmm0, %%xmm2")            /* xmm2 = ar0*br0 - ai0*bi0 ar0*bi0 + ai0*br0 ar1*br1 - ai1*bi1 ar1*bi1 + ai1*br1 */
-                __ASM_EMIT("addsubps    %%xmm4, %%xmm6")            /* xmm6 = ar2*br2 - ai2*bi2 ar2*bi2 + ai2*br2 ar3*br3 - ai3*bi3 ar3*bi3 + ai3*br3 */
-                /* Store */
-                __ASM_EMIT("movdqu      %%xmm2, 0x00(%[dst], %[off])")
-                __ASM_EMIT("movdqu      %%xmm6, 0x10(%[dst], %[off])")
-                /* Repeat loop */
-                __ASM_EMIT("add         $0x20, %[off]")
-                __ASM_EMIT("sub         $4, %[count]")
-                __ASM_EMIT("jae         2b")
-
-                /* Check count again */
-                __ASM_EMIT("3:")
-                __ASM_EMIT("add         $4, %[count]")
-                __ASM_EMIT("jle         5f")
-
-                /* Process scalar data */
-                __ASM_EMIT("4:")
-                /* Load */
-                __ASM_EMIT("movss       0x00(%[dst], %[off]), %%xmm0")     /* xmm0 = ar */
-                __ASM_EMIT("movss       0x04(%[dst], %[off]), %%xmm2")     /* xmm2 = ai */
-                __ASM_EMIT("movss       0x00(%[src], %[off]), %%xmm4")     /* xmm4 = br */
-                __ASM_EMIT("movss       0x04(%[src], %[off]), %%xmm6")     /* xmm6 = bi */
-                /* Calculate multiplication */
-                __ASM_EMIT("movaps      %%xmm0, %%xmm1")            /* xmm1 = ar */
-                __ASM_EMIT("mulss       %%xmm4, %%xmm0")            /* xmm0 = ar*br */
-                __ASM_EMIT("mulss       %%xmm6, %%xmm1")            /* xmm1 = ar*bi */
-                __ASM_EMIT("mulss       %%xmm2, %%xmm6")            /* xmm6 = ai*bi */
-                __ASM_EMIT("mulss       %%xmm2, %%xmm4")            /* xmm4 = ai*br */
-                __ASM_EMIT("addss       %%xmm4, %%xmm1")            /* xmm1 = ar*bi + ai*br = i */
-                __ASM_EMIT("subss       %%xmm6, %%xmm0")            /* xmm0 = ar*br - ai*bi = r */
-                /* Store */
-                __ASM_EMIT("movss       %%xmm0, 0x00(%[dst], %[off])")
-                __ASM_EMIT("movss       %%xmm1, 0x04(%[dst], %[off])")
-                /* Repeat loop */
-                __ASM_EMIT("add         $0x08, %[off]")
-                __ASM_EMIT("dec         %[count]")
-                __ASM_EMIT("jnz         4b")
-
-                /* Exit */
-                __ASM_EMIT("5:")
-
-                : [dst] "+r" (dst), [src] "+r" (src),
-                  [off] "=&r" (off),
+                PCOMPLEX_MUL_CORE("dst", "dst", "src")
+                : [off] "=&r" (off),
                   [count] "+r" (count)
-                :
+                : [dst] "r" (dst), [src] "r" (src)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm4",
                   "%xmm5", "%xmm6"
@@ -692,7 +614,7 @@ namespace lsp
                   "%xmm12", "%xmm13", "%xmm14"
             );
         }
-    }
-}
+    } /* namespace sse3 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE3_PCOMPLEX_H_ */
