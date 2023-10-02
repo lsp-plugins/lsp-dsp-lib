@@ -41,6 +41,11 @@ namespace lsp
             void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
         }
 
+        namespace sse3
+        {
+            void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
+        }
+
         namespace avx
         {
             void pcomplex_div3(float *dst, const float *t, const float *b, size_t count);
@@ -106,6 +111,7 @@ PTEST_BEGIN("dsp.pcomplex", div3, 5, 1000)
 
             CALL(generic::pcomplex_div3);
             IF_ARCH_X86(CALL(sse::pcomplex_div3));
+            IF_ARCH_X86(CALL(sse3::pcomplex_div3));
             IF_ARCH_X86(CALL(avx::pcomplex_div3));
             IF_ARCH_X86(CALL(avx::pcomplex_div3_fma3));
             IF_ARCH_ARM(CALL(neon_d32::pcomplex_div3));
