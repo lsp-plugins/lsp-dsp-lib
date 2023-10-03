@@ -273,103 +273,128 @@ namespace lsp
 
         #define PCOMPLEX_DIV_CORE(DST, T, B, SEL) \
             /* Init */ \
-            __ASM_EMIT("xor         %[off], %[off]") \
+            __ASM_EMIT("xor                     %[off], %[off]") \
             /* x8 block */ \
-            __ASM_EMIT("sub         $8, %[count]") \
-            __ASM_EMIT("jb          2f") \
+            __ASM_EMIT("sub                     $8, %[count]") \
+            __ASM_EMIT("jb                      2f") \
             __ASM_EMIT("1:") \
-            __ASM_EMIT("vmovups     0x00(%[" B "], %[off]), %%ymm6")        /* ymm6 = br0 bi0 */ \
-            __ASM_EMIT("vmovups     0x20(%[" B "], %[off]), %%ymm7") \
-            __ASM_EMIT("vmovaps     0x00 + %[CC], %%ymm3")                  /* ymm3 = 1 */ \
-            __ASM_EMIT("vmulps      %%ymm6, %%ymm6, %%ymm4")                /* ymm4 = br0*br0 bi0*bi0 */ \
-            __ASM_EMIT("vmulps      %%ymm7, %%ymm7, %%ymm5") \
-            __ASM_EMIT("vhaddps     %%ymm5, %%ymm4, %%ymm2")                /* ymm2 = R = br0*br0+bi0*bi0 */ \
-            __ASM_EMIT("vmovsldup   0x00(%[" T "], %[off]), %%ymm0")        /* ymm0 = ar0 ar0 */ \
-            __ASM_EMIT("vdivps      %%ymm2, %%ymm3, %%ymm3")                /* ymm3 = 1/R */ \
-            __ASM_EMIT("vmovsldup   0x20(%[" T "], %[off]), %%ymm1") \
-            __ASM_EMIT("vxorps      0x20 + %[CC], %%ymm3, %%ymm5")          /* ymm5 = -1/R */ \
-            __ASM_EMIT("vmovshdup   0x00(%[" T "], %[off]), %%ymm2")        /* ymm2 = ai0 ai0 */ \
-            __ASM_EMIT("vunpcklps   %%ymm5, %%ymm3, %%ymm4")                /* ymm4 = 1/R -1/R */ \
-            __ASM_EMIT("vmulps      %%ymm6, %%ymm0, %%ymm0")                /* ymm0 = ar0*br0 ar0*bi0 */ \
-            __ASM_EMIT("vunpckhps   %%ymm5, %%ymm3, %%ymm5") \
-            __ASM_EMIT("vmulps      %%ymm7, %%ymm1, %%ymm1") \
-            __ASM_EMIT("vmovshdup   0x20(%[" T "], %[off]), %%ymm3") \
-            __ASM_EMIT("vshufps     $0xb1, %%ymm6, %%ymm6, %%ymm6")         /* ymm6 = bi0 br0 */ \
-            __ASM_EMIT("vshufps     $0xb1, %%ymm7, %%ymm7, %%ymm7") \
-            __ASM_EMIT(SEL("vmulps  %%ymm6, %%ymm2, %%ymm2", ""))           /* ymm2 = ai0*bi0 ai0*br0 */ \
-            __ASM_EMIT(SEL("vmulps  %%ymm7, %%ymm3, %%ymm3", "")) \
-            __ASM_EMIT(SEL("vaddps  %%ymm2, %%ymm0, %%ymm0", "vfmadd231ps %%ymm6, %%ymm2, %%ymm0")) /* ymm0 = r i = ar0*br0+ai0*bi0 ar0*bi0+ai0*br0 ... */ \
-            __ASM_EMIT(SEL("vaddps  %%ymm3, %%ymm1, %%ymm1", "vfmadd231ps %%ymm7, %%ymm3, %%ymm1")) \
-            __ASM_EMIT("vmulps      %%ymm4, %%ymm0, %%ymm0")                /* ymm0 = r/R -i/R */ \
-            __ASM_EMIT("vmulps      %%ymm5, %%ymm1, %%ymm1") \
-            __ASM_EMIT("vmovups     %%ymm0, 0x00(%[" DST "], %[off])") \
-            __ASM_EMIT("vmovups     %%ymm1, 0x20(%[" DST "], %[off])") \
-            __ASM_EMIT("add         $0x40, %[off]") \
-            __ASM_EMIT("sub         $8, %[count]") \
-            __ASM_EMIT("jae         1b") \
+            __ASM_EMIT("vmovups                 0x00(%[" T "], %[off]), %%ymm0")        /* ymm0 = tr ti */ \
+            __ASM_EMIT("vmovups                 0x20(%[" T "], %[off]), %%ymm4") \
+            __ASM_EMIT("vmovups                 0x00(%[" B "], %[off]), %%ymm1")        /* ymm1 = br bi */ \
+            __ASM_EMIT("vmovups                 0x20(%[" B "], %[off]), %%ymm5") \
+            __ASM_EMIT("vmovshdup               %%ymm0, %%ymm2")                        /* ymm2 = ti ti */ \
+            __ASM_EMIT("vmovshdup               %%ymm4, %%ymm6") \
+            __ASM_EMIT("vmovsldup               %%ymm0, %%ymm0")                        /* ymm0 = tr tr */ \
+            __ASM_EMIT("vmovsldup               %%ymm4, %%ymm4") \
+            __ASM_EMIT("vmulps                  %%ymm1, %%ymm1, %%ymm3")                /* ymm3 = br*br bi*bi */ \
+            __ASM_EMIT("vmulps                  %%ymm5, %%ymm5, %%ymm7") \
+            __ASM_EMIT("vmulps                  %%ymm1, %%ymm0, %%ymm0")                /* ymm0 = tr*br tr*bi */ \
+            __ASM_EMIT("vmulps                  %%ymm5, %%ymm4, %%ymm4") \
+            __ASM_EMIT("vhaddps                 %%ymm7, %%ymm3, %%ymm3")                /* ymm3 = R0 R1 R4 R5 R2 R3 R6 R7 */ \
+            __ASM_EMIT(SEL("vxorps              0x20 + %[CC], %%ymm0, %%ymm0", ""))     /* ymm0 = -tr*br -tr*bi */ \
+            __ASM_EMIT(SEL("vxorps              0x20 + %[CC], %%ymm4, %%ymm4", ""))  \
+            __ASM_EMIT("vmovaps                 0x00 + %[CC], %%ymm7")                  /* ymm7 = 1 */ \
+            __ASM_EMIT("vdivps                  %%ymm3, %%ymm7, %%ymm3")                /* ymm3 = 1/R0 1/R1 1/R4 1/R5 1/R2 1/R3 1/R6 1/R7 */ \
+            __ASM_EMIT("vshufps                 $0xb1, %%ymm1, %%ymm1, %%ymm1")         /* ymm1 = bi br */ \
+            __ASM_EMIT("vshufps                 $0xb1, %%ymm5, %%ymm5, %%ymm5") \
+            __ASM_EMIT("vunpckhps               %%ymm3, %%ymm3, %%ymm7")                /* ymm7 = 1/R4 1/R4 1/R5 1/R5 1/R6 1/R6 1/R7 1/R7 */ \
+            __ASM_EMIT("vunpcklps               %%ymm3, %%ymm3, %%ymm3")                /* ymm3 = 1/R0 1/R0 1/R1 1/R1 1/R2 1/R2 1/R3 1/R3 */ \
+            __ASM_EMIT(SEL("vmulps              %%ymm1, %%ymm2, %%ymm2", ""))           /* ymm2 = ti*bi ti*br */ \
+            __ASM_EMIT(SEL("vmulps              %%ymm5, %%ymm6, %%ymm6", "")) \
+            __ASM_EMIT(SEL("vaddsubps           %%ymm0, %%ymm2, %%ymm0", ""))           /* ymm0 = r i = ti*bi+tr*br ti*br-tr*bi */ \
+            __ASM_EMIT(SEL("vaddsubps           %%ymm4, %%ymm6, %%ymm4", "")) \
+            __ASM_EMIT(SEL("", "vfmsubadd231ps  %%ymm1, %%ymm2, %%ymm0"))               /* ymm0 = r i = ti*bi+tr*br ti*br-tr*bi */ \
+            __ASM_EMIT(SEL("", "vfmsubadd231ps  %%ymm5, %%ymm6, %%ymm4")) \
+            __ASM_EMIT("vmulps                  %%ymm3, %%ymm0, %%ymm0")                /* ymm0 = r' i' */ \
+            __ASM_EMIT("vmulps                  %%ymm7, %%ymm4, %%ymm4") \
+            __ASM_EMIT("vmovups                 %%ymm0, 0x00(%[" DST "], %[off])") \
+            __ASM_EMIT("vmovups                 %%ymm4, 0x20(%[" DST "], %[off])") \
+            __ASM_EMIT("add                     $0x40, %[off]") \
+            __ASM_EMIT("sub                     $8, %[count]") \
+            __ASM_EMIT("jae                     1b") \
             __ASM_EMIT("2:") \
             /* x4 block */ \
-            __ASM_EMIT("add         $4, %[count]") \
-            __ASM_EMIT("jl          4f") \
-            __ASM_EMIT("vmovups     0x00(%[" B "], %[off]), %%ymm6")        /* ymm6 = br0 bi0 */ \
-            __ASM_EMIT("vmovaps     0x00 + %[CC], %%ymm3")                  /* ymm3 = 1 */ \
-            __ASM_EMIT("vmulps      %%ymm6, %%ymm6, %%ymm4")                /* ymm4 = br0*br0 bi0*bi0 */ \
-            __ASM_EMIT("vhaddps     %%ymm5, %%ymm4, %%ymm2")                /* ymm2 = R = br0*br0+bi0*bi0 */ \
-            __ASM_EMIT("vdivps      %%ymm2, %%ymm3, %%ymm3")                /* ymm3 = 1/R */ \
-            __ASM_EMIT("vmovsldup   0x00(%[" T "], %[off]), %%ymm0")        /* ymm0 = ar0 ar0 */ \
-            __ASM_EMIT("vxorps      0x20 + %[CC], %%ymm3, %%ymm5")          /* ymm5 = -1/R */ \
-            __ASM_EMIT("vmovshdup   0x00(%[" T "], %[off]), %%ymm2")        /* ymm2 = ai0 ai0 */ \
-            __ASM_EMIT("vunpcklps   %%ymm5, %%ymm3, %%ymm4")                /* ymm4 = 1/R -1/R */ \
-            __ASM_EMIT("vmulps      %%ymm6, %%ymm0, %%ymm0")                /* ymm0 = ar0*br0 ar0*bi0 */ \
-            __ASM_EMIT("vunpckhps   %%ymm5, %%ymm3, %%ymm5") \
-            __ASM_EMIT("vshufps     $0xb1, %%ymm6, %%ymm6, %%ymm6")         /* ymm6 = bi0 br0 */ \
-            __ASM_EMIT(SEL("vmulps  %%ymm6, %%ymm2, %%ymm2", ""))           /* ymm2 = ai0*bi0 ai0*br0 */ \
-            __ASM_EMIT(SEL("vaddps  %%ymm2, %%ymm0, %%ymm0", "vfmadd231ps %%ymm6, %%ymm2, %%ymm0")) /* ymm0 = r i = ar0*br0+ai0*bi0 ar0*bi0+ai0*br0 ... */ \
-            __ASM_EMIT("vmulps      %%ymm4, %%ymm0, %%ymm0")                /* ymm0 = r/R -i/R */ \
-            __ASM_EMIT("vmovups     %%ymm0, 0x00(%[" DST "], %[off])") \
-            __ASM_EMIT("add         $0x20, %[off]") \
-            __ASM_EMIT("sub         $4, %[count]") \
+            __ASM_EMIT("add                     $4, %[count]") \
+            __ASM_EMIT("jl                      4f") \
+            __ASM_EMIT("vmovups                 0x00(%[" T "], %[off]), %%xmm0")        /* xmm0 = tr ti */ \
+            __ASM_EMIT("vmovups                 0x10(%[" T "], %[off]), %%xmm4") \
+            __ASM_EMIT("vmovups                 0x00(%[" B "], %[off]), %%xmm1")        /* xmm1 = br bi */ \
+            __ASM_EMIT("vmovups                 0x10(%[" B "], %[off]), %%xmm5") \
+            __ASM_EMIT("vmovshdup               %%xmm0, %%xmm2")                        /* xmm2 = ti ti */ \
+            __ASM_EMIT("vmovshdup               %%xmm4, %%xmm6") \
+            __ASM_EMIT("vmovsldup               %%xmm0, %%xmm0")                        /* xmm0 = tr tr */ \
+            __ASM_EMIT("vmovsldup               %%xmm4, %%xmm4") \
+            __ASM_EMIT("vmulps                  %%xmm1, %%xmm1, %%xmm3")                /* xmm3 = br*br bi*bi */ \
+            __ASM_EMIT("vmulps                  %%xmm5, %%xmm5, %%xmm7") \
+            __ASM_EMIT("vmulps                  %%xmm1, %%xmm0, %%xmm0")                /* xmm0 = tr*br tr*bi */ \
+            __ASM_EMIT("vmulps                  %%xmm5, %%xmm4, %%xmm4") \
+            __ASM_EMIT("vhaddps                 %%xmm7, %%xmm3, %%xmm3")                /* xmm3 = R0 R1 R2 R3 */ \
+            __ASM_EMIT(SEL("vxorps              0x20 + %[CC], %%xmm0, %%xmm0", ""))     /* xmm0 = -tr*br -tr*bi */ \
+            __ASM_EMIT(SEL("vxorps              0x20 + %[CC], %%xmm4, %%xmm4", ""))  \
+            __ASM_EMIT("vmovaps                 0x00 + %[CC], %%xmm7")                  /* xmm7 = 1 */ \
+            __ASM_EMIT("vdivps                  %%xmm3, %%xmm7, %%xmm3")                /* xmm3 = 1/R0 1/R1 1/R2 1/R3 */ \
+            __ASM_EMIT("vshufps                 $0xb1, %%xmm1, %%xmm1, %%xmm1")         /* xmm1 = bi br */ \
+            __ASM_EMIT("vshufps                 $0xb1, %%xmm5, %%xmm5, %%xmm5") \
+            __ASM_EMIT("vunpckhps               %%xmm3, %%xmm3, %%xmm7")                /* xmm7 = 1/R2 1/R2 1/R3 1/R3 */ \
+            __ASM_EMIT("vunpcklps               %%xmm3, %%xmm3, %%xmm3")                /* xmm3 = 1/R0 1/R0 1/R1 1/R1 */ \
+            __ASM_EMIT(SEL("vmulps              %%xmm1, %%xmm2, %%xmm2", ""))           /* xmm2 = ti*bi ti*br */ \
+            __ASM_EMIT(SEL("vmulps              %%xmm5, %%xmm6, %%xmm6", "")) \
+            __ASM_EMIT(SEL("vaddsubps           %%xmm0, %%xmm2, %%xmm0", ""))           /* xmm0 = r i = ti*bi+tr*br ti*br-tr*bi */ \
+            __ASM_EMIT(SEL("vaddsubps           %%xmm4, %%xmm6, %%xmm4", "")) \
+            __ASM_EMIT(SEL("", "vfmsubadd231ps  %%xmm1, %%xmm2, %%xmm0"))               /* xmm0 = r i = ti*bi+tr*br ti*br-tr*bi */ \
+            __ASM_EMIT(SEL("", "vfmsubadd231ps  %%xmm5, %%xmm6, %%xmm4")) \
+            __ASM_EMIT("vmulps                  %%xmm3, %%xmm0, %%xmm0")                /* xmm0 = r' i' */ \
+            __ASM_EMIT("vmulps                  %%xmm7, %%xmm4, %%xmm4") \
+            __ASM_EMIT("vmovups                 %%xmm0, 0x00(%[" DST "], %[off])") \
+            __ASM_EMIT("vmovups                 %%xmm4, 0x10(%[" DST "], %[off])") \
+            __ASM_EMIT("add                     $0x20, %[off]") \
+            __ASM_EMIT("sub                     $4, %[count]") \
             __ASM_EMIT("4:") \
             /* x2 block */ \
-            __ASM_EMIT("add         $2, %[count]") \
-            __ASM_EMIT("jl          6f") \
-            __ASM_EMIT("vmovups     0x00(%[" B "], %[off]), %%xmm6")        /* xmm6 = br0 bi0 */ \
-            __ASM_EMIT("vmovaps     0x00 + %[CC], %%xmm3")                  /* xmm3 = 1 */ \
-            __ASM_EMIT("vmulps      %%xmm6, %%xmm6, %%xmm4")                /* xmm4 = br0*br0 bi0*bi0 */ \
-            __ASM_EMIT("vhaddps     %%xmm5, %%xmm4, %%xmm2")                /* xmm2 = R = br0*br0+bi0*bi0 */ \
-            __ASM_EMIT("vmovsldup   0x00(%[" T "], %[off]), %%xmm0")        /* xmm0 = ar0 ar0 */ \
-            __ASM_EMIT("vdivps      %%xmm2, %%xmm3, %%xmm3")                /* xmm3 = 1/R */ \
-            __ASM_EMIT("vmovshdup   0x00(%[" T "], %[off]), %%xmm2")        /* xmm2 = ai0 ai0 */ \
-            __ASM_EMIT("vxorps      0x20 + %[CC], %%xmm3, %%xmm5")          /* xmm5 = -1/R */ \
-            __ASM_EMIT("vmulps      %%xmm6, %%xmm0, %%xmm0")                /* xmm0 = ar0*br0 ar0*bi0 */ \
-            __ASM_EMIT("vunpcklps   %%xmm5, %%xmm3, %%xmm4")                /* xmm4 = 1/R -1/R */ \
-            __ASM_EMIT("vshufps     $0xb1, %%xmm6, %%xmm6, %%xmm6")         /* xmm6 = bi0 br0 */ \
-            __ASM_EMIT(SEL("vmulps  %%xmm6, %%xmm2, %%xmm2", ""))           /* xmm2 = ai0*bi0 ai0*br0 */ \
-            __ASM_EMIT(SEL("vaddps  %%xmm2, %%xmm0, %%xmm0", "vfmadd231ps %%xmm6, %%xmm2, %%xmm0")) /* xmm0 = r i = ar0*br0+ai0*bi0 ar0*bi0+ai0*br0 ... */ \
-            __ASM_EMIT("vmulps      %%xmm4, %%xmm0, %%xmm0")                /* xmm0 = r/R -i/R */ \
-            __ASM_EMIT("vmovups     %%xmm0, 0x00(%[" DST "], %[off])") \
-            __ASM_EMIT("add         $0x10, %[off]") \
-            __ASM_EMIT("sub         $2, %[count]") \
+            __ASM_EMIT("add                     $2, %[count]") \
+            __ASM_EMIT("jl                      6f") \
+            __ASM_EMIT("vmovups                 0x00(%[" T "], %[off]), %%xmm0")        /* xmm0 = tr ti */ \
+            __ASM_EMIT("vmovups                 0x00(%[" B "], %[off]), %%xmm1")        /* xmm1 = br bi */ \
+            __ASM_EMIT("vmovshdup               %%xmm0, %%xmm2")                        /* xmm2 = ti ti */ \
+            __ASM_EMIT("vmovsldup               %%xmm0, %%xmm0")                        /* xmm0 = tr tr */ \
+            __ASM_EMIT("vmulps                  %%xmm1, %%xmm1, %%xmm3")                /* xmm3 = br*br bi*bi */ \
+            __ASM_EMIT("vmulps                  %%xmm1, %%xmm0, %%xmm0")                /* xmm0 = tr*br tr*bi */ \
+            __ASM_EMIT("vhaddps                 %%xmm3, %%xmm3, %%xmm3")                /* xmm3 = R0 R1 */ \
+            __ASM_EMIT(SEL("vxorps              0x20 + %[CC], %%xmm0, %%xmm0", ""))     /* xmm0 = -tr*br -tr*bi */ \
+            __ASM_EMIT("vmovaps                 0x00 + %[CC], %%xmm7")                  /* xmm7 = 1 */ \
+            __ASM_EMIT("vdivps                  %%xmm3, %%xmm7, %%xmm3")                /* xmm3 = 1/R0 1/R1 1/R2 1/R3 */ \
+            __ASM_EMIT("vshufps                 $0xb1, %%xmm1, %%xmm1, %%xmm1")         /* xmm1 = bi br */ \
+            __ASM_EMIT("vunpckhps               %%xmm3, %%xmm3, %%xmm7")                /* xmm7 = 1/R2 1/R2 1/R3 1/R3 */ \
+            __ASM_EMIT("vunpcklps               %%xmm3, %%xmm3, %%xmm3")                /* xmm3 = 1/R0 1/R0 1/R1 1/R1 */ \
+            __ASM_EMIT(SEL("vmulps              %%xmm1, %%xmm2, %%xmm2", ""))           /* xmm2 = ti*bi ti*br */ \
+            __ASM_EMIT(SEL("vaddsubps           %%xmm0, %%xmm2, %%xmm0", ""))           /* xmm0 = r i = ti*bi+tr*br ti*br-tr*bi */ \
+            __ASM_EMIT(SEL("", "vfmsubadd231ps  %%xmm1, %%xmm2, %%xmm0"))               /* xmm0 = r i = ti*bi+tr*br ti*br-tr*bi */ \
+            __ASM_EMIT("vmulps                  %%xmm3, %%xmm0, %%xmm0")                /* xmm0 = r' i' */ \
+            __ASM_EMIT("vmovups                 %%xmm0, 0x00(%[" DST "], %[off])") \
+            __ASM_EMIT("add                     $0x10, %[off]") \
+            __ASM_EMIT("sub                     $2, %[count]") \
             __ASM_EMIT("6:") \
             /* x1 block */ \
-            __ASM_EMIT("add         $1, %[count]") \
-            __ASM_EMIT("jl          8f") \
-            __ASM_EMIT("vmovlps     0x00(%[" B "], %[off]), %%xmm6, %%xmm6")/* xmm6 = br0 bi0 */ \
-            __ASM_EMIT("vmovaps     0x00 + %[CC], %%xmm3")                  /* xmm3 = 1 */ \
-            __ASM_EMIT("vmulps      %%xmm6, %%xmm6, %%xmm4")                /* xmm4 = br0*br0 bi0*bi0 */ \
-            __ASM_EMIT("vhaddps     %%xmm5, %%xmm4, %%xmm2")                /* xmm2 = R = br0*br0+bi0*bi0 */ \
-            __ASM_EMIT("vdivps      %%xmm2, %%xmm3, %%xmm3")                /* xmm3 = 1/R */ \
-            __ASM_EMIT("vxorps      0x20 + %[CC], %%xmm3, %%xmm5")          /* xmm5 = -1/R */ \
-            __ASM_EMIT("vmovlps     0x00(%[" T "], %[off]), %%xmm2, %%xmm2") \
-            __ASM_EMIT("vunpcklps   %%xmm5, %%xmm3, %%xmm4")                /* xmm4 = 1/R -1/R */ \
-            __ASM_EMIT("vmovsldup   %%xmm2, %%xmm0")                        /* xmm0 = ar0 ar0 */ \
-            __ASM_EMIT("vmovshdup   %%xmm2, %%xmm2")                        /* xmm2 = ai0 ai0 */ \
-            __ASM_EMIT("vmulps      %%xmm6, %%xmm0, %%xmm0")                /* xmm0 = ar0*br0 ar0*bi0 */ \
-            __ASM_EMIT("vshufps     $0xb1, %%xmm6, %%xmm6, %%xmm6")         /* xmm6 = bi0 br0 */ \
-            __ASM_EMIT(SEL("vmulps  %%xmm6, %%xmm2, %%xmm2", ""))           /* xmm2 = ai0*bi0 ai0*br0 */ \
-            __ASM_EMIT(SEL("vaddps  %%xmm2, %%xmm0, %%xmm0", "vfmadd231ps %%xmm6, %%xmm2, %%xmm0")) /* xmm0 = r i = ar0*br0+ai0*bi0 ar0*bi0+ai0*br0 ... */ \
-            __ASM_EMIT("vmulps      %%xmm4, %%xmm0, %%xmm0")                /* xmm0 = r/R -i/R */ \
-            __ASM_EMIT("vmovlps     %%xmm0, 0x00(%[" DST "], %[off])") \
+            __ASM_EMIT("add                     $1, %[count]") \
+            __ASM_EMIT("jl                      8f") \
+            __ASM_EMIT("vmovlps                 0x00(%[" T "], %[off]), %%xmm0, %%xmm0")/* xmm0 = tr ti */ \
+            __ASM_EMIT("vmovlps                 0x00(%[" B "], %[off]), %%xmm1, %%xmm1")/* xmm1 = br bi */ \
+            __ASM_EMIT("vmovshdup               %%xmm0, %%xmm2")                        /* xmm2 = ti ti */ \
+            __ASM_EMIT("vmovsldup               %%xmm0, %%xmm0")                        /* xmm0 = tr tr */ \
+            __ASM_EMIT("vmulps                  %%xmm1, %%xmm1, %%xmm3")                /* xmm3 = br*br bi*bi */ \
+            __ASM_EMIT("vmulps                  %%xmm1, %%xmm0, %%xmm0")                /* xmm0 = tr*br tr*bi */ \
+            __ASM_EMIT("vhaddps                 %%xmm3, %%xmm3, %%xmm3")                /* xmm3 = R0 R1 */ \
+            __ASM_EMIT(SEL("vxorps              0x20 + %[CC], %%xmm0, %%xmm0", ""))     /* xmm0 = -tr*br -tr*bi */ \
+            __ASM_EMIT("vmovaps                 0x00 + %[CC], %%xmm7")                  /* xmm7 = 1 */ \
+            __ASM_EMIT("vdivps                  %%xmm3, %%xmm7, %%xmm3")                /* xmm3 = 1/R0 1/R1 1/R2 1/R3 */ \
+            __ASM_EMIT("vshufps                 $0xb1, %%xmm1, %%xmm1, %%xmm1")         /* xmm1 = bi br */ \
+            __ASM_EMIT("vunpckhps               %%xmm3, %%xmm3, %%xmm7")                /* xmm7 = 1/R2 1/R2 1/R3 1/R3 */ \
+            __ASM_EMIT("vunpcklps               %%xmm3, %%xmm3, %%xmm3")                /* xmm3 = 1/R0 1/R0 1/R1 1/R1 */ \
+            __ASM_EMIT(SEL("vmulps              %%xmm1, %%xmm2, %%xmm2", ""))           /* xmm2 = ti*bi ti*br */ \
+            __ASM_EMIT(SEL("vaddsubps           %%xmm0, %%xmm2, %%xmm0", ""))           /* xmm0 = r i = ti*bi+tr*br ti*br-tr*bi */ \
+            __ASM_EMIT(SEL("", "vfmsubadd231ps  %%xmm1, %%xmm2, %%xmm0"))               /* xmm0 = r i = ti*bi+tr*br ti*br-tr*bi */ \
+            __ASM_EMIT("vmulps                  %%xmm3, %%xmm0, %%xmm0")                /* xmm0 = r' i' */ \
+            __ASM_EMIT("vmovlps                 %%xmm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("8:") \
             /* end */
 

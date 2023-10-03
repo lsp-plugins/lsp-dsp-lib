@@ -74,6 +74,9 @@
                 // Additional xmm registers are available only in 64-bit mode
                 EXPORT1(pcomplex_mul2);
                 EXPORT1(pcomplex_mul3);
+                EXPORT1(pcomplex_div2);
+                EXPORT1(pcomplex_rdiv2);
+                EXPORT1(pcomplex_div3);
 
                 if (!feature_check(f, FEAT_FAST_MOVS))
                 {
