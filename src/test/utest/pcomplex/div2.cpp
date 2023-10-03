@@ -52,6 +52,12 @@ namespace lsp
             void pcomplex_div2_fma3(float *dst, const float *src, size_t count);
             void pcomplex_rdiv2_fma3(float *dst, const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            void pcomplex_div2(float *dst, const float *src, size_t count);
+            void pcomplex_rdiv2(float *dst, const float *src, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -126,6 +132,8 @@ UTEST_BEGIN("dsp.pcomplex", div2)
         IF_ARCH_X86(CALL(generic::pcomplex_rdiv2, avx::pcomplex_rdiv2, 32));
         IF_ARCH_X86(CALL(generic::pcomplex_div2, avx::pcomplex_div2_fma3, 32));
         IF_ARCH_X86(CALL(generic::pcomplex_rdiv2, avx::pcomplex_rdiv2_fma3, 32));
+        IF_ARCH_X86(CALL(generic::pcomplex_div2, avx512::pcomplex_div2, 64));
+        IF_ARCH_X86(CALL(generic::pcomplex_rdiv2, avx512::pcomplex_rdiv2, 64));
 
         IF_ARCH_ARM(CALL(generic::pcomplex_div2, neon_d32::pcomplex_div2, 16));
         IF_ARCH_ARM(CALL(generic::pcomplex_rdiv2, neon_d32::pcomplex_rdiv2, 16));
