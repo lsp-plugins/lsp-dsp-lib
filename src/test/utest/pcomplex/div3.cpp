@@ -125,12 +125,8 @@ UTEST_BEGIN("dsp.pcomplex", div3)
         IF_ARCH_X86(CALL(generic::pcomplex_div3, avx::pcomplex_div3_fma3, 32));
         IF_ARCH_X86(CALL(generic::pcomplex_div3, avx512::pcomplex_div3, 64));
 
-        IF_ARCH_ARM(CALL(generic::pcomplex_div2, neon_d32::pcomplex_div2, 16));
-        IF_ARCH_ARM(CALL(generic::pcomplex_rdiv2, neon_d32::pcomplex_rdiv2, 16));
         IF_ARCH_ARM(CALL(generic::pcomplex_div3, neon_d32::pcomplex_div3, 16));
 
-        IF_ARCH_AARCH64(CALL(generic::pcomplex_div2, asimd::pcomplex_div2, 16));
-        IF_ARCH_AARCH64(CALL(generic::pcomplex_rdiv2, asimd::pcomplex_rdiv2, 16));
         IF_ARCH_AARCH64(CALL(generic::pcomplex_div3, asimd::pcomplex_div3, 16));
     }
 
