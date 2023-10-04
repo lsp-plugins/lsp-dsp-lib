@@ -194,15 +194,6 @@ namespace lsp
             }
         }
 
-        void pcomplex_add_r(float *dst, const float *src, size_t count)
-        {
-            while (count --)
-            {
-                *dst       += *(src++);
-                dst        += 2;
-            }
-        }
-
         void pcomplex_mod(float *dst_mod, const float *src, size_t count)
         {
             while (count--)
@@ -296,7 +287,6 @@ namespace lsp
                 dst            += 2;
             }
         }
-
 
         void pcomplex_r2c_add2(float *dst, const float *src, size_t count)
         {

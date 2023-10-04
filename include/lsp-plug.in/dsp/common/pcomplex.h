@@ -117,14 +117,6 @@ LSP_DSP_LIB_SYMBOL(void, pcomplex_r2c, float *dst, const float *src, size_t coun
  */
 LSP_DSP_LIB_SYMBOL(void, pcomplex_c2r, float *dst, const float *src, size_t count);
 
-/** Convert packed complex to real and add to destination buffer
- *
- * @param dst destination real data
- * @param src source packed complex data
- * @param count number of items to convert
- */
-LSP_DSP_LIB_SYMBOL(void, pcomplex_add_r, float *dst, const float *src, size_t count);
-
 /** Get module for complex numbers: mod = sqrt(re*re + im*im)
  *
  * @param dst_mod array to sore module
