@@ -632,6 +632,9 @@ namespace lsp
             EXPORT1(bitmap_sub_b8b8)
             EXPORT1(bitmap_min_b8b8)
             EXPORT1(bitmap_max_b8b8)
+
+            EXPORT1(compressor_x2_gain)
+            EXPORT1(compressor_x2_curve)
         }
 
         #undef EXPORT1

@@ -28,41 +28,44 @@
 
 namespace lsp
 {
-    void compressor_x2_gain(float *dst, const float *src, const LSP_DSP_LIB_TYPE(compressor_x2_t) *c, size_t count)
+    namespace generic
     {
-        for (size_t i=0; i<count; ++i)
+        void compressor_x2_gain(float *dst, const float *src, const LSP_DSP_LIB_TYPE(compressor_x2_t) *c, size_t count)
         {
-            float x     = fabsf(src[i]);
-            float lx    = logf(x);
+            for (size_t i=0; i<count; ++i)
+            {
+                float x     = fabsf(src[i]);
+                float lx    = logf(x);
 
-            float g1    = (x <= c->k1.start) ? c->k1.gain :
-                          (x >= c->k1.end) ? expf(lx * c->k1.tilt[0] + c->k1.tilt[1]) :
-                          expf((c->k1.herm[0]*lx + c->k1.herm[1])*lx + c->k1.herm[2]);
-            float g2    = (x <= c->k2.start) ? c->k2.gain :
-                          (x >= c->k2.end) ? expf(lx * c->k2.tilt[0] + c->k2.tilt[1]) :
-                          expf((c->k2.herm[0]*lx + c->k2.herm[1])*lx + c->k2.herm[2]);
+                float g1    = (x <= c->k[0].start) ? c->k[0].gain :
+                              (x >= c->k[0].end) ? expf(lx * c->k[0].tilt[0] + c->k[0].tilt[1]) :
+                              expf((c->k[0].herm[0]*lx + c->k[0].herm[1])*lx + c->k[0].herm[2]);
+                float g2    = (x <= c->k[1].start) ? c->k[1].gain :
+                              (x >= c->k[1].end) ? expf(lx * c->k[1].tilt[0] + c->k[1].tilt[1]) :
+                              expf((c->k[1].herm[0]*lx + c->k[1].herm[1])*lx + c->k[1].herm[2]);
 
-            dst[i]      = g1 * g2;
+                dst[i]      = g1 * g2;
+            }
         }
-    }
 
-    void compressor_x2_curve(float *dst, const float *src, const LSP_DSP_LIB_TYPE(compressor_x2_t) *c, size_t count)
-    {
-        for (size_t i=0; i<count; ++i)
+        void compressor_x2_curve(float *dst, const float *src, const LSP_DSP_LIB_TYPE(compressor_x2_t) *c, size_t count)
         {
-            float x     = fabsf(src[i]);
-            float lx    = logf(x);
+            for (size_t i=0; i<count; ++i)
+            {
+                float x     = fabsf(src[i]);
+                float lx    = logf(x);
 
-            float g1    = (x <= c->k1.start) ? c->k1.gain :
-                          (x >= c->k1.end) ? expf(lx * c->k1.tilt[0] + c->k1.tilt[1]) :
-                          expf((c->k1.herm[0]*lx + c->k1.herm[1])*lx + c->k1.herm[2]);
-            float g2    = (x <= c->k2.start) ? c->k2.gain :
-                          (x >= c->k2.end) ? expf(lx * c->k2.tilt[0] + c->k2.tilt[1]) :
-                          expf((c->k2.herm[0]*lx + c->k2.herm[1])*lx + c->k2.herm[2]);
+                float g1    = (x <= c->k[0].start) ? c->k[0].gain :
+                              (x >= c->k[0].end) ? expf(lx * c->k[0].tilt[0] + c->k[0].tilt[1]) :
+                              expf((c->k[0].herm[0]*lx + c->k[0].herm[1])*lx + c->k[0].herm[2]);
+                float g2    = (x <= c->k[1].start) ? c->k[1].gain :
+                              (x >= c->k[1].end) ? expf(lx * c->k[1].tilt[0] + c->k[1].tilt[1]) :
+                              expf((c->k[1].herm[0]*lx + c->k[1].herm[1])*lx + c->k[1].herm[2]);
 
-            dst[i]      = g1 * g2 * x;
+                dst[i]      = g1 * g2 * x;
+            }
         }
-    }
+    } /* namespace generic */
 } /* namespace lsp */
 
 

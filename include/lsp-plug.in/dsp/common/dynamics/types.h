@@ -24,6 +24,10 @@
 
 #include <lsp-plug.in/dsp/common/types.h>
 
+LSP_DSP_LIB_BEGIN_NAMESPACE
+
+#pragma pack(push, 1)
+
 typedef struct LSP_DSP_LIB_TYPE(compressor_knee_t)
 {
     float       start;          // The start of the knee
@@ -39,8 +43,11 @@ typedef struct LSP_DSP_LIB_TYPE(compressor_knee_t)
  */
 typedef struct LSP_DSP_LIB_TYPE(compressor_x2_t)
 {
-    compressor_knee_t   k1;
-    compressor_knee_t   k2;
+    LSP_DSP_LIB_TYPE(compressor_knee_t)   k[2];
 } LSP_DSP_LIB_TYPE(compressor_x2_t);
+
+#pragma pack(pop)
+
+LSP_DSP_LIB_END_NAMESPACE
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_DYNAMICS_TYPES_H_ */
