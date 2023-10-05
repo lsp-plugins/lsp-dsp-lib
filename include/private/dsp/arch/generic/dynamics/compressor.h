@@ -30,7 +30,7 @@ namespace lsp
 {
     namespace generic
     {
-        void compressor_x2_gain(float *dst, const float *src, const LSP_DSP_LIB_TYPE(compressor_x2_t) *c, size_t count)
+        void compressor_x2_gain(float *dst, const float *src, const dsp::compressor_x2_t *c, size_t count)
         {
             for (size_t i=0; i<count; ++i)
             {
@@ -48,7 +48,7 @@ namespace lsp
             }
         }
 
-        void compressor_x2_curve(float *dst, const float *src, const LSP_DSP_LIB_TYPE(compressor_x2_t) *c, size_t count)
+        void compressor_x2_curve(float *dst, const float *src, const dsp::compressor_x2_t *c, size_t count)
         {
             for (size_t i=0; i<count; ++i)
             {

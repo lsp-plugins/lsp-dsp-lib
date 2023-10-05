@@ -19,13 +19,13 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef LSP_PLUG_IN_DSP_COMMON_DYNAMICS_H_
-#define LSP_PLUG_IN_DSP_COMMON_DYNAMICS_H_
+#ifndef PRIVATE_DSP_ARCH_X86_SSE2_DYNAMICS_H_
+#define PRIVATE_DSP_ARCH_X86_SSE2_DYNAMICS_H_
 
-#include <lsp-plug.in/dsp/common/types.h>
+#ifndef PRIVATE_DSP_ARCH_X86_SSE2_IMPL
+    #error "This header should not be included directly"
+#endif /* PRIVATE_DSP_ARCH_X86_SSE2_IMPL */
 
-#include <lsp-plug.in/dsp/common/dynamics/types.h>
-#include <lsp-plug.in/dsp/common/dynamics/compressor.h>
+#include <private/dsp/arch/x86/sse2/dynamics/compressor.h>
 
-
-#endif /* LSP_PLUG_IN_DSP_COMMON_DYNAMICS_H_ */
+#endif /* PRIVATE_DSP_ARCH_X86_SSE2_DYNAMICS_H_ */
