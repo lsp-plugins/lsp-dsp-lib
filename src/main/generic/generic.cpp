@@ -48,6 +48,8 @@ namespace lsp
     #include <private/dsp/arch/generic/pcomplex.h>
     #include <private/dsp/arch/generic/convolution.h>
 
+    #include <private/dsp/arch/generic/dynamics.h>
+
     #include <private/dsp/arch/generic/graphics.h>
     #include <private/dsp/arch/generic/graphics/effects.h>
     #include <private/dsp/arch/generic/graphics/interpolation.h>
