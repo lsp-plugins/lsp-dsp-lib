@@ -137,20 +137,20 @@ namespace lsp
     #define PROCESS_COMP_FULL_X8 \
         /* in: xmm0 = x0, xmm4 = x1 */ \
         __ASM_EMIT("andps               0x00 + %[C2C], %%xmm0")         /* xmm0 = fabsf(x0) */ \
-        __ASM_EMIT("andps               0x10 + %[C2C], %%xmm4") \
+        __ASM_EMIT("andps               0x00 + %[C2C], %%xmm4") \
         __ASM_EMIT("movaps              %%xmm0, 0x00 + %[mem]")         /* store fabsf(x0) */ \
         __ASM_EMIT("movaps              %%xmm4, 0x10 + %[mem]") \
         LOGE_CORE_X8                                                    /* xmm0 = lx0 = logf(fabsf(x0)) */ \
         __ASM_EMIT("movaps              %%xmm0, 0x20 + %[mem]")         /* *mem = lx0 */ \
         __ASM_EMIT("movaps              %%xmm4, 0x30 + %[mem]") \
         PROCESS_KNEE_SIGNLE_X8("0x00")                                  /* apply knee 0 */ \
-        __ASM_EMIT("movaps              %%xmm0, %%xmm3")                /* xmm3 = g1 */ \
-        __ASM_EMIT("movaps              %%xmm4, %%xmm7") \
+        __ASM_EMIT("movaps              %%xmm0, 0x40 + %[mem]")         /* *mem = g1 */ \
+        __ASM_EMIT("movaps              %%xmm4, 0x50 + %[mem]") \
         __ASM_EMIT("movaps              0x20 + %[mem], %%xmm0")         /* xmm0 = lx0 */ \
         __ASM_EMIT("movaps              0x30 + %[mem], %%xmm4") \
         PROCESS_KNEE_SIGNLE_X8("0x80")                                  /* apply knee 1 */ \
-        __ASM_EMIT("mulps               %%xmm3, %%xmm0")                /* xmm0 = G = g0*g1 */ \
-        __ASM_EMIT("mulps               %%xmm7, %%xmm4") \
+        __ASM_EMIT("mulps               0x40 + %[mem], %%xmm0")         /* xmm0 = G = g0*g1 */ \
+        __ASM_EMIT("mulps               0x50 + %[mem], %%xmm4") \
         /* out: xmm0 = G0, xmm4 = G1 */
 
     #define PROCESS_COMP_FULL_X4 \
@@ -160,10 +160,10 @@ namespace lsp
         LOGE_CORE_X4                                                    /* xmm0 = lx0 = logf(fabsf(x0)) */ \
         __ASM_EMIT("movaps              %%xmm0, 0x20 + %[mem]")         /* *mem = lx0 */ \
         PROCESS_KNEE_SIGNLE_X4("0x00")                                  /* apply knee 0 */ \
-        __ASM_EMIT("movaps              %%xmm0, %%xmm3")                /* xmm3 = g1 */ \
+        __ASM_EMIT("movaps              %%xmm0, 0x40 + %[mem]")         /* *mem = g1 */ \
         __ASM_EMIT("movaps              0x20 + %[mem], %%xmm0")         /* xmm0 = lx0 */ \
         PROCESS_KNEE_SIGNLE_X4("0x80")                                  /* apply knee 1 */ \
-        __ASM_EMIT("mulps               %%xmm3, %%xmm0")                /* xmm0 = g0*g1 */
+        __ASM_EMIT("mulps               0x40 + %[mem], %%xmm0")         /* xmm0 = G = g0*g1 */ \
         /* out: xmm0 = G0 */
 
         static const uint32_t compressor_const[] __lsp_aligned16 =
@@ -175,24 +175,9 @@ namespace lsp
         {
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned16;
-                float mem[16] __lsp_aligned16;
+                float mem[24] __lsp_aligned16;
                 size_t offset;
             );
-
-//            for (size_t i=0; i<count; ++i)
-//            {
-//                float x     = fabsf(src[i]);
-//                float lx    = logf(x);
-//
-//                float g1    = (x <= c->k1.start) ? c->k1.gain :
-//                              (x >= c->k1.end) ? expf(lx * c->k1.tilt[0] + c->k1.tilt[1]) :
-//                              expf((c->k1.herm[0]*lx + c->k1.herm[1])*lx + c->k1.herm[2]);
-//                float g2    = (x <= c->k2.start) ? c->k2.gain :
-//                              (x >= c->k2.end) ? expf(lx * c->k2.tilt[0] + c->k2.tilt[1]) :
-//                              expf((c->k2.herm[0]*lx + c->k2.herm[1])*lx + c->k2.herm[2]);
-//
-//                dst[i]      = g1 * g2;
-//            }
 
             ARCH_X86_ASM
             (
@@ -265,7 +250,7 @@ namespace lsp
         {
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned16;
-                float mem[16] __lsp_aligned16;
+                float mem[24] __lsp_aligned16;
                 size_t offset;
             );
 //            for (size_t i=0; i<count; ++i)
