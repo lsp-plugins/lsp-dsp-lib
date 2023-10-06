@@ -45,6 +45,7 @@ namespace lsp
         namespace avx2
         {
             void compressor_x2_curve(float *dst, const float *src, const dsp::compressor_x2_t *c, size_t count);
+            void compressor_x2_curve_fma3(float *dst, const float *src, const dsp::compressor_x2_t *c, size_t count);
         }
     )
 
@@ -123,6 +124,7 @@ PTEST_BEGIN("dsp.dynamics", compressor_x2_curve, 5, 1000)
             CALL(generic::compressor_x2_curve);
             IF_ARCH_X86(CALL(sse2::compressor_x2_curve));
             IF_ARCH_X86(CALL(avx2::compressor_x2_curve));
+            IF_ARCH_X86(CALL(avx2::compressor_x2_curve_fma3));
 //            IF_ARCH_ARM(CALL(neon_d32::compressor_x2_curve));
 //            IF_ARCH_AARCH64(CALL(asimd::compressor_x2_curve));
             PTEST_SEPARATOR;

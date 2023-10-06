@@ -44,6 +44,12 @@ namespace lsp
         } comp_knee_t;
     #pragma pack(pop)
 
+        static const uint32_t compressor_const[] __lsp_aligned32 =
+        {
+            LSP_DSP_VEC8(0x7fffffff)
+        };
+
+
     #define UNPACK_COMP_KNEE(DST, DOFF, SRC, SOFF) \
         __ASM_EMIT("vbroadcastss " SOFF " + 0x00(%[" SRC "]), %%ymm0") \
         __ASM_EMIT("vbroadcastss " SOFF " + 0x04(%[" SRC "]), %%ymm1") \
@@ -61,6 +67,7 @@ namespace lsp
         __ASM_EMIT("vmovaps             %%ymm5, " DOFF " + 0x0a0 + %[" DST "]") \
         __ASM_EMIT("vmovaps             %%ymm6, " DOFF " + 0x0c0 + %[" DST "]") \
         __ASM_EMIT("vmovaps             %%ymm7, " DOFF " + 0x0e0 + %[" DST "]")
+
 
     #define PROCESS_KNEE_SIGNLE_X16(OFF) \
         /* in: ymm0 = lx0, ymm4 = lx1 */ \
@@ -186,11 +193,6 @@ namespace lsp
         PROCESS_KNEE_SIGNLE_X4("0x100")                                         /* apply knee 1 */ \
         __ASM_EMIT("vmulps              0x80 + %[mem], %%xmm0, %%xmm0")         /* xmm0 = G = g0*g1 */ \
         /* out: xmm0 = G0 */
-
-        static const uint32_t compressor_const[] __lsp_aligned32 =
-        {
-            LSP_DSP_VEC8(0x7fffffff)
-        };
 
         void compressor_x2_gain(float *dst, const float *src, const dsp::compressor_x2_t *c, size_t count)
         {
@@ -380,6 +382,317 @@ namespace lsp
     #undef PROCESS_KNEE_SIGNLE_X4
     #undef PROCESS_KNEE_SIGNLE_X8
     #undef PROCESS_KNEE_SIGNLE_X16
+
+    #define PROCESS_KNEE_SIGNLE_X16_FMA3(OFF) \
+        /* in: ymm0 = lx0, ymm4 = lx1 */ \
+        __ASM_EMIT("vmulps    " OFF " + 0x60 + %[knee], %%ymm0, %%ymm1")        /* ymm1 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmulps    " OFF " + 0x60 + %[knee], %%ymm4, %%ymm5") \
+        __ASM_EMIT("vmulps    " OFF " + 0xc0 + %[knee], %%ymm0, %%ymm2")        /* ymm2 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vmulps    " OFF " + 0xc0 + %[knee], %%ymm4, %%ymm6") \
+        __ASM_EMIT("vaddps    " OFF " + 0x80 + %[knee], %%ymm1, %%ymm1")        /* ymm1 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vaddps    " OFF " + 0x80 + %[knee], %%ymm5, %%ymm5") \
+        __ASM_EMIT("vaddps    " OFF " + 0xe0 + %[knee], %%ymm2, %%ymm2")        /* ymm2 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vaddps    " OFF " + 0xe0 + %[knee], %%ymm6, %%ymm6") \
+        __ASM_EMIT("vfmadd213ps " OFF " + 0xa0 + %[knee], %%ymm0, %%ymm1")      /* ymm1 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vfmadd213ps " OFF " + 0xa0 + %[knee], %%ymm4, %%ymm5") \
+        __ASM_EMIT("vmovaps             0x00 + %[mem], %%ymm0")                 /* ymm1 = x0 */ \
+        __ASM_EMIT("vmovaps             0x20 + %[mem], %%ymm4") \
+        __ASM_EMIT("vcmpps              $5, " OFF " + 0x20 + %[knee], %%ymm0, %%ymm3")  /* ymm3 = [x0 >= end] */ \
+        __ASM_EMIT("vcmpps              $5, " OFF " + 0x20 + %[knee], %%ymm4, %%ymm7") \
+        __ASM_EMIT("vblendvps           %%ymm3, %%ymm2, %%ymm1, %%ymm0")        /* ymm0 = [x0 >= end] ? TV : KV */ \
+        __ASM_EMIT("vblendvps           %%ymm7, %%ymm6, %%ymm5, %%ymm4") \
+        EXP_CORE_X16_FMA3                                                       /* ymm0 = EV = expf([x0 >= end] ? TV : KV) */ \
+        __ASM_EMIT("vmovaps             0x00 + %[mem], %%ymm1")                 /* ymm1 = x0 */ \
+        __ASM_EMIT("vmovaps             0x20 + %[mem], %%ymm5") \
+        __ASM_EMIT("vcmpps              $2, " OFF " + 0x00 + %[knee], %%ymm1, %%ymm3")      /* ymm3 = [x0 <= start] */ \
+        __ASM_EMIT("vcmpps              $2, " OFF " + 0x00 + %[knee], %%ymm5, %%ymm7") \
+        __ASM_EMIT("vblendvps           %%ymm3, " OFF " + 0x40 + %[knee], %%ymm0, %%ymm0")  /* ymm0 = [x0 <= start] ? GV : EV */ \
+        __ASM_EMIT("vblendvps           %%ymm7, " OFF " + 0x40 + %[knee], %%ymm4, %%ymm4") \
+        /* out: ymm0 = g0, ymm4 = g1 */
+
+    #define PROCESS_KNEE_SIGNLE_X8_FMA3(OFF) \
+        /* in: ymm0 = lx0 */ \
+        __ASM_EMIT("vmulps    " OFF " + 0x60 + %[knee], %%ymm0, %%ymm1")        /* ymm1 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmulps    " OFF " + 0xc0 + %[knee], %%ymm0, %%ymm2")        /* ymm2 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vaddps    " OFF " + 0x80 + %[knee], %%ymm1, %%ymm1")        /* ymm1 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vaddps    " OFF " + 0xe0 + %[knee], %%ymm2, %%ymm2")        /* ymm2 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vfmadd213ps " OFF " + 0xa0 + %[knee], %%ymm0, %%ymm1")      /* ymm1 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vmovaps             0x00 + %[mem], %%ymm0")                 /* ymm1 = x0 */ \
+        __ASM_EMIT("vcmpps              $5, " OFF " + 0x20 + %[knee], %%ymm0, %%ymm3")  /* ymm3 = [x0 >= end] */ \
+        __ASM_EMIT("vblendvps           %%ymm3, %%ymm2, %%ymm1, %%ymm0")        /* ymm0 = [x0 >= end] ? TV : KV */ \
+        EXP_CORE_X8_FMA3                                                        /* ymm0 = EV = expf([x0 >= end] ? TV : KV) */ \
+        __ASM_EMIT("vmovaps             0x00 + %[mem], %%ymm1")                 /* ymm1 = x0 */ \
+        __ASM_EMIT("vcmpps              $2, " OFF " + 0x00 + %[knee], %%ymm1, %%ymm3")      /* ymm3 = [x0 <= start] */ \
+        __ASM_EMIT("vblendvps           %%ymm3, " OFF " + 0x40 + %[knee], %%ymm0, %%ymm0")  /* ymm0 = [x0 <= start] ? GV : EV */ \
+        /* out: ymm0 = g0, ymm4 = g1 */
+
+    #define PROCESS_KNEE_SIGNLE_X4_FMA3(OFF) \
+        /* in: xmm0 = lx0 */ \
+        __ASM_EMIT("vmulps    " OFF " + 0x60 + %[knee], %%xmm0, %%xmm1")        /* xmm1 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmulps    " OFF " + 0xc0 + %[knee], %%xmm0, %%xmm2")        /* xmm2 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vaddps    " OFF " + 0x80 + %[knee], %%xmm1, %%xmm1")        /* xmm1 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vaddps    " OFF " + 0xe0 + %[knee], %%xmm2, %%xmm2")        /* xmm2 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vfmadd213ps " OFF " + 0xa0 + %[knee], %%xmm0, %%xmm1")      /* xmm1 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vmovaps             0x00 + %[mem], %%xmm0")                 /* xmm1 = x0 */ \
+        __ASM_EMIT("vcmpps              $5, " OFF " + 0x20 + %[knee], %%xmm0, %%xmm3")  /* xmm3 = [x0 >= end] */ \
+        __ASM_EMIT("vblendvps           %%xmm3, %%xmm2, %%xmm1, %%xmm0")        /* xmm0 = [x0 >= end] ? TV : KV */ \
+        EXP_CORE_X4_FMA3                                                        /* xmm0 = EV = expf([x0 >= end] ? TV : KV) */ \
+        __ASM_EMIT("vmovaps             0x00 + %[mem], %%xmm1")                 /* xmm1 = x0 */ \
+        __ASM_EMIT("vcmpps              $2, " OFF " + 0x00 + %[knee], %%xmm1, %%xmm3")      /* xmm3 = [x0 <= start] */ \
+        __ASM_EMIT("vblendvps           %%xmm3, " OFF " + 0x40 + %[knee], %%xmm0, %%xmm0")  /* xmm0 = [x0 <= start] ? GV : EV */ \
+        /* out: xmm0 = g0, xmm4 = g1 */
+
+    #define PROCESS_COMP_FULL_X16_FMA3 \
+        /* in: ymm0 = x0, ymm4 = x1 */ \
+        __ASM_EMIT("vandps              0x00 + %[C2C], %%ymm0, %%ymm0")         /* ymm0 = fabsf(x0) */ \
+        __ASM_EMIT("vandps              0x00 + %[C2C], %%ymm4, %%ymm4") \
+        __ASM_EMIT("vcmpps              $6, 0x000 + 0x00 + %[knee], %%ymm0, %%ymm1")    /* ymm1 = [x0 > k0.start] */ \
+        __ASM_EMIT("vcmpps              $6, 0x000 + 0x00 + %[knee], %%ymm4, %%ymm5") \
+        __ASM_EMIT("vcmpps              $6, 0x100 + 0x00 + %[knee], %%ymm0, %%ymm2")    /* ymm2 = [x0 > k0.start] */ \
+        __ASM_EMIT("vcmpps              $6, 0x100 + 0x00 + %[knee], %%ymm4, %%ymm6") \
+        __ASM_EMIT("vorps               %%ymm2, %%ymm1, %%ymm1") \
+        __ASM_EMIT("vorps               %%ymm6, %%ymm5, %%ymm5") \
+        __ASM_EMIT("vorps               %%ymm5, %%ymm1, %%ymm1") \
+        __ASM_EMIT("vmovmskps           %%ymm1, %[mask]") \
+        __ASM_EMIT("test                %[mask], %[mask]") \
+        __ASM_EMIT("jnz                 100f") \
+        __ASM_EMIT("vmovaps     0x000 + 0x40 + %[knee], %%ymm0")                /* ymm0 = g1 */ \
+        __ASM_EMIT("vmovaps     0x000 + 0x40 + %[knee], %%ymm4") \
+        __ASM_EMIT("vmulps      0x100 + 0x40 + %[knee], %%ymm0, %%ymm0")        /* ymm0 = G = g0*g1 */ \
+        __ASM_EMIT("vmulps      0x100 + 0x40 + %[knee], %%ymm4, %%ymm4") \
+        __ASM_EMIT("jmp                 200f") \
+        __ASM_EMIT("100:") \
+        __ASM_EMIT("vmovaps             %%ymm0, 0x00 + %[mem]")                 /* store fabsf(x0) */ \
+        __ASM_EMIT("vmovaps             %%ymm4, 0x20 + %[mem]") \
+        LOGE_CORE_X16_FMA3                                                      /* ymm0 = lx0 = logf(fabsf(x0)) */ \
+        __ASM_EMIT("vmovaps             %%ymm0, 0x40 + %[mem]")                 /* *mem = lx0 */ \
+        __ASM_EMIT("vmovaps             %%ymm4, 0x60 + %[mem]") \
+        PROCESS_KNEE_SIGNLE_X16_FMA3("0x000")                                   /* apply knee 0 */ \
+        __ASM_EMIT("vmovaps             %%ymm0, 0x80 + %[mem]")                 /* *mem = g1 */ \
+        __ASM_EMIT("vmovaps             %%ymm4, 0xa0 + %[mem]") \
+        __ASM_EMIT("vmovaps             0x40 + %[mem], %%ymm0")                 /* ymm0 = lx0 */ \
+        __ASM_EMIT("vmovaps             0x60 + %[mem], %%ymm4") \
+        PROCESS_KNEE_SIGNLE_X16_FMA3("0x100")                                   /* apply knee 1 */ \
+        __ASM_EMIT("vmulps              0x80 + %[mem], %%ymm0, %%ymm0")         /* ymm0 = G = g0*g1 */ \
+        __ASM_EMIT("vmulps              0xa0 + %[mem], %%ymm4, %%ymm4") \
+        __ASM_EMIT("200:") \
+        /* out: ymm0 = G0, ymm4 = G1 */
+
+    #define PROCESS_COMP_FULL_X8_FMA3 \
+        /* in: ymm0 = x0, ymm4 = x1 */ \
+        __ASM_EMIT("vandps              0x00 + %[C2C], %%ymm0, %%ymm0")         /* ymm0 = fabsf(x0) */ \
+        __ASM_EMIT("vmovaps             %%ymm0, 0x00 + %[mem]")                 /* store fabsf(x0) */ \
+        LOGE_CORE_X8_FMA3                                                       /* ymm0 = lx0 = logf(fabsf(x0)) */ \
+        __ASM_EMIT("vmovaps             %%ymm0, 0x40 + %[mem]")                 /* *mem = lx0 */ \
+        PROCESS_KNEE_SIGNLE_X8_FMA3("0x000")                                    /* apply knee 0 */ \
+        __ASM_EMIT("vmovaps             %%ymm0, 0x80 + %[mem]")                 /* *mem = g1 */ \
+        __ASM_EMIT("vmovaps             0x40 + %[mem], %%ymm0")                 /* ymm0 = lx0 */ \
+        PROCESS_KNEE_SIGNLE_X8_FMA3("0x100")                                    /* apply knee 1 */ \
+        __ASM_EMIT("vmulps              0x80 + %[mem], %%ymm0, %%ymm0")         /* ymm0 = G = g0*g1 */ \
+        /* out: ymm0 = G0 */
+
+    #define PROCESS_COMP_FULL_X4_FMA3 \
+        /* in: xmm0 = x0, xmm4 = x1 */ \
+        __ASM_EMIT("vandps              0x00 + %[C2C], %%xmm0, %%xmm0")         /* xmm0 = fabsf(x0) */ \
+        __ASM_EMIT("vmovaps             %%xmm0, 0x00 + %[mem]")                 /* store fabsf(x0) */ \
+        LOGE_CORE_X4_FMA3                                                       /* xmm0 = lx0 = logf(fabsf(x0)) */ \
+        __ASM_EMIT("vmovaps             %%xmm0, 0x40 + %[mem]")                 /* *mem = lx0 */ \
+        PROCESS_KNEE_SIGNLE_X4_FMA3("0x000")                                    /* apply knee 0 */ \
+        __ASM_EMIT("vmovaps             %%xmm0, 0x80 + %[mem]")                 /* *mem = g1 */ \
+        __ASM_EMIT("vmovaps             0x40 + %[mem], %%xmm0")                 /* xmm0 = lx0 */ \
+        PROCESS_KNEE_SIGNLE_X4_FMA3("0x100")                                    /* apply knee 1 */ \
+        __ASM_EMIT("vmulps              0x80 + %[mem], %%xmm0, %%xmm0")         /* xmm0 = G = g0*g1 */ \
+        /* out: xmm0 = G0 */
+
+    void compressor_x2_gain_fma3(float *dst, const float *src, const dsp::compressor_x2_t *c, size_t count)
+    {
+        IF_ARCH_X86(
+            comp_knee_t knee[2] __lsp_aligned32;
+            float mem[48] __lsp_aligned32;
+            size_t mask;
+        );
+
+        ARCH_X86_ASM
+        (
+            // Prepare stuff
+            UNPACK_COMP_KNEE("knee", "0x000", "comp", "0x00")
+            UNPACK_COMP_KNEE("knee", "0x100", "comp", "0x20")
+
+            // 16x blocks
+            __ASM_EMIT("sub             $16, %[count]")
+            __ASM_EMIT("jb              2f")
+            __ASM_EMIT("1:")
+            __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+            __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
+            PROCESS_COMP_FULL_X16_FMA3
+            __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+            __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+            __ASM_EMIT("add             $0x40, %[src]")
+            __ASM_EMIT("add             $0x40, %[dst]")
+            __ASM_EMIT("sub             $16, %[count]")
+            __ASM_EMIT("jae             1b")
+            __ASM_EMIT("2:")
+            // 8x blocks
+            __ASM_EMIT("add             $8, %[count]")
+            __ASM_EMIT("jl              4f")
+            __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+            PROCESS_COMP_FULL_X8_FMA3
+            __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+            __ASM_EMIT("add             $0x20, %[src]")
+            __ASM_EMIT("add             $0x20, %[dst]")
+            __ASM_EMIT("sub             $8, %[count]")
+            __ASM_EMIT("4:")
+            // 4x blocks
+            __ASM_EMIT("add             $4, %[count]")
+            __ASM_EMIT("jl              6f")
+            __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
+            PROCESS_COMP_FULL_X4_FMA3
+            __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+            __ASM_EMIT("sub             $4, %[count]")
+            __ASM_EMIT("add             $0x10, %[src]")
+            __ASM_EMIT("add             $0x10, %[dst]")
+            __ASM_EMIT("6:")
+            // Tail: 1x-3x block
+            __ASM_EMIT("add             $4, %[count]")
+            __ASM_EMIT("jle             14f")
+            __ASM_EMIT("test            $1, %[count]")
+            __ASM_EMIT("jz              8f")
+            __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+            __ASM_EMIT("add             $4, %[src]")
+            __ASM_EMIT("8:")
+            __ASM_EMIT("test            $2, %[count]")
+            __ASM_EMIT("jz              10f")
+            __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+            __ASM_EMIT("10:")
+            PROCESS_COMP_FULL_X4_FMA3
+            __ASM_EMIT("test            $1, %[count]")
+            __ASM_EMIT("jz              12f")
+            __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+            __ASM_EMIT("add             $4, %[dst]")
+            __ASM_EMIT("12:")
+            __ASM_EMIT("test            $2, %[count]")
+            __ASM_EMIT("jz              14f")
+            __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+            __ASM_EMIT("14:")
+
+            : [dst] "+r" (dst), [src] "+r" (src),
+              [count] "+r" (count),
+              [mask] "=&r" (mask)
+            : [comp] "r" (c),
+              [knee] "o" (knee),
+              [mem] "o" (mem),
+              [C2C] "o" (compressor_const),
+              [L2C] "o" (LOG2_CONST),
+              [LOGC] "o" (LOGE_C),
+              [E2C] "o" (EXP2_CONST),
+              [LOG2E] "m" (EXP_LOG2E)
+            : "cc", "memory",
+              "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+              "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+        );
+    }
+
+    void compressor_x2_curve_fma3(float *dst, const float *src, const dsp::compressor_x2_t *c, size_t count)
+    {
+        IF_ARCH_X86(
+            comp_knee_t knee[2] __lsp_aligned32;
+            float mem[48] __lsp_aligned32;
+            size_t mask;
+        );
+
+        ARCH_X86_ASM
+        (
+            // Prepare stuff
+            UNPACK_COMP_KNEE("knee", "0x000", "comp", "0x00")
+            UNPACK_COMP_KNEE("knee", "0x100", "comp", "0x20")
+
+            // 16x blocks
+            __ASM_EMIT("sub             $16, %[count]")
+            __ASM_EMIT("jb              2f")
+            __ASM_EMIT("1:")
+            __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+            __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
+            PROCESS_COMP_FULL_X16_FMA3
+            __ASM_EMIT("vmulps          0x00(%[src]), %%ymm0, %%ymm0")
+            __ASM_EMIT("vmulps          0x20(%[src]), %%ymm4, %%ymm4")
+            __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+            __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+            __ASM_EMIT("add             $0x40, %[src]")
+            __ASM_EMIT("add             $0x40, %[dst]")
+            __ASM_EMIT("sub             $16, %[count]")
+            __ASM_EMIT("jae             1b")
+            __ASM_EMIT("2:")
+            // 8x blocks
+            __ASM_EMIT("add             $8, %[count]")
+            __ASM_EMIT("jl              4f")
+            __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+            PROCESS_COMP_FULL_X8_FMA3
+            __ASM_EMIT("vmulps          0x00(%[src]), %%ymm0, %%ymm0")
+            __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+            __ASM_EMIT("add             $0x20, %[src]")
+            __ASM_EMIT("add             $0x20, %[dst]")
+            __ASM_EMIT("sub             $8, %[count]")
+            __ASM_EMIT("4:")
+            // 4x blocks
+            __ASM_EMIT("add             $4, %[count]")
+            __ASM_EMIT("jl              6f")
+            __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
+            PROCESS_COMP_FULL_X4_FMA3
+            __ASM_EMIT("vmulps          0x00(%[src]), %%xmm0, %%xmm0")
+            __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+            __ASM_EMIT("sub             $4, %[count]")
+            __ASM_EMIT("add             $0x10, %[src]")
+            __ASM_EMIT("add             $0x10, %[dst]")
+            __ASM_EMIT("6:")
+            // Tail: 1x-3x block
+            __ASM_EMIT("add             $4, %[count]")
+            __ASM_EMIT("jle             14f")
+            __ASM_EMIT("test            $1, %[count]")
+            __ASM_EMIT("jz              8f")
+            __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+            __ASM_EMIT("add             $4, %[src]")
+            __ASM_EMIT("8:")
+            __ASM_EMIT("test            $2, %[count]")
+            __ASM_EMIT("jz              10f")
+            __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+            __ASM_EMIT("10:")
+            __ASM_EMIT("vmovaps         %%xmm0, %%xmm4")
+            PROCESS_COMP_FULL_X4_FMA3
+            __ASM_EMIT("vmulps          %%xmm4, %%xmm0, %%xmm0")
+            __ASM_EMIT("test            $1, %[count]")
+            __ASM_EMIT("jz              12f")
+            __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+            __ASM_EMIT("add             $4, %[dst]")
+            __ASM_EMIT("12:")
+            __ASM_EMIT("test            $2, %[count]")
+            __ASM_EMIT("jz              14f")
+            __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+            __ASM_EMIT("14:")
+
+            : [dst] "+r" (dst), [src] "+r" (src),
+              [count] "+r" (count),
+              [mask] "=&r" (mask)
+            : [comp] "r" (c),
+              [knee] "o" (knee),
+              [mem] "o" (mem),
+              [C2C] "o" (compressor_const),
+              [L2C] "o" (LOG2_CONST),
+              [LOGC] "o" (LOGE_C),
+              [E2C] "o" (EXP2_CONST),
+              [LOG2E] "m" (EXP_LOG2E)
+            : "cc", "memory",
+              "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+              "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+        );
+    }
+
+    #undef PROCESS_COMP_FULL_X4
+    #undef PROCESS_COMP_FULL_X8
+    #undef PROCESS_COMP_FULL_X16
+    #undef PROCESS_KNEE_SIGNLE_X4
+    #undef PROCESS_KNEE_SIGNLE_X8
+    #undef PROCESS_KNEE_SIGNLE_X16
+
     #undef UNPACK_COMP_KNEE
 
     } /* namespace avx2 */

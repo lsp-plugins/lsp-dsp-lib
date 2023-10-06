@@ -246,6 +246,9 @@ namespace lsp
                 CEXPORT2_X64(favx, powvc2, x64_powvc2_fma3);
                 CEXPORT2_X64(favx, powvx1, x64_powvx1_fma3);
                 CEXPORT2_X64(favx, powvx2, x64_powvx2_fma3);
+
+                CEXPORT2(favx, compressor_x2_gain, compressor_x2_gain_fma3);
+                CEXPORT2(favx, compressor_x2_curve, compressor_x2_curve_fma3);
             }
         }
     } /* namespace avx2 */
