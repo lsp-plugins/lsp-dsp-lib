@@ -88,8 +88,8 @@ namespace lsp
         __ASM_EMIT("mulps               %%xmm4, %%xmm6") \
         __ASM_EMIT("addps     " OFF " + 0x70 + %[knee], %%xmm2")        /* xmm2 = TV = tilt[0]*lx0+tilt[1] */ \
         __ASM_EMIT("addps     " OFF " + 0x70 + %[knee], %%xmm6") \
-        __ASM_EMIT("movaps    " OFF " + 0x00 + %[mem], %%xmm0")         /* xmm0 = x0 */ \
-        __ASM_EMIT("movaps    " OFF " + 0x10 + %[mem], %%xmm4") \
+        __ASM_EMIT("movaps              0x00 + %[mem], %%xmm0")         /* xmm0 = x0 */ \
+        __ASM_EMIT("movaps              0x10 + %[mem], %%xmm4") \
         __ASM_EMIT("cmpps               $5, " OFF " + 0x10 + %[knee], %%xmm0")    /* xmm0 = [x0 >= end] */ \
         __ASM_EMIT("cmpps               $5, " OFF " + 0x10 + %[knee], %%xmm4") \
         __ASM_EMIT("andps               %%xmm0, %%xmm2")                /* xmm2 = [x0 >= end] & TV */ \
@@ -99,8 +99,8 @@ namespace lsp
         __ASM_EMIT("orps                %%xmm2, %%xmm0")                /* xmm0 = [x0 >= end] ? TV : KV */ \
         __ASM_EMIT("orps                %%xmm6, %%xmm4") \
         EXP_CORE_X8                                                     /* xmm0 = EV = expf([x0 >= end] ? TV : KV) */ \
-        __ASM_EMIT("movaps    " OFF " + 0x00 + %[mem], %%xmm2")         /* xmm2 = x0 */ \
-        __ASM_EMIT("movaps    " OFF " + 0x10 + %[mem], %%xmm6") \
+        __ASM_EMIT("movaps              0x00 + %[mem], %%xmm2")         /* xmm2 = x0 */ \
+        __ASM_EMIT("movaps              0x10 + %[mem], %%xmm6") \
         __ASM_EMIT("cmpps               $6, " OFF " + 0x00 + %[knee], %%xmm2")    /* xmm2 = [x0 > start] */ \
         __ASM_EMIT("cmpps               $6, " OFF " + 0x00 + %[knee], %%xmm6") \
         __ASM_EMIT("andps               %%xmm2, %%xmm0")                /* xmm4 = [x0 > start] & EV */ \
@@ -121,13 +121,13 @@ namespace lsp
         __ASM_EMIT("movaps    " OFF " + 0x60 + %[knee], %%xmm2")        /* xmm2 = tilt[0] */ \
         __ASM_EMIT("mulps               %%xmm0, %%xmm2")                /* xmm2 = tilt[0]*lx0 */ \
         __ASM_EMIT("addps     " OFF " + 0x70 + %[knee], %%xmm2")        /* xmm2 = TV = tilt[0]*lx0+tilt[1] */ \
-        __ASM_EMIT("movaps    " OFF " + 0x00 + %[mem], %%xmm0")         /* xmm0 = x0 */ \
+        __ASM_EMIT("movaps              0x00 + %[mem], %%xmm0")         /* xmm0 = x0 */ \
         __ASM_EMIT("cmpps               $5, " OFF " + 0x10 + %[knee], %%xmm0")    /* xmm0 = [x0 >= end] */ \
         __ASM_EMIT("andps               %%xmm0, %%xmm2")                /* xmm2 = [x0 >= end] & TV */ \
         __ASM_EMIT("andnps              %%xmm1, %%xmm0")                /* xmm0 = [x0 < end] & KV */ \
         __ASM_EMIT("orps                %%xmm2, %%xmm0")                /* xmm0 = [x0 >= end] ? TV : KV */ \
         EXP_CORE_X4                                                     /* xmm0 = EV = expf([x0 >= end] ? TV : KV) */ \
-        __ASM_EMIT("movaps    " OFF " + 0x00 + %[mem], %%xmm2")         /* xmm2 = x0 */ \
+        __ASM_EMIT("movaps              0x00 + %[mem], %%xmm2")         /* xmm2 = x0 */ \
         __ASM_EMIT("cmpps               $6, " OFF " + 0x00 + %[knee], %%xmm2")    /* xmm2 = [x0 > start] */ \
         __ASM_EMIT("andps               %%xmm2, %%xmm0")                /* xmm4 = [x0 > start] & EV */ \
         __ASM_EMIT("andnps    " OFF " + 0x20 + %[knee], %%xmm2")        /* xmm2 = [x0 <= start] & GV */ \
