@@ -50,6 +50,23 @@ namespace lsp
             void logd1(float *dst, size_t count);
             void logd2(float *dst, const float *src, size_t count);
         }
+
+        namespace avx2
+        {
+            void logb1(float *dst, size_t count);
+            void logb2(float *dst, const float *src, size_t count);
+            void loge1(float *dst, size_t count);
+            void loge2(float *dst, const float *src, size_t count);
+            void logd1(float *dst, size_t count);
+            void logd2(float *dst, const float *src, size_t count);
+//
+//            void logb1_fma3(float *dst, size_t count);
+//            void logb2_fma3(float *dst, const float *src, size_t count);
+//            void loge1_fma3(float *dst, size_t count);
+//            void loge2_fma3(float *dst, const float *src, size_t count);
+//            void logd1_fma3(float *dst, size_t count);
+//            void logd2_fma3(float *dst, const float *src, size_t count);
+        }
     )
 
     IF_ARCH_X86_64(
@@ -155,6 +172,7 @@ PTEST_BEGIN("dsp.pmath", log, 5, 1000)
 
             CALL(generic::logb1);
             IF_ARCH_X86(CALL(sse2::logb1));
+            IF_ARCH_X86(CALL(avx2::logb1));
             IF_ARCH_X86_64(CALL(avx2::x64_logb1));
             IF_ARCH_X86_64(CALL(avx2::x64_logb1_fma3));
             IF_ARCH_ARM(CALL(neon_d32::logb1));
@@ -163,6 +181,7 @@ PTEST_BEGIN("dsp.pmath", log, 5, 1000)
 
             CALL(generic::logb2);
             IF_ARCH_X86(CALL(sse2::logb2));
+            IF_ARCH_X86(CALL(avx2::logb2));
             IF_ARCH_X86_64(CALL(avx2::x64_logb2));
             IF_ARCH_X86_64(CALL(avx2::x64_logb2_fma3));
             IF_ARCH_ARM(CALL(neon_d32::logb2));
@@ -171,6 +190,7 @@ PTEST_BEGIN("dsp.pmath", log, 5, 1000)
 
             CALL(generic::loge1);
             IF_ARCH_X86(CALL(sse2::loge1));
+            IF_ARCH_X86_64(CALL(avx2::loge1));
             IF_ARCH_X86_64(CALL(avx2::x64_loge1));
             IF_ARCH_X86_64(CALL(avx2::x64_loge1_fma3));
             IF_ARCH_ARM(CALL(neon_d32::loge1));
@@ -179,6 +199,7 @@ PTEST_BEGIN("dsp.pmath", log, 5, 1000)
 
             CALL(generic::loge2);
             IF_ARCH_X86(CALL(sse2::loge2));
+            IF_ARCH_X86_64(CALL(avx2::loge2));
             IF_ARCH_X86_64(CALL(avx2::x64_loge2));
             IF_ARCH_X86_64(CALL(avx2::x64_loge2_fma3));
             IF_ARCH_ARM(CALL(neon_d32::loge2));
@@ -187,6 +208,7 @@ PTEST_BEGIN("dsp.pmath", log, 5, 1000)
 
             CALL(generic::logd1);
             IF_ARCH_X86(CALL(sse2::logd1));
+            IF_ARCH_X86_64(CALL(avx2::logd1));
             IF_ARCH_X86_64(CALL(avx2::x64_logd1));
             IF_ARCH_X86_64(CALL(avx2::x64_logd1_fma3));
             IF_ARCH_ARM(CALL(neon_d32::logd1));
@@ -195,6 +217,7 @@ PTEST_BEGIN("dsp.pmath", log, 5, 1000)
 
             CALL(generic::logd2);
             IF_ARCH_X86(CALL(sse2::logd2));
+            IF_ARCH_X86_64(CALL(avx2::logd2));
             IF_ARCH_X86_64(CALL(avx2::x64_logd2));
             IF_ARCH_X86_64(CALL(avx2::x64_logd2_fma3));
             IF_ARCH_ARM(CALL(neon_d32::logd2));

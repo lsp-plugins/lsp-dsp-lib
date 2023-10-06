@@ -41,6 +41,8 @@
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
     #define PRIVATE_DSP_ARCH_X86_AVX2_IMPL
+        #include <private/dsp/arch/x86/avx2/dynamics.h>
+
         #include <private/dsp/arch/x86/avx2/float.h>
 
         #include <private/dsp/arch/x86/avx2/pmath/op_kx.h>
@@ -155,6 +157,13 @@
 
                 CEXPORT2_X64(favx, exp1, x64_exp1);
                 CEXPORT2_X64(favx, exp2, x64_exp2);
+
+                CEXPORT1(favx, logb1);
+                CEXPORT1(favx, logb2);
+                CEXPORT1(favx, loge1);
+                CEXPORT1(favx, loge2);
+                CEXPORT1(favx, logd1);
+                CEXPORT1(favx, logd2);
 
                 CEXPORT2_X64(favx, logb1, x64_logb1);
                 CEXPORT2_X64(favx, logb2, x64_logb2);
