@@ -39,7 +39,7 @@ namespace lsp
         namespace avx2
         {
             void logb2(float *dst, const float *src, size_t count);
-//            void logb2_fma3(float *dst, const float *src, size_t count);
+            void logb2_fma3(float *dst, const float *src, size_t count);
         }
     )
 
@@ -119,6 +119,7 @@ UTEST_BEGIN("dsp.pmath", logb2)
         IF_ARCH_X86(CALL(generic::logb2, sse2::logb2, 16));
         IF_ARCH_X86(CALL(generic::logb2, avx2::logb2, 32));
         IF_ARCH_X86_64(CALL(generic::logb2, avx2::x64_logb2, 32));
+        IF_ARCH_X86(CALL(generic::logb2, avx2::logb2_fma3, 32));
         IF_ARCH_X86_64(CALL(generic::logb2, avx2::x64_logb2_fma3, 32));
         IF_ARCH_ARM(CALL(generic::logb2, neon_d32::logb2, 16));
         IF_ARCH_AARCH64(CALL(generic::logb2, asimd::logb2, 16));

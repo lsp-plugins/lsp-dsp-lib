@@ -217,6 +217,13 @@
                     CEXPORT2_X64(favx, exp1, x64_exp1_fma3);
                     CEXPORT2_X64(favx, exp2, x64_exp2_fma3);
 
+                    CEXPORT2_X64(favx, logb1, logb1_fma3);
+                    CEXPORT2_X64(favx, logb2, logb2_fma3);
+                    CEXPORT2_X64(favx, loge1, loge1_fma3);
+                    CEXPORT2_X64(favx, loge2, loge2_fma3);
+                    CEXPORT2_X64(favx, logd1, logd1_fma3);
+                    CEXPORT2_X64(favx, logd2, logd2_fma3);
+
                     CEXPORT2_X64(favx, logb1, x64_logb1_fma3);
                     CEXPORT2_X64(favx, logb2, x64_logb2_fma3);
                     CEXPORT2_X64(favx, loge1, x64_loge1_fma3);

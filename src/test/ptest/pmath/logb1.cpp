@@ -44,7 +44,7 @@ namespace lsp
         namespace avx2
         {
             void logb1(float *dst, size_t count);
-//            void logb1_fma3(float *dst, size_t count);
+            void logb1_fma3(float *dst, size_t count);
         }
     )
 
@@ -75,7 +75,7 @@ namespace lsp
 
 //-----------------------------------------------------------------------------
 // Performance test
-PTEST_BEGIN("dsp.pmath", log, 5, 1000)
+PTEST_BEGIN("dsp.pmath", logb1, 5, 1000)
 
     void call(const char *label, float *dst, const float *src, size_t count, log1_t func)
     {
@@ -117,6 +117,7 @@ PTEST_BEGIN("dsp.pmath", log, 5, 1000)
             IF_ARCH_X86(CALL(sse2::logb1));
             IF_ARCH_X86(CALL(avx2::logb1));
             IF_ARCH_X86_64(CALL(avx2::x64_logb1));
+            IF_ARCH_X86(CALL(avx2::logb1_fma3));
             IF_ARCH_X86_64(CALL(avx2::x64_logb1_fma3));
             IF_ARCH_ARM(CALL(neon_d32::logb1));
             IF_ARCH_AARCH64(CALL(asimd::logb1));
