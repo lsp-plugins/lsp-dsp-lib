@@ -33,14 +33,18 @@ namespace lsp
     namespace generic
     {
         void exp1(float *dst, size_t count);
-        void exp2(float *dst, const float *src, size_t count);
     }
 
     IF_ARCH_X86(
         namespace sse2
         {
             void exp1(float *dst, size_t count);
-            void exp2(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx2
+        {
+            void exp1(float *dst, size_t count);
+            void exp1_fma3(float *dst, size_t count);
         }
     )
 
@@ -48,10 +52,7 @@ namespace lsp
         namespace avx2
         {
             void x64_exp1(float *dst, size_t count);
-            void x64_exp2(float *dst, const float *src, size_t count);
-
             void x64_exp1_fma3(float *dst, size_t count);
-            void x64_exp2_fma3(float *dst, const float *src, size_t count);
         }
     )
 
@@ -59,7 +60,6 @@ namespace lsp
         namespace neon_d32
         {
             void exp1(float *dst, size_t count);
-            void exp2(float *dst, const float *src, size_t count);
         }
     )
 
@@ -67,17 +67,15 @@ namespace lsp
         namespace asimd
         {
             void exp1(float *dst, size_t count);
-            void exp2(float *dst, const float *src, size_t count);
         }
     )
 
     typedef void (* exp1_t)(float *dst, size_t count);
-    typedef void (* exp2_t)(float *dst, const float *src, size_t count);
 }
 
 //-----------------------------------------------------------------------------
 // Performance test
-PTEST_BEGIN("dsp.pmath", exp, 5, 1000)
+PTEST_BEGIN("dsp.pmath", exp1, 5, 1000)
 
     void call(const char *label, float *dst, const float *src, size_t count, exp1_t func)
     {
@@ -91,20 +89,6 @@ PTEST_BEGIN("dsp.pmath", exp, 5, 1000)
         PTEST_LOOP(buf,
             dsp::copy(dst, src, count);
             func(dst, count);
-        );
-    }
-
-    void call(const char *label, float *dst, const float *src, size_t count, exp2_t func)
-    {
-        if (!PTEST_SUPPORTED(func))
-            return;
-
-        char buf[80];
-        sprintf(buf, "%s x %d", label, int(count));
-        printf("Testing %s numbers...\n", buf);
-
-        PTEST_LOOP(buf,
-            func(dst, src, count);
         );
     }
 
@@ -130,19 +114,13 @@ PTEST_BEGIN("dsp.pmath", exp, 5, 1000)
 
             CALL(generic::exp1);
             IF_ARCH_X86(CALL(sse2::exp1));
+            IF_ARCH_X86(CALL(avx2::exp1));
             IF_ARCH_X86_64(CALL(avx2::x64_exp1));
+            IF_ARCH_X86(CALL(avx2::exp1_fma3));
             IF_ARCH_X86_64(CALL(avx2::x64_exp1_fma3));
             IF_ARCH_ARM(CALL(neon_d32::exp1));
             IF_ARCH_AARCH64(CALL(asimd::exp1));
             PTEST_SEPARATOR;
-
-            CALL(generic::exp2);
-            IF_ARCH_X86(CALL(sse2::exp2));
-            IF_ARCH_X86_64(CALL(avx2::x64_exp2));
-            IF_ARCH_X86_64(CALL(avx2::x64_exp2_fma3));
-            IF_ARCH_ARM(CALL(neon_d32::exp2));
-            IF_ARCH_AARCH64(CALL(asimd::exp2));
-            PTEST_SEPARATOR2;
         }
 
         free_aligned(data);
