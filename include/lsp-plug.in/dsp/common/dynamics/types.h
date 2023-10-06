@@ -28,10 +28,24 @@ LSP_DSP_LIB_BEGIN_NAMESPACE
 
 #pragma pack(push, 1)
 
+/**
+ * Compressor knee is a curve that constists of three parts:
+ *   1. Part with constant gain amplification in the range [-inf .. start] dB
+ *   2. Soft compression knee in the range (start .. end) dB present by the quadratic function (2nd-order polynom)
+ *   3. Gain reduction part in the range [end .. +inf] dB present by the linear function (1st-order polynom)
+ *
+ * The typical algorithm of computing the compressor's curve:
+ *   1. Take absolute value of the sample: x = fabfs(in)
+ *   2. If x <= start then return gain*x
+ *   3. Compute the natural logarithm of the x: lx = logf(x).
+ *   4. If x < end then compute the gain using the 2nd-order polynom: gain = (herm[0]*lx + herm[1])*lx + herm[2]
+ *   5. Otherwise compute the gain using the 1st-order polynom: gain = tilt[0]*lx + tilt[1]
+ *   6. return expf(gain)
+ */
 typedef struct LSP_DSP_LIB_TYPE(compressor_knee_t)
 {
-    float       start;          // The start of the knee
-    float       end;            // the end of the knee
+    float       start;          // The start of the knee, in gain units
+    float       end;            // The end of the knee, in gain units
     float       gain;           // Pre-amplification gain
     float       herm[3];        // Hermite interpolation of the knee with the 2nd-order polynom
     float       tilt[2];        // Tilt line parameters after the knee
@@ -39,7 +53,8 @@ typedef struct LSP_DSP_LIB_TYPE(compressor_knee_t)
 
 
 /**
- * Two-knee compressor
+ * Two-knee compressor.
+ * The result gain/curve is a result of multiplication of gain/curve between both knees.
  */
 typedef struct LSP_DSP_LIB_TYPE(compressor_x2_t)
 {
