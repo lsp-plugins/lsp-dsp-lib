@@ -35,8 +35,13 @@ namespace lsp
             for (size_t i=0; i<count; ++i)
             {
                 float x     = fabsf(src[i]);
-                float lx    = logf(x);
+                if ((x <= c->k[0].start) && (x <= c->k[1].start))
+                {
+                    dst[i]      = c->k[0].gain * c->k[1].gain;
+                    continue;
+                }
 
+                float lx    = logf(x);
                 float g1    = (x <= c->k[0].start) ? c->k[0].gain :
                               (x >= c->k[0].end) ? expf(lx * c->k[0].tilt[0] + c->k[0].tilt[1]) :
                               expf((c->k[0].herm[0]*lx + c->k[0].herm[1])*lx + c->k[0].herm[2]);
@@ -53,8 +58,13 @@ namespace lsp
             for (size_t i=0; i<count; ++i)
             {
                 float x     = fabsf(src[i]);
-                float lx    = logf(x);
+                if ((x <= c->k[0].start) && (x <= c->k[1].start))
+                {
+                    dst[i]      = c->k[0].gain * c->k[1].gain * x;
+                    continue;
+                }
 
+                float lx    = logf(x);
                 float g1    = (x <= c->k[0].start) ? c->k[0].gain :
                               (x >= c->k[0].end) ? expf(lx * c->k[0].tilt[0] + c->k[0].tilt[1]) :
                               expf((c->k[0].herm[0]*lx + c->k[0].herm[1])*lx + c->k[0].herm[2]);

@@ -138,6 +138,26 @@ namespace lsp
         /* in: xmm0 = x0, xmm4 = x1 */ \
         __ASM_EMIT("andps               0x00 + %[C2C], %%xmm0")         /* xmm0 = fabsf(x0) */ \
         __ASM_EMIT("andps               0x00 + %[C2C], %%xmm4") \
+        __ASM_EMIT("movaps              %%xmm0, %%xmm1") \
+        __ASM_EMIT("movaps              %%xmm4, %%xmm5") \
+        __ASM_EMIT("movaps              %%xmm0, %%xmm2") \
+        __ASM_EMIT("movaps              %%xmm4, %%xmm6") \
+        __ASM_EMIT("cmpps               $6, 0x00 + 0x00 + %[knee], %%xmm1")    /* xmm1 = [x0 > k0.start] */ \
+        __ASM_EMIT("cmpps               $6, 0x00 + 0x00 + %[knee], %%xmm5") \
+        __ASM_EMIT("cmpps               $6, 0x80 + 0x00 + %[knee], %%xmm2")    /* xmm2 = [x0 > k1.start] */ \
+        __ASM_EMIT("cmpps               $6, 0x80 + 0x00 + %[knee], %%xmm6") \
+        __ASM_EMIT("orps                %%xmm2, %%xmm1") \
+        __ASM_EMIT("orps                %%xmm6, %%xmm5") \
+        __ASM_EMIT("orps                %%xmm5, %%xmm1") \
+        __ASM_EMIT("movmskps            %%xmm1, %[mask]") \
+        __ASM_EMIT("test                %[mask], %[mask]") \
+        __ASM_EMIT("jnz                 100f") \
+        __ASM_EMIT("movaps       0x00 + 0x20 + %[knee], %%xmm0")        /* xmm0 = g1 */ \
+        __ASM_EMIT("movaps       0x00 + 0x20 + %[knee], %%xmm4") \
+        __ASM_EMIT("mulps        0x80 + 0x20 + %[knee], %%xmm0")        /* xmm0 = G = g0*g1 */ \
+        __ASM_EMIT("mulps        0x80 + 0x20 + %[knee], %%xmm4") \
+        __ASM_EMIT("jmp                 200f") \
+        __ASM_EMIT("100:") \
         __ASM_EMIT("movaps              %%xmm0, 0x00 + %[mem]")         /* store fabsf(x0) */ \
         __ASM_EMIT("movaps              %%xmm4, 0x10 + %[mem]") \
         LOGE_CORE_X8                                                    /* xmm0 = lx0 = logf(fabsf(x0)) */ \
@@ -151,6 +171,7 @@ namespace lsp
         PROCESS_KNEE_SIGNLE_X8("0x80")                                  /* apply knee 1 */ \
         __ASM_EMIT("mulps               0x40 + %[mem], %%xmm0")         /* xmm0 = G = g0*g1 */ \
         __ASM_EMIT("mulps               0x50 + %[mem], %%xmm4") \
+        __ASM_EMIT("200:") \
         /* out: xmm0 = G0, xmm4 = G1 */
 
     #define PROCESS_COMP_FULL_X4 \
@@ -176,7 +197,7 @@ namespace lsp
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned16;
                 float mem[24] __lsp_aligned16;
-                size_t offset;
+                size_t mask;
             );
 
             ARCH_X86_ASM
@@ -186,27 +207,28 @@ namespace lsp
                 UNPACK_COMP_KNEE("knee", "0x80", "comp", "0x20")
 
                 // 8x blocks
-                __ASM_EMIT("xor             %[off], %[off]")
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("jb              2f")
                 __ASM_EMIT("1:")
-                __ASM_EMIT("movups          0x00(%[src], %[off]), %%xmm0")
-                __ASM_EMIT("movups          0x10(%[src], %[off]), %%xmm4")
+                __ASM_EMIT("movups          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("movups          0x10(%[src]), %%xmm4")
                 PROCESS_COMP_FULL_X8
-                __ASM_EMIT("movups          %%xmm0, 0x00(%[dst], %[off])")
-                __ASM_EMIT("movups          %%xmm4, 0x10(%[dst], %[off])")
-                __ASM_EMIT("add             $0x20, %[off]")
+                __ASM_EMIT("movups          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("movups          %%xmm4, 0x10(%[dst])")
+                __ASM_EMIT("add             $0x20, %[src]")
+                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("jae             1b")
                 __ASM_EMIT("2:")
                 // 4x blocks
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              4f")
-                __ASM_EMIT("movups          0x00(%[src], %[off]), %%xmm0")
+                __ASM_EMIT("movups          0x00(%[src]), %%xmm0")
                 PROCESS_COMP_FULL_X4
-                __ASM_EMIT("movups          %%xmm0, 0x00(%[dst], %[off])")
+                __ASM_EMIT("movups          %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $4, %[count]")
-                __ASM_EMIT("add             $0x10, %[off]")
+                __ASM_EMIT("add             $0x10, %[src]")
+                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("4:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
@@ -220,7 +242,7 @@ namespace lsp
                 __ASM_EMIT("jz              8f")
                 __ASM_EMIT("movhps          0x00(%[src]), %%xmm0")
                 __ASM_EMIT("8:")
-                LOGB_CORE_X4
+                PROCESS_COMP_FULL_X4
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              10f")
                 __ASM_EMIT("movss           %%xmm0, 0x00(%[dst])")
@@ -231,8 +253,10 @@ namespace lsp
                 __ASM_EMIT("movhps          %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("12:")
 
-                : [off] "=&r" (offset), [count] "+r" (count)
-                : [dst] "r" (dst), [src] "r" (src), [comp] "r" (c),
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count),
+                  [mask] "=&r" (mask)
+                : [comp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
                   [C2C] "o" (compressor_const),
@@ -251,7 +275,7 @@ namespace lsp
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned16;
                 float mem[24] __lsp_aligned16;
-                size_t offset;
+                size_t mask;
             );
 //            for (size_t i=0; i<count; ++i)
 //            {
@@ -274,33 +298,34 @@ namespace lsp
                 UNPACK_COMP_KNEE("knee", "0x80", "comp", "0x20")
 
                 // 8x blocks
-                __ASM_EMIT("xor             %[off], %[off]")
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("jb              2f")
                 __ASM_EMIT("1:")
-                __ASM_EMIT("movups          0x00(%[src], %[off]), %%xmm0")
-                __ASM_EMIT("movups          0x10(%[src], %[off]), %%xmm4")
+                __ASM_EMIT("movups          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("movups          0x10(%[src]), %%xmm4")
                 PROCESS_COMP_FULL_X8
-                __ASM_EMIT("movups          0x00(%[src], %[off]), %%xmm1")
-                __ASM_EMIT("movups          0x10(%[src], %[off]), %%xmm5")
+                __ASM_EMIT("movups          0x00(%[src]), %%xmm1")
+                __ASM_EMIT("movups          0x10(%[src]), %%xmm5")
                 __ASM_EMIT("mulps           %%xmm1, %%xmm0")
                 __ASM_EMIT("mulps           %%xmm5, %%xmm4")
-                __ASM_EMIT("movups          %%xmm0, 0x00(%[dst], %[off])")
-                __ASM_EMIT("movups          %%xmm4, 0x10(%[dst], %[off])")
-                __ASM_EMIT("add             $0x20, %[off]")
+                __ASM_EMIT("movups          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("movups          %%xmm4, 0x10(%[dst])")
+                __ASM_EMIT("add             $0x20, %[src]")
+                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("jae             1b")
                 __ASM_EMIT("2:")
                 // 4x blocks
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              4f")
-                __ASM_EMIT("movups          0x00(%[src], %[off]), %%xmm0")
+                __ASM_EMIT("movups          0x00(%[src]), %%xmm0")
                 PROCESS_COMP_FULL_X4
-                __ASM_EMIT("movups          0x00(%[src], %[off]), %%xmm1")
+                __ASM_EMIT("movups          0x00(%[src]), %%xmm1")
                 __ASM_EMIT("mulps           %%xmm1, %%xmm0")
-                __ASM_EMIT("movups          %%xmm0, 0x00(%[dst], %[off])")
+                __ASM_EMIT("movups          %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $4, %[count]")
-                __ASM_EMIT("add             $0x10, %[off]")
+                __ASM_EMIT("add             $0x10, %[src]")
+                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("4:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
@@ -315,7 +340,7 @@ namespace lsp
                 __ASM_EMIT("movhps          0x00(%[src]), %%xmm0")
                 __ASM_EMIT("8:")
                 __ASM_EMIT("movaps          %%xmm0, %%xmm4")
-                LOGB_CORE_X4
+                PROCESS_COMP_FULL_X4
                 __ASM_EMIT("mulps           %%xmm4, %%xmm0")
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              10f")
@@ -327,8 +352,10 @@ namespace lsp
                 __ASM_EMIT("movhps          %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("12:")
 
-                : [off] "=&r" (offset), [count] "+r" (count)
-                : [dst] "r" (dst), [src] "r" (src), [comp] "r" (c),
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count),
+                  [mask] "=&r" (mask)
+                : [comp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
                   [C2C] "o" (compressor_const),
