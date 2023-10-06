@@ -74,53 +74,69 @@ UTEST_BEGIN("dsp.dynamics", compressor_x2_curve)
         if (!UTEST_SUPPORTED(func2))
             return;
 
-        dsp::compressor_x2_t comp;
-        comp.k[0] = {
+        dsp::compressor_x2_t comp[2];
+        comp[0].k[0] = {
             0.125891402,
             0.501197219,
             1.0f,
             { -0.271428347, -1.12498128, -1.16566944 },
-            {-0.75, -1.03615928}};
-        comp.k[1] = {
+            {-0.75, -1.03615928 }};
+        comp[0].k[1] = {
             0.0f,
             0.0f,
             1.0f,
             { 0.0f, 0.0f, 0.0f },
             { 0.0f, 0.0f }};
 
+        comp[1].k[0] = {
+            0.177827924f,
+            0.354813397f,
+            1.0f,
+            { 0.629281223f, 2.17346048f, 1.87671685f },
+            { 0.869384408f, 1.20109892f }};
+        comp[1].k[1] = {
+            0.0362958163f,
+            0.0724196807f,
+            3.98107171f,
+            { -0.629281342f, -4.17346048f, -5.53815651f },
+            { -0.869384408f, -1.20109892f }};
+
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                 32, 64, 65, 100, 999, 0xfff)
         {
             for (size_t mask=0; mask <= 0x03; ++mask)
             {
-                printf("Testing %s on input buffer of %d numbers, mask=0x%x...\n", label, int(count), int(mask));
-
-                FloatBuffer src(count, align, mask & 0x01);
-                FloatBuffer dst(count, align, mask & 0x02);
-
-                src.randomize_0to1();
-                dst.randomize_sign();
-                FloatBuffer dst1(dst);
-                FloatBuffer dst2(dst);
-
-                // Call functions
-                func1(dst1, src, &comp, count);
-                func2(dst2, src, &comp, count);
-
-                UTEST_ASSERT_MSG(src.valid(), "Source buffer corrupted");
-                UTEST_ASSERT_MSG(dst.valid(), "Destination buffer corrupted");
-                UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");
-                UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
-
-                // Compare buffers
-                if (!dst1.equals_relative(dst2, 1e-4))
+                for (size_t i=0; i<2; ++i)
                 {
-                    src.dump("src ");
-                    dst.dump("dst ");
-                    dst1.dump("dst1");
-                    dst2.dump("dst2");
-                    printf("index=%d, %.6f vs %.6f\n", dst1.last_diff(), dst1.get_diff(), dst2.get_diff());
-                    UTEST_FAIL_MSG("Output of functions for test '%s' differs", label);
+                    printf("Testing %s on compressor %d, input buffer of %d numbers, mask=0x%x...\n", label, int(i), int(count), int(mask));
+
+                    FloatBuffer src(count, align, mask & 0x01);
+                    FloatBuffer dst(count, align, mask & 0x02);
+
+                    src.randomize_0to1();
+                    dst.randomize_sign();
+                    FloatBuffer dst1(dst);
+                    FloatBuffer dst2(dst);
+
+                    // Call functions
+                    func1(dst1, src, &comp[i], count);
+                    func2(dst2, src, &comp[i], count);
+
+                    UTEST_ASSERT_MSG(src.valid(), "Source buffer corrupted");
+                    UTEST_ASSERT_MSG(dst.valid(), "Destination buffer corrupted");
+                    UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");
+                    UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
+
+                    // Compare buffers
+                    if (!dst1.equals_relative(dst2, 1e-4))
+                    {
+                        src.dump("src ");
+                        dst.dump("dst ");
+                        dst1.dump("dst1");
+                        dst2.dump("dst2");
+                        printf("index=%d, %.6f vs %.6f\n", dst1.last_diff(), dst1.get_diff(), dst2.get_diff());
+                        UTEST_FAIL_MSG("Output of functions for test '%s' differs", label);
+                    }
                 }
             }
         }
