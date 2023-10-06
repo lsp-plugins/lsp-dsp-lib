@@ -42,10 +42,10 @@ namespace lsp
             void compressor_x2_gain(float *dst, const float *src, const dsp::compressor_x2_t *c, size_t count);
         }
 
-//        namespace avx2
-//        {
-//            void compressor_x2_gain(float *dst, const float *src, const dsp::compressor_x2_t *c, size_t count);
-//        }
+        namespace avx2
+        {
+            void compressor_x2_gain(float *dst, const float *src, const dsp::compressor_x2_t *c, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -122,7 +122,7 @@ PTEST_BEGIN("dsp.dynamics", compressor_x2_gain, 5, 1000)
 
             CALL(generic::compressor_x2_gain);
             IF_ARCH_X86(CALL(sse2::compressor_x2_gain));
-//            IF_ARCH_X86(CALL(avx2::compressor_x2_gain));
+            IF_ARCH_X86(CALL(avx2::compressor_x2_gain));
 //            IF_ARCH_ARM(CALL(neon_d32::compressor_x2_gain));
 //            IF_ARCH_AARCH64(CALL(asimd::compressor_x2_gain));
             PTEST_SEPARATOR;

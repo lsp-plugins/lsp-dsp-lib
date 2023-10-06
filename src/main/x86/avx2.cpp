@@ -197,6 +197,9 @@ namespace lsp
 
             CEXPORT1(favx, fmrmod_k4);
 
+            CEXPORT1(favx, compressor_x2_gain);
+            CEXPORT1(favx, compressor_x2_curve);
+
             if (f->features & CPU_OPTION_FMA3)
             {
                 CEXPORT2(favx, mod_k2, mod_k2_fma3);
