@@ -70,7 +70,7 @@ namespace lsp
         __ASM_EMIT("movaps              %%xmm6, " DOFF " + 0x60 + %[" DST "]") \
         __ASM_EMIT("movaps              %%xmm7, " DOFF " + 0x70 + %[" DST "]")
 
-    #define PROCESS_KNEE_SIGNLE_X8(OFF) \
+    #define PROCESS_KNEE_SINGLE_X8(OFF) \
         /* in: xmm0 = lx0, xmm4 = lx1 */ \
         __ASM_EMIT("movaps    " OFF " + 0x30 + %[knee], %%xmm1")        /* xmm1 = herm[0] */ \
         __ASM_EMIT("movaps    " OFF " + 0x30 + %[knee], %%xmm5") \
@@ -111,7 +111,7 @@ namespace lsp
         __ASM_EMIT("orps                %%xmm6, %%xmm4") \
         /* out: xmm0 = g0, xmm4 = g1 */
 
-    #define PROCESS_KNEE_SIGNLE_X4(OFF) \
+    #define PROCESS_KNEE_SINGLE_X4(OFF) \
         /* in: xmm0 = lx0 */ \
         __ASM_EMIT("movaps    " OFF " + 0x30 + %[knee], %%xmm1")        /* xmm1 = herm[0] */ \
         __ASM_EMIT("mulps               %%xmm0, %%xmm1")                /* xmm1 = herm[0]*lx0 */ \
@@ -163,12 +163,12 @@ namespace lsp
         LOGE_CORE_X8                                                    /* xmm0 = lx0 = logf(fabsf(x0)) */ \
         __ASM_EMIT("movaps              %%xmm0, 0x20 + %[mem]")         /* *mem = lx0 */ \
         __ASM_EMIT("movaps              %%xmm4, 0x30 + %[mem]") \
-        PROCESS_KNEE_SIGNLE_X8("0x00")                                  /* apply knee 0 */ \
+        PROCESS_KNEE_SINGLE_X8("0x00")                                  /* apply knee 0 */ \
         __ASM_EMIT("movaps              %%xmm0, 0x40 + %[mem]")         /* *mem = g1 */ \
         __ASM_EMIT("movaps              %%xmm4, 0x50 + %[mem]") \
         __ASM_EMIT("movaps              0x20 + %[mem], %%xmm0")         /* xmm0 = lx0 */ \
         __ASM_EMIT("movaps              0x30 + %[mem], %%xmm4") \
-        PROCESS_KNEE_SIGNLE_X8("0x80")                                  /* apply knee 1 */ \
+        PROCESS_KNEE_SINGLE_X8("0x80")                                  /* apply knee 1 */ \
         __ASM_EMIT("mulps               0x40 + %[mem], %%xmm0")         /* xmm0 = G = g0*g1 */ \
         __ASM_EMIT("mulps               0x50 + %[mem], %%xmm4") \
         __ASM_EMIT("200:") \
@@ -180,10 +180,10 @@ namespace lsp
         __ASM_EMIT("movaps              %%xmm0, 0x00 + %[mem]")         /* store fabsf(x0) */ \
         LOGE_CORE_X4                                                    /* xmm0 = lx0 = logf(fabsf(x0)) */ \
         __ASM_EMIT("movaps              %%xmm0, 0x20 + %[mem]")         /* *mem = lx0 */ \
-        PROCESS_KNEE_SIGNLE_X4("0x00")                                  /* apply knee 0 */ \
+        PROCESS_KNEE_SINGLE_X4("0x00")                                  /* apply knee 0 */ \
         __ASM_EMIT("movaps              %%xmm0, 0x40 + %[mem]")         /* *mem = g1 */ \
         __ASM_EMIT("movaps              0x20 + %[mem], %%xmm0")         /* xmm0 = lx0 */ \
-        PROCESS_KNEE_SIGNLE_X4("0x80")                                  /* apply knee 1 */ \
+        PROCESS_KNEE_SINGLE_X4("0x80")                                  /* apply knee 1 */ \
         __ASM_EMIT("mulps               0x40 + %[mem], %%xmm0")         /* xmm0 = G = g0*g1 */ \
         /* out: xmm0 = G0 */
 
@@ -369,8 +369,8 @@ namespace lsp
             );
         }
 
-    #undef PROCESS_KNEE_SIGNLE_X4
-    #undef PROCESS_KNEE_SIGNLE_X8
+    #undef PROCESS_KNEE_SINGLE_X4
+    #undef PROCESS_KNEE_SINGLE_X8
     #undef PROCESS_COMP_FULL_X4
     #undef PROCESS_COMP_FULL_X8
     #undef UNPACK_COMP_KNEE
