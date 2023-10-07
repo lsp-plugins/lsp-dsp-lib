@@ -80,7 +80,7 @@ UTEST_BEGIN("dsp.pmath", logd2)
             return;
 
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                32, 64, 65, 100, 999, 0xfff)
+                32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 64, 65, 100, 999, 0xfff)
         {
             for (size_t mask=0; mask <= 0x03; ++mask)
             {
