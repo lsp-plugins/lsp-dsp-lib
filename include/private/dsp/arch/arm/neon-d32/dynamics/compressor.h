@@ -224,6 +224,77 @@ namespace lsp
                   "q12", "q13", "q14", "q15"
             );
         }
+
+        void compressor_x2_curve(float *dst, const float *src, const dsp::compressor_x2_t *c, size_t count)
+        {
+            IF_ARCH_ARM(
+                float mem[24] __lsp_aligned16;
+                size_t off;
+            );
+
+            ARCH_ARM_ASM(
+                // x8 blocks
+                __ASM_EMIT("subs            %[count], #8")
+                __ASM_EMIT("blo             2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vld1.32         {q0-q1}, [%[src]]")
+                PROCESS_COMP_FULL_X8
+                __ASM_EMIT("vld1.32         {q2-q3}, [%[src]]!")
+                __ASM_EMIT("subs            %[count], #8")
+                __ASM_EMIT("vmul.f32        q0, q0, q2")
+                __ASM_EMIT("vmul.f32        q1, q1, q3")
+                __ASM_EMIT("vst1.32         {q0-q1}, [%[dst]]!")
+                __ASM_EMIT("bhs             1b")
+                __ASM_EMIT("2:")
+                // x4 block
+                __ASM_EMIT("adds            %[count], #4")
+                __ASM_EMIT("blt             4f")
+                __ASM_EMIT("vld1.32         {q0}, [%[src]]")
+                PROCESS_COMP_FULL_X4
+                __ASM_EMIT("vld1.32         {q2}, [%[src]]!")
+                __ASM_EMIT("sub             %[count], #4")
+                __ASM_EMIT("vmul.f32        q0, q0, q2")
+                __ASM_EMIT("vst1.32         {q0}, [%[dst]]!")
+                __ASM_EMIT("4:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("adds            %[count], #4")
+                __ASM_EMIT("bls             12f")
+                __ASM_EMIT("tst             %[count], #1")
+                __ASM_EMIT("beq             6f")
+                __ASM_EMIT("vld1.32         {d0[0]}, [%[src]]!")
+                __ASM_EMIT("6:")
+                __ASM_EMIT("tst             %[count], #2")
+                __ASM_EMIT("beq             8f")
+                __ASM_EMIT("vld1.32         {d1}, [%[src]]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("vmov            q1, q0")
+                PROCESS_COMP_FULL_X4
+                __ASM_EMIT("vmul.f32        q0, q0, q1")
+                __ASM_EMIT("tst             %[count], #1")
+                __ASM_EMIT("beq             10f")
+                __ASM_EMIT("vst1.32         {d0[0]}, [%[dst]]!")
+                __ASM_EMIT("10:")
+                __ASM_EMIT("tst             %[count], #2")
+                __ASM_EMIT("beq             12f")
+                __ASM_EMIT("vst1.32         {d1}, [%[dst]]")
+                __ASM_EMIT("12:")
+
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count),
+                  [off] "=&r" (off)
+                : [comp] "r" (c),
+                  [L2C] "r" (&LOG2_CONST[0]),
+                  [LOGC] "r" (&LOGE_C[0]),
+                  [mem] "r" (&mem[0]),
+                  [E2C] "r" (&EXP2_CONST[0]),
+                  [LOG2E] "r" (&EXP_LOG2E[0])
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
+            );
+        }
     } /* namespace neon_d32 */
 } /* namespace lsp */
 

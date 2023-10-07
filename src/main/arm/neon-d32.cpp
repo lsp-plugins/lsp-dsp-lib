@@ -415,6 +415,7 @@
                 EXPORT1(lin_inter_fmadd3);
 
                 EXPORT1(compressor_x2_gain);
+                EXPORT1(compressor_x2_curve);
             }
         } /* namespace neon_d32 */
     } /* namespace lsp */
