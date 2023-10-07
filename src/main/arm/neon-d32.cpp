@@ -51,6 +51,7 @@
         #include <private/dsp/arch/arm/neon-d32/complex.h>
         #include <private/dsp/arch/arm/neon-d32/convolution.h>
         #include <private/dsp/arch/arm/neon-d32/copy.h>
+        #include <private/dsp/arch/arm/neon-d32/dynamics.h>
         #include <private/dsp/arch/arm/neon-d32/fastconv.h>
         #include <private/dsp/arch/arm/neon-d32/fft.h>
         #include <private/dsp/arch/arm/neon-d32/filters/dynamic.h>
@@ -412,6 +413,8 @@
                 EXPORT1(lin_inter_fmadd2);
                 EXPORT1(lin_inter_frmadd2);
                 EXPORT1(lin_inter_fmadd3);
+
+                EXPORT1(compressor_x2_gain);
             }
         } /* namespace neon_d32 */
     } /* namespace lsp */
