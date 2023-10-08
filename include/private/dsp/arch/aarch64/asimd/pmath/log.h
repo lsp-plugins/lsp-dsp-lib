@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -161,42 +161,123 @@ namespace lsp
         __ASM_EMIT("fmul            v0.4s, v0.4s, v6.4s")           /* v0   = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
         /* v0 = y*L, v2 = R */
 
+    #define LOGN_CORE_LOAD \
+        __ASM_EMIT("ldp             q26, q27, [%[LOGC]]") \
+        __ASM_EMIT("ldp             q16, q17, [%[L2C], #0x00]")     /* v16  = MM, v17 = ME */ \
+        __ASM_EMIT("ldp             q18, q19, [%[L2C], #0x20]")     /* v18  = C0, v19 = C1 */ \
+        __ASM_EMIT("ldp             q20, q21, [%[L2C], #0x40]")     /* v20  = C2, v21 = C3 */ \
+        __ASM_EMIT("ldp             q22, q23, [%[L2C], #0x60]")     /* v22  = C4, v23 = C5 */ \
+        __ASM_EMIT("ldp             q24, q25, [%[L2C], #0x80]")     /* v24  = C6, v25 = C7 */
+
+    #define LOGB_CORE_X8_NOLOAD \
+        /* in: v0 = x1, v1 = x2 */ \
+        LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        __ASM_EMIT("fmla            v2.4s, v0.4s, v26.4s")          /* v2   = R + 2*y*L*M_LOG2E */ \
+        __ASM_EMIT("fmla            v3.4s, v1.4s, v27.4s") \
+        /* out: v0 = logb(x0), v1 = logb(x1) */
+
+    #define LOGB_CORE_X4_NOLOAD \
+        /* in: v0 = x1 */ \
+        LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        __ASM_EMIT("fmla            v2.4s, v0.4s, v26.4s")          /* v2   = R + 2*y*L*M_LOG2E */ \
+        /* out: v0 = logb(x0) */
+
+    #define LOGB_CORE_X8 \
+        /* in: v0 = x1, v1 = x2 */ \
+        LOGN_CORE_LOAD \
+        LOGB_CORE_X8_NOLOAD \
+        /* out: v0 = logb(x0), v1 = logb(x1) */
+
+    #define LOGB_CORE_X4 \
+        /* in: v0 = x1 */ \
+        LOGN_CORE_LOAD \
+        LOGB_CORE_X4_NOLOAD \
+        /* out: v0 = logb(x0) */
+
+    #define LOGE_CORE_X8_NOLOAD \
+        /* in: v0 = x1, v1 = x2 */ \
+        LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        __ASM_EMIT("fadd            v0.4s, v0.4s, v0.4s")           /* v0 = 2*y*L */ \
+        __ASM_EMIT("fadd            v1.4s, v1.4s, v1.4s") \
+        __ASM_EMIT("fmla            v0.4s, v2.4s, v26.4s")          /* v0 = 2*y*L + R/log2(E) */ \
+        __ASM_EMIT("fmla            v1.4s, v3.4s, v27.4s") \
+        /* out: v0 = loge(x0), v1 = loge(x1) */
+
+    #define LOGE_CORE_X4_NOLOAD \
+        /* in: v0 = x1 */ \
+        LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        __ASM_EMIT("fadd            v0.4s, v0.4s, v0.4s")           /* v0 = 2*y*L */ \
+        __ASM_EMIT("fmla            v0.4s, v2.4s, v26.4s")          /* v0 = 2*y*L + R/log2(E) */ \
+        /* out: v0 = loge(x0) */
+
+    #define LOGE_CORE_X8 \
+        /* in: v0 = x1, v1 = x2 */ \
+        LOGN_CORE_LOAD \
+        LOGE_CORE_X8_NOLOAD \
+        /* out: v0 = loge(x0), v1 = loge(x1) */
+
+    #define LOGE_CORE_X4 \
+        /* in: v0 = x1 */ \
+        LOGN_CORE_LOAD \
+        LOGE_CORE_X4_NOLOAD \
+        /* out: v0 = loge(x0) */
+
+    #define LOGD_CORE_X8_NOLOAD \
+        /* in: v0 = x1, v1 = x2 */ \
+        LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        __ASM_EMIT("fmul            v0.4s, v0.4s, v26.4s")          /* v0 = 2*y*L*log10(E) */ \
+        __ASM_EMIT("fmul            v1.4s, v1.4s, v26.4s") \
+        __ASM_EMIT("fmla            v0.4s, v2.4s, v27.4s")          /* v0 = 2*y*L*log10(E) + R/log2(10) */ \
+        __ASM_EMIT("fmla            v1.4s, v3.4s, v27.4s") \
+        /* out: v0 = logd(x0), v1 = logd(x1) */
+
+    #define LOGD_CORE_X4_NOLOAD \
+        /* in: v0 = x1 */ \
+        LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        __ASM_EMIT("fmul            v0.4s, v0.4s, v26.4s")          /* v0 = 2*y*L*log10(E) */ \
+        __ASM_EMIT("fmla            v0.4s, v2.4s, v27.4s")          /* v0 = 2*y*L*log10(E) + R/log2(10) */ \
+        /* out: v0 = logd(x0) */
+
+    #define LOGD_CORE_X8 \
+        /* in: v0 = x1, v1 = x2 */ \
+        LOGN_CORE_LOAD \
+        LOGD_CORE_X8_NOLOAD \
+        /* out: v0 = logd(x0), v1 = logd(x1) */
+
+    #define LOGD_CORE_X4 \
+        /* in: v0 = x1 */ \
+        LOGN_CORE_LOAD \
+        LOGD_CORE_X4_NOLOAD \
+        /* out: v0 = logd(x0) */
+
         void logb2(float *dst, const float *src, size_t count)
         {
             ARCH_AARCH64_ASM(
                 // prepare
-                __ASM_EMIT("subs            %[count], %[count], #8")
-                __ASM_EMIT("ldp             q30, q31, [%[LOGC]]")
-                __ASM_EMIT("ldp             q16, q17, [%[L2C], #0x00]")     /* v16  = MM, v17 = ME */ \
-                __ASM_EMIT("ldp             q18, q19, [%[L2C], #0x20]")     /* v18  = C0, v19 = C1 */ \
-                __ASM_EMIT("ldp             q20, q21, [%[L2C], #0x40]")     /* v20  = C2, v21 = C3 */ \
-                __ASM_EMIT("ldp             q22, q23, [%[L2C], #0x60]")     /* v22  = C4, v23 = C5 */ \
-                __ASM_EMIT("ldp             q24, q25, [%[L2C], #0x80]")     /* v24  = C6, v25 = C7 */ \
-                __ASM_EMIT("b.lo            2f")
+                LOGN_CORE_LOAD
                 // x8 blocks
+                __ASM_EMIT("subs            %[count], %[count], #8")
+                __ASM_EMIT("b.lo            2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("ldp             q0, q1, [%[src]]")
-                LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fmla            v2.4s, v0.4s, v30.4s")          // v2   = R + 2*y*L*M_LOG2E
-                __ASM_EMIT("fmla            v3.4s, v1.4s, v31.4s")
+                LOGB_CORE_X8_NOLOAD
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("stp             q2, q3, [%[dst]]")
                 __ASM_EMIT("add             %[src], %[src], #0x20")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("b.hs            1b")
-                // x4 block
                 __ASM_EMIT("2:")
+                // x4 block
                 __ASM_EMIT("adds            %[count], %[count] , #4")
                 __ASM_EMIT("b.lt            4f")
                 __ASM_EMIT("ldr             q0, [%[src]]")
-                LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fmla            v2.4s, v0.4s, v30.4s")          // v2   = R + 2*y*L*M_LOG2E
+                LOGB_CORE_X4_NOLOAD
                 __ASM_EMIT("sub             %[count], %[count], #4")
                 __ASM_EMIT("str             q2, [%[dst]]")
                 __ASM_EMIT("add             %[src], %[src], #0x10")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
-                // Tail: 1x-3x block
                 __ASM_EMIT("4:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("adds            %[count], %[count], #4")
                 __ASM_EMIT("b.ls            12f")
                 __ASM_EMIT("tst             %[count], #1")
@@ -208,8 +289,7 @@ namespace lsp
                 __ASM_EMIT("b.eq            8f")
                 __ASM_EMIT("ld1             {v0.d}[1], [%[src]]")
                 __ASM_EMIT("8:")
-                LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fmla            v2.4s, v0.4s, v30.4s")          // v2   = R + 2*y*L*M_LOG2E
+                LOGB_CORE_X4_NOLOAD
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("b.eq            10f")
                 __ASM_EMIT("st1             {v2.s}[0], [%[dst]]")
@@ -218,7 +298,6 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("b.eq            12f")
                 __ASM_EMIT("st1             {v2.d}[1], [%[dst]]")
-                // End
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
@@ -230,8 +309,7 @@ namespace lsp
                   "v8", "v9",
                   "v16", "v17", "v18", "v19",
                   "v20", "v21", "v22", "v23",
-                  "v24", "v25",
-                  "v30", "v31"
+                  "v24", "v25", "v26", "v27"
             );
         }
 
@@ -239,36 +317,28 @@ namespace lsp
         {
             ARCH_AARCH64_ASM(
                 // prepare
-                __ASM_EMIT("subs            %[count], %[count], #8")
-                __ASM_EMIT("ldp             q30, q31, [%[LOGC]]")
-                __ASM_EMIT("ldp             q16, q17, [%[L2C], #0x00]")     /* v16  = MM, v17 = ME */ \
-                __ASM_EMIT("ldp             q18, q19, [%[L2C], #0x20]")     /* v18  = C0, v19 = C1 */ \
-                __ASM_EMIT("ldp             q20, q21, [%[L2C], #0x40]")     /* v20  = C2, v21 = C3 */ \
-                __ASM_EMIT("ldp             q22, q23, [%[L2C], #0x60]")     /* v22  = C4, v23 = C5 */ \
-                __ASM_EMIT("ldp             q24, q25, [%[L2C], #0x80]")     /* v24  = C6, v25 = C7 */ \
-                __ASM_EMIT("b.lo            2f")
+                LOGN_CORE_LOAD
                 // x8 blocks
+                __ASM_EMIT("subs            %[count], %[count], #8")
+                __ASM_EMIT("b.lo            2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("ldp             q0, q1, [%[dst]]")
-                LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fmla            v2.4s, v0.4s, v30.4s")          // v2   = R + 2*y*L*M_LOG2E
-                __ASM_EMIT("fmla            v3.4s, v1.4s, v31.4s")
+                LOGB_CORE_X8_NOLOAD
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("stp             q2, q3, [%[dst]]")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("b.hs            1b")
-                // x4 block
                 __ASM_EMIT("2:")
+                // x4 block
                 __ASM_EMIT("adds            %[count], %[count] , #4")
                 __ASM_EMIT("b.lt            4f")
                 __ASM_EMIT("ldr             q0, [%[dst]]")
-                LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fmla            v2.4s, v0.4s, v30.4s")          // v2   = R + 2*y*L*M_LOG2E
+                LOGB_CORE_X4_NOLOAD
                 __ASM_EMIT("sub             %[count], %[count], #4")
                 __ASM_EMIT("str             q2, [%[dst]]")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
-                // Tail: 1x-3x block
                 __ASM_EMIT("4:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("adds            %[count], %[count], #4")
                 __ASM_EMIT("b.ls            12f")
                 __ASM_EMIT("tst             %[count], #1")
@@ -280,8 +350,7 @@ namespace lsp
                 __ASM_EMIT("b.eq            8f")
                 __ASM_EMIT("ld1             {v0.d}[1], [%[dst]]")
                 __ASM_EMIT("8:")
-                LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fmla            v2.4s, v0.4s, v30.4s")          // v2   = R + 2*y*L*M_LOG2E
+                LOGB_CORE_X4_NOLOAD
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("b.eq            10f")
                 __ASM_EMIT("sub             %[dst], %[dst], #0x04")
@@ -291,7 +360,6 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("b.eq            12f")
                 __ASM_EMIT("st1             {v2.d}[1], [%[dst]]")
-                // End
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (dst), [count] "+r" (count)
@@ -303,8 +371,7 @@ namespace lsp
                   "v8", "v9",
                   "v16", "v17", "v18", "v19",
                   "v20", "v21", "v22", "v23",
-                  "v24", "v25",
-                  "v30", "v31"
+                  "v24", "v25", "v26", "v27"
             );
         }
 
@@ -312,41 +379,30 @@ namespace lsp
         {
             ARCH_AARCH64_ASM(
                 // prepare
-                __ASM_EMIT("subs            %[count], %[count], #8")
-                __ASM_EMIT("ldp             q30, q31, [%[LOGC]]")
-                __ASM_EMIT("ldp             q16, q17, [%[L2C], #0x00]")     /* v16  = MM, v17 = ME */ \
-                __ASM_EMIT("ldp             q18, q19, [%[L2C], #0x20]")     /* v18  = C0, v19 = C1 */ \
-                __ASM_EMIT("ldp             q20, q21, [%[L2C], #0x40]")     /* v20  = C2, v21 = C3 */ \
-                __ASM_EMIT("ldp             q22, q23, [%[L2C], #0x60]")     /* v22  = C4, v23 = C5 */ \
-                __ASM_EMIT("ldp             q24, q25, [%[L2C], #0x80]")     /* v24  = C6, v25 = C7 */ \
-                __ASM_EMIT("b.lo            2f")
+                LOGN_CORE_LOAD
                 // x8 blocks
+                __ASM_EMIT("subs            %[count], %[count], #8")
+                __ASM_EMIT("b.lo            2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("ldp             q0, q1, [%[src]]")
-                LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fadd            v0.4s, v0.4s, v0.4s")           // v0 = 2*y*L
-                __ASM_EMIT("fadd            v1.4s, v1.4s, v1.4s")
-                __ASM_EMIT("fmla            v0.4s, v2.4s, v30.4s")          // v0 = 2*y*L + R/log2(E)
-                __ASM_EMIT("fmla            v1.4s, v3.4s, v31.4s")
+                LOGE_CORE_X8_NOLOAD
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("stp             q0, q1, [%[dst]]")
                 __ASM_EMIT("add             %[src], %[src], #0x20")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("b.hs            1b")
-                // x4 block
                 __ASM_EMIT("2:")
+                // x4 block
                 __ASM_EMIT("adds            %[count], %[count] , #4")
                 __ASM_EMIT("b.lt            4f")
                 __ASM_EMIT("ldr             q0, [%[src]]")
-                LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fadd            v0.4s, v0.4s, v0.4s")           // v0 = 2*y*L
-                __ASM_EMIT("fmla            v0.4s, v2.4s, v30.4s")          // v0 = 2*y*L + R/log2(E)
+                LOGE_CORE_X4_NOLOAD
                 __ASM_EMIT("sub             %[count], %[count], #4")
                 __ASM_EMIT("str             q0, [%[dst]]")
                 __ASM_EMIT("add             %[src], %[src], #0x10")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
-                // Tail: 1x-3x block
                 __ASM_EMIT("4:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("adds            %[count], %[count], #4")
                 __ASM_EMIT("b.ls            12f")
                 __ASM_EMIT("tst             %[count], #1")
@@ -358,9 +414,7 @@ namespace lsp
                 __ASM_EMIT("b.eq            8f")
                 __ASM_EMIT("ld1             {v0.d}[1], [%[src]]")
                 __ASM_EMIT("8:")
-                LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fadd            v0.4s, v0.4s, v0.4s")           // v0 = 2*y*L
-                __ASM_EMIT("fmla            v0.4s, v2.4s, v30.4s")          // v0 = 2*y*L + R/log2(E)
+                LOGE_CORE_X4_NOLOAD
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("b.eq            10f")
                 __ASM_EMIT("st1             {v0.s}[0], [%[dst]]")
@@ -369,7 +423,6 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("b.eq            12f")
                 __ASM_EMIT("st1             {v0.d}[1], [%[dst]]")
-                // End
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
@@ -381,8 +434,7 @@ namespace lsp
                   "v8", "v9",
                   "v16", "v17", "v18", "v19",
                   "v20", "v21", "v22", "v23",
-                  "v24", "v25",
-                  "v30", "v31"
+                  "v24", "v25", "v26", "v27"
             );
         }
 
@@ -390,39 +442,28 @@ namespace lsp
         {
             ARCH_AARCH64_ASM(
                 // prepare
-                __ASM_EMIT("subs            %[count], %[count], #8")
-                __ASM_EMIT("ldp             q30, q31, [%[LOGC]]")
-                __ASM_EMIT("ldp             q16, q17, [%[L2C], #0x00]")     /* v16  = MM, v17 = ME */ \
-                __ASM_EMIT("ldp             q18, q19, [%[L2C], #0x20]")     /* v18  = C0, v19 = C1 */ \
-                __ASM_EMIT("ldp             q20, q21, [%[L2C], #0x40]")     /* v20  = C2, v21 = C3 */ \
-                __ASM_EMIT("ldp             q22, q23, [%[L2C], #0x60]")     /* v22  = C4, v23 = C5 */ \
-                __ASM_EMIT("ldp             q24, q25, [%[L2C], #0x80]")     /* v24  = C6, v25 = C7 */ \
-                __ASM_EMIT("b.lo            2f")
+                LOGN_CORE_LOAD
                 // x8 blocks
+                __ASM_EMIT("subs            %[count], %[count], #8")
+                __ASM_EMIT("b.lo            2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("ldp             q0, q1, [%[dst]]")
-                LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fadd            v0.4s, v0.4s, v0.4s")           // v0 = 2*y*L
-                __ASM_EMIT("fadd            v1.4s, v1.4s, v1.4s")
-                __ASM_EMIT("fmla            v0.4s, v2.4s, v30.4s")          // v0 = 2*y*L + R/log2(E)
-                __ASM_EMIT("fmla            v1.4s, v3.4s, v31.4s")
+                LOGE_CORE_X8_NOLOAD
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("stp             q0, q1, [%[dst]]")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("b.hs            1b")
-                // x4 block
                 __ASM_EMIT("2:")
+                // x4 block
                 __ASM_EMIT("adds            %[count], %[count] , #4")
                 __ASM_EMIT("b.lt            4f")
                 __ASM_EMIT("ldr             q0, [%[dst]]")
-                LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fadd            v0.4s, v0.4s, v0.4s")           // v0 = 2*y*L
-                __ASM_EMIT("fmla            v0.4s, v2.4s, v30.4s")          // v0 = 2*y*L + R/log2(E)
+                LOGE_CORE_X4_NOLOAD
                 __ASM_EMIT("sub             %[count], %[count], #4")
                 __ASM_EMIT("str             q0, [%[dst]]")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
-                // Tail: 1x-3x block
                 __ASM_EMIT("4:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("adds            %[count], %[count], #4")
                 __ASM_EMIT("b.ls            12f")
                 __ASM_EMIT("tst             %[count], #1")
@@ -434,9 +475,7 @@ namespace lsp
                 __ASM_EMIT("b.eq            8f")
                 __ASM_EMIT("ld1             {v0.d}[1], [%[dst]]")
                 __ASM_EMIT("8:")
-                LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fadd            v0.4s, v0.4s, v0.4s")           // v0 = 2*y*L
-                __ASM_EMIT("fmla            v0.4s, v2.4s, v30.4s")          // v0 = 2*y*L + R/log2(E)
+                LOGE_CORE_X4_NOLOAD
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("b.eq            10f")
                 __ASM_EMIT("sub             %[dst], %[dst], #0x04")
@@ -446,7 +485,6 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("b.eq            12f")
                 __ASM_EMIT("st1             {v0.d}[1], [%[dst]]")
-                // End
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (dst), [count] "+r" (count)
@@ -458,8 +496,7 @@ namespace lsp
                   "v8", "v9",
                   "v16", "v17", "v18", "v19",
                   "v20", "v21", "v22", "v23",
-                  "v24", "v25",
-                  "v30", "v31"
+                  "v24", "v25", "v26", "v27"
             );
         }
 
@@ -467,22 +504,13 @@ namespace lsp
         {
             ARCH_AARCH64_ASM(
                 // prepare
-                __ASM_EMIT("subs            %[count], %[count], #8")
-                __ASM_EMIT("ldp             q30, q31, [%[LOGC]]")
-                __ASM_EMIT("ldp             q16, q17, [%[L2C], #0x00]")     /* v16  = MM, v17 = ME */ \
-                __ASM_EMIT("ldp             q18, q19, [%[L2C], #0x20]")     /* v18  = C0, v19 = C1 */ \
-                __ASM_EMIT("ldp             q20, q21, [%[L2C], #0x40]")     /* v20  = C2, v21 = C3 */ \
-                __ASM_EMIT("ldp             q22, q23, [%[L2C], #0x60]")     /* v22  = C4, v23 = C5 */ \
-                __ASM_EMIT("ldp             q24, q25, [%[L2C], #0x80]")     /* v24  = C6, v25 = C7 */ \
-                __ASM_EMIT("b.lo            2f")
+                LOGN_CORE_LOAD
                 // x8 blocks
+                __ASM_EMIT("subs            %[count], %[count], #8")
+                __ASM_EMIT("b.lo            2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("ldp             q0, q1, [%[src]]")
-                LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fmul            v0.4s, v0.4s, v30.4s")          // v0 = 2*y*L*log10(E)
-                __ASM_EMIT("fmul            v1.4s, v1.4s, v30.4s")
-                __ASM_EMIT("fmla            v0.4s, v2.4s, v31.4s")          // v0 = 2*y*L*log10(E) + R/log2(10)
-                __ASM_EMIT("fmla            v1.4s, v3.4s, v31.4s")
+                LOGD_CORE_X8_NOLOAD
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("stp             q0, q1, [%[dst]]")
                 __ASM_EMIT("add             %[src], %[src], #0x20")
@@ -493,15 +521,13 @@ namespace lsp
                 __ASM_EMIT("adds            %[count], %[count] , #4")
                 __ASM_EMIT("b.lt            4f")
                 __ASM_EMIT("ldr             q0, [%[src]]")
-                LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fmul            v0.4s, v0.4s, v30.4s")          // v0 = 2*y*L*log10(E)
-                __ASM_EMIT("fmla            v0.4s, v2.4s, v31.4s")          // v0 = 2*y*L*log10(E) + R/log2(10)
+                LOGD_CORE_X4_NOLOAD
                 __ASM_EMIT("sub             %[count], %[count], #4")
                 __ASM_EMIT("str             q0, [%[dst]]")
                 __ASM_EMIT("add             %[src], %[src], #0x10")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
-                // Tail: 1x-3x block
                 __ASM_EMIT("4:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("adds            %[count], %[count], #4")
                 __ASM_EMIT("b.ls            12f")
                 __ASM_EMIT("tst             %[count], #1")
@@ -513,9 +539,7 @@ namespace lsp
                 __ASM_EMIT("b.eq            8f")
                 __ASM_EMIT("ld1             {v0.d}[1], [%[src]]")
                 __ASM_EMIT("8:")
-                LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fmul            v0.4s, v0.4s, v30.4s")          // v0 = 2*y*L*log10(E)
-                __ASM_EMIT("fmla            v0.4s, v2.4s, v31.4s")          // v0 = 2*y*L*log10(E) + R/log2(10)
+                LOGD_CORE_X4_NOLOAD
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("b.eq            10f")
                 __ASM_EMIT("st1             {v0.s}[0], [%[dst]]")
@@ -524,7 +548,6 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("b.eq            12f")
                 __ASM_EMIT("st1             {v0.d}[1], [%[dst]]")
-                // End
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
@@ -536,8 +559,7 @@ namespace lsp
                   "v8", "v9",
                   "v16", "v17", "v18", "v19",
                   "v20", "v21", "v22", "v23",
-                  "v24", "v25",
-                  "v30", "v31"
+                  "v24", "v25", "v26", "v27"
             );
         }
 
@@ -545,34 +567,23 @@ namespace lsp
         {
             ARCH_AARCH64_ASM(
                 // prepare
-                __ASM_EMIT("subs            %[count], %[count], #8")
-                __ASM_EMIT("ldp             q30, q31, [%[LOGC]]")
-                __ASM_EMIT("ldp             q16, q17, [%[L2C], #0x00]")     /* v16  = MM, v17 = ME */ \
-                __ASM_EMIT("ldp             q18, q19, [%[L2C], #0x20]")     /* v18  = C0, v19 = C1 */ \
-                __ASM_EMIT("ldp             q20, q21, [%[L2C], #0x40]")     /* v20  = C2, v21 = C3 */ \
-                __ASM_EMIT("ldp             q22, q23, [%[L2C], #0x60]")     /* v22  = C4, v23 = C5 */ \
-                __ASM_EMIT("ldp             q24, q25, [%[L2C], #0x80]")     /* v24  = C6, v25 = C7 */ \
-                __ASM_EMIT("b.lo            2f")
+                LOGN_CORE_LOAD
                 // x8 blocks
+                __ASM_EMIT("subs            %[count], %[count], #8")
+                __ASM_EMIT("b.lo            2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("ldp             q0, q1, [%[dst]]")
-                LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fmul            v0.4s, v0.4s, v30.4s")          // v0 = 2*y*L*log10(E)
-                __ASM_EMIT("fmul            v1.4s, v1.4s, v30.4s")
-                __ASM_EMIT("fmla            v0.4s, v2.4s, v31.4s")          // v0 = 2*y*L*log10(E) + R/log2(10)
-                __ASM_EMIT("fmla            v1.4s, v3.4s, v31.4s")
+                LOGD_CORE_X8_NOLOAD
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("stp             q0, q1, [%[dst]]")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("b.hs            1b")
-                // x4 block
                 __ASM_EMIT("2:")
+                // x4 block
                 __ASM_EMIT("adds            %[count], %[count] , #4")
                 __ASM_EMIT("b.lt            4f")
                 __ASM_EMIT("ldr             q0, [%[dst]]")
-                LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fmul            v0.4s, v0.4s, v30.4s")          // v0 = 2*y*L*log10(E)
-                __ASM_EMIT("fmla            v0.4s, v2.4s, v31.4s")          // v0 = 2*y*L*log10(E) + R/log2(10)
+                LOGD_CORE_X4_NOLOAD
                 __ASM_EMIT("sub             %[count], %[count], #4")
                 __ASM_EMIT("str             q0, [%[dst]]")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
@@ -589,9 +600,7 @@ namespace lsp
                 __ASM_EMIT("b.eq            8f")
                 __ASM_EMIT("ld1             {v0.d}[1], [%[dst]]")
                 __ASM_EMIT("8:")
-                LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
-                __ASM_EMIT("fmul            v0.4s, v0.4s, v30.4s")          // v0 = 2*y*L*log10(E)
-                __ASM_EMIT("fmla            v0.4s, v2.4s, v31.4s")          // v0 = 2*y*L*log10(E) + R/log2(10)
+                LOGD_CORE_X4_NOLOAD
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("b.eq            10f")
                 __ASM_EMIT("sub             %[dst], %[dst], #0x04")
@@ -601,7 +610,6 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("b.eq            12f")
                 __ASM_EMIT("st1             {v0.d}[1], [%[dst]]")
-                // End
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (dst), [count] "+r" (count)
@@ -613,11 +621,10 @@ namespace lsp
                   "v8", "v9",
                   "v16", "v17", "v18", "v19",
                   "v20", "v21", "v22", "v23",
-                  "v24", "v25",
-                  "v30", "v31"
+                  "v24", "v25", "v26", "v27"
             );
         }
-    }
-}
+    } /* namespace asimd */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_PMATH_LOG_H_ */
