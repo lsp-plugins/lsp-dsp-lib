@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 1.0.17 ===
+* Implemented SIMD-optimized 2-knee compressor curve and gain calculation functions.
 * Implemented several AVX-512 optimized packed complex functions.
 * Removed pcomplex_add_r function. Use pcomplex_r2c_add2 function instead.
 * Fixed improper formula for complex_div and pcomplex_div functions.
