@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -47,6 +47,8 @@ namespace lsp
     #include <private/dsp/arch/generic/complex.h>
     #include <private/dsp/arch/generic/pcomplex.h>
     #include <private/dsp/arch/generic/convolution.h>
+
+    #include <private/dsp/arch/generic/dynamics.h>
 
     #include <private/dsp/arch/generic/graphics.h>
     #include <private/dsp/arch/generic/graphics/effects.h>
@@ -630,11 +632,14 @@ namespace lsp
             EXPORT1(bitmap_sub_b8b8)
             EXPORT1(bitmap_min_b8b8)
             EXPORT1(bitmap_max_b8b8)
+
+            EXPORT1(compressor_x2_gain)
+            EXPORT1(compressor_x2_curve)
         }
 
         #undef EXPORT1
-    } // namespace generic
-}
+    } /* namespace generic */
+} /* namespace lsp */
 
 
 

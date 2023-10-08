@@ -49,6 +49,7 @@
 #include <lsp-plug.in/dsp/common/context.h>
 #include <lsp-plug.in/dsp/common/convolution.h>
 #include <lsp-plug.in/dsp/common/copy.h>
+#include <lsp-plug.in/dsp/common/dynamics.h>
 #include <lsp-plug.in/dsp/common/fastconv.h>
 #include <lsp-plug.in/dsp/common/fft.h>
 #include <lsp-plug.in/dsp/common/filters.h>

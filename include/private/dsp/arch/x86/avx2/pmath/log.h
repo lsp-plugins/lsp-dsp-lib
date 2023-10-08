@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -268,6 +268,107 @@ namespace lsp
             __ASM_EMIT("vaddps          0x140 + %[L2C], %%xmm3, %%xmm3")    /* xmm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
             __ASM_EMIT("vmulps          %%xmm0, %%xmm3, %%xmm0")            /* xmm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
 
+        #define LOGB_CORE_X32 \
+            LOGN_CORE_X32 \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm8, %%ymm8") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm12, %%ymm12") \
+            __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0") \
+            __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4") \
+            __ASM_EMIT("vaddps          %%ymm9, %%ymm8, %%ymm8") \
+            __ASM_EMIT("vaddps          %%ymm13, %%ymm12, %%ymm12")
+
+        #define LOGB_CORE_X16 \
+            LOGN_CORE_X16 \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4") \
+            __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0") \
+            __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
+
+        #define LOGB_CORE_X8 \
+            LOGN_CORE_X8 \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0") \
+            __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
+
+        #define LOGB_CORE_X4 \
+            LOGN_CORE_X8 \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0") \
+            __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
+
+        #define LOGE_CORE_X32 \
+            LOGN_CORE_X32 \
+            __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0") \
+            __ASM_EMIT("vaddps          %%ymm4, %%ymm4, %%ymm4") \
+            __ASM_EMIT("vaddps          %%ymm8, %%ymm8, %%ymm8") \
+            __ASM_EMIT("vaddps          %%ymm12, %%ymm12, %%ymm12") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm1, %%ymm1") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm5, %%ymm5") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm9, %%ymm9") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm13, %%ymm13") \
+            __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0") \
+            __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4") \
+            __ASM_EMIT("vaddps          %%ymm9, %%ymm8, %%ymm8") \
+            __ASM_EMIT("vaddps          %%ymm13, %%ymm12, %%ymm12") \
+
+        #define LOGE_CORE_X16 \
+            LOGN_CORE_X16 \
+            __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0") \
+            __ASM_EMIT("vaddps          %%ymm4, %%ymm4, %%ymm4") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm1, %%ymm1") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm5, %%ymm5") \
+            __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0") \
+            __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
+
+        #define LOGE_CORE_X8 \
+            LOGN_CORE_X8 \
+            __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm1, %%ymm1") \
+            __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
+
+        #define LOGE_CORE_X4 \
+            LOGN_CORE_X4 \
+            __ASM_EMIT("vaddps          %%xmm0, %%xmm0, %%xmm0") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm1, %%xmm1") \
+            __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
+
+        #define LOGD_CORE_X32 \
+            LOGN_CORE_X32 \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm8, %%ymm8") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm12, %%ymm12") \
+            __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm1, %%ymm1") \
+            __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm5, %%ymm5") \
+            __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm9, %%ymm9") \
+            __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm13, %%ymm13") \
+            __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0") \
+            __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4") \
+            __ASM_EMIT("vaddps          %%ymm9, %%ymm8, %%ymm8") \
+            __ASM_EMIT("vaddps          %%ymm13, %%ymm12, %%ymm12")
+
+        #define LOGD_CORE_X16 \
+            LOGN_CORE_X16 \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4") \
+            __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm1, %%ymm1") \
+            __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm5, %%ymm5") \
+            __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0") \
+            __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
+
+        #define LOGD_CORE_X8 \
+            LOGN_CORE_X8 \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0") \
+            __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm1, %%ymm1") \
+            __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
+
+        #define LOGD_CORE_X4 \
+            LOGN_CORE_X4 \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0") \
+            __ASM_EMIT("vmulps          0x20 + %[LOGC], %%xmm1, %%xmm1") \
+            __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
+
+
         void x64_logb2(float *dst, const float *src, size_t count)
         {
             ARCH_X86_64_ASM(
@@ -279,15 +380,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
                 __ASM_EMIT("vmovups         0x40(%[src]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[src]), %%ymm12")
-                LOGN_CORE_X32
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm8, %%ymm8")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm12, %%ymm12")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
-                __ASM_EMIT("vaddps          %%ymm9, %%ymm8, %%ymm8")
-                __ASM_EMIT("vaddps          %%ymm13, %%ymm12, %%ymm12")
+                LOGB_CORE_X32
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -296,54 +389,40 @@ namespace lsp
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x16 block
                 __ASM_EMIT("2:")
+                // x16 block
                 __ASM_EMIT("add             $16, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
-                LOGN_CORE_X16
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
+                LOGB_CORE_X16
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("add             $0x40, %[src]")
                 __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x8 block
                 __ASM_EMIT("4:")
+                // x8 block
                 __ASM_EMIT("add             $8, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
-                LOGN_CORE_X8
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
+                LOGB_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[src]")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x4 block
                 __ASM_EMIT("6:")
+                // x4 block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
-                LOGN_CORE_X4
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0")
-                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
+                LOGB_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[src]")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
-
-                // Tail: 1x-3x block
                 __ASM_EMIT("8:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             16f")
                 __ASM_EMIT("test            $1, %[count]")
@@ -355,11 +434,7 @@ namespace lsp
                 __ASM_EMIT("jz              12f")
                 __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
                 __ASM_EMIT("12:")
-
-                LOGN_CORE_X4
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0")
-                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
-
+                LOGB_CORE_X4
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
@@ -368,8 +443,6 @@ namespace lsp
                 __ASM_EMIT("test            $2, %[count]")
                 __ASM_EMIT("jz              16f")
                 __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
-
-                // End
                 __ASM_EMIT("16:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
@@ -380,6 +453,75 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
                   "%xmm12", "%xmm13", "%xmm14", "%xmm15"
+            );
+        }
+
+        void logb2(float *dst, const float *src, size_t count)
+        {
+            ARCH_X86_64_ASM(
+                // x16 blocks
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
+                LOGB_CORE_X16
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+                __ASM_EMIT("add             $0x40, %[src]")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // x8 block
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+                LOGB_CORE_X8
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x20, %[src]")
+                __ASM_EMIT("add             $0x20, %[dst]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("4:")
+                // x4 block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
+                LOGB_CORE_X4
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[src]")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("6:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             14f")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("add             $4, %[src]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+                __ASM_EMIT("10:")
+                LOGB_CORE_X4
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              12f")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("12:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              14f")
+                __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("14:")
+
+                : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
+                : [L2C] "o" (LOG2_CONST),
+                  [LOGC] "o" (LOGB_C)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
@@ -396,15 +538,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
                 __ASM_EMIT("vmovups         0x40(%[dst]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[dst]), %%ymm12")
-                LOGN_CORE_X32
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm8, %%ymm8")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm12, %%ymm12")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
-                __ASM_EMIT("vaddps          %%ymm9, %%ymm8, %%ymm8")
-                __ASM_EMIT("vaddps          %%ymm13, %%ymm12, %%ymm12")
+                LOGB_CORE_X32
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -412,51 +546,37 @@ namespace lsp
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x16 block
                 __ASM_EMIT("2:")
+                // x16 block
                 __ASM_EMIT("add             $16, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
-                LOGN_CORE_X16
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
+                LOGB_CORE_X16
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x8 block
                 __ASM_EMIT("4:")
+                // x8 block
                 __ASM_EMIT("add             $8, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
-                LOGN_CORE_X8
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
+                LOGB_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x4 block
                 __ASM_EMIT("6:")
+                // x4 block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
-                LOGN_CORE_X4
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0")
-                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
+                LOGB_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
-
-                // Tail: 1x-3x block
                 __ASM_EMIT("8:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             16f")
                 __ASM_EMIT("mov             %[dst], %[src]")
@@ -469,11 +589,7 @@ namespace lsp
                 __ASM_EMIT("jz              12f")
                 __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
                 __ASM_EMIT("12:")
-
-                LOGN_CORE_X4
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0")
-                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
-
+                LOGB_CORE_X4
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
@@ -482,8 +598,6 @@ namespace lsp
                 __ASM_EMIT("test            $2, %[count]")
                 __ASM_EMIT("jz              16f")
                 __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
-
-                // End
                 __ASM_EMIT("16:")
 
                 : [dst] "+r" (dst), [src] "=&r" (src), [count] "+r" (count)
@@ -494,6 +608,75 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
                   "%xmm12", "%xmm13", "%xmm14", "%xmm15"
+            );
+        }
+
+        void logb1(float *dst, size_t count)
+        {
+            IF_ARCH_X86_64(float *src);
+
+            ARCH_X86_64_ASM(
+                // x16 blocks
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
+                LOGB_CORE_X16
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // x8 block
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
+                LOGB_CORE_X8
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x20, %[dst]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("4:")
+                // x4 block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
+                LOGB_CORE_X4
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("6:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             14f")
+                __ASM_EMIT("mov             %[dst], %[src]")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("add             $4, %[src]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+                __ASM_EMIT("10:")
+                LOGB_CORE_X4
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              12f")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("12:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              14f")
+                __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("14:")
+
+                : [dst] "+r" (dst), [src] "=&r" (src), [count] "+r" (count)
+                : [L2C] "o" (LOG2_CONST),
+                  [LOGC] "o" (LOGB_C)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
@@ -508,19 +691,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
                 __ASM_EMIT("vmovups         0x40(%[src]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[src]), %%ymm12")
-                LOGN_CORE_X32
-                __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm4, %%ymm4, %%ymm4")
-                __ASM_EMIT("vaddps          %%ymm8, %%ymm8, %%ymm8")
-                __ASM_EMIT("vaddps          %%ymm12, %%ymm12, %%ymm12")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm1, %%ymm1")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm5, %%ymm5")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm9, %%ymm9")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm13, %%ymm13")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
-                __ASM_EMIT("vaddps          %%ymm9, %%ymm8, %%ymm8")
-                __ASM_EMIT("vaddps          %%ymm13, %%ymm12, %%ymm12")
+                LOGE_CORE_X32
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -529,58 +700,40 @@ namespace lsp
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x16 block
                 __ASM_EMIT("2:")
+                // x16 block
                 __ASM_EMIT("add             $16, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
-                LOGN_CORE_X16
-                __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm4, %%ymm4, %%ymm4")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm1, %%ymm1")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm5, %%ymm5")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
+                LOGE_CORE_X16
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("add             $0x40, %[src]")
                 __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x8 block
                 __ASM_EMIT("4:")
+                // x8 block
                 __ASM_EMIT("add             $8, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
-                LOGN_CORE_X8
-                __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm1, %%ymm1")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
+                LOGE_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[src]")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x4 block
                 __ASM_EMIT("6:")
+                // x4 block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
-                LOGN_CORE_X4
-                __ASM_EMIT("vaddps          %%xmm0, %%xmm0, %%xmm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm1, %%xmm1")
-                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
+                LOGE_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[src]")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
-
-                // Tail: 1x-3x block
                 __ASM_EMIT("8:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             16f")
                 __ASM_EMIT("test            $1, %[count]")
@@ -592,12 +745,7 @@ namespace lsp
                 __ASM_EMIT("jz              12f")
                 __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
                 __ASM_EMIT("12:")
-
-                LOGN_CORE_X4
-                __ASM_EMIT("vaddps          %%xmm0, %%xmm0, %%xmm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm1, %%xmm1")
-                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
-
+                LOGE_CORE_X4
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
@@ -606,8 +754,6 @@ namespace lsp
                 __ASM_EMIT("test            $2, %[count]")
                 __ASM_EMIT("jz              16f")
                 __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
-
-                // End
                 __ASM_EMIT("16:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
@@ -618,6 +764,75 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
                   "%xmm12", "%xmm13", "%xmm14", "%xmm15"
+            );
+        }
+
+        void loge2(float *dst, const float *src, size_t count)
+        {
+            ARCH_X86_64_ASM(
+                // x16 block
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
+                LOGE_CORE_X16
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+                __ASM_EMIT("add             $0x40, %[src]")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // x8 block
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+                LOGE_CORE_X8
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x20, %[src]")
+                __ASM_EMIT("add             $0x20, %[dst]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("4:")
+                // x4 block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
+                LOGE_CORE_X4
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[src]")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("6:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             14f")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("add             $4, %[src]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+                __ASM_EMIT("10:")
+                LOGE_CORE_X4
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              12f")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("12:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              14f")
+                __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("14:")
+
+                : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
+                : [L2C] "o" (LOG2_CONST),
+                  [LOGC] "o" (LOGE_C)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
@@ -634,19 +849,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
                 __ASM_EMIT("vmovups         0x40(%[dst]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[dst]), %%ymm12")
-                LOGN_CORE_X32
-                __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm4, %%ymm4, %%ymm4")
-                __ASM_EMIT("vaddps          %%ymm8, %%ymm8, %%ymm8")
-                __ASM_EMIT("vaddps          %%ymm12, %%ymm12, %%ymm12")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm1, %%ymm1")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm5, %%ymm5")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm9, %%ymm9")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm13, %%ymm13")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
-                __ASM_EMIT("vaddps          %%ymm9, %%ymm8, %%ymm8")
-                __ASM_EMIT("vaddps          %%ymm13, %%ymm12, %%ymm12")
+                LOGE_CORE_X32
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -654,55 +857,37 @@ namespace lsp
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x16 block
                 __ASM_EMIT("2:")
+                // x16 block
                 __ASM_EMIT("add             $16, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
-                LOGN_CORE_X16
-                __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm4, %%ymm4, %%ymm4")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm1, %%ymm1")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm5, %%ymm5")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
+                LOGE_CORE_X16
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x8 block
                 __ASM_EMIT("4:")
+                // x8 block
                 __ASM_EMIT("add             $8, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
-                LOGN_CORE_X8
-                __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm1, %%ymm1")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
+                LOGE_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x4 block
                 __ASM_EMIT("6:")
+                // x4 block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
-                LOGN_CORE_X4
-                __ASM_EMIT("vaddps          %%xmm0, %%xmm0, %%xmm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm1, %%xmm1")
-                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
+                LOGE_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
-
-                // Tail: 1x-3x block
                 __ASM_EMIT("8:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             16f")
                 __ASM_EMIT("mov             %[dst], %[src]")
@@ -715,12 +900,7 @@ namespace lsp
                 __ASM_EMIT("jz              12f")
                 __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
                 __ASM_EMIT("12:")
-
-                LOGN_CORE_X4
-                __ASM_EMIT("vaddps          %%xmm0, %%xmm0, %%xmm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm1, %%xmm1")
-                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
-
+                LOGE_CORE_X4
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
@@ -729,8 +909,6 @@ namespace lsp
                 __ASM_EMIT("test            $2, %[count]")
                 __ASM_EMIT("jz              16f")
                 __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
-
-                // End
                 __ASM_EMIT("16:")
 
                 : [dst] "+r" (dst), [src] "=&r" (src), [count] "+r" (count)
@@ -741,6 +919,75 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
                   "%xmm12", "%xmm13", "%xmm14", "%xmm15"
+            );
+        }
+
+        void loge1(float *dst, size_t count)
+        {
+            IF_ARCH_X86_64(float *src);
+
+            ARCH_X86_64_ASM(
+                // x16 blocks
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
+                LOGE_CORE_X16
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // x8 block
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
+                LOGE_CORE_X8
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x20, %[dst]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("4:")
+                // x4 block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
+                LOGE_CORE_X4
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("6:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             14f")
+                __ASM_EMIT("mov             %[dst], %[src]")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("add             $4, %[src]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+                __ASM_EMIT("10:")
+                LOGE_CORE_X4
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              12f")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("12:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              14f")
+                __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("14:")
+
+                : [dst] "+r" (dst), [src] "=&r" (src), [count] "+r" (count)
+                : [L2C] "o" (LOG2_CONST),
+                  [LOGC] "o" (LOGE_C)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
@@ -755,19 +1002,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
                 __ASM_EMIT("vmovups         0x40(%[src]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[src]), %%ymm12")
-                LOGN_CORE_X32
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm8, %%ymm8")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm12, %%ymm12")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm1, %%ymm1")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm5, %%ymm5")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm9, %%ymm9")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm13, %%ymm13")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
-                __ASM_EMIT("vaddps          %%ymm9, %%ymm8, %%ymm8")
-                __ASM_EMIT("vaddps          %%ymm13, %%ymm12, %%ymm12")
+                LOGD_CORE_X32
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -776,58 +1011,40 @@ namespace lsp
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x16 block
                 __ASM_EMIT("2:")
+                // x16 block
                 __ASM_EMIT("add             $16, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
-                LOGN_CORE_X16
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm1, %%ymm1")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm5, %%ymm5")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
+                LOGD_CORE_X16
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("add             $0x40, %[src]")
                 __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x8 block
                 __ASM_EMIT("4:")
+                // x8 block
                 __ASM_EMIT("add             $8, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
-                LOGN_CORE_X8
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm1, %%ymm1")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
+                LOGD_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[src]")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x4 block
                 __ASM_EMIT("6:")
+                // x4 block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
-                LOGN_CORE_X4
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%xmm1, %%xmm1")
-                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
+                LOGD_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[src]")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
-
-                // Tail: 1x-3x block
                 __ASM_EMIT("8:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             16f")
                 __ASM_EMIT("test            $1, %[count]")
@@ -839,12 +1056,7 @@ namespace lsp
                 __ASM_EMIT("jz              12f")
                 __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
                 __ASM_EMIT("12:")
-
-                LOGN_CORE_X4
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%xmm1, %%xmm1")
-                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
-
+                LOGD_CORE_X4
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
@@ -853,8 +1065,6 @@ namespace lsp
                 __ASM_EMIT("test            $2, %[count]")
                 __ASM_EMIT("jz              16f")
                 __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
-
-                // End
                 __ASM_EMIT("16:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
@@ -865,6 +1075,75 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
                   "%xmm12", "%xmm13", "%xmm14", "%xmm15"
+            );
+        }
+
+        void logd2(float *dst, const float *src, size_t count)
+        {
+            ARCH_X86_64_ASM(
+                // x16 blocks
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
+                LOGD_CORE_X16
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+                __ASM_EMIT("add             $0x40, %[src]")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // x8 block
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+                LOGD_CORE_X8
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x20, %[src]")
+                __ASM_EMIT("add             $0x20, %[dst]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("4:")
+                // x4 block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
+                LOGD_CORE_X4
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[src]")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("6:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             14f")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("add             $4, %[src]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+                __ASM_EMIT("10:")
+                LOGD_CORE_X4
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              12f")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("12:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              14f")
+                __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("14:")
+
+                : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
+                : [L2C] "o" (LOG2_CONST),
+                  [LOGC] "o" (LOGD_C)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
@@ -881,19 +1160,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
                 __ASM_EMIT("vmovups         0x40(%[dst]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[dst]), %%ymm12")
-                LOGN_CORE_X32
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm8, %%ymm8")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm12, %%ymm12")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm1, %%ymm1")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm5, %%ymm5")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm9, %%ymm9")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm13, %%ymm13")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
-                __ASM_EMIT("vaddps          %%ymm9, %%ymm8, %%ymm8")
-                __ASM_EMIT("vaddps          %%ymm13, %%ymm12, %%ymm12")
+                LOGD_CORE_X32
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -901,55 +1168,37 @@ namespace lsp
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x16 block
                 __ASM_EMIT("2:")
+                // x16 block
                 __ASM_EMIT("add             $16, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
-                LOGN_CORE_X16
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm1, %%ymm1")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm5, %%ymm5")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")
+                LOGD_CORE_X16
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x8 block
                 __ASM_EMIT("4:")
+                // x8 block
                 __ASM_EMIT("add             $8, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
-                LOGN_CORE_X8
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%ymm1, %%ymm1")
-                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")
+                LOGD_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x4 block
                 __ASM_EMIT("6:")
+                // x4 block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
-                LOGN_CORE_X4
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%xmm1, %%xmm1")
-                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
+                LOGD_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
-
-                // Tail: 1x-3x block
                 __ASM_EMIT("8:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             16f")
                 __ASM_EMIT("mov             %[dst], %[src]")
@@ -962,12 +1211,7 @@ namespace lsp
                 __ASM_EMIT("jz              12f")
                 __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
                 __ASM_EMIT("12:")
-
-                LOGN_CORE_X4
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0")
-                __ASM_EMIT("vmulps          0x20 + %[LOGC], %%xmm1, %%xmm1")
-                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")
-
+                LOGD_CORE_X4
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
@@ -976,8 +1220,6 @@ namespace lsp
                 __ASM_EMIT("test            $2, %[count]")
                 __ASM_EMIT("jz              16f")
                 __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
-
-                // End
                 __ASM_EMIT("16:")
 
                 : [dst] "+r" (dst), [src] "=&r" (src), [count] "+r" (count)
@@ -991,7 +1233,76 @@ namespace lsp
             );
         }
 
-        #define LOGN_FMA3_CORE_X32 \
+        void logd1(float *dst, size_t count)
+        {
+            IF_ARCH_X86_64(float *src);
+
+            ARCH_X86_64_ASM(
+                // x16 blocks
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
+                LOGD_CORE_X16
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // x8 block
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
+                LOGD_CORE_X8
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x20, %[dst]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("4:")
+                // x4 block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
+                LOGD_CORE_X4
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("6:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             14f")
+                __ASM_EMIT("mov             %[dst], %[src]")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("add             $4, %[src]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+                __ASM_EMIT("10:")
+                LOGD_CORE_X4
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              12f")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("12:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              14f")
+                __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("14:")
+
+                : [dst] "+r" (dst), [src] "=&r" (src), [count] "+r" (count)
+                : [L2C] "o" (LOG2_CONST),
+                  [LOGC] "o" (LOGD_C)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
+        #define LOGN_CORE_X32_FMA3 \
             __ASM_EMIT("vpsrld          $23, %%ymm0, %%ymm1")               /* ymm1 = ilog2(x) + 127 */ \
             __ASM_EMIT("vpsrld          $23, %%ymm4, %%ymm5")               \
             __ASM_EMIT("vpsrld          $23, %%ymm8, %%ymm9")               \
@@ -1066,7 +1377,7 @@ namespace lsp
             __ASM_EMIT("vmulps          %%ymm8, %%ymm11, %%ymm8")           \
             __ASM_EMIT("vmulps          %%ymm12, %%ymm15, %%ymm12")         \
 
-        #define LOGN_FMA3_CORE_X16 \
+        #define LOGN_CORE_X16_FMA3 \
             __ASM_EMIT("vpsrld          $23, %%ymm0, %%ymm1")               /* ymm1 = ilog2(x) + 127 */ \
             __ASM_EMIT("vpsrld          $23, %%ymm4, %%ymm5")               \
             __ASM_EMIT("vpand           0x000 + %[L2C], %%ymm0, %%ymm0")    /* ymm0 = x & F_MASK */ \
@@ -1105,7 +1416,7 @@ namespace lsp
             __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
             __ASM_EMIT("vmulps          %%ymm4, %%ymm7, %%ymm4")            \
 
-        #define LOGN_FMA3_CORE_X8 \
+        #define LOGN_CORE_X8_FMA3 \
             __ASM_EMIT("vpsrld          $23, %%ymm0, %%ymm1")               /* ymm1 = ilog2(x) + 127 */ \
             __ASM_EMIT("vpand           0x000 + %[L2C], %%ymm0, %%ymm0")    /* ymm0 = x & F_MASK */ \
             __ASM_EMIT("vpsubd          0x020 + %[L2C], %%ymm1, %%ymm1")    /* ymm1 = r = ilog2(x) */ \
@@ -1126,7 +1437,7 @@ namespace lsp
             __ASM_EMIT("vfmadd213ps     0x140 + %[L2C], %%ymm2, %%ymm3")    /* ymm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
             __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
 
-        #define LOGN_FMA3_CORE_X4 \
+        #define LOGN_CORE_X4_FMA3 \
             __ASM_EMIT("vpsrld          $23, %%xmm0, %%xmm1")               /* xmm1 = ilog2(x) + 127 */ \
             __ASM_EMIT("vpand           0x000 + %[L2C], %%xmm0, %%xmm0")    /* xmm0 = x & F_MASK */ \
             __ASM_EMIT("vpsubd          0x020 + %[L2C], %%xmm1, %%xmm1")    /* xmm1 = r = ilog2(x) */ \
@@ -1147,6 +1458,87 @@ namespace lsp
             __ASM_EMIT("vfmadd213ps     0x140 + %[L2C], %%xmm2, %%xmm3")    /* xmm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
             __ASM_EMIT("vmulps          %%xmm0, %%xmm3, %%xmm0")            /* xmm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
 
+
+        #define LOGB_CORE_X32_FMA3 \
+            LOGN_CORE_X32_FMA3 \
+            __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0") \
+            __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm5, %%ymm4") \
+            __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm9, %%ymm8") \
+            __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm13, %%ymm12")
+
+        #define LOGB_CORE_X16_FMA3 \
+            LOGN_CORE_X16_FMA3 \
+            __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0") \
+            __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
+
+        #define LOGB_CORE_X8_FMA3 \
+            LOGN_CORE_X8_FMA3 \
+            __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
+
+        #define LOGB_CORE_X4_FMA3 \
+            LOGN_CORE_X4_FMA3 \
+            __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")
+
+
+        #define LOGE_CORE_X32_FMA3 \
+            LOGN_CORE_X32_FMA3 \
+            __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0") \
+            __ASM_EMIT("vaddps          %%ymm4, %%ymm4, %%ymm4") \
+            __ASM_EMIT("vaddps          %%ymm8, %%ymm8, %%ymm8") \
+            __ASM_EMIT("vaddps          %%ymm12, %%ymm12, %%ymm12") \
+            __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm1, %%ymm0") \
+            __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm5, %%ymm4") \
+            __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm9, %%ymm8") \
+            __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm13, %%ymm12")
+
+        #define LOGE_CORE_X16_FMA3 \
+            LOGN_CORE_X16_FMA3 \
+            __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0") \
+            __ASM_EMIT("vaddps          %%ymm4, %%ymm4, %%ymm4") \
+            __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm1, %%ymm0") \
+            __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
+
+        #define LOGE_CORE_X8_FMA3 \
+            LOGN_CORE_X8_FMA3 \
+            __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0") \
+            __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
+
+        #define LOGE_CORE_X4_FMA3 \
+            LOGN_CORE_X4_FMA3 \
+            __ASM_EMIT("vaddps          %%xmm0, %%xmm0, %%xmm0") \
+            __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%xmm1, %%xmm0")
+
+
+        #define LOGD_CORE_X32_FMA3 \
+            LOGN_CORE_X32_FMA3 \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm8, %%ymm8") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm12, %%ymm12") \
+            __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm1, %%ymm0") \
+            __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm5, %%ymm4") \
+            __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm9, %%ymm8") \
+            __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm13, %%ymm12")
+
+        #define LOGD_CORE_X16_FMA3 \
+            LOGN_CORE_X16_FMA3 \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0") \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4") \
+            __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm1, %%ymm0") \
+            __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm5, %%ymm4")
+
+        #define LOGD_CORE_X8_FMA3 \
+            LOGN_CORE_X8_FMA3 \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0") \
+            __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm1, %%ymm0")
+
+        #define LOGD_CORE_X4_FMA3 \
+            LOGN_CORE_X4_FMA3 \
+            __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0") \
+            __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%xmm1, %%xmm0")
+
+
+
         void x64_logb2_fma3(float *dst, const float *src, size_t count)
         {
             ARCH_X86_64_ASM(
@@ -1158,11 +1550,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
                 __ASM_EMIT("vmovups         0x40(%[src]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[src]), %%ymm12")
-                LOGN_CORE_X32
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm9, %%ymm8")
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm13, %%ymm12")
+                LOGB_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -1171,50 +1559,40 @@ namespace lsp
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x16 block
                 __ASM_EMIT("2:")
+                // x16 block
                 __ASM_EMIT("add             $16, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
-                LOGN_FMA3_CORE_X16
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
+                LOGB_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("add             $0x40, %[src]")
                 __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x8 block
                 __ASM_EMIT("4:")
+                // x8 block
                 __ASM_EMIT("add             $8, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
-                LOGN_FMA3_CORE_X8
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
+                LOGB_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[src]")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x4 block
                 __ASM_EMIT("6:")
+                // x4 block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
-                LOGN_FMA3_CORE_X4
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")
+                LOGB_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[src]")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
-
-                // Tail: 1x-3x block
                 __ASM_EMIT("8:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             16f")
                 __ASM_EMIT("test            $1, %[count]")
@@ -1226,10 +1604,7 @@ namespace lsp
                 __ASM_EMIT("jz              12f")
                 __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
                 __ASM_EMIT("12:")
-
-                LOGN_FMA3_CORE_X4
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")
-
+                LOGB_CORE_X4_FMA3
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
@@ -1238,8 +1613,6 @@ namespace lsp
                 __ASM_EMIT("test            $2, %[count]")
                 __ASM_EMIT("jz              16f")
                 __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
-
-                // End
                 __ASM_EMIT("16:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
@@ -1250,6 +1623,75 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
                   "%xmm12", "%xmm13", "%xmm14", "%xmm15"
+            );
+        }
+
+        void logb2_fma3(float *dst, const float *src, size_t count)
+        {
+            ARCH_X86_64_ASM(
+                // x16 blocks
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
+                LOGB_CORE_X16_FMA3
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+                __ASM_EMIT("add             $0x40, %[src]")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // x8 block
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+                LOGB_CORE_X8_FMA3
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x20, %[src]")
+                __ASM_EMIT("add             $0x20, %[dst]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("4:")
+                // x4 block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
+                LOGB_CORE_X4_FMA3
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[src]")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("6:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             14f")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("add             $4, %[src]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+                __ASM_EMIT("10:")
+                LOGB_CORE_X4_FMA3
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              12f")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("12:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              14f")
+                __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("14:")
+
+                : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
+                : [L2C] "o" (LOG2_CONST),
+                  [LOGC] "o" (LOGB_C)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
@@ -1266,11 +1708,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
                 __ASM_EMIT("vmovups         0x40(%[dst]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[dst]), %%ymm12")
-                LOGN_CORE_X32
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm9, %%ymm8")
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm13, %%ymm12")
+                LOGB_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -1278,47 +1716,37 @@ namespace lsp
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x16 block
                 __ASM_EMIT("2:")
+                // x16 block
                 __ASM_EMIT("add             $16, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
-                LOGN_FMA3_CORE_X16
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
+                LOGB_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x8 block
                 __ASM_EMIT("4:")
+                // x8 block
                 __ASM_EMIT("add             $8, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
-                LOGN_FMA3_CORE_X8
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
+                LOGB_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x4 block
                 __ASM_EMIT("6:")
+                // x4 block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
-                LOGN_FMA3_CORE_X4
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")
+                LOGB_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
-
-                // Tail: 1x-3x block
                 __ASM_EMIT("8:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             16f")
                 __ASM_EMIT("mov             %[dst], %[src]")
@@ -1331,10 +1759,7 @@ namespace lsp
                 __ASM_EMIT("jz              12f")
                 __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
                 __ASM_EMIT("12:")
-
-                LOGN_FMA3_CORE_X4
-                __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")
-
+                LOGB_CORE_X4_FMA3
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
@@ -1343,8 +1768,6 @@ namespace lsp
                 __ASM_EMIT("test            $2, %[count]")
                 __ASM_EMIT("jz              16f")
                 __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
-
-                // End
                 __ASM_EMIT("16:")
 
                 : [dst] "+r" (dst), [src] "=&r" (src), [count] "+r" (count)
@@ -1355,6 +1778,75 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
                   "%xmm12", "%xmm13", "%xmm14", "%xmm15"
+            );
+        }
+
+        void logb1_fma3(float *dst, size_t count)
+        {
+            IF_ARCH_X86_64(float *src);
+
+            ARCH_X86_64_ASM(
+                // x32 blocks
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
+                LOGB_CORE_X16_FMA3
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // x8 block
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
+                LOGB_CORE_X8_FMA3
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x20, %[dst]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("4:")
+                // x4 block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
+                LOGB_CORE_X4_FMA3
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("6:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             14f")
+                __ASM_EMIT("mov             %[dst], %[src]")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("add             $4, %[src]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+                __ASM_EMIT("10:")
+                LOGB_CORE_X4_FMA3
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              12f")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("12:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              14f")
+                __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("14:")
+
+                : [dst] "+r" (dst), [src] "=&r" (src), [count] "+r" (count)
+                : [L2C] "o" (LOG2_CONST),
+                  [LOGC] "o" (LOGB_C)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
@@ -1369,15 +1861,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
                 __ASM_EMIT("vmovups         0x40(%[src]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[src]), %%ymm12")
-                LOGN_CORE_X32
-                __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm4, %%ymm4, %%ymm4")
-                __ASM_EMIT("vaddps          %%ymm8, %%ymm8, %%ymm8")
-                __ASM_EMIT("vaddps          %%ymm12, %%ymm12, %%ymm12")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm9, %%ymm8")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm13, %%ymm12")
+                LOGE_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -1386,54 +1870,40 @@ namespace lsp
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x16 block
                 __ASM_EMIT("2:")
+                // x16 block
                 __ASM_EMIT("add             $16, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
-                LOGN_FMA3_CORE_X16
-                __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm4, %%ymm4, %%ymm4")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
+                LOGE_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("add             $0x40, %[src]")
                 __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x8 block
                 __ASM_EMIT("4:")
+                // x8 block
                 __ASM_EMIT("add             $8, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
-                LOGN_FMA3_CORE_X8
-                __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
+                LOGE_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[src]")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x4 block
                 __ASM_EMIT("6:")
+                // x4 block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
-                LOGN_FMA3_CORE_X4
-                __ASM_EMIT("vaddps          %%xmm0, %%xmm0, %%xmm0")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%xmm1, %%xmm0")
+                LOGE_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[src]")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
-
-                // Tail: 1x-3x block
                 __ASM_EMIT("8:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             16f")
                 __ASM_EMIT("test            $1, %[count]")
@@ -1445,11 +1915,7 @@ namespace lsp
                 __ASM_EMIT("jz              12f")
                 __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
                 __ASM_EMIT("12:")
-
-                LOGN_FMA3_CORE_X4
-                __ASM_EMIT("vaddps          %%xmm0, %%xmm0, %%xmm0")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%xmm1, %%xmm0")
-
+                LOGE_CORE_X4_FMA3
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
@@ -1458,8 +1924,6 @@ namespace lsp
                 __ASM_EMIT("test            $2, %[count]")
                 __ASM_EMIT("jz              16f")
                 __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
-
-                // End
                 __ASM_EMIT("16:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
@@ -1470,6 +1934,75 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
                   "%xmm12", "%xmm13", "%xmm14", "%xmm15"
+            );
+        }
+
+        void loge2_fma3(float *dst, const float *src, size_t count)
+        {
+            ARCH_X86_64_ASM(
+                // x16 blocks
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
+                LOGE_CORE_X16_FMA3
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+                __ASM_EMIT("add             $0x40, %[src]")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // x8 block
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+                LOGE_CORE_X8_FMA3
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x20, %[src]")
+                __ASM_EMIT("add             $0x20, %[dst]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("4:")
+                // x4 block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
+                LOGE_CORE_X4_FMA3
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[src]")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("6:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             14f")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("add             $4, %[src]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+                __ASM_EMIT("10:")
+                LOGE_CORE_X4_FMA3
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              12f")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("12:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              14f")
+                __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("14:")
+
+                : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
+                : [L2C] "o" (LOG2_CONST),
+                  [LOGC] "o" (LOGE_C)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
@@ -1486,15 +2019,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
                 __ASM_EMIT("vmovups         0x40(%[dst]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[dst]), %%ymm12")
-                LOGN_CORE_X32
-                __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm4, %%ymm4, %%ymm4")
-                __ASM_EMIT("vaddps          %%ymm8, %%ymm8, %%ymm8")
-                __ASM_EMIT("vaddps          %%ymm12, %%ymm12, %%ymm12")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm9, %%ymm8")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm13, %%ymm12")
+                LOGE_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -1502,51 +2027,37 @@ namespace lsp
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x16 block
                 __ASM_EMIT("2:")
+                // x16 block
                 __ASM_EMIT("add             $16, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
-                LOGN_FMA3_CORE_X16
-                __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vaddps          %%ymm4, %%ymm4, %%ymm4")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
+                LOGE_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x8 block
                 __ASM_EMIT("4:")
+                // x8 block
                 __ASM_EMIT("add             $8, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
-                LOGN_FMA3_CORE_X8
-                __ASM_EMIT("vaddps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%ymm1, %%ymm0")
+                LOGE_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x4 block
                 __ASM_EMIT("6:")
+                // x4 block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
-                LOGN_FMA3_CORE_X4
-                __ASM_EMIT("vaddps          %%xmm0, %%xmm0, %%xmm0")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%xmm1, %%xmm0")
+                LOGE_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
-
-                // Tail: 1x-3x block
                 __ASM_EMIT("8:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             16f")
                 __ASM_EMIT("mov             %[dst], %[src]")
@@ -1559,11 +2070,7 @@ namespace lsp
                 __ASM_EMIT("jz              12f")
                 __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
                 __ASM_EMIT("12:")
-
-                LOGN_FMA3_CORE_X4
-                __ASM_EMIT("vaddps          %%xmm0, %%xmm0, %%xmm0")
-                __ASM_EMIT("vfmadd231ps     0x00 + %[LOGC], %%xmm1, %%xmm0")
-
+                LOGE_CORE_X4_FMA3
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
@@ -1572,8 +2079,6 @@ namespace lsp
                 __ASM_EMIT("test            $2, %[count]")
                 __ASM_EMIT("jz              16f")
                 __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
-
-                // End
                 __ASM_EMIT("16:")
 
                 : [dst] "+r" (dst), [src] "=&r" (src), [count] "+r" (count)
@@ -1584,6 +2089,75 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
                   "%xmm12", "%xmm13", "%xmm14", "%xmm15"
+            );
+        }
+
+        void loge1_fma3(float *dst, size_t count)
+        {
+            IF_ARCH_X86_64(float *src);
+
+            ARCH_X86_64_ASM(
+                // x16 blocks
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
+                LOGE_CORE_X16_FMA3
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // x8 block
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
+                LOGE_CORE_X8_FMA3
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x20, %[dst]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("4:")
+                // x4 block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
+                LOGE_CORE_X4_FMA3
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("6:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             14f")
+                __ASM_EMIT("mov             %[dst], %[src]")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("add             $4, %[src]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+                __ASM_EMIT("10:")
+                LOGE_CORE_X4_FMA3
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              12f")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("12:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              14f")
+                __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("14:")
+
+                : [dst] "+r" (dst), [src] "=&r" (src), [count] "+r" (count)
+                : [L2C] "o" (LOG2_CONST),
+                  [LOGC] "o" (LOGE_C)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
@@ -1598,15 +2172,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
                 __ASM_EMIT("vmovups         0x40(%[src]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[src]), %%ymm12")
-                LOGN_CORE_X32
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm8, %%ymm8")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm12, %%ymm12")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm1, %%ymm0")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm5, %%ymm4")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm9, %%ymm8")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm13, %%ymm12")
+                LOGD_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -1615,54 +2181,40 @@ namespace lsp
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x16 block
                 __ASM_EMIT("2:")
+                // x16 block
                 __ASM_EMIT("add             $16, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
-                LOGN_FMA3_CORE_X16
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm1, %%ymm0")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm5, %%ymm4")
+                LOGD_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("add             $0x40, %[src]")
                 __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x8 block
                 __ASM_EMIT("4:")
+                // x8 block
                 __ASM_EMIT("add             $8, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
-                LOGN_FMA3_CORE_X8
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm1, %%ymm0")
+                LOGD_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[src]")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x4 block
                 __ASM_EMIT("6:")
+                // x4 block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
-                LOGN_FMA3_CORE_X4
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%xmm1, %%xmm0")
+                LOGD_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[src]")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
-
-                // Tail: 1x-3x block
                 __ASM_EMIT("8:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             16f")
                 __ASM_EMIT("test            $1, %[count]")
@@ -1674,11 +2226,7 @@ namespace lsp
                 __ASM_EMIT("jz              12f")
                 __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
                 __ASM_EMIT("12:")
-
-                LOGN_FMA3_CORE_X4
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%xmm1, %%xmm0")
-
+                LOGD_CORE_X4_FMA3
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
@@ -1687,8 +2235,6 @@ namespace lsp
                 __ASM_EMIT("test            $2, %[count]")
                 __ASM_EMIT("jz              16f")
                 __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
-
-                // End
                 __ASM_EMIT("16:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
@@ -1699,6 +2245,75 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
                   "%xmm12", "%xmm13", "%xmm14", "%xmm15"
+            );
+        }
+
+        void logd2_fma3(float *dst, const float *src, size_t count)
+        {
+            ARCH_X86_64_ASM(
+                // x16 blocks
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
+                LOGD_CORE_X16_FMA3
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+                __ASM_EMIT("add             $0x40, %[src]")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // x8 block
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
+                LOGD_CORE_X8_FMA3
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x20, %[src]")
+                __ASM_EMIT("add             $0x20, %[dst]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("4:")
+                // x4 block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
+                LOGD_CORE_X4_FMA3
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[src]")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("6:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             14f")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("add             $4, %[src]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+                __ASM_EMIT("10:")
+                LOGD_CORE_X4_FMA3
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              12f")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("12:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              14f")
+                __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("14:")
+
+                : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
+                : [L2C] "o" (LOG2_CONST),
+                  [LOGC] "o" (LOGD_C)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
@@ -1715,15 +2330,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
                 __ASM_EMIT("vmovups         0x40(%[dst]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[dst]), %%ymm12")
-                LOGN_CORE_X32
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm8, %%ymm8")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm12, %%ymm12")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm1, %%ymm0")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm5, %%ymm4")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm9, %%ymm8")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm13, %%ymm12")
+                LOGD_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -1731,51 +2338,38 @@ namespace lsp
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x16 block
                 __ASM_EMIT("2:")
+                // x16 block
                 __ASM_EMIT("add             $16, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
-                LOGN_FMA3_CORE_X16
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm4, %%ymm4")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm1, %%ymm0")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm5, %%ymm4")
+                LOGD_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
-                __ASM_EMIT("jae             1b")
-
-                // x8 block
                 __ASM_EMIT("4:")
+                // x8 block
                 __ASM_EMIT("add             $8, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
-                LOGN_FMA3_CORE_X8
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%ymm1, %%ymm0")
+                LOGD_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("jae             1b")
-
-                // x4 block
                 __ASM_EMIT("6:")
+                // x4 block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
-                LOGN_FMA3_CORE_X4
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%xmm1, %%xmm0")
+                LOGD_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
-
-                // Tail: 1x-3x block
                 __ASM_EMIT("8:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             16f")
                 __ASM_EMIT("mov             %[dst], %[src]")
@@ -1788,11 +2382,7 @@ namespace lsp
                 __ASM_EMIT("jz              12f")
                 __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
                 __ASM_EMIT("12:")
-
-                LOGN_FMA3_CORE_X4
-                __ASM_EMIT("vmulps          0x00 + %[LOGC], %%xmm0, %%xmm0")
-                __ASM_EMIT("vfmadd231ps     0x20 + %[LOGC], %%xmm1, %%xmm0")
-
+                LOGD_CORE_X4_FMA3
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
@@ -1801,8 +2391,6 @@ namespace lsp
                 __ASM_EMIT("test            $2, %[count]")
                 __ASM_EMIT("jz              16f")
                 __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
-
-                // End
                 __ASM_EMIT("16:")
 
                 : [dst] "+r" (dst), [src] "=&r" (src), [count] "+r" (count)
@@ -1815,7 +2403,78 @@ namespace lsp
                   "%xmm12", "%xmm13", "%xmm14", "%xmm15"
             );
         }
-    }
-}
+
+        void logd1_fma3(float *dst, size_t count)
+        {
+            IF_ARCH_X86_64(float *src);
+
+            ARCH_X86_64_ASM(
+                // x16 blocks
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
+                LOGD_CORE_X16_FMA3
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
+                __ASM_EMIT("add             $0x40, %[dst]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // x8 block
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
+                LOGD_CORE_X8_FMA3
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x20, %[dst]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("4:")
+                // x4 block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
+                LOGD_CORE_X4_FMA3
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("6:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             14f")
+                __ASM_EMIT("mov             %[dst], %[src]")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovss          0x00(%[src]), %%xmm0")
+                __ASM_EMIT("add             $4, %[src]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("vmovhps         0x00(%[src]), %%xmm0, %%xmm0")
+                __ASM_EMIT("10:")
+                LOGD_CORE_X4_FMA3
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              12f")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("12:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              14f")
+                __ASM_EMIT("vmovhps         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("14:")
+
+                : [dst] "+r" (dst), [src] "=&r" (src), [count] "+r" (count)
+                : [L2C] "o" (LOG2_CONST),
+                  [LOGC] "o" (LOGD_C)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
+    } /* namespace avx2 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX2_PMATH_LOG_H_ */

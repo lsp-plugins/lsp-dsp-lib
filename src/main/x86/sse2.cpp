@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -42,6 +42,8 @@
 
 
     #define PRIVATE_DSP_ARCH_X86_SSE2_IMPL
+        #include <private/dsp/arch/x86/sse2/dynamics.h>
+
         #include <private/dsp/arch/x86/sse2/float.h>
 
         #include <private/dsp/arch/x86/sse2/search/iminmax.h>
@@ -144,6 +146,9 @@
                 EXPORT1(abgr32_to_bgrff32);
                 EXPORT2(prgba32_set_alpha, pabc32_set_alpha);
                 EXPORT2(pbgra32_set_alpha, pabc32_set_alpha);
+
+                EXPORT1(compressor_x2_gain)
+                EXPORT1(compressor_x2_curve)
             }
 
             #undef EXPORT1
