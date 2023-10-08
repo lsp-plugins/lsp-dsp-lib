@@ -99,12 +99,18 @@ namespace lsp
 
     #define PROCESS_COMP_FULL_X8 \
         /* in: q0 = x0, q1 = x1 */ \
-        __ASM_EMIT("vld1.f32            {d26[], d27[]}, [%[comp]]")     /* q8  = start */ \
+        __ASM_EMIT("add                 %[off], %[comp], #0x08") \
+        __ASM_EMIT("vld1.f32            {d26[], d27[]}, [%[comp]]")     /* q13 = start[0] */ \
+        __ASM_EMIT("vld1.f32            {d28[], d29[]}, [%[off]]")      /* q14 = start[1] */ \
         __ASM_EMIT("vabs.f32            q0, q0")                        /* q0  = fabsf(x0) */ \
         __ASM_EMIT("vabs.f32            q1, q1") \
-        __ASM_EMIT("vcgt.f32            q2, q0, q13")                   /* q13 = [fabs(x0) > start] */ \
+        __ASM_EMIT("vcgt.f32            q2, q0, q13")                   /* q13 = [fabs(x0) > start[0]] */ \
         __ASM_EMIT("vcgt.f32            q3, q1, q13") \
+        __ASM_EMIT("vcgt.f32            q4, q0, q14")                   /* q14 = [fabs(x0) > start[1]] */ \
+        __ASM_EMIT("vcgt.f32            q5, q1, q14") \
         __ASM_EMIT("vorr                q2, q2, q3") \
+        __ASM_EMIT("vorr                q4, q4, q5") \
+        __ASM_EMIT("vorr                q2, q2, q4") \
         __ASM_EMIT("vext.32             q4, q2, q2, #2") \
         __ASM_EMIT("vorr                q2, q2, q4")  \
         __ASM_EMIT("vext.32             q4, q2, q2, #1") \
@@ -122,7 +128,7 @@ namespace lsp
         __ASM_EMIT("100:") \
         __ASM_EMIT("vstm                %[mem], {q0-q1}")               /* mem[0x00] = fabfs(x0) */ \
         __ASM_EMIT("vldm                %[LOGC], {q14-q15}") \
-        LOGE_CORE_X8                                                    /* xmm0 = lx0 = logf(fabsf(x0)) */ \
+        LOGE_CORE_X8                                                    /* q0 = lx0 = logf(fabsf(x0)) */ \
         __ASM_EMIT("add                 %[off], %[mem], #0x20") \
         __ASM_EMIT("vstm                %[off], {q0-q1}")               /* mem[0x20] = lx0 */ \
         PROCESS_KNEE_SINGLE_X8                                          /* apply knee 0 */ \
@@ -145,7 +151,7 @@ namespace lsp
         __ASM_EMIT("vabs.f32            q0, q0")                        /* q0 = fabsf(x0) */ \
         __ASM_EMIT("vstm                %[mem], {q0}")                  /* mem[0x00] = fabfs(x0) */ \
         __ASM_EMIT("vldm                %[LOGC], {q14-q15}") \
-        LOGE_CORE_X4                                                    /* xmm0 = lx0 = logf(fabsf(x0)) */ \
+        LOGE_CORE_X4                                                    /* q0 = lx0 = logf(fabsf(x0)) */ \
         __ASM_EMIT("add                 %[off], %[mem], #0x10") \
         __ASM_EMIT("vstm                %[off], {q0}")                  /* mem[0x10] = lx0 */ \
         PROCESS_KNEE_SINGLE_X4                                          /* apply knee 0 */ \
