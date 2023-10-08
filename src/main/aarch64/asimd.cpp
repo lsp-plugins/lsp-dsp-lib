@@ -53,6 +53,7 @@
         #include <private/dsp/arch/aarch64/asimd/complex.h>
         #include <private/dsp/arch/aarch64/asimd/convolution.h>
         #include <private/dsp/arch/aarch64/asimd/copy.h>
+        #include <private/dsp/arch/aarch64/asimd/dynamics.h>
         #include <private/dsp/arch/aarch64/asimd/fastconv.h>
         #include <private/dsp/arch/aarch64/asimd/fft.h>
         #include <private/dsp/arch/aarch64/asimd/filters/dynamic.h>
@@ -454,6 +455,8 @@
                 EXPORT1(eff_hsla_sat);
                 EXPORT1(eff_hsla_light);
                 EXPORT1(eff_hsla_alpha);
+
+                EXPORT1(compressor_x2_gain);
             }
         } /* namespace asimd */
     } /* namespace lsp */

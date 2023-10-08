@@ -136,7 +136,7 @@ PTEST_BEGIN("dsp.dynamics", compressor_x2_gain, 5, 1000)
             IF_ARCH_X86(CALL(avx2::compressor_x2_gain_fma3));
             IF_ARCH_X86_64(CALL(avx2::x64_compressor_x2_gain_fma3));
             IF_ARCH_ARM(CALL(neon_d32::compressor_x2_gain));
-//            IF_ARCH_AARCH64(CALL(asimd::compressor_x2_gain));
+            IF_ARCH_AARCH64(CALL(asimd::compressor_x2_gain));
             PTEST_SEPARATOR;
         }
 
