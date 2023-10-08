@@ -309,6 +309,7 @@ namespace lsp
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned32;
                 float mem[48] __lsp_aligned32;
+                float stub[16] __lsp_aligned32;
                 size_t mask;
             );
 
@@ -381,6 +382,7 @@ namespace lsp
                 : [comp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub] "o" (stub),
                   [C2C] "o" (compressor_const),
                   [L2C] "o" (LOG2_CONST),
                   [LOGC] "o" (LOGE_C),
@@ -398,6 +400,7 @@ namespace lsp
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned32;
                 float mem[96] __lsp_aligned32;
+                float stub[16] __lsp_aligned32;
                 size_t mask;
             );
 
@@ -486,6 +489,7 @@ namespace lsp
                 : [comp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub] "o" (stub),
                   [C2C] "o" (compressor_const),
                   [L2C] "o" (LOG2_CONST),
                   [LOGC] "o" (LOGE_C),
@@ -505,6 +509,7 @@ namespace lsp
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned32;
                 float mem[48] __lsp_aligned32;
+                float stub[16] __lsp_aligned32;
                 size_t mask;
             );
 
@@ -583,6 +588,7 @@ namespace lsp
                 : [comp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub] "o" (stub),
                   [C2C] "o" (compressor_const),
                   [L2C] "o" (LOG2_CONST),
                   [LOGC] "o" (LOGE_C),
@@ -600,6 +606,7 @@ namespace lsp
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned32;
                 float mem[96] __lsp_aligned32;
+                float stub[16] __lsp_aligned32;
                 size_t mask;
             );
 
@@ -698,6 +705,7 @@ namespace lsp
                 : [comp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub] "o" (stub),
                   [C2C] "o" (compressor_const),
                   [L2C] "o" (LOG2_CONST),
                   [LOGC] "o" (LOGE_C),
@@ -953,6 +961,7 @@ namespace lsp
         IF_ARCH_X86(
             comp_knee_t knee[2] __lsp_aligned32;
             float mem[48] __lsp_aligned32;
+            float stub[16] __lsp_aligned32;
             size_t mask;
         );
 
@@ -1025,6 +1034,7 @@ namespace lsp
             : [comp] "r" (c),
               [knee] "o" (knee),
               [mem] "o" (mem),
+              [stub] "o" (stub),
               [C2C] "o" (compressor_const),
               [L2C] "o" (LOG2_CONST),
               [LOGC] "o" (LOGE_C),
@@ -1042,6 +1052,7 @@ namespace lsp
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned32;
                 float mem[96] __lsp_aligned32;
+                float stub[16] __lsp_aligned32;
                 size_t mask;
             );
 
@@ -1130,6 +1141,7 @@ namespace lsp
                 : [comp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub] "o" (stub),
                   [C2C] "o" (compressor_const),
                   [L2C] "o" (LOG2_CONST),
                   [LOGC] "o" (LOGE_C),
@@ -1149,6 +1161,7 @@ namespace lsp
         IF_ARCH_X86(
             comp_knee_t knee[2] __lsp_aligned32;
             float mem[48] __lsp_aligned32;
+            float stub[16] __lsp_aligned32;
             size_t mask;
         );
 
@@ -1227,6 +1240,7 @@ namespace lsp
             : [comp] "r" (c),
               [knee] "o" (knee),
               [mem] "o" (mem),
+              [stub] "o" (stub),
               [C2C] "o" (compressor_const),
               [L2C] "o" (LOG2_CONST),
               [LOGC] "o" (LOGE_C),
@@ -1244,6 +1258,7 @@ namespace lsp
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned32;
                 float mem[96] __lsp_aligned32;
+                float stub[16] __lsp_aligned32;
                 size_t mask;
             );
 
@@ -1342,6 +1357,7 @@ namespace lsp
                 : [comp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub] "o" (stub),
                   [C2C] "o" (compressor_const),
                   [L2C] "o" (LOG2_CONST),
                   [LOGC] "o" (LOGE_C),
