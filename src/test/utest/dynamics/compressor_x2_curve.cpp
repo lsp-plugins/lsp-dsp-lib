@@ -164,7 +164,7 @@ UTEST_BEGIN("dsp.dynamics", compressor_x2_curve)
 
         IF_ARCH_ARM(CALL(generic::compressor_x2_curve, neon_d32::compressor_x2_curve, 16));
 
-//        IF_ARCH_AARCH64(CALL(generic::compressor_x2_curve, asimd::compressor_x2_curve, 16));
+        IF_ARCH_AARCH64(CALL(generic::compressor_x2_curve, asimd::compressor_x2_curve, 16));
     }
 UTEST_END
 

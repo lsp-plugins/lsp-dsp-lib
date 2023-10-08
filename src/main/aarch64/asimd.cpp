@@ -457,6 +457,7 @@
                 EXPORT1(eff_hsla_alpha);
 
                 EXPORT1(compressor_x2_gain);
+                EXPORT1(compressor_x2_curve);
             }
         } /* namespace asimd */
     } /* namespace lsp */

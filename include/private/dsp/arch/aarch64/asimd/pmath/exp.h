@@ -169,7 +169,7 @@ namespace lsp
     #define EXP_CORE_X4_NOLOAD \
         /* in: v0 = x0 */ \
         __ASM_EMIT("fmul            v0.4s, v0.4s, v26.4s") \
-        POW2_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        POW2_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
         /* out: v0 = exp(x0) */
 
     #define EXP_CORE_X8 \
