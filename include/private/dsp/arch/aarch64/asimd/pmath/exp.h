@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -151,41 +151,66 @@ namespace lsp
         /* Perform conditional output */ \
         __ASM_EMIT("bif             v0.16b, v4.16b, v2.16b")        /* v0   = ((1/E) & [ x < 0 ]) | (E & [x >= 0]) */
 
+    #define EXP_CORE_LOAD \
+        __ASM_EMIT("ldp             q26, q27, [%[LOG2E]]") \
+        __ASM_EMIT("ldp             q16, q17, [%[E2C], #0x00]")     /* v16  = ME, v17 = L2 */ \
+        __ASM_EMIT("ldp             q18, q19, [%[E2C], #0x20]")     /* v18  = C5, v19 = C4 */ \
+        __ASM_EMIT("ldp             q20, q21, [%[E2C], #0x40]")     /* v20  = C3, v21 = C2 */ \
+        __ASM_EMIT("ldp             q22, q23, [%[E2C], #0x60]")     /* v22  = C1, v23 = C0 */ \
+        __ASM_EMIT("ldp             q24, q25, [%[E2C], #0x80]")     /* v22  = C6, v23 = C7 */
+
+    #define EXP_CORE_X8_NOLOAD \
+        /* in: v0 = x0, v1 = x1 */ \
+        __ASM_EMIT("fmul            v0.4s, v0.4s, v26.4s") \
+        __ASM_EMIT("fmul            v1.4s, v1.4s, v27.4s") \
+        POW2_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        /* out: v0 = exp(x0), v1 = exp(x1) */
+
+    #define EXP_CORE_X4_NOLOAD \
+        /* in: v0 = x0 */ \
+        __ASM_EMIT("fmul            v0.4s, v0.4s, v26.4s") \
+        POW2_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        /* out: v0 = exp(x0) */
+
+    #define EXP_CORE_X8 \
+        /* in: v0 = x0, v1 = x1 */ \
+        EXP_CORE_LOAD \
+        EXP_CORE_X8_NOLOAD \
+        /* out: v0 = exp(x0), v1 = exp(x1) */
+
+    #define EXP_CORE_X4 \
+        /* in: v0 = x0 */ \
+        EXP_CORE_LOAD \
+        EXP_CORE_X4_NOLOAD \
+        /* out: v0 = exp(x0) */
+
         void exp2(float *dst, const float *src, size_t count)
         {
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("subs            %[count], %[count], #8")
-                __ASM_EMIT("ldp             q30, q31, [%[LOG2E]]")
-                __ASM_EMIT("ldp             q16, q17, [%[E2C], #0x00]")     /* v16  = ME, v17 = L2 */ \
-                __ASM_EMIT("ldp             q18, q19, [%[E2C], #0x20]")     /* v18  = C5, v19 = C4 */ \
-                __ASM_EMIT("ldp             q20, q21, [%[E2C], #0x40]")     /* v20  = C3, v21 = C2 */ \
-                __ASM_EMIT("ldp             q22, q23, [%[E2C], #0x60]")     /* v22  = C1, v23 = C0 */ \
-                __ASM_EMIT("ldp             q24, q25, [%[E2C], #0x80]")     /* v22  = C6, v23 = C7 */ \
-                __ASM_EMIT("b.lo            2f")
+                EXP_CORE_LOAD
                 // x8 blocks
+                __ASM_EMIT("subs            %[count], %[count], #8")
+                __ASM_EMIT("b.lo            2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("ldp             q0, q1, [%[src]]")
-                __ASM_EMIT("fmul            v0.4s, v0.4s, v30.4s")
-                __ASM_EMIT("fmul            v1.4s, v1.4s, v31.4s")
-                POW2_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
+                EXP_CORE_X8_NOLOAD
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("stp             q0, q1, [%[dst]]")
                 __ASM_EMIT("add             %[src], %[src], #0x20")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("bhs             1b")
-                // x4 block
                 __ASM_EMIT("2:")
+                // x4 block
                 __ASM_EMIT("adds            %[count], %[count], #4")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("ldr             q0, [%[src]]")
-                __ASM_EMIT("fmul            v0.4s, v0.4s, v30.4s")
-                POW2_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
+                EXP_CORE_X4_NOLOAD
                 __ASM_EMIT("sub             %[count], %[count], #4")
                 __ASM_EMIT("str             q0, [%[dst]]")
                 __ASM_EMIT("add             %[src], %[src], #0x10")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
-                // Tail: 1x-3x block
                 __ASM_EMIT("4:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("adds            %[count], %[count], #4")
                 __ASM_EMIT("bls             12f")
                 __ASM_EMIT("tst             %[count], #1")
@@ -197,8 +222,7 @@ namespace lsp
                 __ASM_EMIT("b.eq            8f")
                 __ASM_EMIT("ld1             {v0.d}[1], [%[src]]")
                 __ASM_EMIT("8:")
-                __ASM_EMIT("fmul            v0.4s, v0.4s, v30.4s")
-                POW2_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
+                EXP_CORE_X4_NOLOAD
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("b.eq            10f")
                 __ASM_EMIT("st1             {v0.s}[0], [%[dst]]")
@@ -207,7 +231,6 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("b.eq            12f")
                 __ASM_EMIT("st1             {v0.d}[1], [%[dst]]")
-                // End
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
@@ -219,44 +242,35 @@ namespace lsp
                   "v8", "v9", "v10", "v11",
                   "v16", "v17", "v18", "v19",
                   "v20", "v21", "v22", "v23",
-                  "v24", "v25",
-                  "v30", "v31"
+                  "v24", "v25", "v26", "v27"
             );
         }
 
         void exp1(float *dst, size_t count)
         {
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("subs            %[count], %[count], #8")
-                __ASM_EMIT("ldp             q30, q31, [%[LOG2E]]")
-                __ASM_EMIT("ldp             q16, q17, [%[E2C], #0x00]")     /* v16  = ME, v17 = L2 */ \
-                __ASM_EMIT("ldp             q18, q19, [%[E2C], #0x20]")     /* v18  = C5, v19 = C4 */ \
-                __ASM_EMIT("ldp             q20, q21, [%[E2C], #0x40]")     /* v20  = C3, v21 = C2 */ \
-                __ASM_EMIT("ldp             q22, q23, [%[E2C], #0x60]")     /* v22  = C1, v23 = C0 */ \
-                __ASM_EMIT("ldp             q24, q25, [%[E2C], #0x80]")     /* v22  = C6, v23 = C7 */ \
-                __ASM_EMIT("b.lo            2f")
+                EXP_CORE_LOAD
                 // x8 blocks
+                __ASM_EMIT("subs            %[count], %[count], #8")
+                __ASM_EMIT("b.lo            2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("ldp             q0, q1, [%[dst]]")
-                __ASM_EMIT("fmul            v0.4s, v0.4s, v30.4s")
-                __ASM_EMIT("fmul            v1.4s, v1.4s, v31.4s")
-                POW2_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
+                EXP_CORE_X8
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("stp             q0, q1, [%[dst]]")
                 __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("bhs             1b")
-                // x4 block
                 __ASM_EMIT("2:")
+                // x4 block
                 __ASM_EMIT("adds            %[count], %[count], #4")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("ldr             q0, [%[dst]]")
-                __ASM_EMIT("fmul            v0.4s, v0.4s, v30.4s")
-                POW2_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
+                EXP_CORE_X4
                 __ASM_EMIT("sub             %[count], %[count], #4")
                 __ASM_EMIT("str             q0, [%[dst]]")
                 __ASM_EMIT("add             %[dst], %[dst], #0x10")
-                // Tail: 1x-3x block
                 __ASM_EMIT("4:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("adds            %[count], %[count], #4")
                 __ASM_EMIT("bls             12f")
                 __ASM_EMIT("tst             %[count], #1")
@@ -268,8 +282,7 @@ namespace lsp
                 __ASM_EMIT("b.eq            8f")
                 __ASM_EMIT("ld1             {v0.d}[1], [%[dst]]")
                 __ASM_EMIT("8:")
-                __ASM_EMIT("fmul            v0.4s, v0.4s, v30.4s")
-                POW2_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25")
+                EXP_CORE_X4
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("b.eq            10f")
                 __ASM_EMIT("sub             %[dst], %[dst], #0x04")
@@ -279,7 +292,6 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("b.eq            12f")
                 __ASM_EMIT("st1             {v0.d}[1], [%[dst]]")
-                // End
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (dst), [count] "+r" (count)
@@ -291,11 +303,10 @@ namespace lsp
                   "v8", "v9", "v10", "v11",
                   "v16", "v17", "v18", "v19",
                   "v20", "v21", "v22", "v23",
-                  "v24", "v25",
-                  "v30", "v31"
+                  "v24", "v25", "v26", "v27"
             );
         }
-    }
-}
+    } /* namespace asimd */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_PMATH_EXP_H_ */
