@@ -373,7 +373,7 @@ namespace lsp
 
         #undef COMPLEX_MOD_CORE
 
-        #define COMPLEX_DIV3_CORE(DSTR, DSTI, TR, TI, BR, BI, __ASM_FMA, __ASM_NOFMA) \
+        #define COMPLEX_DIV3_CORE(DSTR, DSTI, TR, TI, BR, BI, __ASM_NOFMA, __ASM_FMA) \
             __ASM_EMIT  ("xor           %[off], %[off]") \
             /* x8 blocks */ \
             __ASM_EMIT32("subl          $8, %[count]") \
@@ -546,7 +546,7 @@ namespace lsp
 
         #undef COMPLEX_DIV3_CORE
 
-        #define COMPLEX_DIV2_CORE(DSTR, DSTI, TR, TI, BR, BI, __ASM_FMA, __ASM_NOFMA) \
+        #define COMPLEX_DIV2_CORE(DSTR, DSTI, TR, TI, BR, BI, __ASM_NOFMA, __ASM_FMA) \
             __ASM_EMIT  ("xor           %[off], %[off]") \
             /* x8 blocks */ \
             __ASM_EMIT32("subl          $8, %[count]") \
