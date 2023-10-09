@@ -30,7 +30,7 @@ namespace lsp
 {
     namespace avx2
     {
-        IF_ARCH_X86_64(
+        IF_ARCH_X86(
             static const uint32_t LOG2_CONST[] __lsp_aligned32 =
             {
                 LSP_DSP_VEC8(0x007fffff), // frac
@@ -458,7 +458,7 @@ namespace lsp
 
         void logb2(float *dst, const float *src, size_t count)
         {
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -613,9 +613,9 @@ namespace lsp
 
         void logb1(float *dst, size_t count)
         {
-            IF_ARCH_X86_64(float *src);
+            IF_ARCH_X86(float *src);
 
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -769,7 +769,7 @@ namespace lsp
 
         void loge2(float *dst, const float *src, size_t count)
         {
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 block
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -924,9 +924,9 @@ namespace lsp
 
         void loge1(float *dst, size_t count)
         {
-            IF_ARCH_X86_64(float *src);
+            IF_ARCH_X86(float *src);
 
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -1080,7 +1080,7 @@ namespace lsp
 
         void logd2(float *dst, const float *src, size_t count)
         {
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -1235,9 +1235,9 @@ namespace lsp
 
         void logd1(float *dst, size_t count)
         {
-            IF_ARCH_X86_64(float *src);
+            IF_ARCH_X86(float *src);
 
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -1628,7 +1628,7 @@ namespace lsp
 
         void logb2_fma3(float *dst, const float *src, size_t count)
         {
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -1783,9 +1783,9 @@ namespace lsp
 
         void logb1_fma3(float *dst, size_t count)
         {
-            IF_ARCH_X86_64(float *src);
+            IF_ARCH_X86(float *src);
 
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x32 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -1939,7 +1939,7 @@ namespace lsp
 
         void loge2_fma3(float *dst, const float *src, size_t count)
         {
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -2094,9 +2094,9 @@ namespace lsp
 
         void loge1_fma3(float *dst, size_t count)
         {
-            IF_ARCH_X86_64(float *src);
+            IF_ARCH_X86(float *src);
 
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -2250,7 +2250,7 @@ namespace lsp
 
         void logd2_fma3(float *dst, const float *src, size_t count)
         {
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -2406,9 +2406,9 @@ namespace lsp
 
         void logd1_fma3(float *dst, size_t count)
         {
-            IF_ARCH_X86_64(float *src);
+            IF_ARCH_X86(float *src);
 
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")

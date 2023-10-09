@@ -30,7 +30,7 @@ namespace lsp
 {
     namespace avx2
     {
-        IF_ARCH_X86_64(
+        IF_ARCH_X86(
             static const uint32_t EXP2_CONST[] __lsp_aligned32 =
             {
                 LSP_DSP_VEC8(0x7fffffff), // sign
@@ -381,9 +381,9 @@ namespace lsp
 
         void exp1(float *dst, size_t count)
         {
-            IF_ARCH_X86_64(float *src);
+            IF_ARCH_X86(float *src);
 
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -537,7 +537,7 @@ namespace lsp
 
         void exp2(float *dst, const float *src, size_t count)
         {
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -887,9 +887,9 @@ namespace lsp
 
         void exp1_fma3(float *dst, size_t count)
         {
-            IF_ARCH_X86_64(float *src);
+            IF_ARCH_X86(float *src);
 
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
@@ -1043,7 +1043,7 @@ namespace lsp
 
         void exp2_fma3(float *dst, const float *src, size_t count)
         {
-            ARCH_X86_64_ASM(
+            ARCH_X86_ASM(
                 // x16 blocks
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("jb              2f")
