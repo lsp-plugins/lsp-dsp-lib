@@ -261,7 +261,7 @@ namespace lsp
             (
                 COMPLEX_DIV2_CORE("dst_re", "dst_im", "dst_re", "dst_im", "src_re", "src_im")
                 : [off] "=&r" (off),
-                  [count] __ASM_ARG_RW(count)
+                  [count] X86_PGREG(count)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
                   [CC] "o" (complex_div_const)
@@ -278,7 +278,7 @@ namespace lsp
             (
                 COMPLEX_DIV2_CORE("dst_re", "dst_im", "src_re", "src_im", "dst_re", "dst_im")
                 : [off] "=&r" (off),
-                  [count] __ASM_ARG_RW(count)
+                  [count] X86_PGREG(count)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
                   [CC] "o" (complex_div_const)
@@ -298,7 +298,8 @@ namespace lsp
             (
                 __ASM_EMIT  ("xor           %[off], %[off]")
                 // x4 blocks
-                __ASM_EMIT  ("sub           $4, %[count]")
+                __ASM_EMIT32("subl          $4, %[count]") \
+                __ASM_EMIT64("sub           $4, %[count]") \
                 __ASM_EMIT  ("jb            2f")
                 __ASM_EMIT  ("1:")
                 __ASM_EMIT32("mov           %[t_re], %[ptr_re]")
@@ -333,11 +334,13 @@ namespace lsp
                 __ASM_EMIT64("movups        %%xmm0, 0x00(%[dst_re], %[off])")
                 __ASM_EMIT64("movups        %%xmm1, 0x00(%[dst_im], %[off])")
                 __ASM_EMIT  ("add           $0x10, %[off]")
-                __ASM_EMIT  ("sub           $4, %[count]")
+                __ASM_EMIT32("subl          $4, %[count]") \
+                __ASM_EMIT64("sub           $4, %[count]") \
                 __ASM_EMIT  ("jae           1b")
                 __ASM_EMIT  ("2:")
                 // x1 blocks
-                __ASM_EMIT  ("add           $3, %[count]")
+                __ASM_EMIT32("addl          $3, %[count]") \
+                __ASM_EMIT64("add           $3, %[count]") \
                 __ASM_EMIT  ("jl            4f")
                 __ASM_EMIT  ("3:")
                 __ASM_EMIT32("mov           %[t_re], %[ptr_re]")
@@ -372,7 +375,8 @@ namespace lsp
                 __ASM_EMIT64("movss         %%xmm0, 0x00(%[dst_re], %[off])")
                 __ASM_EMIT64("movss         %%xmm1, 0x00(%[dst_im], %[off])")
                 __ASM_EMIT  ("add           $0x04, %[off]")
-                __ASM_EMIT  ("dec           %[count]")
+                __ASM_EMIT32("decl          %[count]") \
+                __ASM_EMIT64("dec           %[count]") \
                 __ASM_EMIT  ("jge           3b")
                 __ASM_EMIT  ("4:")
                 /* end */
@@ -380,7 +384,7 @@ namespace lsp
                 : __IF_32(
                     [ptr_re] "=&r" (ptr_re), [ptr_im] "=&r" (ptr_im),
                   )
-                  [count] "+r" (count), [off] "=&r" (off)
+                  [count] X86_PGREG(count), [off] "=&r" (off)
                 : [dst_re] X86_GREG (dst_re), [dst_im] X86_GREG (dst_im),
                   [t_re] X86_GREG (t_re), [t_im] X86_GREG (t_im),
                   [b_re] "r" (b_re), [b_im] "r" (b_im),

@@ -197,6 +197,7 @@ namespace lsp
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned16;
                 float mem[24] __lsp_aligned16;
+                float stub[4] __lsp_aligned16;
                 size_t mask;
             );
 
@@ -259,6 +260,7 @@ namespace lsp
                 : [comp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub] "o" (stub),
                   [C2C] "o" (compressor_const),
                   [L2C] "o" (LOG2_CONST),
                   [LOGC] "o" (LOGE_C),
@@ -275,22 +277,10 @@ namespace lsp
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned16;
                 float mem[24] __lsp_aligned16;
+                float stub[4] __lsp_aligned16;
                 size_t mask;
             );
-//            for (size_t i=0; i<count; ++i)
-//            {
-//                float x     = fabsf(src[i]);
-//                float lx    = logf(x);
-//
-//                float g1    = (x <= c->k[0].start) ? c->k[0].gain :
-//                              (x >= c->k[0].end) ? expf(lx * c->k[0].tilt[0] + c->k[0].tilt[1]) :
-//                              expf((c->k[0].herm[0]*lx + c->k[0].herm[1])*lx + c->k[0].herm[2]);
-//                float g2    = (x <= c->k[1].start) ? c->k[1].gain :
-//                              (x >= c->k[1].end) ? expf(lx * c->k[1].tilt[0] + c->k[1].tilt[1]) :
-//                              expf((c->k[1].herm[0]*lx + c->k[1].herm[1])*lx + c->k[1].herm[2]);
-//
-//                dst[i]      = g1 * g2 * x;
-//            }
+
             ARCH_X86_ASM
             (
                 // Prepare stuff
@@ -358,6 +348,7 @@ namespace lsp
                 : [comp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub] "o" (stub),
                   [C2C] "o" (compressor_const),
                   [L2C] "o" (LOG2_CONST),
                   [LOGC] "o" (LOGE_C),

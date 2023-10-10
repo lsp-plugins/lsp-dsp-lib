@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.18 ===
+* Fixed compilation regression for 32-bit Clang compiler.
+
 === 1.0.17 ===
 * Implemented SIMD-optimized 2-knee compressor curve and gain calculation functions.
 * Implemented several AVX-512 optimized packed complex functions.
