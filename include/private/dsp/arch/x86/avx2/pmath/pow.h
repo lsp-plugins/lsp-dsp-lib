@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -891,7 +891,7 @@ namespace lsp
             ARCH_X86_64_ASM(
                 // Calc C = logf(c)
                 __ASM_EMIT("vbroadcastss    %%xmm0, %%ymm0")
-                LOGN_FMA3_CORE_X8
+                LOGN_CORE_X8_FMA3
                 __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")    // ymm0 = 2*y*L*log2(E)
                 __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")            // ymm0 = 2*y*L*log2(E) + R = log(c)*log2(E)
                 __ASM_EMIT("vmovaps         %%ymm0, %[C]")
@@ -908,7 +908,7 @@ namespace lsp
                 __ASM_EMIT("vmulps          %[C], %%ymm4, %%ymm4")
                 __ASM_EMIT("vmulps          %[C], %%ymm8, %%ymm8")
                 __ASM_EMIT("vmulps          %[C], %%ymm12, %%ymm12")
-                POW2_FMA3_CORE_X32
+                POW2_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -925,7 +925,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
                 __ASM_EMIT("vmulps          %[C], %%ymm0, %%ymm0")
                 __ASM_EMIT("vmulps          %[C], %%ymm4, %%ymm4")
-                POW2_FMA3_CORE_X16
+                POW2_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("sub             $16, %[count]")
@@ -937,7 +937,7 @@ namespace lsp
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 __ASM_EMIT("vmulps          %[C], %%ymm0, %%ymm0")
-                POW2_FMA3_CORE_X8
+                POW2_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("add             $0x20, %[dst]")
@@ -948,7 +948,7 @@ namespace lsp
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
                 __ASM_EMIT("vmulps          %[C], %%xmm0, %%xmm0")
-                POW2_FMA3_CORE_X4
+                POW2_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("add             $0x10, %[dst]")
@@ -969,7 +969,7 @@ namespace lsp
                 __ASM_EMIT("12:")
 
                 __ASM_EMIT("vmulps          %[C], %%xmm0, %%xmm0")
-                POW2_FMA3_CORE_X4
+                POW2_CORE_X4_FMA3
 
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
@@ -1008,7 +1008,7 @@ namespace lsp
             ARCH_X86_64_ASM(
                 // Calc C = logf(c)
                 __ASM_EMIT("vbroadcastss    %%xmm0, %%ymm0")
-                LOGN_FMA3_CORE_X8
+                LOGN_CORE_X8_FMA3
                 __ASM_EMIT("vmulps          0x00 + %[LOGC], %%ymm0, %%ymm0")    // ymm0 = 2*y*L*log2(E)
                 __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")            // ymm0 = 2*y*L*log2(E) + R = log(c)*log2(E)
                 __ASM_EMIT("vmovaps         %%ymm0, %[C]")
@@ -1025,7 +1025,7 @@ namespace lsp
                 __ASM_EMIT("vmulps          %[C], %%ymm4, %%ymm4")
                 __ASM_EMIT("vmulps          %[C], %%ymm8, %%ymm8")
                 __ASM_EMIT("vmulps          %[C], %%ymm12, %%ymm12")
-                POW2_FMA3_CORE_X32
+                POW2_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -1043,7 +1043,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
                 __ASM_EMIT("vmulps          %[C], %%ymm0, %%ymm0")
                 __ASM_EMIT("vmulps          %[C], %%ymm4, %%ymm4")
-                POW2_FMA3_CORE_X16
+                POW2_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("sub             $16, %[count]")
@@ -1056,7 +1056,7 @@ namespace lsp
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 __ASM_EMIT("vmulps          %[C], %%ymm0, %%ymm0")
-                POW2_FMA3_CORE_X8
+                POW2_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("add             $0x20, %[src]")
@@ -1068,7 +1068,7 @@ namespace lsp
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
                 __ASM_EMIT("vmulps          %[C], %%xmm0, %%xmm0")
-                POW2_FMA3_CORE_X4
+                POW2_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("add             $0x10, %[src]")
@@ -1089,7 +1089,7 @@ namespace lsp
                 __ASM_EMIT("12:")
 
                 __ASM_EMIT("vmulps          %[C], %%xmm0, %%xmm0")
-                POW2_FMA3_CORE_X4
+                POW2_CORE_X4_FMA3
 
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
@@ -1138,7 +1138,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x40(%[dst]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[dst]), %%ymm12")
                 // logf(c)
-                LOGN_FMA3_CORE_X32
+                LOGN_CORE_X32_FMA3
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")        // ymm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm9, %%ymm8")
@@ -1148,7 +1148,7 @@ namespace lsp
                 __ASM_EMIT("vmulps          %[V], %%ymm8, %%ymm8")
                 __ASM_EMIT("vmulps          %[V], %%ymm12, %%ymm12")
                 // expf(v * logf(c))
-                POW2_FMA3_CORE_X32
+                POW2_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -1164,13 +1164,13 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
                 // logf(c)
-                LOGN_FMA3_CORE_X16
+                LOGN_CORE_X16_FMA3
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")        // ymm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
                 __ASM_EMIT("vmulps          %[V], %%ymm0, %%ymm0")                  // ymm0 = (2*y*L*log2(E)+R)*v
                 __ASM_EMIT("vmulps          %[V], %%ymm4, %%ymm4")
                 // expf(v * logf(c))
-                POW2_FMA3_CORE_X16
+                POW2_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("sub             $16, %[count]")
@@ -1182,11 +1182,11 @@ namespace lsp
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 // logf(c)
-                LOGN_FMA3_CORE_X8
+                LOGN_CORE_X8_FMA3
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")        // ymm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vmulps          %[V], %%ymm0, %%ymm0")                  // ymm0 = (2*y*L*log2(E)+R)*v
                 // expf(v * logf(c))
-                POW2_FMA3_CORE_X8
+                POW2_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("add             $0x20, %[dst]")
@@ -1197,11 +1197,11 @@ namespace lsp
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
                 // logf(c)
-                LOGN_FMA3_CORE_X4
+                LOGN_CORE_X4_FMA3
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")        // xmm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vmulps          %[V], %%xmm0, %%xmm0")                  // xmm0 = (2*y*L*log2(E)+R)*v
                 // expf(v * logf(c))
-                POW2_FMA3_CORE_X4
+                POW2_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("add             $0x10, %[dst]")
@@ -1222,11 +1222,11 @@ namespace lsp
                 __ASM_EMIT("12:")
 
                 // logf(c)
-                LOGN_FMA3_CORE_X4
+                LOGN_CORE_X4_FMA3
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")        // xmm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vmulps          %[V], %%xmm0, %%xmm0")                  // xmm0 = (2*y*L*log2(E)+R)*v
                 // expf(v * logf(c))
-                POW2_FMA3_CORE_X4
+                POW2_CORE_X4_FMA3
 
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
@@ -1274,7 +1274,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x40(%[src]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[src]), %%ymm12")
                 // logf(c)
-                LOGN_FMA3_CORE_X32
+                LOGN_CORE_X32_FMA3
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")        // ymm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm9, %%ymm8")
@@ -1284,7 +1284,7 @@ namespace lsp
                 __ASM_EMIT("vmulps          %[V], %%ymm8, %%ymm8")
                 __ASM_EMIT("vmulps          %[V], %%ymm12, %%ymm12")
                 // expf(v * logf(c))
-                POW2_FMA3_CORE_X32
+                POW2_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -1301,13 +1301,13 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
                 // logf(c)
-                LOGN_FMA3_CORE_X16
+                LOGN_CORE_X16_FMA3
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")        // ymm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm5, %%ymm4")
                 __ASM_EMIT("vmulps          %[V], %%ymm0, %%ymm0")                  // ymm0 = (2*y*L*log2(E)+R)*v
                 __ASM_EMIT("vmulps          %[V], %%ymm4, %%ymm4")
                 // expf(v * logf(c))
-                POW2_FMA3_CORE_X16
+                POW2_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("sub             $16, %[count]")
@@ -1320,11 +1320,11 @@ namespace lsp
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 // logf(c)
-                LOGN_FMA3_CORE_X8
+                LOGN_CORE_X8_FMA3
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")        // ymm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vmulps          %[V], %%ymm0, %%ymm0")                  // ymm0 = (2*y*L*log2(E)+R)*v
                 // expf(v * logf(c))
-                POW2_FMA3_CORE_X8
+                POW2_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("add             $0x20, %[src]")
@@ -1336,11 +1336,11 @@ namespace lsp
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
                 // logf(c)
-                LOGN_FMA3_CORE_X4
+                LOGN_CORE_X4_FMA3
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")        // ymm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vmulps          %[V], %%xmm0, %%xmm0")                  // xmm0 = (2*y*L*log2(E)+R)*v
                 // expf(v * logf(c))
-                POW2_FMA3_CORE_X4
+                POW2_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("add             $0x10, %[src]")
@@ -1361,11 +1361,11 @@ namespace lsp
                 __ASM_EMIT("12:")
 
                 // logf(c)
-                LOGN_FMA3_CORE_X4
+                LOGN_CORE_X4_FMA3
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")        // xmm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vmulps          %[V], %%xmm0, %%xmm0")                  // xmm0 = (2*y*L*log2(E)+R)*v
                 // expf(v * logf(c))
-                POW2_FMA3_CORE_X4
+                POW2_CORE_X4_FMA3
 
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
@@ -1407,7 +1407,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x40(%[dst]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[dst]), %%ymm12")
                 // logf(v)
-                LOGN_FMA3_CORE_X32
+                LOGN_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         0x00(%[x]), %%ymm2")                    // ymm2 = x
                 __ASM_EMIT("vmovups         0x20(%[x]), %%ymm6")
                 __ASM_EMIT("vmovups         0x40(%[x]), %%ymm10")
@@ -1421,7 +1421,7 @@ namespace lsp
                 __ASM_EMIT("vmulps          %%ymm10, %%ymm8, %%ymm8")
                 __ASM_EMIT("vmulps          %%ymm14, %%ymm12, %%ymm12")
                 // expf(x * logf(v))
-                POW2_FMA3_CORE_X32
+                POW2_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -1438,7 +1438,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[dst]), %%ymm4")
                 // logf(v)
-                LOGN_FMA3_CORE_X16
+                LOGN_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         0x00(%[x]), %%ymm2")                    // ymm2 = x
                 __ASM_EMIT("vmovups         0x20(%[x]), %%ymm6")
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")        // ymm0 = 2*y*L*log2(E)+R
@@ -1446,7 +1446,7 @@ namespace lsp
                 __ASM_EMIT("vmulps          %%ymm2, %%ymm0, %%ymm0")                // ymm0 = (2*y*L*log2(E) + R)*x
                 __ASM_EMIT("vmulps          %%ymm6, %%ymm4, %%ymm4")
                 // expf(x * logf(v))
-                POW2_FMA3_CORE_X16
+                POW2_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("sub             $16, %[count]")
@@ -1459,12 +1459,12 @@ namespace lsp
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 // logf(v)
-                LOGN_FMA3_CORE_X8
+                LOGN_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         0x00(%[x]), %%ymm2")                    // ymm2 = x
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")        // ymm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vmulps          %%ymm2, %%ymm0, %%ymm0")                // ymm0 = (2*y*L*log2(E) + R)*x
                 // expf(x * logf(v))
-                POW2_FMA3_CORE_X8
+                POW2_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("add             $0x20, %[x]")
@@ -1476,12 +1476,12 @@ namespace lsp
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
                 // logf(v)
-                LOGN_FMA3_CORE_X4
+                LOGN_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         0x00(%[x]), %%xmm2")                    // xmm2 = x
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")        // xmm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vmulps          %%xmm2, %%xmm0, %%xmm0")                // xmm0 = (2*y*L*log2(E) + R)*x
                 // expf(x * logf(v))
-                POW2_FMA3_CORE_X4
+                POW2_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("add             $0x10, %[x]")
@@ -1506,11 +1506,11 @@ namespace lsp
                 __ASM_EMIT("12:")
 
                 // logf(v)
-                LOGN_FMA3_CORE_X4
+                LOGN_CORE_X4_FMA3
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")        // xmm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vmulps          %%xmm7, %%xmm0, %%xmm0")                // xmm0 = (2*y*L*log2(E) + R)*x
                 // expf(x * logf(v))
-                POW2_FMA3_CORE_X4
+                POW2_CORE_X4_FMA3
 
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
@@ -1548,7 +1548,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x40(%[src]), %%ymm8")
                 __ASM_EMIT("vmovups         0x60(%[src]), %%ymm12")
                 // logf(v)
-                LOGN_FMA3_CORE_X32
+                LOGN_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         0x00(%[x]), %%ymm2")                    // ymm2 = x
                 __ASM_EMIT("vmovups         0x20(%[x]), %%ymm6")
                 __ASM_EMIT("vmovups         0x40(%[x]), %%ymm10")
@@ -1562,7 +1562,7 @@ namespace lsp
                 __ASM_EMIT("vmulps          %%ymm10, %%ymm8, %%ymm8")
                 __ASM_EMIT("vmulps          %%ymm14, %%ymm12, %%ymm12")
                 // expf(x * logf(v))
-                POW2_FMA3_CORE_X32
+                POW2_CORE_X32_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
@@ -1580,7 +1580,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 __ASM_EMIT("vmovups         0x20(%[src]), %%ymm4")
                 // logf(v)
-                LOGN_FMA3_CORE_X16
+                LOGN_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         0x00(%[x]), %%ymm2")                    // ymm2 = x
                 __ASM_EMIT("vmovups         0x20(%[x]), %%ymm6")
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")        // ymm0 = 2*y*L*log2(E)+R
@@ -1588,7 +1588,7 @@ namespace lsp
                 __ASM_EMIT("vmulps          %%ymm2, %%ymm0, %%ymm0")                // ymm0 = (2*y*L*log2(E) + R)*x
                 __ASM_EMIT("vmulps          %%ymm6, %%ymm4, %%ymm4")
                 // expf(x * logf(v))
-                POW2_FMA3_CORE_X16
+                POW2_CORE_X16_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("sub             $16, %[count]")
@@ -1602,12 +1602,12 @@ namespace lsp
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 // logf(v)
-                LOGN_FMA3_CORE_X8
+                LOGN_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         0x00(%[x]), %%ymm2")                    // ymm2 = x
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%ymm1, %%ymm0")        // ymm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vmulps          %%ymm2, %%ymm0, %%ymm0")                // ymm0 = (2*y*L*log2(E) + R)*x
                 // expf(x * logf(v))
-                POW2_FMA3_CORE_X8
+                POW2_CORE_X8_FMA3
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("add             $0x20, %[x]")
@@ -1620,12 +1620,12 @@ namespace lsp
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
                 // logf(v)
-                LOGN_FMA3_CORE_X4
+                LOGN_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         0x00(%[x]), %%xmm2")                    // xmm2 = x
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")        // xmm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vmulps          %%xmm2, %%xmm0, %%xmm0")                // xmm0 = (2*y*L*log2(E) + R)*x
                 // expf(x * logf(v))
-                POW2_FMA3_CORE_X4
+                POW2_CORE_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("add             $0x10, %[x]")
@@ -1650,11 +1650,11 @@ namespace lsp
                 __ASM_EMIT("12:")
 
                 // logf(v)
-                LOGN_FMA3_CORE_X4
+                LOGN_CORE_X4_FMA3
                 __ASM_EMIT("vfmadd132ps     0x00 + %[LOGC], %%xmm1, %%xmm0")        // xmm0 = 2*y*L*log2(E)+R
                 __ASM_EMIT("vmulps          %%xmm7, %%xmm0, %%xmm0")                // xmm0 = (2*y*L*log2(E) + R)*x
                 // expf(x * logf(v))
-                POW2_FMA3_CORE_X4
+                POW2_CORE_X4_FMA3
 
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              14f")
@@ -1677,7 +1677,7 @@ namespace lsp
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11", "%xmm12", "%xmm13", "%xmm14", "%xmm15"
             );
         }
-    }
-}
+    } /* namespace avx2 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX2_PMATH_POW_H_ */

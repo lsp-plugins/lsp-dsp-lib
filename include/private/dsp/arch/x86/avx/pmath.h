@@ -34,5 +34,7 @@
 #include <private/dsp/arch/x86/avx/pmath/normalize.h>
 #include <private/dsp/arch/x86/avx/pmath/op_kx.h>
 #include <private/dsp/arch/x86/avx/pmath/op_vv.h>
+#include <private/dsp/arch/x86/avx/pmath/sqr.h>
+#include <private/dsp/arch/x86/avx/pmath/ssqrt.h>
 
 #endif /* INCLUDE_PRIVATE_DSP_ARCH_X86_AVX_PMATH_H_ */

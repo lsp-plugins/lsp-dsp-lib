@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
- * Created on: 31 мар. 2020 г.
+ * Created on: 6 окт. 2023 г.
  *
  * lsp-dsp-lib is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,51 +27,68 @@ namespace lsp
 {
     namespace generic
     {
-        void pcomplex_add_r(float *dst, const float *src, size_t count);
+        void logd2(float *dst, const float *src, size_t count);
     }
 
     IF_ARCH_X86(
-        namespace sse
+        namespace sse2
         {
-            void pcomplex_add_r(float *dst, const float *src, size_t count);
+            void logd2(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx2
+        {
+            void logd2(float *dst, const float *src, size_t count);
+            void logd2_fma3(float *dst, const float *src, size_t count);
+        }
+    )
+
+    IF_ARCH_X86_64(
+        namespace avx2
+        {
+            void x64_logd2(float *dst, const float *src, size_t count);
+            void x64_logd2_fma3(float *dst, const float *src, size_t count);
         }
     )
 
     IF_ARCH_ARM(
         namespace neon_d32
         {
-            void pcomplex_add_r(float *dst, const float *src, size_t count);
+            void logd2(float *dst, const float *src, size_t count);
         }
     )
 
     IF_ARCH_AARCH64(
         namespace asimd
         {
-            void pcomplex_add_r(float *dst, const float *src, size_t count);
+            void logd2(float *dst, const float *src, size_t count);
         }
     )
 
-    typedef void (* complex_rops_t) (float *dst, const float *src, size_t count);
+    typedef void (* log2_t)(float *dst, const float *src, size_t count);
 }
 
-UTEST_BEGIN("dsp.pcomplex", rops)
+//-----------------------------------------------------------------------------
+// Unit test
+UTEST_BEGIN("dsp.pmath", logd2)
 
-    void call(const char *label, size_t align, complex_rops_t func1, complex_rops_t func2)
+    void call(const char *label, size_t align, log2_t func1, log2_t func2)
     {
         if (!UTEST_SUPPORTED(func1))
             return;
         if (!UTEST_SUPPORTED(func2))
             return;
 
-        UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-                32, 33, 37, 48, 49, 64, 65, 0x3f, 100, 999, 0xfff)
+        UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 64, 65, 100, 999, 0xfff)
         {
             for (size_t mask=0; mask <= 0x03; ++mask)
             {
                 printf("Testing %s on input buffer of %d numbers, mask=0x%x...\n", label, int(count), int(mask));
 
                 FloatBuffer src(count, align, mask & 0x01);
-                FloatBuffer dst1(count*2, align, mask & 0x02);
+                src.randomize(1e-6, 1e+6);
+                FloatBuffer dst1(count, align, mask & 0x02);
                 FloatBuffer dst2(dst1);
 
                 // Call functions
@@ -83,7 +100,7 @@ UTEST_BEGIN("dsp.pcomplex", rops)
                 UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
 
                 // Compare buffers
-                if (!dst1.equals_absolute(dst2, 1e-5))
+                if (!dst1.equals_adaptive(dst2, 1e-4))
                 {
                     src.dump("src ");
                     dst1.dump("dst1");
@@ -96,13 +113,21 @@ UTEST_BEGIN("dsp.pcomplex", rops)
 
     UTEST_MAIN
     {
-        IF_ARCH_X86(call("sse::pcomplex_add_r", 16, generic::pcomplex_add_r, sse::pcomplex_add_r));
+        #define CALL(generic, func, align) \
+            call(#func, align, generic, func)
 
-        IF_ARCH_ARM(call("neon_d32::pcomplex_add_r", 16, generic::pcomplex_add_r, neon_d32::pcomplex_add_r));
-
-        IF_ARCH_AARCH64(call("asimd::pcomplex_add_r", 16, generic::pcomplex_add_r, asimd::pcomplex_add_r));
+        IF_ARCH_X86(CALL(generic::logd2, sse2::logd2, 16));
+        IF_ARCH_X86(CALL(generic::logd2, avx2::logd2, 32));
+        IF_ARCH_X86_64(CALL(generic::logd2, avx2::x64_logd2, 32));
+        IF_ARCH_X86(CALL(generic::logd2, avx2::logd2_fma3, 32));
+        IF_ARCH_X86_64(CALL(generic::logd2, avx2::x64_logd2_fma3, 32));
+        IF_ARCH_ARM(CALL(generic::logd2, neon_d32::logd2, 16));
+        IF_ARCH_AARCH64(CALL(generic::logd2, asimd::logd2, 16));
     }
-
 UTEST_END
+
+
+
+
 
 

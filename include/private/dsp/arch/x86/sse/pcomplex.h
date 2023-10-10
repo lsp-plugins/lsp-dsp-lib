@@ -468,89 +468,6 @@ namespace lsp
             #undef complex_to_real_core
         }
 
-        #define complex_rop_core(OP) \
-            __ASM_EMIT("xor         %[off], %[off]") \
-            __ASM_EMIT("sub         $8, %[count]") \
-            __ASM_EMIT("jb          2f") \
-            /* Do with 8x blocks */ \
-            __ASM_EMIT("1:") \
-            __ASM_EMIT("movups      0x00(%[src], %[off]), %%xmm4") \
-            __ASM_EMIT("movups      0x10(%[src], %[off]), %%xmm6") \
-            __ASM_EMIT("movaps      %%xmm4, %%xmm5") \
-            __ASM_EMIT("movaps      %%xmm6, %%xmm7") \
-            __ASM_EMIT("xorps       %%xmm2, %%xmm2") \
-            __ASM_EMIT("xorps       %%xmm3, %%xmm3") \
-            __ASM_EMIT("unpcklps    %%xmm2, %%xmm4") \
-            __ASM_EMIT("unpckhps    %%xmm3, %%xmm5") \
-            __ASM_EMIT("unpcklps    %%xmm2, %%xmm6") \
-            __ASM_EMIT("unpckhps    %%xmm3, %%xmm7") \
-            __ASM_EMIT("movups      0x00(%[dst], %[off], 2), %%xmm0") \
-            __ASM_EMIT("movups      0x10(%[dst], %[off], 2), %%xmm1") \
-            __ASM_EMIT("movups      0x20(%[dst], %[off], 2), %%xmm2") \
-            __ASM_EMIT("movups      0x30(%[dst], %[off], 2), %%xmm3") \
-            __ASM_EMIT(OP "ps       %%xmm4, %%xmm0") \
-            __ASM_EMIT(OP "ps       %%xmm5, %%xmm1") \
-            __ASM_EMIT(OP "ps       %%xmm6, %%xmm2") \
-            __ASM_EMIT(OP "ps       %%xmm7, %%xmm3") \
-            __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off], 2)") \
-            __ASM_EMIT("movups      %%xmm1, 0x10(%[dst], %[off], 2)") \
-            __ASM_EMIT("movups      %%xmm2, 0x20(%[dst], %[off], 2)") \
-            __ASM_EMIT("movups      %%xmm3, 0x30(%[dst], %[off], 2)") \
-            __ASM_EMIT("add         $0x20, %[off]") \
-            __ASM_EMIT("sub         $8, %[count]") \
-            __ASM_EMIT("jae         1b") \
-            /* 4x block */ \
-            __ASM_EMIT("2:") \
-            __ASM_EMIT("add         $4, %[count]") \
-            __ASM_EMIT("jl          4f") \
-            __ASM_EMIT("movups      0x00(%[src], %[off]), %%xmm4") \
-            __ASM_EMIT("movups      0x00(%[dst], %[off], 2), %%xmm0") \
-            __ASM_EMIT("movups      0x10(%[dst], %[off], 2), %%xmm1") \
-            __ASM_EMIT("movaps      %%xmm4, %%xmm5") \
-            __ASM_EMIT("movaps      %%xmm6, %%xmm7") \
-            __ASM_EMIT("xorps       %%xmm2, %%xmm2") \
-            __ASM_EMIT("xorps       %%xmm3, %%xmm3") \
-            __ASM_EMIT("unpcklps    %%xmm2, %%xmm4") \
-            __ASM_EMIT("unpckhps    %%xmm3, %%xmm5") \
-            __ASM_EMIT(OP "ps       %%xmm4, %%xmm0") \
-            __ASM_EMIT(OP "ps       %%xmm5, %%xmm1") \
-            __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off], 2)") \
-            __ASM_EMIT("movups      %%xmm1, 0x10(%[dst], %[off], 2)") \
-            __ASM_EMIT("sub         $4, %[count]") \
-            __ASM_EMIT("add         $0x10, %[off]") \
-            \
-            /* 1x blocks */ \
-            __ASM_EMIT("4:") \
-            __ASM_EMIT("add         $3, %[count]") \
-            __ASM_EMIT("jl          6f") \
-            __ASM_EMIT("3:") \
-            __ASM_EMIT("movss       0x00(%[src], %[off]), %%xmm2") \
-            __ASM_EMIT("movss       0x00(%[dst], %[off], 2), %%xmm0") \
-            __ASM_EMIT(OP "ss       %%xmm2, %%xmm0") \
-            __ASM_EMIT("movss       %%xmm0, 0x00(%[dst], %[off], 2)") \
-            __ASM_EMIT("add         $0x04, %[off]") \
-            __ASM_EMIT("dec         %[count]") \
-            __ASM_EMIT("jge         3b") \
-            __ASM_EMIT("6:")
-
-        void pcomplex_add_r(float *dst, const float *src, size_t count)
-        {
-            IF_ARCH_X86(size_t off);
-
-            ARCH_X86_ASM
-            (
-                complex_rop_core("add")
-                : [off] "=&r" (off), [count] "+r" (count)
-                : [dst] "r" (dst), [src] "r" (src)
-                : "cc", "memory",
-                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
-            );
-
-        }
-
-        #undef complex_rop_core
-
         void pcomplex_mod(float *dst, const float *src, size_t count)
         {
             size_t off;
@@ -896,38 +813,38 @@ namespace lsp
             __ASM_EMIT("sub             $4, %[count]") \
             __ASM_EMIT("jb              2f") \
             __ASM_EMIT("1:") \
-            __ASM_EMIT("movups          0x00(%[" B "], %[off]), %%xmm0")    /* xmm0 = sr1 si1 */ \
-            __ASM_EMIT("movups          0x10(%[" B "], %[off]), %%xmm4")    /* xmm4 = sr2 si2 */ \
-            __ASM_EMIT("movups          0x00(%[" T "], %[off]), %%xmm2")    /* xmm2 = dr1, di1 */ \
-            __ASM_EMIT("movups          0x10(%[" T "], %[off]), %%xmm6")    /* xmm6 = dr2, di2 */ \
-            __ASM_EMIT("movaps          %%xmm0, %%xmm1") \
-            __ASM_EMIT("movaps          %%xmm2, %%xmm3") \
-            __ASM_EMIT("shufps          $0x88, %%xmm4, %%xmm0")             /* xmm0 = sr */ \
-            __ASM_EMIT("shufps          $0x88, %%xmm6, %%xmm2")             /* xmm2 = dr */ \
-            __ASM_EMIT("shufps          $0xdd, %%xmm4, %%xmm1")             /* xmm1 = si */ \
-            __ASM_EMIT("shufps          $0xdd, %%xmm6, %%xmm3")             /* xmm3 = di */ \
-            __ASM_EMIT("movaps          %%xmm0, %%xmm4")                    /* xmm4 = sr */ \
-            __ASM_EMIT("movaps          %%xmm1, %%xmm5")                    /* xmm5 = si */ \
-            __ASM_EMIT("movaps          %%xmm0, %%xmm6")                    /* xmm6 = sr */ \
-            __ASM_EMIT("movaps          %%xmm1, %%xmm7")                    /* xmm7 = si */ \
-            __ASM_EMIT("mulps           %%xmm2, %%xmm0")                    /* xmm0 = sr*dr */ \
-            __ASM_EMIT("mulps           %%xmm3, %%xmm4")                    /* xmm4 = sr*di */ \
-            __ASM_EMIT("mulps           %%xmm2, %%xmm1")                    /* xmm1 = si*dr */ \
-            __ASM_EMIT("mulps           %%xmm3, %%xmm5")                    /* xmm5 = si*di */ \
-            __ASM_EMIT("mulps           %%xmm6, %%xmm6")                    /* xmm6 = sr*sr */ \
-            __ASM_EMIT("mulps           %%xmm7, %%xmm7")                    /* xmm7 = si*si */ \
-            __ASM_EMIT("addps           %%xmm5, %%xmm0")                    /* xmm0 = sr*dr + si*di */ \
-            __ASM_EMIT("addps           %%xmm1, %%xmm4")                    /* xmm4 = si*dr + sr*di */ \
-            __ASM_EMIT("addps           %%xmm7, %%xmm6")                    /* xmm6 = R = sr*sr + si*si */ \
-            __ASM_EMIT("divps           %%xmm6, %%xmm4")                    /* xmm4 = (sr*dr + si*di) / R */ \
-            __ASM_EMIT("xorps           %%xmm1, %%xmm1")                    /* xmm1 = 0 */ \
-            __ASM_EMIT("divps           %%xmm6, %%xmm0")                    /* xmm0 = (sr*dr + si*di) / R */ \
-            __ASM_EMIT("subps           %%xmm4, %%xmm1")                    /* xmm1 = - (sr*dr + si*di) / R */ \
-            __ASM_EMIT("movaps          %%xmm0, %%xmm2") \
-            __ASM_EMIT("unpcklps        %%xmm1, %%xmm0") \
-            __ASM_EMIT("unpckhps        %%xmm1, %%xmm2") \
-            __ASM_EMIT("movups          %%xmm0, 0x00(%[" DST "], %[off])") \
-            __ASM_EMIT("movups          %%xmm2, 0x10(%[" DST "], %[off])") \
+            __ASM_EMIT("movups          0x00(%[" B "], %[off]), %%xmm0")    /* xmm0 = br0 bi0 br1 bi1 */ \
+            __ASM_EMIT("movups          0x10(%[" B "], %[off]), %%xmm4")    /* xmm4 = br2 bi2 br3 bi3 */ \
+            __ASM_EMIT("movups          0x00(%[" T "], %[off]), %%xmm2")    /* xmm2 = tr0 ti0 tr1 ti1 */ \
+            __ASM_EMIT("movups          0x10(%[" T "], %[off]), %%xmm6")    /* xmm6 = tr2 ti2 tr3 ti3 */ \
+            __ASM_EMIT("movaps          %%xmm0, %%xmm1")                    /* xmm1 = br0 bi0 br1 bi1 */ \
+            __ASM_EMIT("movaps          %%xmm2, %%xmm3")                    /* xmm3 = tr0 ti0 tr1 ti1 */ \
+            __ASM_EMIT("shufps          $0x88, %%xmm4, %%xmm0")             /* xmm0 = br */ \
+            __ASM_EMIT("shufps          $0x88, %%xmm6, %%xmm2")             /* xmm2 = tr */ \
+            __ASM_EMIT("shufps          $0xdd, %%xmm4, %%xmm1")             /* xmm1 = bi */ \
+            __ASM_EMIT("shufps          $0xdd, %%xmm6, %%xmm3")             /* xmm3 = ti */ \
+            __ASM_EMIT("movaps          %%xmm0, %%xmm7")                    /* xmm7 = br */ \
+            __ASM_EMIT("movaps          %%xmm1, %%xmm6")                    /* xmm6 = bi */ \
+            __ASM_EMIT("movaps          %%xmm2, %%xmm4")                    /* xmm4 = tr */ \
+            __ASM_EMIT("movaps          %%xmm3, %%xmm5")                    /* xmm5 = ti */ \
+            __ASM_EMIT("mulps           %%xmm7, %%xmm7")                    /* xmm7 = br*br */ \
+            __ASM_EMIT("mulps           %%xmm6, %%xmm6")                    /* xmm6 = bi*bi */ \
+            __ASM_EMIT("mulps           %%xmm0, %%xmm2")                    /* xmm2 = tr*br */ \
+            __ASM_EMIT("mulps           %%xmm0, %%xmm3")                    /* xmm3 = ti*br */ \
+            __ASM_EMIT("addps           %%xmm6, %%xmm7")                    /* xmm7 = R = br*br + bi*bi */ \
+            __ASM_EMIT("movaps          0x00 + %[CC], %%xmm6")              /* xmm6 = 1 */ \
+            __ASM_EMIT("mulps           %%xmm1, %%xmm5")                    /* xmm5 = ti*bi */ \
+            __ASM_EMIT("mulps           %%xmm1, %%xmm4")                    /* xmm4 = tr*bi */ \
+            __ASM_EMIT("divps           %%xmm7, %%xmm6")                    /* xmm6 = 1/R */ \
+            __ASM_EMIT("addps           %%xmm5, %%xmm2")                    /* xmm2 = r = tr*br + ti*bi */ \
+            __ASM_EMIT("subps           %%xmm4, %%xmm3")                    /* xmm3 = i = ti*br - tr*bi */ \
+            __ASM_EMIT("mulps           %%xmm6, %%xmm2")                    /* xmm2 = r/R */ \
+            __ASM_EMIT("mulps           %%xmm6, %%xmm3")                    /* xmm3 = i/R */ \
+            __ASM_EMIT("movaps          %%xmm2, %%xmm4")                    /* xmm2 = r/R */ \
+            __ASM_EMIT("unpcklps        %%xmm3, %%xmm2")                    /* xmm2 = r0' i0' r1' i1' */ \
+            __ASM_EMIT("unpckhps        %%xmm3, %%xmm4")                    /* xmm4 = r2' i2' r3' i3' */ \
+            __ASM_EMIT("movups          %%xmm2, 0x00(%[" DST "], %[off])") \
+            __ASM_EMIT("movups          %%xmm4, 0x10(%[" DST "], %[off])") \
             __ASM_EMIT("add             $0x20, %[off]") \
             __ASM_EMIT("sub             $4, %[count]") \
             __ASM_EMIT("jae             1b") \
@@ -936,29 +853,29 @@ namespace lsp
             __ASM_EMIT("add             $3, %[count]") \
             __ASM_EMIT("jl              4f") \
             __ASM_EMIT("3:") \
-            __ASM_EMIT("movss           0x00(%[" B "], %[off]), %%xmm0")    /* xmm0 = sr */ \
-            __ASM_EMIT("movss           0x04(%[" B "], %[off]), %%xmm1")    /* xmm1 = si */ \
-            __ASM_EMIT("movss           0x00(%[" T "], %[off]), %%xmm2")    /* xmm2 = dr */ \
-            __ASM_EMIT("movss           0x04(%[" T "], %[off]), %%xmm3")    /* xmm3 = di */ \
-            __ASM_EMIT("movaps          %%xmm0, %%xmm4")                    /* xmm4 = sr */ \
-            __ASM_EMIT("movaps          %%xmm1, %%xmm5")                    /* xmm5 = si */ \
-            __ASM_EMIT("movaps          %%xmm0, %%xmm6")                    /* xmm6 = sr */ \
-            __ASM_EMIT("movaps          %%xmm1, %%xmm7")                    /* xmm7 = si */ \
-            __ASM_EMIT("mulss           %%xmm2, %%xmm0")                    /* xmm0 = sr*dr */ \
-            __ASM_EMIT("mulss           %%xmm3, %%xmm4")                    /* xmm4 = sr*di */ \
-            __ASM_EMIT("mulss           %%xmm2, %%xmm1")                    /* xmm1 = si*dr */ \
-            __ASM_EMIT("mulss           %%xmm3, %%xmm5")                    /* xmm5 = si*di */ \
-            __ASM_EMIT("mulss           %%xmm6, %%xmm6")                    /* xmm6 = sr*sr */ \
-            __ASM_EMIT("mulss           %%xmm7, %%xmm7")                    /* xmm7 = si*si */ \
-            __ASM_EMIT("addss           %%xmm5, %%xmm0")                    /* xmm0 = sr*dr + si*di */ \
-            __ASM_EMIT("addss           %%xmm1, %%xmm4")                    /* xmm4 = si*dr + sr*di */ \
-            __ASM_EMIT("addss           %%xmm7, %%xmm6")                    /* xmm6 = R = sr*sr + si*si */ \
-            __ASM_EMIT("divss           %%xmm6, %%xmm4")                    /* xmm4 = (sr*dr + si*di) / R */ \
-            __ASM_EMIT("xorps           %%xmm1, %%xmm1")                    /* xmm1 = 0 */ \
-            __ASM_EMIT("divss           %%xmm6, %%xmm0")                    /* xmm0 = (sr*dr + si*di) / R */ \
-            __ASM_EMIT("subss           %%xmm4, %%xmm1")                    /* xmm1 = - (sr*dr + si*di) / R */ \
-            __ASM_EMIT("movss           %%xmm0, 0x00(%[" DST "], %[off])") \
-            __ASM_EMIT("movss           %%xmm1, 0x04(%[" DST "], %[off])") \
+            __ASM_EMIT("movss           0x00(%[" B "], %[off]), %%xmm0")    /* xmm0 = br */ \
+            __ASM_EMIT("movss           0x04(%[" B "], %[off]), %%xmm1")    /* xmm1 = bi */ \
+            __ASM_EMIT("movss           0x00(%[" T "], %[off]), %%xmm2")    /* xmm2 = tr */ \
+            __ASM_EMIT("movss           0x04(%[" T "], %[off]), %%xmm3")    /* xmm3 = ti */ \
+            __ASM_EMIT("movaps          %%xmm0, %%xmm7")                    /* xmm7 = br */ \
+            __ASM_EMIT("movaps          %%xmm1, %%xmm6")                    /* xmm6 = bi */ \
+            __ASM_EMIT("movaps          %%xmm2, %%xmm4")                    /* xmm4 = tr */ \
+            __ASM_EMIT("movaps          %%xmm3, %%xmm5")                    /* xmm5 = ti */ \
+            __ASM_EMIT("mulss           %%xmm7, %%xmm7")                    /* xmm7 = br*br */ \
+            __ASM_EMIT("mulss           %%xmm6, %%xmm6")                    /* xmm6 = bi*bi */ \
+            __ASM_EMIT("mulss           %%xmm0, %%xmm2")                    /* xmm2 = tr*br */ \
+            __ASM_EMIT("mulss           %%xmm0, %%xmm3")                    /* xmm3 = ti*br */ \
+            __ASM_EMIT("addss           %%xmm6, %%xmm7")                    /* xmm7 = R = br*br + bi*bi */ \
+            __ASM_EMIT("movaps          0x00 + %[CC], %%xmm6")              /* xmm6 = 1 */ \
+            __ASM_EMIT("mulss           %%xmm1, %%xmm5")                    /* xmm5 = ti*bi */ \
+            __ASM_EMIT("mulss           %%xmm1, %%xmm4")                    /* xmm4 = tr*bi */ \
+            __ASM_EMIT("divss           %%xmm7, %%xmm6")                    /* xmm6 = 1/R */ \
+            __ASM_EMIT("addss           %%xmm5, %%xmm2")                    /* xmm2 = r = tr*br + ti*bi */ \
+            __ASM_EMIT("subss           %%xmm4, %%xmm3")                    /* xmm3 = i = ti*br - tr*bi */ \
+            __ASM_EMIT("mulss           %%xmm6, %%xmm2")                    /* xmm2 = r/R */ \
+            __ASM_EMIT("mulss           %%xmm6, %%xmm3")                    /* xmm3 = i/R */ \
+            __ASM_EMIT("movss           %%xmm2, 0x00(%[" DST "], %[off])") \
+            __ASM_EMIT("movss           %%xmm3, 0x04(%[" DST "], %[off])") \
             __ASM_EMIT("add             $0x08, %[off]") \
             __ASM_EMIT("dec             %[count]") \
             __ASM_EMIT("jge             3b") \
@@ -972,7 +889,8 @@ namespace lsp
             (
                 PCOMPLEX_DIV_CORE("dst", "dst", "src")
                 : [count] "+r" (count), [off] "=&r" (off)
-                : [dst] "r" (dst), [src] "r" (src)
+                : [dst] "r" (dst), [src] "r" (src),
+                  [CC] "o" (pcomplex_div_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -986,7 +904,8 @@ namespace lsp
             (
                 PCOMPLEX_DIV_CORE("dst", "src", "dst")
                 : [count] "+r" (count), [off] "=&r" (off)
-                : [dst] "r" (dst), [src] "r" (src)
+                : [dst] "r" (dst), [src] "r" (src),
+                  [CC] "o" (pcomplex_div_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -1000,7 +919,8 @@ namespace lsp
             (
                 PCOMPLEX_DIV_CORE("dst", "t", "b")
                 : [count] "+r" (count), [off] "=&r" (off)
-                : [dst] "r" (dst), [t] "r" (t), [b] "r" (b)
+                : [dst] "r" (dst), [t] "r" (t), [b] "r" (b),
+                  [CC] "o" (pcomplex_div_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

@@ -37,5 +37,7 @@
 #include <private/dsp/arch/generic/pmath/op_kx.h>
 #include <private/dsp/arch/generic/pmath/op_vv.h>
 #include <private/dsp/arch/generic/pmath/pow.h>
+#include <private/dsp/arch/generic/pmath/sqr.h>
+#include <private/dsp/arch/generic/pmath/ssqrt.h>
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_PMATH_H_ */

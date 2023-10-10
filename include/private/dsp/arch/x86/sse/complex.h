@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -30,14 +30,6 @@ namespace lsp
 {
     namespace sse
     {
-        IF_ARCH_X86(
-            static const uint32_t complex_div_const[] __lsp_aligned16 =
-            {
-                LSP_DSP_VEC4(0x3f800000),
-                LSP_DSP_VEC4(0x80000000)
-            };
-        );
-
         void complex_mul2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count)
         {
             IF_ARCH_X86(size_t off);
@@ -184,84 +176,95 @@ namespace lsp
             );
         }
 
+        IF_ARCH_X86(
+            static const uint32_t complex_div_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(0x3f800000),       /* 1.0f */
+                LSP_DSP_VEC4(0x80000000)        /* sign bit */
+            };
+        );
+
+    #define COMPLEX_DIV2_CORE(DSTR, DSTI, TR, TI, BR, BI) \
+        __ASM_EMIT  ("xor           %[off], %[off]") \
+        /*  x4 blocks */ \
+        __ASM_EMIT32("subl          $4, %[count]") \
+        __ASM_EMIT64("sub           $4, %[count]") \
+        __ASM_EMIT  ("jb            2f") \
+        __ASM_EMIT  ("1:") \
+        __ASM_EMIT  ("movups        0x00(%[" BR "], %[off]), %%xmm2")   /*  xmm2 = br */ \
+        __ASM_EMIT  ("movups        0x00(%[" BI "], %[off]), %%xmm3")   /*  xmm3 = bi */ \
+        __ASM_EMIT  ("movups        0x00(%[" TR "], %[off]), %%xmm0")   /*  xmm0 = tr */ \
+        __ASM_EMIT  ("movups        0x00(%[" TI "], %[off]), %%xmm1")   /*  xmm1 = ti */ \
+        __ASM_EMIT  ("movaps        %%xmm2, %%xmm6")                    /*  xmm6 = br */ \
+        __ASM_EMIT  ("movaps        %%xmm3, %%xmm7")                    /*  xmm7 = bi */ \
+        __ASM_EMIT  ("movaps        %%xmm0, %%xmm4")                    /*  xmm4 = tr */ \
+        __ASM_EMIT  ("movaps        %%xmm1, %%xmm5")                    /*  xmm5 = ti */ \
+        __ASM_EMIT  ("mulps         %%xmm6, %%xmm6")                    /*  xmm6 = br*br */ \
+        __ASM_EMIT  ("mulps         %%xmm7, %%xmm7")                    /*  xmm7 = bi*bi */ \
+        __ASM_EMIT  ("mulps         %%xmm2, %%xmm0")                    /*  xmm0 = tr*br */ \
+        __ASM_EMIT  ("mulps         %%xmm2, %%xmm1")                    /*  xmm1 = ti*br */ \
+        __ASM_EMIT  ("addps         %%xmm6, %%xmm7")                    /*  xmm7 = R = br*br + bi*bi */ \
+        __ASM_EMIT  ("movaps        0x00 + %[CC], %%xmm6")              /*  xmm6 = 1 */ \
+        __ASM_EMIT  ("mulps         %%xmm3, %%xmm5")                    /*  xmm5 = ti*bi */ \
+        __ASM_EMIT  ("mulps         %%xmm3, %%xmm4")                    /*  xmm4 = tr*bi */ \
+        __ASM_EMIT  ("divps         %%xmm7, %%xmm6")                    /*  xmm6 = 1/R */ \
+        __ASM_EMIT  ("addps         %%xmm5, %%xmm0")                    /*  xmm0 = r = tr*br + ti*bi */ \
+        __ASM_EMIT  ("subps         %%xmm4, %%xmm1")                    /*  xmm1 = i = ti*br - tr*bi */ \
+        __ASM_EMIT  ("mulps         %%xmm6, %%xmm0")                    /*  xmm0 = r/R */ \
+        __ASM_EMIT  ("mulps         %%xmm6, %%xmm1")                    /*  xmm1 = i/R */ \
+        __ASM_EMIT  ("movups        %%xmm0, 0x00(%[" DSTR "], %[off])") \
+        __ASM_EMIT  ("movups        %%xmm1, 0x00(%[" DSTI "], %[off])") \
+        __ASM_EMIT  ("add           $0x10, %[off]") \
+        __ASM_EMIT32("subl          $4, %[count]") \
+        __ASM_EMIT64("sub           $4, %[count]") \
+        __ASM_EMIT  ("jae           1b") \
+        __ASM_EMIT  ("2:") \
+        /*  x1 blocks */ \
+        __ASM_EMIT32("addl          $3, %[count]") \
+        __ASM_EMIT64("add           $3, %[count]") \
+        __ASM_EMIT  ("jl            4f") \
+        __ASM_EMIT  ("3:") \
+        __ASM_EMIT  ("movss         0x00(%[" BR "], %[off]), %%xmm2")   /*  xmm2 = br */ \
+        __ASM_EMIT  ("movss         0x00(%[" BI "], %[off]), %%xmm3")   /*  xmm3 = bi */ \
+        __ASM_EMIT  ("movss         0x00(%[" TR "], %[off]), %%xmm0")   /*  xmm0 = tr */ \
+        __ASM_EMIT  ("movss         0x00(%[" TI "], %[off]), %%xmm1")   /*  xmm1 = ti */ \
+        __ASM_EMIT  ("movaps        %%xmm2, %%xmm6")                    /*  xmm6 = br */ \
+        __ASM_EMIT  ("movaps        %%xmm3, %%xmm7")                    /*  xmm7 = bi */ \
+        __ASM_EMIT  ("movaps        %%xmm0, %%xmm4")                    /*  xmm4 = tr */ \
+        __ASM_EMIT  ("movaps        %%xmm1, %%xmm5")                    /*  xmm5 = ti */ \
+        __ASM_EMIT  ("mulss         %%xmm6, %%xmm6")                    /*  xmm6 = br*br */ \
+        __ASM_EMIT  ("mulss         %%xmm7, %%xmm7")                    /*  xmm7 = bi*bi */ \
+        __ASM_EMIT  ("mulss         %%xmm2, %%xmm0")                    /*  xmm0 = tr*br */ \
+        __ASM_EMIT  ("mulss         %%xmm2, %%xmm1")                    /*  xmm1 = ti*br */ \
+        __ASM_EMIT  ("addss         %%xmm6, %%xmm7")                    /*  xmm7 = R = br*br + bi*bi */ \
+        __ASM_EMIT  ("movaps        0x00 + %[CC], %%xmm6")              /*  xmm6 = 1 */ \
+        __ASM_EMIT  ("mulss         %%xmm3, %%xmm5")                    /*  xmm5 = ti*bi */ \
+        __ASM_EMIT  ("mulss         %%xmm3, %%xmm4")                    /*  xmm4 = tr*bi */ \
+        __ASM_EMIT  ("divss         %%xmm7, %%xmm6")                    /*  xmm6 = 1/R */ \
+        __ASM_EMIT  ("addss         %%xmm5, %%xmm0")                    /*  xmm0 = r = tr*br + ti*bi */ \
+        __ASM_EMIT  ("subss         %%xmm4, %%xmm1")                    /*  xmm1 = i = ti*br - tr*bi */ \
+        __ASM_EMIT  ("mulss         %%xmm6, %%xmm0")                    /*  xmm0 = r/R */ \
+        __ASM_EMIT  ("mulss         %%xmm6, %%xmm1")                    /*  xmm1 = i/R */ \
+        __ASM_EMIT  ("movss         %%xmm0, 0x00(%[" DSTR "], %[off])") \
+        __ASM_EMIT  ("movss         %%xmm1, 0x00(%[" DSTI "], %[off])") \
+        __ASM_EMIT  ("add           $0x04, %[off]") \
+        __ASM_EMIT32("decl          %[count]") \
+        __ASM_EMIT64("dec           %[count]") \
+        __ASM_EMIT  ("jge           3b") \
+        __ASM_EMIT  ("4:") \
+        /*  end */
+
         void complex_div2(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t count)
         {
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                __ASM_EMIT  ("xor           %[off], %[off]")
-                // x4 blocks
-                __ASM_EMIT32("subl          $4, %[count]")
-                __ASM_EMIT64("sub           $4, %[count]")
-                __ASM_EMIT  ("jb            2f")
-                __ASM_EMIT  ("1:")
-                __ASM_EMIT  ("movups        0x00(%[src_re], %[off]), %%xmm0")   // xmm0 = sr
-                __ASM_EMIT  ("movups        0x00(%[src_im], %[off]), %%xmm1")   // xmm1 = si
-                __ASM_EMIT  ("movups        0x00(%[dst_re], %[off]), %%xmm2")   // xmm2 = dr
-                __ASM_EMIT  ("movups        0x00(%[dst_im], %[off]), %%xmm3")   // xmm3 = di
-                __ASM_EMIT  ("movaps        %%xmm0, %%xmm4")                    // xmm4 = sr
-                __ASM_EMIT  ("movaps        %%xmm1, %%xmm5")                    // xmm5 = si
-                __ASM_EMIT  ("movaps        %%xmm0, %%xmm6")                    // xmm6 = sr
-                __ASM_EMIT  ("movaps        %%xmm1, %%xmm7")                    // xmm7 = si
-                __ASM_EMIT  ("mulps         %%xmm2, %%xmm0")                    // xmm0 = sr*dr
-                __ASM_EMIT  ("mulps         %%xmm3, %%xmm4")                    // xmm4 = sr*di
-                __ASM_EMIT  ("mulps         %%xmm2, %%xmm1")                    // xmm1 = si*dr
-                __ASM_EMIT  ("mulps         %%xmm3, %%xmm5")                    // xmm5 = si*di
-                __ASM_EMIT  ("mulps         %%xmm6, %%xmm6")                    // xmm6 = sr*sr
-                __ASM_EMIT  ("mulps         %%xmm7, %%xmm7")                    // xmm7 = si*si
-                __ASM_EMIT  ("addps         %%xmm5, %%xmm0")                    // xmm0 = sr*dr + si*di
-                __ASM_EMIT  ("addps         %%xmm1, %%xmm4")                    // xmm4 = si*dr + sr*di
-                __ASM_EMIT  ("addps         %%xmm7, %%xmm6")                    // xmm6 = R = sr*sr + si*si
-                __ASM_EMIT  ("divps         %%xmm6, %%xmm4")                    // xmm4 = (sr*dr + si*di) / R
-                __ASM_EMIT  ("xorps         %%xmm1, %%xmm1")                    // xmm1 = 0
-                __ASM_EMIT  ("divps         %%xmm6, %%xmm0")                    // xmm0 = (sr*dr + si*di) / R
-                __ASM_EMIT  ("subps         %%xmm4, %%xmm1")                    // xmm1 = - (sr*dr + si*di) / R
-                __ASM_EMIT  ("movups        %%xmm0, 0x00(%[dst_re], %[off])")
-                __ASM_EMIT  ("movups        %%xmm1, 0x00(%[dst_im], %[off])")
-                __ASM_EMIT  ("add           $0x10, %[off]")
-                __ASM_EMIT32("subl          $4, %[count]")
-                __ASM_EMIT64("sub           $4, %[count]")
-                __ASM_EMIT  ("jae           1b")
-                __ASM_EMIT  ("2:")
-                // x1 blocks
-                __ASM_EMIT32("addl          $3, %[count]")
-                __ASM_EMIT64("add           $3, %[count]")
-                __ASM_EMIT  ("jl            4f")
-                __ASM_EMIT  ("3:")
-                __ASM_EMIT  ("movss         0x00(%[src_re], %[off]), %%xmm0")   // xmm0 = sr
-                __ASM_EMIT  ("movss         0x00(%[src_im], %[off]), %%xmm1")   // xmm1 = si
-                __ASM_EMIT  ("movss         0x00(%[dst_re], %[off]), %%xmm2")   // xmm2 = dr
-                __ASM_EMIT  ("movss         0x00(%[dst_im], %[off]), %%xmm3")   // xmm3 = di
-                __ASM_EMIT  ("movaps        %%xmm0, %%xmm4")                    // xmm4 = sr
-                __ASM_EMIT  ("movaps        %%xmm1, %%xmm5")                    // xmm5 = si
-                __ASM_EMIT  ("movaps        %%xmm0, %%xmm6")                    // xmm6 = sr
-                __ASM_EMIT  ("movaps        %%xmm1, %%xmm7")                    // xmm7 = si
-                __ASM_EMIT  ("mulss         %%xmm2, %%xmm0")                    // xmm0 = sr*dr
-                __ASM_EMIT  ("mulss         %%xmm3, %%xmm4")                    // xmm4 = sr*di
-                __ASM_EMIT  ("mulss         %%xmm2, %%xmm1")                    // xmm1 = si*dr
-                __ASM_EMIT  ("mulss         %%xmm3, %%xmm5")                    // xmm5 = si*di
-                __ASM_EMIT  ("mulss         %%xmm6, %%xmm6")                    // xmm6 = sr*sr
-                __ASM_EMIT  ("mulss         %%xmm7, %%xmm7")                    // xmm7 = si*si
-                __ASM_EMIT  ("addss         %%xmm5, %%xmm0")                    // xmm0 = sr*dr + si*di
-                __ASM_EMIT  ("addss         %%xmm1, %%xmm4")                    // xmm4 = si*dr + sr*di
-                __ASM_EMIT  ("addss         %%xmm7, %%xmm6")                    // xmm6 = R = sr*sr + si*si
-                __ASM_EMIT  ("divss         %%xmm6, %%xmm4")                    // xmm4 = (sr*dr + si*di) / R
-                __ASM_EMIT  ("xorps         %%xmm1, %%xmm1")                    // xmm1 = 0
-                __ASM_EMIT  ("divss         %%xmm6, %%xmm0")                    // xmm0 = (sr*dr + si*di) / R
-                __ASM_EMIT  ("subss         %%xmm4, %%xmm1")                    // xmm1 = - (sr*dr + si*di) / R
-                __ASM_EMIT  ("movss         %%xmm0, 0x00(%[dst_re], %[off])")
-                __ASM_EMIT  ("movss         %%xmm1, 0x00(%[dst_im], %[off])")
-                __ASM_EMIT  ("add           $0x04, %[off]")
-                __ASM_EMIT32("decl          %[count]")
-                __ASM_EMIT64("dec           %[count]")
-                __ASM_EMIT  ("jge           3b")
-                __ASM_EMIT  ("4:")
-                // end
-
+                COMPLEX_DIV2_CORE("dst_re", "dst_im", "dst_re", "dst_im", "src_re", "src_im")
                 : [off] "=&r" (off),
                   [count] __ASM_ARG_RW(count)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
-                  [src_re] "r" (src_re), [src_im] "r" (src_im)
+                  [src_re] "r" (src_re), [src_im] "r" (src_im),
+                  [CC] "o" (complex_div_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -273,84 +276,19 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                __ASM_EMIT  ("xor           %[off], %[off]")
-                // x4 blocks
-                __ASM_EMIT32("subl          $4, %[count]")
-                __ASM_EMIT64("sub           $4, %[count]")
-                __ASM_EMIT  ("jb            2f")
-                __ASM_EMIT  ("1:")
-                __ASM_EMIT  ("movups        0x00(%[src_re], %[off]), %%xmm0")   // xmm0 = sr
-                __ASM_EMIT  ("movups        0x00(%[src_im], %[off]), %%xmm1")   // xmm1 = si
-                __ASM_EMIT  ("movups        0x00(%[dst_re], %[off]), %%xmm2")   // xmm2 = dr
-                __ASM_EMIT  ("movups        0x00(%[dst_im], %[off]), %%xmm3")   // xmm3 = di
-                __ASM_EMIT  ("movaps        %%xmm0, %%xmm4")                    // xmm4 = sr
-                __ASM_EMIT  ("movaps        %%xmm1, %%xmm5")                    // xmm5 = si
-                __ASM_EMIT  ("movaps        %%xmm2, %%xmm6")                    // xmm6 = dr
-                __ASM_EMIT  ("movaps        %%xmm3, %%xmm7")                    // xmm7 = di
-                __ASM_EMIT  ("mulps         %%xmm2, %%xmm0")                    // xmm0 = sr*dr
-                __ASM_EMIT  ("mulps         %%xmm3, %%xmm4")                    // xmm4 = sr*di
-                __ASM_EMIT  ("mulps         %%xmm2, %%xmm1")                    // xmm1 = si*dr
-                __ASM_EMIT  ("mulps         %%xmm3, %%xmm5")                    // xmm5 = si*di
-                __ASM_EMIT  ("mulps         %%xmm6, %%xmm6")                    // xmm6 = dr*dr
-                __ASM_EMIT  ("mulps         %%xmm7, %%xmm7")                    // xmm7 = di*di
-                __ASM_EMIT  ("addps         %%xmm5, %%xmm0")                    // xmm0 = sr*dr + si*di
-                __ASM_EMIT  ("addps         %%xmm1, %%xmm4")                    // xmm4 = si*dr + sr*di
-                __ASM_EMIT  ("addps         %%xmm7, %%xmm6")                    // xmm6 = R = dr*dr + di*di
-                __ASM_EMIT  ("divps         %%xmm6, %%xmm4")                    // xmm4 = (sr*dr + si*di) / R
-                __ASM_EMIT  ("xorps         %%xmm1, %%xmm1")                    // xmm1 = 0
-                __ASM_EMIT  ("divps         %%xmm6, %%xmm0")                    // xmm0 = (sr*dr + si*di) / R
-                __ASM_EMIT  ("subps         %%xmm4, %%xmm1")                    // xmm1 = - (sr*dr + si*di) / R
-                __ASM_EMIT  ("movups        %%xmm0, 0x00(%[dst_re], %[off])")
-                __ASM_EMIT  ("movups        %%xmm1, 0x00(%[dst_im], %[off])")
-                __ASM_EMIT  ("add           $0x10, %[off]")
-                __ASM_EMIT32("subl          $4, %[count]")
-                __ASM_EMIT64("sub           $4, %[count]")
-                __ASM_EMIT  ("jae           1b")
-                __ASM_EMIT  ("2:")
-                // x1 blocks
-                __ASM_EMIT32("addl          $3, %[count]")
-                __ASM_EMIT64("add           $3, %[count]")
-                __ASM_EMIT  ("jl            4f")
-                __ASM_EMIT  ("3:")
-                __ASM_EMIT  ("movss         0x00(%[src_re], %[off]), %%xmm0")   // xmm0 = sr
-                __ASM_EMIT  ("movss         0x00(%[src_im], %[off]), %%xmm1")   // xmm1 = si
-                __ASM_EMIT  ("movss         0x00(%[dst_re], %[off]), %%xmm2")   // xmm2 = dr
-                __ASM_EMIT  ("movss         0x00(%[dst_im], %[off]), %%xmm3")   // xmm3 = di
-                __ASM_EMIT  ("movaps        %%xmm0, %%xmm4")                    // xmm4 = sr
-                __ASM_EMIT  ("movaps        %%xmm1, %%xmm5")                    // xmm5 = si
-                __ASM_EMIT  ("movaps        %%xmm2, %%xmm6")                    // xmm6 = dr
-                __ASM_EMIT  ("movaps        %%xmm3, %%xmm7")                    // xmm7 = di
-                __ASM_EMIT  ("mulss         %%xmm2, %%xmm0")                    // xmm0 = sr*dr
-                __ASM_EMIT  ("mulss         %%xmm3, %%xmm4")                    // xmm4 = sr*di
-                __ASM_EMIT  ("mulss         %%xmm2, %%xmm1")                    // xmm1 = si*dr
-                __ASM_EMIT  ("mulss         %%xmm3, %%xmm5")                    // xmm5 = si*di
-                __ASM_EMIT  ("mulss         %%xmm6, %%xmm6")                    // xmm6 = dr*dr
-                __ASM_EMIT  ("mulss         %%xmm7, %%xmm7")                    // xmm7 = di*di
-                __ASM_EMIT  ("addss         %%xmm5, %%xmm0")                    // xmm0 = sr*dr + si*di
-                __ASM_EMIT  ("addss         %%xmm1, %%xmm4")                    // xmm4 = si*dr + sr*di
-                __ASM_EMIT  ("addss         %%xmm7, %%xmm6")                    // xmm6 = R = dr*dr + di*di
-                __ASM_EMIT  ("divss         %%xmm6, %%xmm4")                    // xmm4 = (sr*dr + si*di) / R
-                __ASM_EMIT  ("xorps         %%xmm1, %%xmm1")                    // xmm1 = 0
-                __ASM_EMIT  ("divss         %%xmm6, %%xmm0")                    // xmm0 = (sr*dr + si*di) / R
-                __ASM_EMIT  ("subss         %%xmm4, %%xmm1")                    // xmm1 = - (sr*dr + si*di) / R
-                __ASM_EMIT  ("movss         %%xmm0, 0x00(%[dst_re], %[off])")
-                __ASM_EMIT  ("movss         %%xmm1, 0x00(%[dst_im], %[off])")
-                __ASM_EMIT  ("add           $0x04, %[off]")
-                __ASM_EMIT32("decl          %[count]")
-                __ASM_EMIT64("dec           %[count]")
-                __ASM_EMIT  ("jge           3b")
-                __ASM_EMIT  ("4:")
-                // end
-
+                COMPLEX_DIV2_CORE("dst_re", "dst_im", "src_re", "src_im", "dst_re", "dst_im")
                 : [off] "=&r" (off),
                   [count] __ASM_ARG_RW(count)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
-                  [src_re] "r" (src_re), [src_im] "r" (src_im)
+                  [src_re] "r" (src_re), [src_im] "r" (src_im),
+                  [CC] "o" (complex_div_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
+
+    #undef COMPLEX_DIV2_CORE
 
         void complex_div3(float *dst_re, float *dst_im, const float *t_re, const float *t_im, const float *b_re, const float *b_im, size_t count)
         {
@@ -373,23 +311,23 @@ namespace lsp
                 __ASM_EMIT64("movups        0x00(%[t_im], %[off]), %%xmm1")     // xmm1 = ti
                 __ASM_EMIT32("mov           %[dst_re], %[ptr_re]")
                 __ASM_EMIT32("mov           %[dst_im], %[ptr_im]")
-                __ASM_EMIT  ("movaps        %%xmm0, %%xmm4")                    // xmm4 = tr
-                __ASM_EMIT  ("movaps        %%xmm1, %%xmm5")                    // xmm5 = ti
-                __ASM_EMIT  ("movaps        %%xmm2, %%xmm6")                    // xmm6 = br
-                __ASM_EMIT  ("movaps        %%xmm3, %%xmm7")                    // xmm7 = bi
-                __ASM_EMIT  ("mulps         %%xmm2, %%xmm0")                    // xmm0 = tr*br
-                __ASM_EMIT  ("mulps         %%xmm3, %%xmm4")                    // xmm4 = tr*bi
-                __ASM_EMIT  ("mulps         %%xmm2, %%xmm1")                    // xmm1 = ti*br
-                __ASM_EMIT  ("mulps         %%xmm3, %%xmm5")                    // xmm5 = ti*bi
-                __ASM_EMIT  ("mulps         %%xmm6, %%xmm6")                    // xmm6 = br*br
-                __ASM_EMIT  ("mulps         %%xmm7, %%xmm7")                    // xmm7 = bi*bi
-                __ASM_EMIT  ("addps         %%xmm5, %%xmm0")                    // xmm0 = tr*br + ti*bi
-                __ASM_EMIT  ("addps         %%xmm1, %%xmm4")                    // xmm4 = ti*br + tr*bi
-                __ASM_EMIT  ("addps         %%xmm7, %%xmm6")                    // xmm6 = R = br*br + bi*bi
-                __ASM_EMIT  ("divps         %%xmm6, %%xmm4")                    // xmm4 = (tr*br + ti*bi) / R
-                __ASM_EMIT  ("xorps         %%xmm1, %%xmm1")                    // xmm1 = 0
-                __ASM_EMIT  ("divps         %%xmm6, %%xmm0")                    // xmm0 = (tr*br + ti*bi) / R
-                __ASM_EMIT  ("subps         %%xmm4, %%xmm1")                    // xmm1 = - (tr*br + ti*bi) / R
+                __ASM_EMIT  ("movaps        %%xmm2, %%xmm6")                    /*  xmm6 = br */
+                __ASM_EMIT  ("movaps        %%xmm3, %%xmm7")                    /*  xmm7 = bi */
+                __ASM_EMIT  ("movaps        %%xmm0, %%xmm4")                    /*  xmm4 = tr */
+                __ASM_EMIT  ("movaps        %%xmm1, %%xmm5")                    /*  xmm5 = ti */
+                __ASM_EMIT  ("mulps         %%xmm6, %%xmm6")                    /*  xmm6 = br*br */
+                __ASM_EMIT  ("mulps         %%xmm7, %%xmm7")                    /*  xmm7 = bi*bi */
+                __ASM_EMIT  ("mulps         %%xmm2, %%xmm0")                    /*  xmm0 = tr*br */
+                __ASM_EMIT  ("mulps         %%xmm2, %%xmm1")                    /*  xmm1 = ti*br */
+                __ASM_EMIT  ("addps         %%xmm6, %%xmm7")                    /*  xmm7 = R = br*br + bi*bi */
+                __ASM_EMIT  ("movaps        0x00 + %[CC], %%xmm6")              /*  xmm6 = 1 */
+                __ASM_EMIT  ("mulps         %%xmm3, %%xmm5")                    /*  xmm5 = ti*bi */
+                __ASM_EMIT  ("mulps         %%xmm3, %%xmm4")                    /*  xmm4 = tr*bi */
+                __ASM_EMIT  ("divps         %%xmm7, %%xmm6")                    /*  xmm6 = 1/R */
+                __ASM_EMIT  ("addps         %%xmm5, %%xmm0")                    /*  xmm0 = r = tr*br + ti*bi */
+                __ASM_EMIT  ("subps         %%xmm4, %%xmm1")                    /*  xmm1 = i = ti*br - tr*bi */
+                __ASM_EMIT  ("mulps         %%xmm6, %%xmm0")                    /*  xmm0 = r/R */
+                __ASM_EMIT  ("mulps         %%xmm6, %%xmm1")                    /*  xmm1 = i/R */
                 __ASM_EMIT32("movups        %%xmm0, 0x00(%[ptr_re], %[off])")
                 __ASM_EMIT32("movups        %%xmm1, 0x00(%[ptr_im], %[off])")
                 __ASM_EMIT64("movups        %%xmm0, 0x00(%[dst_re], %[off])")
@@ -412,23 +350,23 @@ namespace lsp
                 __ASM_EMIT64("movss         0x00(%[t_im], %[off]), %%xmm1")     // xmm1 = ti
                 __ASM_EMIT32("mov           %[dst_re], %[ptr_re]")
                 __ASM_EMIT32("mov           %[dst_im], %[ptr_im]")
-                __ASM_EMIT  ("movaps        %%xmm0, %%xmm4")                    // xmm4 = tr
-                __ASM_EMIT  ("movaps        %%xmm1, %%xmm5")                    // xmm5 = ti
-                __ASM_EMIT  ("movaps        %%xmm2, %%xmm6")                    // xmm6 = br
-                __ASM_EMIT  ("movaps        %%xmm3, %%xmm7")                    // xmm7 = bi
-                __ASM_EMIT  ("mulss         %%xmm2, %%xmm0")                    // xmm0 = tr*br
-                __ASM_EMIT  ("mulss         %%xmm3, %%xmm4")                    // xmm4 = tr*bi
-                __ASM_EMIT  ("mulss         %%xmm2, %%xmm1")                    // xmm1 = ti*br
-                __ASM_EMIT  ("mulss         %%xmm3, %%xmm5")                    // xmm5 = ti*bi
-                __ASM_EMIT  ("mulss         %%xmm6, %%xmm6")                    // xmm6 = br*br
-                __ASM_EMIT  ("mulss         %%xmm7, %%xmm7")                    // xmm7 = bi*bi
-                __ASM_EMIT  ("addss         %%xmm5, %%xmm0")                    // xmm0 = tr*br + ti*bi
-                __ASM_EMIT  ("addss         %%xmm1, %%xmm4")                    // xmm4 = ti*br + tr*bi
-                __ASM_EMIT  ("addss         %%xmm7, %%xmm6")                    // xmm6 = R = br*br + bi*bi
-                __ASM_EMIT  ("divss         %%xmm6, %%xmm4")                    // xmm4 = (tr*br + ti*bi) / R
-                __ASM_EMIT  ("xorps         %%xmm1, %%xmm1")                    // xmm1 = 0
-                __ASM_EMIT  ("divss         %%xmm6, %%xmm0")                    // xmm0 = (tr*br + ti*bi) / R
-                __ASM_EMIT  ("subss         %%xmm4, %%xmm1")                    // xmm1 = - (tr*br + ti*bi) / R
+                __ASM_EMIT  ("movaps        %%xmm2, %%xmm6")                    /*  xmm6 = br */ \
+                __ASM_EMIT  ("movaps        %%xmm3, %%xmm7")                    /*  xmm7 = bi */ \
+                __ASM_EMIT  ("movaps        %%xmm0, %%xmm4")                    /*  xmm4 = tr */ \
+                __ASM_EMIT  ("movaps        %%xmm1, %%xmm5")                    /*  xmm5 = ti */ \
+                __ASM_EMIT  ("mulss         %%xmm6, %%xmm6")                    /*  xmm6 = br*br */ \
+                __ASM_EMIT  ("mulss         %%xmm7, %%xmm7")                    /*  xmm7 = bi*bi */ \
+                __ASM_EMIT  ("mulss         %%xmm2, %%xmm0")                    /*  xmm0 = tr*br */ \
+                __ASM_EMIT  ("mulss         %%xmm2, %%xmm1")                    /*  xmm1 = ti*br */ \
+                __ASM_EMIT  ("addss         %%xmm6, %%xmm7")                    /*  xmm7 = R = br*br + bi*bi */ \
+                __ASM_EMIT  ("movaps        0x00 + %[CC], %%xmm6")              /*  xmm6 = 1 */ \
+                __ASM_EMIT  ("mulss         %%xmm3, %%xmm5")                    /*  xmm5 = ti*bi */ \
+                __ASM_EMIT  ("mulss         %%xmm3, %%xmm4")                    /*  xmm4 = tr*bi */ \
+                __ASM_EMIT  ("divss         %%xmm7, %%xmm6")                    /*  xmm6 = 1/R */ \
+                __ASM_EMIT  ("addss         %%xmm5, %%xmm0")                    /*  xmm0 = r = tr*br + ti*bi */ \
+                __ASM_EMIT  ("subss         %%xmm4, %%xmm1")                    /*  xmm1 = i = ti*br - tr*bi */ \
+                __ASM_EMIT  ("mulss         %%xmm6, %%xmm0")                    /*  xmm0 = r/R */ \
+                __ASM_EMIT  ("mulss         %%xmm6, %%xmm1")                    /*  xmm1 = i/R */ \
                 __ASM_EMIT32("movss         %%xmm0, 0x00(%[ptr_re], %[off])")
                 __ASM_EMIT32("movss         %%xmm1, 0x00(%[ptr_im], %[off])")
                 __ASM_EMIT64("movss         %%xmm0, 0x00(%[dst_re], %[off])")
@@ -445,7 +383,8 @@ namespace lsp
                   [count] "+r" (count), [off] "=&r" (off)
                 : [dst_re] X86_GREG (dst_re), [dst_im] X86_GREG (dst_im),
                   [t_re] X86_GREG (t_re), [t_im] X86_GREG (t_im),
-                  [b_re] "r" (b_re), [b_im] "r" (b_im)
+                  [b_re] "r" (b_re), [b_im] "r" (b_im),
+                  [CC] "o" (complex_div_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -156,32 +156,42 @@ namespace lsp
         /* Perform conditional output */ \
         __ASM_EMIT("vbif            q0, q4, q2")                    /* q0   = ((1/E) & [ x < 0 ]) | (E & [x >= 0]) */
 
+    #define EXP_CORE_X8 \
+        /* in: q0 = x0, q1 = x1, q15 = log2(e) */ \
+        __ASM_EMIT("vmul.f32        q0, q0, q15") \
+        __ASM_EMIT("vmul.f32        q1, q1, q15") \
+        POW2_CORE_X8 \
+        /* out: q0 = expf(x0), q1 = expf(x1) */
+
+    #define EXP_CORE_X4 \
+        /* in: q0 = x0, q15 = log2(e) */ \
+        __ASM_EMIT("vmul.f32        q0, q0, q15") \
+        POW2_CORE_X4 \
+        /* out: q0 = expf(x0) */
+
         void exp2(float *dst, const float *src, size_t count)
         {
             ARCH_ARM_ASM(
-                __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vldm            %[LOG2E], {q15}")
-                __ASM_EMIT("blo             2f")
                 // x8 blocks
+                __ASM_EMIT("subs            %[count], #8")
+                __ASM_EMIT("blo             2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vld1.32         {q0-q1}, [%[src]]!")
-                __ASM_EMIT("vmul.f32        q0, q0, q15")
-                __ASM_EMIT("vmul.f32        q1, q1, q15")
-                POW2_CORE_X8
+                EXP_CORE_X8
                 __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vst1.32         {q0-q1}, [%[dst]]!")
                 __ASM_EMIT("bhs             1b")
-                // x4 block
                 __ASM_EMIT("2:")
+                // x4 block
                 __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vld1.32         {q0}, [%[src]]!")
-                __ASM_EMIT("vmul.f32        q0, q0, q15")
-                POW2_CORE_X4
+                EXP_CORE_X4
                 __ASM_EMIT("sub             %[count], #4")
                 __ASM_EMIT("vst1.32         {q0}, [%[dst]]!")
-                // Tail: 1x-3x block
                 __ASM_EMIT("4:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("bls             12f")
                 __ASM_EMIT("tst             %[count], #1")
@@ -192,8 +202,7 @@ namespace lsp
                 __ASM_EMIT("beq             8f")
                 __ASM_EMIT("vld1.32         {d1}, [%[src]]")
                 __ASM_EMIT("8:")
-                __ASM_EMIT("vmul.f32        q0, q0, q15")
-                POW2_CORE_X4
+                EXP_CORE_X4
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             10f")
                 __ASM_EMIT("vst1.32         {d0[0]}, [%[dst]]!")
@@ -201,7 +210,6 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             12f")
                 __ASM_EMIT("vst1.32         {d1}, [%[dst]]")
-                // End
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
@@ -224,23 +232,20 @@ namespace lsp
                 // x8 blocks
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vld1.32         {q0-q1}, [%[dst]]")
-                __ASM_EMIT("vmul.f32        q0, q0, q15")
-                __ASM_EMIT("vmul.f32        q1, q1, q15")
-                POW2_CORE_X8
+                EXP_CORE_X8
                 __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("vst1.32         {q0-q1}, [%[dst]]!")
                 __ASM_EMIT("bhs             1b")
-                // x4 block
                 __ASM_EMIT("2:")
+                // x4 block
                 __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("blt             4f")
                 __ASM_EMIT("vld1.32         {q0}, [%[dst]]")
-                __ASM_EMIT("vmul.f32        q0, q0, q15")
-                POW2_CORE_X4
+                EXP_CORE_X4
                 __ASM_EMIT("sub             %[count], #4")
                 __ASM_EMIT("vst1.32         {q0}, [%[dst]]!")
-                // Tail: 1x-3x block
                 __ASM_EMIT("4:")
+                // Tail: 1x-3x block
                 __ASM_EMIT("adds            %[count], #4")
                 __ASM_EMIT("bls             12f")
                 __ASM_EMIT("tst             %[count], #1")
@@ -251,8 +256,7 @@ namespace lsp
                 __ASM_EMIT("beq             8f")
                 __ASM_EMIT("vld1.32         {d1}, [%[dst]]")
                 __ASM_EMIT("8:")
-                __ASM_EMIT("vmul.f32        q0, q0, q15")
-                POW2_CORE_X4
+                EXP_CORE_X4
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             10f")
                 __ASM_EMIT("sub             %[dst], #0x04")
@@ -274,7 +278,7 @@ namespace lsp
                   "q12", "q13", "q14", "q15"
             );
         }
-    }
-}
+    } /* namespace neon_d32 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_PMATH_EXP_H_ */

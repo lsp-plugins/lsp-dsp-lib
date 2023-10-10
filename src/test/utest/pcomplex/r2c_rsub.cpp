@@ -40,6 +40,11 @@ namespace lsp
         {
             void pcomplex_r2c_rsub2(float *dst, const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            void pcomplex_r2c_rsub2(float *dst, const float *src, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -106,6 +111,7 @@ UTEST_BEGIN("dsp.pcomplex", r2c_rsub)
 
         IF_ARCH_X86(CALL(sse::pcomplex_r2c_rsub2, 16));
         IF_ARCH_X86(CALL(avx::pcomplex_r2c_rsub2, 32));
+        IF_ARCH_X86(CALL(avx512::pcomplex_r2c_rsub2, 64));
         IF_ARCH_ARM(CALL(neon_d32::pcomplex_r2c_rsub2, 16));
         IF_ARCH_AARCH64(CALL(asimd::pcomplex_r2c_rsub2, 16));
     }

@@ -51,6 +51,11 @@ namespace lsp
             void pcomplex_mul2(float *dst, const float *src, size_t count);
             void pcomplex_mul2_fma3(float *dst, const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            void pcomplex_mul2(float *dst, const float *src, size_t count);
+        }
     )
 
     IF_ARCH_X86_64(
@@ -121,6 +126,7 @@ PTEST_BEGIN("dsp.pcomplex", mul2, 5, 1000)
             IF_ARCH_X86_64(CALL(sse3::x64_pcomplex_mul2));
             IF_ARCH_X86(CALL(avx::pcomplex_mul2));
             IF_ARCH_X86(CALL(avx::pcomplex_mul2_fma3));
+            IF_ARCH_X86(CALL(avx512::pcomplex_mul2));
             IF_ARCH_ARM(CALL(neon_d32::pcomplex_mul2));
             IF_ARCH_AARCH64(CALL(asimd::pcomplex_mul2));
 

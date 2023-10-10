@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -26,41 +26,13 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_GENERIC_IMPL */
 
+#include <private/dsp/arch/generic/graphics/axis.h>
 #include <private/dsp/arch/generic/graphics/pixelfmt.h>
 
 namespace lsp
 {
     namespace generic
     {
-        void axis_apply_log2(float *x, float *y, const float *v, float zero, float norm_x, float norm_y, size_t count)
-        {
-            for (size_t i=0; i<count; ++i)
-            {
-                float vec    = v[i];
-                if (vec < 0.0f)
-                    vec     = -vec;
-                if (vec < LSP_DSP_AMPLIFICATION_THRESH)
-                    vec     = LSP_DSP_AMPLIFICATION_THRESH;
-                float k     = logf(vec * zero);
-                x[i]       += norm_x * k;
-                y[i]       += norm_y * k;
-            }
-        }
-
-        void axis_apply_log1(float *x, const float *v, float zero, float norm_x, size_t count)
-        {
-            for (size_t i=0; i<count; ++i)
-            {
-                float vec    = v[i];
-                if (vec < 0.0f)
-                    vec     = -vec;
-                if (vec < LSP_DSP_AMPLIFICATION_THRESH)
-                    vec     = LSP_DSP_AMPLIFICATION_THRESH;
-                float k     = logf(vec * zero);
-                x[i]       += norm_x * k;
-            }
-        }
-
         void fill_rgba(float *dst, float r, float g, float b, float a, size_t count)
         {
             while (count--)

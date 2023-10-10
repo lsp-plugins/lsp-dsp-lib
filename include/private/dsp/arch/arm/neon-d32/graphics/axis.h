@@ -30,6 +30,77 @@ namespace lsp
 {
     namespace neon_d32
     {
+        void axis_apply_lin1(float *x, const float *v, float zero, float norm, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                __ASM_EMIT("vld1.32         {d16[], d17[]}, [%[zero]]")     // q8 = zero
+                __ASM_EMIT("vld1.32         {d18[], d19[]}, [%[norm]]")     // q9 = norm
+                // 16x block
+                __ASM_EMIT("subs            %[count], #16")
+                __ASM_EMIT("blo             2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vldm            %[v]!, {q0-q3}")                // q0 = v
+                __ASM_EMIT("vldm            %[x], {q4-q7}")                 // q4 = x
+                __ASM_EMIT("vadd.f32        q0, q0, q8")                    // q0 = v + zero
+                __ASM_EMIT("vadd.f32        q1, q1, q8")
+                __ASM_EMIT("vadd.f32        q2, q2, q8")
+                __ASM_EMIT("vadd.f32        q3, q3, q8")
+                __ASM_EMIT("vfma.f32        q4, q0, q9")                    // q4 = x + (v + zero) * norm
+                __ASM_EMIT("vfma.f32        q5, q1, q9")
+                __ASM_EMIT("vfma.f32        q6, q2, q9")
+                __ASM_EMIT("vfma.f32        q7, q3, q9")
+                __ASM_EMIT("subs            %[count], #16")
+                __ASM_EMIT("vstm            %[x]!, {q4-q7}")
+                __ASM_EMIT("bge             1b")
+                __ASM_EMIT("2:")
+                // 8x block
+                __ASM_EMIT("adds            %[count], #8")
+                __ASM_EMIT("blt             4f")
+                __ASM_EMIT("vldm            %[v]!, {q0-q1}")                // q0 = v
+                __ASM_EMIT("vldm            %[x], {q4-q5}")                 // q4 = x
+                __ASM_EMIT("vadd.f32        q0, q0, q8")                    // q0 = v + zero
+                __ASM_EMIT("vadd.f32        q1, q1, q8")
+                __ASM_EMIT("vfma.f32        q4, q0, q9")                    // q4 = x + (v + zero) * norm
+                __ASM_EMIT("vfma.f32        q5, q1, q9")
+                __ASM_EMIT("sub             %[count], #8")
+                __ASM_EMIT("vstm            %[x]!, {q4-q5}")
+                __ASM_EMIT("4:")
+                // 4x block
+                __ASM_EMIT("adds            %[count], #4")
+                __ASM_EMIT("blt             6f")
+                __ASM_EMIT("vldm            %[v]!, {q0}")                   // q0 = v
+                __ASM_EMIT("vldm            %[x], {q4}")                    // q4 = x
+                __ASM_EMIT("vadd.f32        q0, q0, q8")                    // q0 = v + zero
+                __ASM_EMIT("vfma.f32        q4, q0, q9")                    // q4 = x + (v + zero) * norm
+                __ASM_EMIT("sub             %[count], #4")
+                __ASM_EMIT("vstm            %[x]!, {q4}")
+                __ASM_EMIT("6:")
+                // 1x blocks
+                __ASM_EMIT("adds            %[count], #3")
+                __ASM_EMIT("blt             8f")
+                __ASM_EMIT("7:")
+                __ASM_EMIT("vld1.32         {d0[0]}, [%[v]]!")              // q0 = v
+                __ASM_EMIT("vld1.32         {d8[0]}, [%[x]]")               // q4 = x
+                __ASM_EMIT("vadd.f32        q0, q0, q8")                    // q0 = v + zero
+                __ASM_EMIT("vfma.f32        q4, q0, q9")                    // q4 = x + (v + zero) * norm
+                __ASM_EMIT("subs            %[count], #1")
+                __ASM_EMIT("vst1.32         {d8[0]}, [%[x]]!")
+                __ASM_EMIT("bge             7b")
+                __ASM_EMIT("8:")
+
+                : [x] "+r" (x), [v] "+r" (v),
+                  [count] "+r" (count)
+                : [zero] "r" (&zero),
+                  [norm] "r" (&norm)
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9"
+            );
+        }
+
+
         IF_ARCH_ARM(
             static const uint32_t LOG_IARGS[] __lsp_aligned16 =
             {

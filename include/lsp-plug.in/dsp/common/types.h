@@ -30,11 +30,16 @@
 #include <limits.h>
 
 // Macro definitions
-#define LSP_DSP_VEC2(v)     v, v
-#define LSP_DSP_VEC4(v)     v, v, v, v
-#define LSP_DSP_VEC8(v)     v, v, v, v, v, v, v, v
-#define LSP_DSP_VEC16(v)    v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v
-#define LSP_DSP_VEC32(v)    v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v
+#define LSP_DSP_VEC2(v)                     v, v
+#define LSP_DSP_VEC4(v)                     LSP_DSP_VEC2(v), LSP_DSP_VEC2(v)
+#define LSP_DSP_VEC8(v)                     LSP_DSP_VEC4(v), LSP_DSP_VEC4(v)
+#define LSP_DSP_VEC16(v)                    LSP_DSP_VEC8(v), LSP_DSP_VEC8(v)
+#define LSP_DSP_VEC32(v)                    LSP_DSP_VEC16(v), LSP_DSP_VEC16(v)
+
+#define LSP_DSP_VEC2x2(a, b)                a, b, a, b
+#define LSP_DSP_VEC4x2(a, b)                LSP_DSP_VEC2x2(a, b), LSP_DSP_VEC2x2(a, b)
+#define LSP_DSP_VEC8x2(a, b)                LSP_DSP_VEC4x2(a, b), LSP_DSP_VEC4x2(a, b)
+#define LSP_DSP_VEC16x2(a, b)               LSP_DSP_VEC8x2(a, b), LSP_DSP_VEC8x2(a, b)
 
 // Different constants
 #define LSP_DSP_AMPLIFICATION_THRESH        1e-8

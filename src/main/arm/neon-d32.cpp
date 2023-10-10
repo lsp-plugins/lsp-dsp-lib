@@ -51,6 +51,7 @@
         #include <private/dsp/arch/arm/neon-d32/complex.h>
         #include <private/dsp/arch/arm/neon-d32/convolution.h>
         #include <private/dsp/arch/arm/neon-d32/copy.h>
+        #include <private/dsp/arch/arm/neon-d32/dynamics.h>
         #include <private/dsp/arch/arm/neon-d32/fastconv.h>
         #include <private/dsp/arch/arm/neon-d32/fft.h>
         #include <private/dsp/arch/arm/neon-d32/filters/dynamic.h>
@@ -78,6 +79,8 @@
         #include <private/dsp/arch/arm/neon-d32/pmath/op_kx.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/op_vv.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/pow.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/sqr.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath/ssqrt.h>
         #include <private/dsp/arch/arm/neon-d32/resampling.h>
         #include <private/dsp/arch/arm/neon-d32/search/iminmax.h>
         #include <private/dsp/arch/arm/neon-d32/search/minmax.h>
@@ -121,7 +124,6 @@
 
                 EXPORT1(pcomplex_r2c);
                 EXPORT1(pcomplex_c2r);
-                EXPORT1(pcomplex_add_r);
                 EXPORT1(pcomplex_mul2);
                 EXPORT1(pcomplex_mul3);
                 EXPORT1(pcomplex_div2);
@@ -140,6 +142,7 @@
 
                 EXPORT1(convolve);
 
+                EXPORT1(axis_apply_lin1);
                 EXPORT1(axis_apply_log1);
                 EXPORT1(axis_apply_log2);
                 EXPORT1(fill_rgba);
@@ -294,6 +297,11 @@
                 EXPORT1(powvx1);
                 EXPORT1(powvx2);
 
+                EXPORT1(sqr1);
+                EXPORT1(sqr2);
+                EXPORT1(ssqrt1);
+                EXPORT1(ssqrt2);
+
                 EXPORT1(h_sum);
                 EXPORT1(h_abs_sum);
                 EXPORT1(h_sqr_sum);
@@ -405,6 +413,9 @@
                 EXPORT1(lin_inter_fmadd2);
                 EXPORT1(lin_inter_frmadd2);
                 EXPORT1(lin_inter_fmadd3);
+
+                EXPORT1(compressor_x2_gain);
+                EXPORT1(compressor_x2_curve);
             }
         } /* namespace neon_d32 */
     } /* namespace lsp */

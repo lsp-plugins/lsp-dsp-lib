@@ -226,6 +226,11 @@
                 EXPORT1(pamin3);
                 EXPORT1(pamax3);
 
+                EXPORT1(sqr1);
+                EXPORT1(sqr2);
+                EXPORT1(ssqrt1);
+                EXPORT1(ssqrt2);
+
                 EXPORT1(h_sum);
                 EXPORT1(h_sqr_sum);
                 EXPORT1(h_abs_sum);
@@ -307,7 +312,6 @@
                 EXPORT1(pcomplex_rcp2);
                 EXPORT1(pcomplex_r2c);
                 EXPORT1(pcomplex_c2r);
-                EXPORT1(pcomplex_add_r);
                 EXPORT1(pcomplex_mod);
         //            EXPORT1(complex_cvt2modarg);
         //            EXPORT1(complex_cvt2reim);
@@ -348,6 +352,7 @@
 
                 EXPORT1(fill_rgba);
                 EXPORT1(fill_hsla);
+                EXPORT1(axis_apply_lin1);
 
                 EXPORT1(lanczos_resample_2x2);
                 EXPORT1(lanczos_resample_2x3);

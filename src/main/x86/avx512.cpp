@@ -41,10 +41,13 @@
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
     #define PRIVATE_DSP_ARCH_X86_AVX512_IMPL
+        #include <private/dsp/arch/x86/avx512/complex.h>
         #include <private/dsp/arch/x86/avx512/copy.h>
         #include <private/dsp/arch/x86/avx512/float.h>
-        #include <private/dsp/arch/x86/avx512/complex.h>
+        #include <private/dsp/arch/x86/avx512/graphics/axis.h>
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
+        #include <private/dsp/arch/x86/avx512/pcomplex.h>
+        #include <private/dsp/arch/x86/avx512/pmath.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX512_IMPL
 
     namespace lsp
@@ -90,12 +93,31 @@
                 CEXPORT1(vl, complex_rcp1);
                 CEXPORT1(vl, complex_rcp2);
 
+                CEXPORT1(vl, pcomplex_mul2);
+                CEXPORT1(vl, pcomplex_mul3);
+                CEXPORT1(vl, pcomplex_mod);
+                CEXPORT1(vl, pcomplex_div2);
+                CEXPORT1(vl, pcomplex_rdiv2);
+                CEXPORT1(vl, pcomplex_div3);
+                CEXPORT1(vl, pcomplex_r2c_add2);
+                CEXPORT1(vl, pcomplex_r2c_rsub2);
+                CEXPORT1(vl, pcomplex_r2c_sub2);
+                CEXPORT1(vl, pcomplex_r2c_mul2);
+                CEXPORT1(vl, pcomplex_r2c_div2);
+
                 CEXPORT1(vl, lr_to_ms);
                 CEXPORT1(vl, lr_to_mid);
                 CEXPORT1(vl, lr_to_side);
                 CEXPORT1(vl, ms_to_lr);
                 CEXPORT1(vl, ms_to_left);
                 CEXPORT1(vl, ms_to_right);
+
+                CEXPORT1(vl, sqr1);
+                CEXPORT1(vl, sqr2);
+                CEXPORT1(vl, ssqrt1);
+                CEXPORT1(vl, ssqrt2);
+
+                CEXPORT1(vl, axis_apply_lin1);
             }
         } /* namespace avx2 */
     } /* namespace lsp */

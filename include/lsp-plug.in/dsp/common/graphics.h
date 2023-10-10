@@ -53,6 +53,16 @@ typedef struct LSP_DSP_LIB_TYPE(hsla_light_eff_t)
 
 LSP_DSP_LIB_END_NAMESPACE
 
+/** Do linear vector apply for 1D-schema:
+ *  x[i] = x[i] + norm_x * (v[i] + zero)
+ *
+ * @param x destination vector for X coordinate
+ * @param v delta vector to apply
+ * @param zero graphics zero point shift
+ * @param norm X norming factor
+ */
+LSP_DSP_LIB_SYMBOL(void, axis_apply_lin1, float *x, const float *v, float zero, float norm, size_t count);
+
 /** Do logarithmic vector apply for 1D-schema:
  *  x[i] = x[i] + norm_x * logf(absf(v[i]*zero))
  *
