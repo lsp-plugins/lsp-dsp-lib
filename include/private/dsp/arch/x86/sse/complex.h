@@ -339,8 +339,8 @@ namespace lsp
                 __ASM_EMIT  ("jae           1b")
                 __ASM_EMIT  ("2:")
                 // x1 blocks
-                __ASM_EMIT32("addl          $4, %[count]") \
-                __ASM_EMIT64("add           $4, %[count]") \
+                __ASM_EMIT32("addl          $3, %[count]") \
+                __ASM_EMIT64("add           $3, %[count]") \
                 __ASM_EMIT  ("jl            4f")
                 __ASM_EMIT  ("3:")
                 __ASM_EMIT32("mov           %[t_re], %[ptr_re]")
