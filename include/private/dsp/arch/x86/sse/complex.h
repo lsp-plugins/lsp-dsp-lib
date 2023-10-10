@@ -261,7 +261,7 @@ namespace lsp
             (
                 COMPLEX_DIV2_CORE("dst_re", "dst_im", "dst_re", "dst_im", "src_re", "src_im")
                 : [off] "=&r" (off),
-                  [count] __ASM_ARG_RW(count)
+                  [count] X86_PGREG(count)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
                   [CC] "o" (complex_div_const)
@@ -278,7 +278,7 @@ namespace lsp
             (
                 COMPLEX_DIV2_CORE("dst_re", "dst_im", "src_re", "src_im", "dst_re", "dst_im")
                 : [off] "=&r" (off),
-                  [count] __ASM_ARG_RW(count)
+                  [count] X86_PGREG(count)
                 : [dst_re] "r" (dst_re), [dst_im] "r" (dst_im),
                   [src_re] "r" (src_re), [src_im] "r" (src_im),
                   [CC] "o" (complex_div_const)
