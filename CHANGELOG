@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.19 ===
+
+
 === 1.0.18 ===
 * Fixed compilation regression for 32-bit Clang compiler.
 
