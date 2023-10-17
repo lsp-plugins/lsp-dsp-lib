@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -19,8 +19,8 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef INCLUDE_PRIVATE_DSP_ARCH_X86_COPY_H_
-#define INCLUDE_PRIVATE_DSP_ARCH_X86_COPY_H_
+#ifndef PRIVATE_DSP_ARCH_X86_COPY_H_
+#define PRIVATE_DSP_ARCH_X86_COPY_H_
 
 namespace lsp
 {
@@ -56,9 +56,54 @@ namespace lsp
                 : "cc", "memory"
             );
         }
-    }
-}
+
+        void move(float *dst, const float *src, size_t count)
+        {
+            if (dst < src)
+            {
+                copy(dst, src, count);
+                return;
+            }
+
+            IF_ARCH_X86_64(size_t tmp);
+
+            ARCH_X86_64_ASM
+            (
+                __ASM_EMIT("lea     -4(%[src], %[count], 4), %[src]")
+                __ASM_EMIT("lea     -4(%[dst], %[count], 4), %[dst]")
+                __ASM_EMIT("std")
+                __ASM_EMIT("mov     %[count], %[tmp]")
+                __ASM_EMIT("shr     $1, %[count]")
+                __ASM_EMIT("jz      1f")
+                __ASM_EMIT("rep     movsq")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("test    $1, %[tmp]")
+                __ASM_EMIT("jz      2f")
+                __ASM_EMIT("movsd   ")
+                __ASM_EMIT("2:")
+                __ASM_EMIT("cld")
+                : [dst] "+D" (dst), [src] "+S" (src),
+                  [tmp] "=&r" (tmp), [count] "+c" (count)
+                :
+                : "cc", "memory"
+            );
+
+            ARCH_I386_ASM
+            (
+                __ASM_EMIT("lea     -4(%[src], %[count], 4), %[src]")
+                __ASM_EMIT("lea     -4(%[dst], %[count], 4), %[dst]")
+                __ASM_EMIT("std")
+                __ASM_EMIT("rep     movsl")
+                __ASM_EMIT("cld")
+                : [dst] "+D" (dst), [src] "+S" (src),
+                  [count] "+c" (count)
+                :
+                : "cc", "memory"
+            );
+        }
+    } /* namespace x86 */
+} /* namespace lsp */
 
 
 
-#endif /* INCLUDE_PRIVATE_DSP_ARCH_X86_COPY_H_ */
+#endif /* PRIVATE_DSP_ARCH_X86_COPY_H_ */

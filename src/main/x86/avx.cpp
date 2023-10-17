@@ -131,12 +131,13 @@
                 bool favx       = feature_check(f, FEAT_FAST_AVX);
                 bool ffma       = favx && feature_check(f, FEAT_FAST_FMA3);
                 bool below_zen3 = feature_check(f, FEAT_BELOW_ZEN3);
+                bool fmovs      = favx && !feature_check(f, FEAT_FAST_MOVS);
 
                 CEXPORT2_X64(favx, reverse1, reverse1);
                 CEXPORT2_X64(favx, reverse2, reverse2);
 
-                CEXPORT1(favx, copy);
-                CEXPORT1(favx, move);
+                CEXPORT1(fmovs, copy);
+                CEXPORT1(fmovs, move);
 
                 CEXPORT1(favx, limit1);
                 CEXPORT1(favx, limit2);

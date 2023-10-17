@@ -577,6 +577,7 @@
                 EXPORT1(info);
 
                 EXPORT1(copy);
+                EXPORT1(move);
                 EXPORT1(rgba32_to_bgra32);
                 EXPORT1(abgr32_to_bgra32);
                 EXPORT2(prgba32_set_alpha, pabc32_set_alpha);

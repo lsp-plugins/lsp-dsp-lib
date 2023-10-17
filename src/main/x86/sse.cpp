@@ -106,7 +106,20 @@
                 dsp::LSP_DSP_LIB_MANGLE(function)   = sse::export; \
                 TEST_EXPORT(sse::export); \
             }
+
             #define EXPORT1(function)                   EXPORT2(function, function);
+
+            #define CEXPORT2(cond, function, export) \
+            { \
+                TEST_EXPORT(sse::export); \
+                if (cond) \
+                { \
+                    dsp::function                       = sse::export; \
+                    dsp::LSP_DSP_LIB_MANGLE(function)   = sse::export; \
+                } \
+            }
+
+            #define CEXPORT1(cond, function)            CEXPORT2(cond, function, function);
 
             void dsp_init(const cpu_features_t *f)
             {
@@ -119,6 +132,8 @@
                 else
                     mxcsr_mask  = MXCSR_DEFAULT;
 
+                const bool fmovs                = !feature_check(f, FEAT_FAST_MOVS);
+
                 // Save previous entry points
                 dsp_start                       = dsp::start;
                 dsp_finish                      = dsp::finish;
@@ -127,17 +142,11 @@
                 EXPORT1(start);
                 EXPORT1(finish);
 
-                if (!feature_check(f, FEAT_FAST_MOVS))
-                {
-                    EXPORT1(copy);
-                }
-                else
-                {
-                    TEST_EXPORT(copy);
-                }
+                CEXPORT1(fmovs, copy);
+                CEXPORT1(fmovs, move);
+
                 TEST_EXPORT(copy_movntps);
 
-                EXPORT1(move);
                 EXPORT1(fill);
                 EXPORT1(fill_one);
                 EXPORT1(fill_zero);
