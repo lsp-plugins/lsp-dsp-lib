@@ -522,7 +522,7 @@
                         if (f->vendor == CPU_VENDOR_INTEL)
                         {
                             // Should be some Core i3 microarchitecture...
-                            if ((f->family == INTEL_FAMILY_686_CORE) && (f->model >= 0x5e))
+                            if ((f->family == INTEL_FAMILY_686_CORE) && (f->model >= 42))
                                 return true;
                         }
                         break;

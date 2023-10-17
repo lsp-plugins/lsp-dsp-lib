@@ -35,6 +35,11 @@ namespace lsp
     }
 
     IF_ARCH_X86(
+        namespace x86
+        {
+            void move(float *dst, const float *src, size_t count);
+        }
+
         namespace sse
         {
             void move(float *dst, const float *src, size_t count);
@@ -114,6 +119,7 @@ PTEST_BEGIN("dsp.copy", move, 5, 1000)
 
             call("std::move", out, in, count, ::move);
             call("generic::move", out, in, count, generic::move);
+            IF_ARCH_X86(call("x86::move", out, in, count, x86::move));
             IF_ARCH_X86(call("sse::move", out, in, count, sse::move));
             IF_ARCH_X86(call("sse3::move", out, in, count, sse3::move));
             IF_ARCH_X86(call("avx::move", out, in, count, avx::move));

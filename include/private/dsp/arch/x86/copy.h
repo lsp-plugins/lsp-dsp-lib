@@ -69,17 +69,19 @@ namespace lsp
 
             ARCH_X86_64_ASM
             (
-                __ASM_EMIT("lea     -4(%[src], %[count], 4), %[src]")
-                __ASM_EMIT("lea     -4(%[dst], %[count], 4), %[dst]")
                 __ASM_EMIT("std")
                 __ASM_EMIT("mov     %[count], %[tmp]")
+                __ASM_EMIT("lea     -8(%[src], %[count], 4), %[src]")
+                __ASM_EMIT("lea     -8(%[dst], %[count], 4), %[dst]")
                 __ASM_EMIT("shr     $1, %[count]")
                 __ASM_EMIT("jz      1f")
                 __ASM_EMIT("rep     movsq")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("test    $1, %[tmp]")
                 __ASM_EMIT("jz      2f")
-                __ASM_EMIT("movsd   ")
+                __ASM_EMIT("add     $4, %[src]")
+                __ASM_EMIT("add     $4, %[dst]")
+                __ASM_EMIT("movsd")
                 __ASM_EMIT("2:")
                 __ASM_EMIT("cld")
                 : [dst] "+D" (dst), [src] "+S" (src),

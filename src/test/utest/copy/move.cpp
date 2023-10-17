@@ -32,6 +32,11 @@ namespace lsp
     }
 
     IF_ARCH_X86(
+        namespace x86
+        {
+            void move(float *dst, const float *src, size_t count);
+        }
+
         namespace sse
         {
             void move(float *dst, const float *src, size_t count);
@@ -119,6 +124,7 @@ UTEST_BEGIN("dsp.copy", move)
 
     UTEST_MAIN
     {
+        IF_ARCH_X86(call("x86::move", 16, x86::move));
         IF_ARCH_X86(call("sse::move", 16, sse::move));
         IF_ARCH_X86(call("sse3::move", 16, sse3::move));
         IF_ARCH_X86(call("avx::move", 32, avx::move));

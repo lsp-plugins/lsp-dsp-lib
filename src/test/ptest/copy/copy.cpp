@@ -43,7 +43,6 @@ namespace lsp
         namespace sse
         {
             void copy(float *dst, const float *src, size_t count);
-            void copy_movntps(float *dst, const float *src, size_t count);
         }
 
         namespace sse3
@@ -122,7 +121,6 @@ PTEST_BEGIN("dsp.copy", copy, 5, 1000)
             call("generic::copy", out, in, count, generic::copy);
             IF_ARCH_X86(call("x86::movs_copy", out, in, count, x86::copy));
             IF_ARCH_X86(call("sse::copy", out, in, count, sse::copy));
-            IF_ARCH_X86(call("sse::copy_movntps", out, in, count, sse::copy_movntps));
             IF_ARCH_X86(call("sse3::copy", out, in, count, sse3::copy));
             IF_ARCH_X86(call("avx::copy", out, in, count, avx::copy));
             IF_ARCH_X86(call("avx512::copy", out, in, count, avx512::copy));

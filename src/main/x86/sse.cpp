@@ -145,8 +145,6 @@
                 CEXPORT1(fmovs, copy);
                 CEXPORT1(fmovs, move);
 
-                TEST_EXPORT(copy_movntps);
-
                 EXPORT1(fill);
                 EXPORT1(fill_one);
                 EXPORT1(fill_zero);
