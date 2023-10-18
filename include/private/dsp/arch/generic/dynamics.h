@@ -27,5 +27,6 @@
 #endif /* PRIVATE_DSP_ARCH_GENERIC_IMPL */
 
 #include <private/dsp/arch/generic/dynamics/compressor.h>
+#include <private/dsp/arch/generic/dynamics/gate.h>
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_DYNAMICS_H_ */

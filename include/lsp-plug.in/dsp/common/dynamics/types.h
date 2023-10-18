@@ -29,7 +29,7 @@ LSP_DSP_LIB_BEGIN_NAMESPACE
 #pragma pack(push, 1)
 
 /**
- * Compressor knee is a curve that constists of three parts:
+ * Compressor knee is a curve that consists of three parts:
  *   1. Part with constant gain amplification in the range [-inf .. start] dB
  *   2. Soft compression knee in the range (start .. end) dB present by the quadratic function (2nd-order polynom)
  *   3. Gain reduction part in the range [end .. +inf] dB present by the linear function (1st-order polynom)
@@ -40,7 +40,7 @@ LSP_DSP_LIB_BEGIN_NAMESPACE
  *   3. Compute the natural logarithm of the x: lx = logf(x).
  *   4. If x < end then compute the gain using the 2nd-order polynom: gain = (herm[0]*lx + herm[1])*lx + herm[2]
  *   5. Otherwise compute the gain using the 1st-order polynom: gain = tilt[0]*lx + tilt[1]
- *   6. return expf(gain)
+ *   6. return expf(gain) * x
  */
 typedef struct LSP_DSP_LIB_TYPE(compressor_knee_t)
 {
@@ -60,6 +60,30 @@ typedef struct LSP_DSP_LIB_TYPE(compressor_x2_t)
 {
     LSP_DSP_LIB_TYPE(compressor_knee_t)   k[2];
 } LSP_DSP_LIB_TYPE(compressor_x2_t);
+
+
+/**
+ * Gate knee is a curve that consists of three parts:
+ *   1. Part with constant gain amplification in the range [-inf .. start] dB
+ *   2. Transition zone in the range (start .. end) dB present by the quadratic function (2nd-order polynom)
+ *   3. Part with constant gain amplification in the range [end .. +inf] dB
+ *
+ * The typical algorithm of computing the gate's curve:
+ *   1. Take absolute value of the sample: x = fabfs(in)
+ *   2. If x <= start then return gain_start * x
+ *   3. If x <= end then return gain_end * x
+ *   4. Compute the natural logarithm of the x: lx = logf(x).
+ *   5. Compute the gain using the 3rd-order polynom: gain = ((herm[0]*lx + herm[1])*lx + herm[2]*lx) + herm[3]
+ *   6. return expf(gain) * x
+ */
+typedef struct LSP_DSP_LIB_TYPE(gate_knee_t)
+{
+    float       start;          // The start of the knee, in gain units
+    float       end;            // The end of the knee, in gain units
+    float       gain_start;     // Gain below the start threshold
+    float       gain_end;       // Gain above the end threshold
+    float       herm[4];        // Hermite interpolation of the knee with the 3rd-order polynom
+} LSP_DSP_LIB_TYPE(gate_knee_t);
 
 #pragma pack(pop)
 
