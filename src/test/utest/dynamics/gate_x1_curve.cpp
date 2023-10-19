@@ -31,13 +31,13 @@ namespace lsp
 {
     namespace generic
     {
-//        void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+        void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
     }
 
     IF_ARCH_X86(
         namespace sse2
         {
-//            void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
         }
 
         namespace avx2
@@ -105,7 +105,7 @@ UTEST_BEGIN("dsp.dynamics", gate_x1_curve)
             {
                 for (size_t i=0; i<2; ++i)
                 {
-                    printf("Testing %s on compressor %d, input buffer of %d numbers, mask=0x%x...\n", label, int(i), int(count), int(mask));
+                    printf("Testing %s on gate %d, input buffer of %d numbers, mask=0x%x...\n", label, int(i), int(count), int(mask));
 
                     FloatBuffer src(count, align, mask & 0x01);
                     FloatBuffer dst(count, align, mask & 0x02);
@@ -125,7 +125,7 @@ UTEST_BEGIN("dsp.dynamics", gate_x1_curve)
                     UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
 
                     // Compare buffers
-                    if (!dst1.equals_relative(dst2, 1e-4))
+                    if (!dst1.equals_absolute(dst2, 1e-4))
                     {
                         src.dump("src ");
                         dst.dump("dst ");
@@ -144,7 +144,7 @@ UTEST_BEGIN("dsp.dynamics", gate_x1_curve)
         #define CALL(generic, func, align) \
             call(#func, align, generic, func);
 
-//        IF_ARCH_X86(CALL(generic::gate_x1_curve, sse2::gate_x1_curve, 16));
+        IF_ARCH_X86(CALL(generic::gate_x1_curve, sse2::gate_x1_curve, 16));
 //        IF_ARCH_X86(CALL(generic::gate_x1_curve, avx2::gate_x1_curve, 32));
 //        IF_ARCH_X86(CALL(generic::gate_x1_curve, avx2::gate_x1_curve_fma3, 32));
 //        IF_ARCH_X86_64(CALL(generic::gate_x1_curve, avx2::x64_gate_x1_curve, 32));

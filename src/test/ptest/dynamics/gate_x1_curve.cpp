@@ -39,7 +39,7 @@ namespace lsp
     IF_ARCH_X86(
         namespace sse2
         {
-//            void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
         }
 
         namespace avx2
@@ -124,7 +124,7 @@ PTEST_BEGIN("dsp.dynamics", gate_x1_curve, 5, 1000)
             size_t count = 1 << i;
 
             CALL(generic::gate_x1_curve);
-//            IF_ARCH_X86(CALL(sse2::gate_x1_curve));
+            IF_ARCH_X86(CALL(sse2::gate_x1_curve));
 //            IF_ARCH_X86(CALL(avx2::gate_x1_curve));
 //            IF_ARCH_X86_64(CALL(avx2::x64_gate_x1_curve));
 //            IF_ARCH_X86(CALL(avx2::gate_x1_curve_fma3));
