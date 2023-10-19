@@ -286,6 +286,7 @@
                 CEXPORT1(favx, pcomplex_rcp1);
                 CEXPORT1(favx, pcomplex_rcp2);
 
+                CEXPORT1(favx, pcomplex_r2c);
                 CEXPORT1(favx, pcomplex_r2c_add2);
                 CEXPORT1(favx, pcomplex_r2c_sub2);
                 CEXPORT1(favx, pcomplex_r2c_rsub2);
