@@ -46,6 +46,14 @@ namespace lsp
             void fill_zero(float *dst, size_t count);
             void fill_minus_one(float *dst, size_t count);
         }
+
+        namespace avx
+        {
+            void fill(float *dst, float value, size_t count);
+            void fill_one(float *dst, size_t count);
+            void fill_zero(float *dst, size_t count);
+            void fill_minus_one(float *dst, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -133,6 +141,7 @@ PTEST_BEGIN("dsp.copy", fill, 5, 5000)
 
             CALL(generic::fill);
             IF_ARCH_X86(CALL(sse::fill));
+            IF_ARCH_X86(CALL(avx::fill));
             IF_ARCH_ARM(CALL(neon_d32::fill));
             IF_ARCH_AARCH64(CALL(asimd::fill));
             PTEST_SEPARATOR;
@@ -141,18 +150,21 @@ PTEST_BEGIN("dsp.copy", fill, 5, 5000)
             CALL(fill_zero_memset);
             CALL(fill_zero_bzero);
             IF_ARCH_X86(CALL(sse::fill_zero));
+            IF_ARCH_X86(CALL(avx::fill_zero));
             IF_ARCH_ARM(CALL(neon_d32::fill_zero));
             IF_ARCH_AARCH64(CALL(asimd::fill_zero));
             PTEST_SEPARATOR;
 
             CALL(generic::fill_one);
             IF_ARCH_X86(CALL(sse::fill_one));
+            IF_ARCH_X86(CALL(avx::fill_one));
             IF_ARCH_ARM(CALL(neon_d32::fill_one));
             IF_ARCH_AARCH64(CALL(asimd::fill_one));
             PTEST_SEPARATOR;
 
             CALL(generic::fill_minus_one);
             IF_ARCH_X86(CALL(sse::fill_minus_one));
+            IF_ARCH_X86(CALL(avx::fill_minus_one));
             IF_ARCH_ARM(CALL(neon_d32::fill_minus_one));
             IF_ARCH_AARCH64(CALL(asimd::fill_minus_one));
             PTEST_SEPARATOR2;

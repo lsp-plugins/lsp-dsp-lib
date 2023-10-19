@@ -137,6 +137,10 @@
 
                 CEXPORT1(favx, copy);
                 CEXPORT1(favx, move);
+                CEXPORT1(favx, fill);
+                CEXPORT1(favx, fill_zero);
+                CEXPORT1(favx, fill_one);
+                CEXPORT1(favx, fill_minus_one);
 
                 CEXPORT1(favx, limit1);
                 CEXPORT1(favx, limit2);

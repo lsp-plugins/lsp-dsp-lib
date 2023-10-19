@@ -42,6 +42,14 @@ namespace lsp
             void fill_zero(float *dst, size_t count);
             void fill_minus_one(float *dst, size_t count);
         }
+
+        namespace avx
+        {
+            void fill(float *dst, float value, size_t count);
+            void fill_one(float *dst, size_t count);
+            void fill_zero(float *dst, size_t count);
+            void fill_minus_one(float *dst, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -140,6 +148,11 @@ UTEST_BEGIN("dsp.copy", fill)
         IF_ARCH_X86(CALL(generic::fill_one, sse::fill_one, 16));
         IF_ARCH_X86(CALL(generic::fill_zero, sse::fill_zero, 16));
         IF_ARCH_X86(CALL(generic::fill_minus_one, sse::fill_minus_one, 16));
+
+        IF_ARCH_X86(CALL(generic::fill, avx::fill, 32));
+        IF_ARCH_X86(CALL(generic::fill_one, avx::fill_one, 32));
+        IF_ARCH_X86(CALL(generic::fill_zero, avx::fill_zero, 32));
+        IF_ARCH_X86(CALL(generic::fill_minus_one, avx::fill_minus_one, 32));
 
         IF_ARCH_ARM(CALL(generic::fill, neon_d32::fill, 16));
         IF_ARCH_ARM(CALL(generic::fill_one, neon_d32::fill_one, 16));
