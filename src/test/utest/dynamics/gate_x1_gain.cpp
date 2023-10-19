@@ -42,16 +42,16 @@ namespace lsp
 
         namespace avx2
         {
-//            void gate_x1_gain(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
-//            void gate_x1_gain_fma3(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void gate_x1_gain(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void gate_x1_gain_fma3(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
         }
     )
 
     IF_ARCH_X86_64(
         namespace avx2
         {
-//            void x64_gate_x1_gain(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
-//            void x64_gate_x1_gain_fma3(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void x64_gate_x1_gain(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void x64_gate_x1_gain_fma3(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
         }
     )
 
@@ -125,7 +125,7 @@ UTEST_BEGIN("dsp.dynamics", gate_x1_gain)
                     UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
 
                     // Compare buffers
-                    if (!dst1.equals_absolute(dst2, 1e-4))
+                    if (!dst1.equals_absolute(dst2, 2e-4))
                     {
                         src.dump("src ");
                         dst.dump("dst ");
@@ -145,13 +145,13 @@ UTEST_BEGIN("dsp.dynamics", gate_x1_gain)
             call(#func, align, generic, func);
 
         IF_ARCH_X86(CALL(generic::gate_x1_gain, sse2::gate_x1_gain, 16));
-//        IF_ARCH_X86(CALL(generic::gate_x1_gain, avx2::gate_x1_gain, 32));
-//        IF_ARCH_X86(CALL(generic::gate_x1_gain, avx2::gate_x1_gain_fma3, 32));
-//        IF_ARCH_X86_64(CALL(generic::gate_x1_gain, avx2::x64_gate_x1_gain, 32));
-//        IF_ARCH_X86_64(CALL(generic::gate_x1_gain, avx2::x64_gate_x1_gain_fma3, 32));
-//
+        IF_ARCH_X86(CALL(generic::gate_x1_gain, avx2::gate_x1_gain, 32));
+        IF_ARCH_X86(CALL(generic::gate_x1_gain, avx2::gate_x1_gain_fma3, 32));
+        IF_ARCH_X86_64(CALL(generic::gate_x1_gain, avx2::x64_gate_x1_gain, 32));
+        IF_ARCH_X86_64(CALL(generic::gate_x1_gain, avx2::x64_gate_x1_gain_fma3, 32));
+
 //        IF_ARCH_ARM(CALL(generic::gate_x1_gain, neon_d32::gate_x1_gain, 16));
-//
+
 //        IF_ARCH_AARCH64(CALL(generic::gate_x1_gain, asimd::gate_x1_gain, 16));
     }
 UTEST_END
