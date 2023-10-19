@@ -111,7 +111,7 @@ namespace lsp
             __ASM_EMIT("jl              6f") \
             __ASM_EMIT("5:") \
             __ASM_EMIT("movss           0x00(%[src]), %%xmm3") \
-            __ASM_EMIT(SEL("", "vandps 0x00(%[src]), %%ymm6, %%ymm3")) \
+            __ASM_EMIT(SEL("", "vandps  %%xmm6, %%xmm3, %%xmm3")) \
             __ASM_EMIT("vcmpps          " COND ", %%xmm1, %%xmm3, %%xmm4") \
             __ASM_EMIT("vpblendvb       %%xmm4, %%xmm2, %%xmm0, %%xmm0") \
             __ASM_EMIT("vblendvps       %%xmm4, %%xmm3, %%xmm1, %%xmm1") \
@@ -280,7 +280,7 @@ namespace lsp
             __ASM_EMIT("jl              6f") \
             __ASM_EMIT("5:") \
             __ASM_EMIT("movss           0x00(%[src]), %%xmm5") \
-            __ASM_EMIT(SEL("", "vandps          0x60 + %[INCR], %%xmm5, %%xmm5")) \
+            __ASM_EMIT(SEL("", "vandps  0x60 + %[INCR], %%xmm5, %%xmm5")) \
             __ASM_EMIT("vcmpps          $1, %%xmm1, %%xmm5, %%xmm6") /* cmpltps */ \
             __ASM_EMIT("vcmpps          $6, %%xmm3, %%xmm5, %%xmm7") /* cmpgtps */ \
             __ASM_EMIT("vpblendvb       %%xmm6, %%xmm4, %%xmm0, %%xmm0") \
