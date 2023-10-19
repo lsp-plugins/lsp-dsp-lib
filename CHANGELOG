@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.19 ===
-
+* AVX2-optimization of search functions for maximum and minimum.
 
 === 1.0.18 ===
 * Fixed compilation regression for 32-bit Clang compiler.

@@ -161,6 +161,14 @@ namespace lsp
             CEXPORT2_X64(favx, exp1, x64_exp1);
             CEXPORT2_X64(favx, exp2, x64_exp2);
 
+            EXPORT1(min_index);
+            EXPORT1(max_index);
+            EXPORT1(minmax_index);
+
+            EXPORT1(abs_min_index);
+            EXPORT1(abs_max_index);
+            EXPORT1(abs_minmax_index);
+
             CEXPORT1(favx, logb1);
             CEXPORT1(favx, logb2);
             CEXPORT1(favx, loge1);

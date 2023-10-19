@@ -329,7 +329,7 @@ namespace lsp
         #undef IMINMAX2_CORE
         #undef SEL_NONE
         #undef SEL_ABS
-    }
-}
+    } /* namespace avx2 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX2_SEARCH_IMINMAX_H_ */
