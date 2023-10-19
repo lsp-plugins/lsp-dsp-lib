@@ -27,5 +27,6 @@
 #endif /* PRIVATE_DSP_ARCH_X86_SSE2_IMPL */
 
 #include <private/dsp/arch/x86/sse2/dynamics/compressor.h>
+#include <private/dsp/arch/x86/sse2/dynamics/gate.h>
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE2_DYNAMICS_H_ */
