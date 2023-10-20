@@ -60,7 +60,7 @@ namespace lsp
     IF_ARCH_ARM(
         namespace neon_d32
         {
-//            void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
         }
     )
 
@@ -131,7 +131,7 @@ PTEST_BEGIN("dsp.dynamics", gate_x1_curve, 5, 1000)
             IF_ARCH_X86_64(CALL(avx2::x64_gate_x1_curve));
             IF_ARCH_X86(CALL(avx2::gate_x1_curve_fma3));
             IF_ARCH_X86_64(CALL(avx2::x64_gate_x1_curve_fma3));
-//            IF_ARCH_ARM(CALL(neon_d32::gate_x1_curve));
+            IF_ARCH_ARM(CALL(neon_d32::gate_x1_curve));
 //            IF_ARCH_AARCH64(CALL(asimd::gate_x1_curve));
             PTEST_SEPARATOR;
         }
