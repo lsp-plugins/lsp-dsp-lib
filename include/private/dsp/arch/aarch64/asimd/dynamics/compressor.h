@@ -294,6 +294,11 @@ namespace lsp
             );
         }
 
+    #undef KNEE_LOAD
+    #undef PROCESS_KNEE_SINGLE_X4
+    #undef PROCESS_KNEE_SINGLE_X8
+    #undef PROCESS_COMP_FULL_X8
+    #undef PROCESS_COMP_FULL_X4
 
     } /* namespace asimd */
 } /* namespace lsp */
