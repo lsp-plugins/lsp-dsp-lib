@@ -56,7 +56,7 @@ namespace lsp
 
 UTEST_BEGIN("dsp.pcomplex", c2r)
 
-    void call(const char *label, size_t align, size_t sk, size_t dk, complex_cvt_t func1, complex_cvt_t func2)
+    void call(const char *label, size_t align, complex_cvt_t func1, complex_cvt_t func2)
     {
         if (!UTEST_SUPPORTED(func1))
             return;
@@ -70,8 +70,8 @@ UTEST_BEGIN("dsp.pcomplex", c2r)
             {
                 printf("Testing %s on input buffer of %d numbers, mask=0x%x...\n", label, int(count), int(mask));
 
-                FloatBuffer src(count*sk, align, mask & 0x01);
-                FloatBuffer dst1(count*dk, align, mask & 0x02);
+                FloatBuffer src(count*2, align, mask & 0x01);
+                FloatBuffer dst1(count, align, mask & 0x02);
                 FloatBuffer dst2(dst1);
 
                 // Call functions
@@ -97,7 +97,7 @@ UTEST_BEGIN("dsp.pcomplex", c2r)
     UTEST_MAIN
     {
         #define CALL(func, align) \
-            call(#func, align, 1, 2, generic::pcomplex_c2r, func)
+            call(#func, align, generic::pcomplex_c2r, func)
 
         IF_ARCH_X86(CALL(sse::pcomplex_c2r, 16));
 
