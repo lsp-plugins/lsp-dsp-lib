@@ -635,6 +635,7 @@ namespace lsp
 
             EXPORT1(compressor_x2_gain)
             EXPORT1(compressor_x2_curve)
+            EXPORT1(compressor_env)
             EXPORT1(gate_x1_gain)
             EXPORT1(gate_x1_curve)
         }

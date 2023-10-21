@@ -75,6 +75,21 @@ namespace lsp
                 dst[i]      = g1 * g2 * x;
             }
         }
+
+        void compressor_env(float *dst, const float *src, dsp::compressor_env_t *env, size_t count)
+        {
+            float e         = env->env;
+            for (size_t i=0; i<count; ++i)
+            {
+                float s         = src[i];
+                float d         = s - e;
+                float k         = ((e > env->rel_thresh) && (d < 0)) ? env->release : env->attack;
+                e              += k * d;
+                dst[i]          = e;
+            }
+            env->env        = e;
+        }
+
     } /* namespace generic */
 } /* namespace lsp */
 

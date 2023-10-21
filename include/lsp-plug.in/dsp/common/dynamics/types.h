@@ -61,6 +61,13 @@ typedef struct LSP_DSP_LIB_TYPE(compressor_x2_t)
     LSP_DSP_LIB_TYPE(compressor_knee_t)   k[2];
 } LSP_DSP_LIB_TYPE(compressor_x2_t);
 
+typedef struct LSP_DSP_LIB_TYPE(compressor_env_t)
+{
+    float       env;            // Current envelope value
+    float       rel_thresh;     // Release threshold
+    float       attack;         // Attack time coefficient
+    float       release;        // Release time coefficient
+} LSP_DSP_LIB_TYPE(compressor_env_t);
 
 /**
  * Gate knee is a curve that consists of three parts:

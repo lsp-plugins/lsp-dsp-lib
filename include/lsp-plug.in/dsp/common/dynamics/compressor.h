@@ -25,6 +25,8 @@
 #include <lsp-plug.in/dsp/common/types.h>
 #include <lsp-plug.in/dsp/common/dynamics/types.h>
 
+LSP_DSP_LIB_SYMBOL(void, compressor_env, float *dst, const float *src, LSP_DSP_LIB_TYPE(compressor_env_t) *env, size_t count);
+
 LSP_DSP_LIB_SYMBOL(void, compressor_x2_gain, float *dst, const float *src, const LSP_DSP_LIB_TYPE(compressor_x2_t) *c, size_t count);
 
 LSP_DSP_LIB_SYMBOL(void, compressor_x2_curve, float *dst, const float *src, const LSP_DSP_LIB_TYPE(compressor_x2_t) *c, size_t count);

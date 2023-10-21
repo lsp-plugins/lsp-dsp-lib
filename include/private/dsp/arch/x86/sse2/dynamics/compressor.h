@@ -366,6 +366,64 @@ namespace lsp
     #undef PROCESS_COMP_FULL_X8
     #undef UNPACK_COMP_KNEE
 
+        void compressor_env(float *dst, const float *src, dsp::compressor_env_t *env, size_t count)
+        {
+            IF_ARCH_X86( size_t off; );
+
+            /*
+            float d         = s - fEnvelope
+            float k         = ((fEnvelope > fReleaseThresh) && (d < 0)) ? fTauRelease : fTauAttack;
+            fEnvelope      += k * d;
+
+            if (fEnvelope > fReleaseThresh)
+                fEnvelope       += (d < 0) ? fTauRelease * d : fTauAttack * d;
+            else
+                fEnvelope       += fTauAttack * d;
+             */
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("test            %[count], %[count]")
+                __ASM_EMIT("jz              2f")
+
+                __ASM_EMIT("xor             %[off], %[off]")
+                __ASM_EMIT("movss           0x00(%[env]), %%xmm0")              /* xmm0 = env */
+                __ASM_EMIT("movss           0x08(%[env]), %%xmm6")              /* xmm6 = attack */
+                __ASM_EMIT("movss           0x0c(%[env]), %%xmm7")              /* xmm7 = release */
+
+                __ASM_EMIT("1:")
+                __ASM_EMIT("movss           0x00(%[src], %[off], 4), %%xmm1")   /* xmm1 = s */
+                __ASM_EMIT("movaps          %%xmm0, %%xmm3")                    /* xmm3 = env */
+                __ASM_EMIT("movaps          %%xmm1, %%xmm2")                    /* xmm2 = s */
+                __ASM_EMIT("subss           %%xmm0, %%xmm1")                    /* xmm1 = d = s - env */
+                __ASM_EMIT("cmpss           $6, 0x04(%[env]), %%xmm3")          /* xmm3 = [env > rel_thresh] */
+                __ASM_EMIT("movaps          %%xmm1, %%xmm4")                    /* xmm4 = d */
+                __ASM_EMIT("psrad           $31, %%xmm1")                       /* xmm1 = [d < 0] */
+                __ASM_EMIT("andps           %%xmm3, %%xmm1")                    /* xmm1 = C = [env > rel_thresh] && [d < 0] */
+                __ASM_EMIT("movaps          %%xmm1, %%xmm5")                    /* xmm5 = C */
+                __ASM_EMIT("andps           %%xmm7, %%xmm1")                    /* xmm1 = [C] & release */
+                __ASM_EMIT("andnps          %%xmm6, %%xmm5")                    /* xmm5 = [!C] & attack */
+                __ASM_EMIT("orps            %%xmm5, %%xmm1")                    /* xmm1 = k = [C] ? release : attack */
+                __ASM_EMIT("mulss           %%xmm4, %%xmm1")                    /* xmm1 = k*d */
+                __ASM_EMIT("addss           %%xmm1, %%xmm0")                    /* xmm0 = env' = env + k*d */
+                __ASM_EMIT("movss           %%xmm0, 0x00(%[dst], %[off], 4)")   /* dst[i] = env' */
+                __ASM_EMIT("add             $1, %[off]")                        /* ++off */
+                __ASM_EMIT("cmp             %[off], %[count]")
+                __ASM_EMIT("jnz             1b")
+
+                __ASM_EMIT("movss           %%xmm0, 0x00(%[env])")              /* env = xmm0 */
+
+                __ASM_EMIT("2:")
+
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [src] "r" (src),
+                  [env] "r" (env)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
     } /* namespace sse2 */
 } /* namespace lsp */
 
