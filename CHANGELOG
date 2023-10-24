@@ -3,7 +3,9 @@
 *******************************************************************************
 
 === 1.0.19 ===
-* AVX2-optimization of search functions for maximum and minimum.
+* AVX2 optimization of search functions for maximum and minimum.
+* Implemented SIMD-optimized gate functions.
+* AVX512 optimization of packed complex functions.
 
 === 1.0.18 ===
 * Fixed compilation regression for 32-bit Clang compiler.
