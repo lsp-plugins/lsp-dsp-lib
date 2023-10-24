@@ -41,6 +41,11 @@ namespace lsp
         {
             float sidechain_rms(float *dst, float *head, const float *tail, float rms, float k, size_t count);
         }
+
+        namespace avx
+        {
+            float sidechain_rms(float *dst, float *head, const float *tail, float rms, float k, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -121,6 +126,7 @@ PTEST_BEGIN("dsp.dynamics", sidechain_rms, 5, 1000)
             CALL(sidechain_rms_naive);
             CALL(generic::sidechain_rms);
             IF_ARCH_X86(CALL(sse::sidechain_rms));
+            IF_ARCH_X86(CALL(avx::sidechain_rms));
 //            IF_ARCH_ARM(CALL(neon_d32::sidechain_rms));
 //            IF_ARCH_AARCH64(CALL(asimd::sidechain_rms));
             PTEST_SEPARATOR;

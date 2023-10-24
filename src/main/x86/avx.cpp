@@ -65,6 +65,7 @@
         #include <private/dsp/arch/x86/avx/filters/dynamic.h>
         #include <private/dsp/arch/x86/avx/filters/transform.h>
         #include <private/dsp/arch/x86/avx/filters/transfer.h>
+        #include <private/dsp/arch/x86/avx/dynamics.h>
 
         #include <private/dsp/arch/x86/avx/msmatrix.h>
         #include <private/dsp/arch/x86/avx/resampling.h>
@@ -407,6 +408,8 @@
                 CEXPORT2(favx, normalize, normalize2);
                 CEXPORT1(favx, normalize1);
                 CEXPORT1(favx, normalize2);
+
+                EXPORT1(sidechain_rms);
 
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)
