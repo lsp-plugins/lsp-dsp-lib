@@ -26,6 +26,7 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_X86_AVX512_IMPL */
 
+#include <private/dsp/arch/x86/avx512/pmath/abs_vv.h>
 #include <private/dsp/arch/x86/avx512/pmath/sqr.h>
 #include <private/dsp/arch/x86/avx512/pmath/ssqrt.h>
 

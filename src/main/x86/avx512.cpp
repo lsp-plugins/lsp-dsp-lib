@@ -75,6 +75,22 @@
                 CEXPORT1(vl, copy);
                 CEXPORT1(vl, move);
 
+                CEXPORT1(vl, abs1);
+                CEXPORT1(vl, abs2);
+                CEXPORT1(vl, abs_add2);
+                CEXPORT1(vl, abs_sub2);
+                CEXPORT1(vl, abs_rsub2);
+                CEXPORT1(vl, abs_mul2);
+                CEXPORT1(vl, abs_div2);
+                CEXPORT1(vl, abs_rdiv2);
+
+                CEXPORT1(vl, abs_add3);
+                CEXPORT1(vl, abs_sub3);
+                CEXPORT1(vl, abs_rsub3);
+                CEXPORT1(vl, abs_mul3);
+                CEXPORT1(vl, abs_div3);
+                CEXPORT1(vl, abs_rdiv3);
+
                 CEXPORT1(vl, limit1);
                 CEXPORT1(vl, limit2);
                 CEXPORT1(vl, sanitize1);

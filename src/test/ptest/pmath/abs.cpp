@@ -42,6 +42,12 @@ namespace lsp
             void abs1(float *src, size_t count);
             void abs2(float *dst, const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            void abs1(float *src, size_t count);
+            void abs2(float *dst, const float *src, size_t count);
+        }
     )
 
     IF_ARCH_X86_64(
@@ -116,26 +122,32 @@ PTEST_BEGIN("dsp.pmath", abs, 5, 1000)
             dst[i]          = randf(-1.0f, 1.0f);
         dsp::copy(backup, dst, buf_size);
 
-        #define CALL(...) \
+        #define CALL1(func) \
             dsp::copy(dst, backup, buf_size); \
-            call(__VA_ARGS__);
+            call(#func, dst, count, func);
+
+        #define CALL2(func) \
+            dsp::copy(dst, backup, buf_size); \
+            call(#func, dst, src, count, func);
 
         for (size_t i=MIN_RANK; i <= MAX_RANK; ++i)
         {
             size_t count = 1 << i;
 
-            CALL("generic::abs1", dst, count, generic::abs1);
-            IF_ARCH_X86(CALL("sse::abs1", dst, count, sse::abs1));
-            IF_ARCH_X86_64(CALL("avx::x64_abs1", dst, count, avx::x64_abs1));
-            IF_ARCH_ARM(CALL("neon_d32::abs1", dst, count, neon_d32::abs1));
-            IF_ARCH_AARCH64(CALL("asimd::abs1", dst, count, asimd::abs1));
+            CALL1(generic::abs1);
+            IF_ARCH_X86(CALL1(sse::abs1));
+            IF_ARCH_X86_64(CALL1(avx::x64_abs1));
+            IF_ARCH_X86(CALL1(avx512::abs1));
+            IF_ARCH_ARM(CALL1(neon_d32::abs1));
+            IF_ARCH_AARCH64(CALL1(asimd::abs1));
             PTEST_SEPARATOR;
 
-            CALL("generic::abs2", dst, src, count, generic::abs2);
-            IF_ARCH_X86(CALL("sse::abs2", dst, src, count, sse::abs2));
-            IF_ARCH_X86_64(CALL("avx::x64_abs2", dst, src, count, avx::x64_abs2));
-            IF_ARCH_ARM(CALL("neon_d32::abs2", dst, src, count, neon_d32::abs2));
-            IF_ARCH_AARCH64(CALL("asimd::abs2", dst, src, count, asimd::abs2));
+            CALL2(generic::abs2);
+            IF_ARCH_X86(CALL2(sse::abs2));
+            IF_ARCH_X86_64(CALL2(avx::x64_abs2));
+            IF_ARCH_X86(CALL2(avx512::abs2));
+            IF_ARCH_ARM(CALL2(neon_d32::abs2));
+            IF_ARCH_AARCH64(CALL2(asimd::abs2));
             PTEST_SEPARATOR2;
         }
 
