@@ -105,6 +105,7 @@
                 CEXPORT1(vl, pcomplex_r2c_sub2);
                 CEXPORT1(vl, pcomplex_r2c_mul2);
                 CEXPORT1(vl, pcomplex_r2c_div2);
+                CEXPORT1(vl, pcomplex_c2r);
 
                 CEXPORT1(vl, lr_to_ms);
                 CEXPORT1(vl, lr_to_mid);
