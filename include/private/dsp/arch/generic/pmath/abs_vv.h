@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -33,87 +33,87 @@ namespace lsp
         void abs1(float *dst, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]      = fabs(dst[i]);
+                dst[i]      = fabsf(dst[i]);
         }
 
         void abs2(float *dst, const float *src, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]      = fabs(src[i]);
+                dst[i]      = fabsf(src[i]);
         }
 
         void abs_add2(float *dst, const float *src, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]     += fabs(src[i]);
+                dst[i]     += fabsf(src[i]);
         }
 
         void abs_sub2(float *dst, const float *src, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]     -= fabs(src[i]);
+                dst[i]     -= fabsf(src[i]);
         }
 
         void abs_rsub2(float *dst, const float *src, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]     = fabs(src[i]) - dst[i];
+                dst[i]     = fabsf(src[i]) - dst[i];
         }
 
         void abs_mul2(float *dst, const float *src, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]     *= fabs(src[i]);
+                dst[i]     *= fabsf(src[i]);
         }
 
         void abs_div2(float *dst, const float *src, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]     /= fabs(src[i]);
+                dst[i]     /= fabsf(src[i]);
         }
 
         void abs_rdiv2(float *dst, const float *src, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]      = fabs(src[i]) / dst[i];
+                dst[i]      = fabsf(src[i]) / dst[i];
         }
 
         void abs_add3(float *dst, const float *src1, const float *src2, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]      = src1[i] + fabs(src2[i]);
+                dst[i]      = src1[i] + fabsf(src2[i]);
         }
 
         void abs_sub3(float *dst, const float *src1, const float *src2, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]      = src1[i] - fabs(src2[i]);
+                dst[i]      = src1[i] - fabsf(src2[i]);
         }
 
         void abs_rsub3(float *dst, const float *src1, const float *src2, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]      = fabs(src2[i]) - src1[i];
+                dst[i]      = fabsf(src2[i]) - src1[i];
         }
 
         void abs_mul3(float *dst, const float *src1, const float *src2, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]      = src1[i] * fabs(src2[i]);
+                dst[i]      = src1[i] * fabsf(src2[i]);
         }
 
         void abs_div3(float *dst, const float *src1, const float *src2, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]      = src1[i] / fabs(src2[i]);
+                dst[i]      = src1[i] / fabsf(src2[i]);
         }
 
         void abs_rdiv3(float *dst, const float *src1, const float *src2, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]      = fabs(src2[i]) / src1[i];
+                dst[i]      = fabsf(src2[i]) / src1[i];
         }
-    }
-}
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_PMATH_ABS_VV_H_ */
