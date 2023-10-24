@@ -72,6 +72,8 @@
         #include <private/dsp/arch/x86/sse/filters/transform.h>
         #include <private/dsp/arch/x86/sse/filters/transfer.h>
 
+        #include <private/dsp/arch/x86/sse/dynamics.h>
+
         #include <private/dsp/arch/x86/sse/3dmath.h>
 
         #include <private/dsp/arch/x86/sse/interpolation/linear.h>
@@ -503,6 +505,8 @@
                 EXPORT2(normalize, normalize2);
                 EXPORT1(normalize1);
                 EXPORT1(normalize2);
+
+                EXPORT1(sidechain_rms);
             }
 
             #undef EXPORT1

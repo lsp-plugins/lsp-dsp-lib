@@ -3,7 +3,7 @@
  *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
- * Created on: 5 окт. 2023 г.
+ * Created on: 23 окт. 2023 г.
  *
  * lsp-dsp-lib is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,15 +19,13 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef LSP_PLUG_IN_DSP_COMMON_DYNAMICS_H_
-#define LSP_PLUG_IN_DSP_COMMON_DYNAMICS_H_
+#ifndef PRIVATE_DSP_ARCH_X86_SSE_DYNAMICS_H_
+#define PRIVATE_DSP_ARCH_X86_SSE_DYNAMICS_H_
 
-#include <lsp-plug.in/dsp/common/types.h>
+#ifndef PRIVATE_DSP_ARCH_X86_SSE_IMPL
+    #error "This header should not be included directly"
+#endif /* PRIVATE_DSP_ARCH_X86_SSE_IMPL */
 
-#include <lsp-plug.in/dsp/common/dynamics/types.h>
-#include <lsp-plug.in/dsp/common/dynamics/compressor.h>
-#include <lsp-plug.in/dsp/common/dynamics/gate.h>
-#include <lsp-plug.in/dsp/common/dynamics/sidechain.h>
+#include <private/dsp/arch/x86/sse/dynamics/sidechain.h>
 
-
-#endif /* LSP_PLUG_IN_DSP_COMMON_DYNAMICS_H_ */
+#endif /* PRIVATE_DSP_ARCH_X86_SSE_DYNAMICS_H_ */

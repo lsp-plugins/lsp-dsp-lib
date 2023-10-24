@@ -3,7 +3,7 @@
  *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
- * Created on: 5 окт. 2023 г.
+ * Created on: 23 окт. 2023 г.
  *
  * lsp-dsp-lib is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,15 +19,35 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PRIVATE_DSP_ARCH_GENERIC_DYNAMICS_H_
-#define PRIVATE_DSP_ARCH_GENERIC_DYNAMICS_H_
+#ifndef PRIVATE_DSP_ARCH_GENERIC_DYNAMICS_SIDECHAIN_H_
+#define PRIVATE_DSP_ARCH_GENERIC_DYNAMICS_SIDECHAIN_H_
 
 #ifndef PRIVATE_DSP_ARCH_GENERIC_IMPL
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_GENERIC_IMPL */
 
-#include <private/dsp/arch/generic/dynamics/compressor.h>
-#include <private/dsp/arch/generic/dynamics/gate.h>
-#include <private/dsp/arch/generic/dynamics/sidechain.h>
+namespace lsp
+{
+    namespace generic
+    {
 
-#endif /* PRIVATE_DSP_ARCH_GENERIC_DYNAMICS_H_ */
+        float sidechain_rms(float *dst, float *head, const float *tail, float rms, float k, size_t count)
+        {
+            dsp::copy(head, dst, count);
+
+            for (size_t i=0; i<count; ++i)
+            {
+                float s         = dst[i];
+                float t         = tail[i];
+                rms            += s*s - t*t;
+                dst[i]          = rms * k;      // ssqrt1 will fix the negative values
+            }
+
+            dsp::ssqrt1(dst, count);
+            return rms;
+        }
+
+    } /* namespace generic */
+} /* namespace lsp */
+
+#endif /* PRIVATE_DSP_ARCH_GENERIC_DYNAMICS_SIDECHAIN_H_ */
