@@ -67,6 +67,13 @@
 
             #define CEXPORT1(cond, export) CEXPORT2(cond, export, export)
 
+            #define X64_CEXPORT2(cond, function, export) \
+                IF_ARCH_X86_64(CEXPORT2(cond, function, export))
+
+            #define X64_CEXPORT1(cond, export) \
+                IF_ARCH_X86_64(CEXPORT1(cond, export))
+
+
             void dsp_init(const cpu_features_t *f)
             {
                 const bool vl = (f->features & (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL)) ==
@@ -90,6 +97,16 @@
                 CEXPORT1(vl, abs_mul3);
                 CEXPORT1(vl, abs_div3);
                 CEXPORT1(vl, abs_rdiv3);
+
+                CEXPORT1(vl, exp1);
+                CEXPORT1(vl, exp2);
+                X64_CEXPORT2(vl, exp1, x64_exp1);
+                X64_CEXPORT2(vl, exp2, x64_exp2);
+
+                CEXPORT1(vl, sqr1);
+                CEXPORT1(vl, sqr2);
+                CEXPORT1(vl, ssqrt1);
+                CEXPORT1(vl, ssqrt2);
 
                 CEXPORT1(vl, limit1);
                 CEXPORT1(vl, limit2);
@@ -129,11 +146,6 @@
                 CEXPORT1(vl, ms_to_lr);
                 CEXPORT1(vl, ms_to_left);
                 CEXPORT1(vl, ms_to_right);
-
-                CEXPORT1(vl, sqr1);
-                CEXPORT1(vl, sqr2);
-                CEXPORT1(vl, ssqrt1);
-                CEXPORT1(vl, ssqrt2);
 
                 CEXPORT1(vl, axis_apply_lin1);
             }
