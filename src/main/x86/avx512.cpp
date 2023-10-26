@@ -121,6 +121,24 @@
                 CEXPORT1(vl, fmmod_k4);
                 CEXPORT1(vl, fmrmod_k4);
 
+                CEXPORT1(vl, fmadd3);
+                CEXPORT1(vl, fmsub3);
+                CEXPORT1(vl, fmrsub3);
+                CEXPORT1(vl, fmmul3);
+                CEXPORT1(vl, fmdiv3);
+                CEXPORT1(vl, fmrdiv3);
+                CEXPORT1(vl, fmmod3);
+                CEXPORT1(vl, fmrmod3);
+
+                CEXPORT1(vl, fmadd4);
+                CEXPORT1(vl, fmsub4);
+                CEXPORT1(vl, fmrsub4);
+                CEXPORT1(vl, fmmul4);
+                CEXPORT1(vl, fmdiv4);
+                CEXPORT1(vl, fmrdiv4);
+                CEXPORT1(vl, fmmod4);
+                CEXPORT1(vl, fmrmod4);
+
                 CEXPORT1(vl, sqr1);
                 CEXPORT1(vl, sqr2);
                 CEXPORT1(vl, ssqrt1);

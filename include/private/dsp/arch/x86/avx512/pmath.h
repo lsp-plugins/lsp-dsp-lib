@@ -29,6 +29,7 @@
 #include <private/dsp/arch/x86/avx512/pmath/abs_vv.h>
 #include <private/dsp/arch/x86/avx512/pmath/exp.h>
 #include <private/dsp/arch/x86/avx512/pmath/fmop_kx.h>
+#include <private/dsp/arch/x86/avx512/pmath/fmop_vv.h>
 #include <private/dsp/arch/x86/avx512/pmath/sqr.h>
 #include <private/dsp/arch/x86/avx512/pmath/ssqrt.h>
 

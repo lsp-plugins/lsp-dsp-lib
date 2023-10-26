@@ -76,6 +76,18 @@ namespace lsp
             void    fmmod4_fma3(float *dst, const float *a, const float *b, const float *c, size_t count);
             void    fmrmod4_fma3(float *dst, const float *a, const float *b, const float *c, size_t count);
         }
+
+        namespace avx512
+        {
+            void    fmadd4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmsub4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmrsub4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmmul4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmdiv4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmrdiv4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmmod4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmrmod4(float *dst, const float *a, const float *b, const float *c, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -148,6 +160,7 @@ PTEST_BEGIN("dsp.pmath", fmop4, 5, 1000)
             IF_ARCH_X86(CALL(sse::fmadd4));
             IF_ARCH_X86(CALL(avx::fmadd4));
             IF_ARCH_X86(CALL(avx::fmadd4_fma3));
+            IF_ARCH_X86(CALL(avx512::fmadd4));
             IF_ARCH_ARM(CALL(neon_d32::fmadd4));
             IF_ARCH_AARCH64(CALL(asimd::fmadd4));
             PTEST_SEPARATOR;
@@ -156,6 +169,7 @@ PTEST_BEGIN("dsp.pmath", fmop4, 5, 1000)
             IF_ARCH_X86(CALL(sse::fmsub4));
             IF_ARCH_X86(CALL(avx::fmsub4));
             IF_ARCH_X86(CALL(avx::fmsub4_fma3));
+            IF_ARCH_X86(CALL(avx512::fmsub4));
             IF_ARCH_ARM(CALL(neon_d32::fmsub4));
             IF_ARCH_AARCH64(CALL(asimd::fmsub4));
             PTEST_SEPARATOR;
@@ -164,6 +178,7 @@ PTEST_BEGIN("dsp.pmath", fmop4, 5, 1000)
             IF_ARCH_X86(CALL(sse::fmrsub4));
             IF_ARCH_X86(CALL(avx::fmrsub4));
             IF_ARCH_X86(CALL(avx::fmrsub4_fma3));
+            IF_ARCH_X86(CALL(avx512::fmrsub4));
             IF_ARCH_ARM(CALL(neon_d32::fmrsub4));
             IF_ARCH_AARCH64(CALL(asimd::fmrsub4));
             PTEST_SEPARATOR;
@@ -171,6 +186,7 @@ PTEST_BEGIN("dsp.pmath", fmop4, 5, 1000)
             CALL(generic::fmmul4);
             IF_ARCH_X86(CALL(sse::fmmul4));
             IF_ARCH_X86(CALL(avx::fmmul4));
+            IF_ARCH_X86(CALL(avx512::fmmul4));
             IF_ARCH_ARM(CALL(neon_d32::fmmul4));
             IF_ARCH_AARCH64(CALL(asimd::fmmul4));
             PTEST_SEPARATOR;
@@ -178,6 +194,7 @@ PTEST_BEGIN("dsp.pmath", fmop4, 5, 1000)
             CALL(generic::fmdiv4);
             IF_ARCH_X86(CALL(sse::fmdiv4));
             IF_ARCH_X86(CALL(avx::fmdiv4));
+            IF_ARCH_X86(CALL(avx512::fmdiv4));
             IF_ARCH_ARM(CALL(neon_d32::fmdiv4));
             IF_ARCH_AARCH64(CALL(asimd::fmdiv4));
             PTEST_SEPARATOR;
@@ -185,6 +202,7 @@ PTEST_BEGIN("dsp.pmath", fmop4, 5, 1000)
             CALL(generic::fmrdiv4);
             IF_ARCH_X86(CALL(sse::fmrdiv4));
             IF_ARCH_X86(CALL(avx::fmrdiv4));
+            IF_ARCH_X86(CALL(avx512::fmrdiv4));
             IF_ARCH_ARM(CALL(neon_d32::fmrdiv4));
             IF_ARCH_AARCH64(CALL(asimd::fmrdiv4));
             PTEST_SEPARATOR;
@@ -193,6 +211,7 @@ PTEST_BEGIN("dsp.pmath", fmop4, 5, 1000)
             IF_ARCH_X86(CALL(sse2::fmmod4));
             IF_ARCH_X86(CALL(avx::fmmod4));
             IF_ARCH_X86(CALL(avx::fmmod4_fma3));
+            IF_ARCH_X86(CALL(avx512::fmmod4));
             IF_ARCH_ARM(CALL(neon_d32::fmmod4));
             IF_ARCH_AARCH64(CALL(asimd::fmmod4));
             PTEST_SEPARATOR;
@@ -201,6 +220,7 @@ PTEST_BEGIN("dsp.pmath", fmop4, 5, 1000)
             IF_ARCH_X86(CALL(sse2::fmrmod4));
             IF_ARCH_X86(CALL(avx::fmrmod4));
             IF_ARCH_X86(CALL(avx::fmrmod4_fma3));
+            IF_ARCH_X86(CALL(avx512::fmrmod4));
             IF_ARCH_ARM(CALL(neon_d32::fmrmod4));
             IF_ARCH_AARCH64(CALL(asimd::fmrmod4));
             PTEST_SEPARATOR2;
