@@ -92,6 +92,18 @@ namespace lsp
             void    fmmod_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
             void    fmrmod_k4_fma3(float *dst, const float *src1, const float *src2, float k, size_t count);
         }
+
+        namespace avx512
+        {
+            void    fmadd_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrsub_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmul_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrdiv_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+            void    fmrmod_k4(float *dst, const float *src1, const float *src2, float k, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -212,6 +224,15 @@ UTEST_BEGIN("dsp.pmath", fmop_k4)
         IF_ARCH_X86(CALL(generic::fmrsub_k4, avx2::fmrsub_k4_fma3, 32));
         IF_ARCH_X86(CALL(generic::fmmod_k4, avx2::fmmod_k4_fma3, 32));
         IF_ARCH_X86(CALL(generic::fmrmod_k4, avx2::fmrmod_k4_fma3, 32));
+
+        IF_ARCH_X86(CALL(generic::fmadd_k4, avx512::fmadd_k4, 64));
+        IF_ARCH_X86(CALL(generic::fmsub_k4, avx512::fmsub_k4, 64));
+        IF_ARCH_X86(CALL(generic::fmrsub_k4, avx512::fmrsub_k4, 64));
+        IF_ARCH_X86(CALL(generic::fmmul_k4, avx512::fmmul_k4, 64));
+        IF_ARCH_X86(CALL(generic::fmdiv_k4, avx512::fmdiv_k4, 64));
+        IF_ARCH_X86(CALL(generic::fmrdiv_k4, avx512::fmrdiv_k4, 64));
+        IF_ARCH_X86(CALL(generic::fmmod_k4, avx512::fmmod_k4, 64));
+        IF_ARCH_X86(CALL(generic::fmrmod_k4, avx512::fmrmod_k4, 64));
 
         IF_ARCH_ARM(CALL(generic::fmadd_k4, neon_d32::fmadd_k4, 16));
         IF_ARCH_ARM(CALL(generic::fmsub_k4, neon_d32::fmsub_k4, 16));

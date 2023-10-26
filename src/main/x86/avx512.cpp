@@ -103,6 +103,24 @@
                 X64_CEXPORT2(vl, exp1, x64_exp1);
                 X64_CEXPORT2(vl, exp2, x64_exp2);
 
+                CEXPORT1(vl, fmadd_k3);
+                CEXPORT1(vl, fmsub_k3);
+                CEXPORT1(vl, fmrsub_k3);
+                CEXPORT1(vl, fmmul_k3);
+                CEXPORT1(vl, fmdiv_k3);
+                CEXPORT1(vl, fmrdiv_k3);
+                CEXPORT1(vl, fmmod_k3);
+                CEXPORT1(vl, fmrmod_k3);
+
+                CEXPORT1(vl, fmadd_k4);
+                CEXPORT1(vl, fmsub_k4);
+                CEXPORT1(vl, fmrsub_k4);
+                CEXPORT1(vl, fmmul_k4);
+                CEXPORT1(vl, fmdiv_k4);
+                CEXPORT1(vl, fmrdiv_k4);
+                CEXPORT1(vl, fmmod_k4);
+                CEXPORT1(vl, fmrmod_k4);
+
                 CEXPORT1(vl, sqr1);
                 CEXPORT1(vl, sqr2);
                 CEXPORT1(vl, ssqrt1);
