@@ -32,7 +32,7 @@ namespace lsp
     {
 
         IF_ARCH_X86(
-            static const uint32_t normalize_const[] __lsp_aligned16 =
+            static const uint32_t normalize_const[] __lsp_aligned32 =
             {
                 LSP_DSP_VEC8(0x7fffffff),
                 LSP_DSP_VEC8(0x3f800000)    /* 1.0f */
