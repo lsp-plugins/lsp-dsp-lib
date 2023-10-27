@@ -67,7 +67,7 @@
 
             #define CEXPORT1(cond, export) CEXPORT2(cond, export, export)
 
-            #define X64_CEXPORT2(cond, function, export) \
+            #define CEXPORT2_X64(cond, function, export) \
                 IF_ARCH_X86_64(CEXPORT2(cond, function, export))
 
             #define X64_CEXPORT1(cond, export) \
@@ -100,8 +100,8 @@
 
                 CEXPORT1(vl, exp1);
                 CEXPORT1(vl, exp2);
-                X64_CEXPORT2(vl, exp1, x64_exp1);
-                X64_CEXPORT2(vl, exp2, x64_exp2);
+                CEXPORT2_X64(vl, exp1, x64_exp1);
+                CEXPORT2_X64(vl, exp2, x64_exp2);
 
                 CEXPORT1(vl, fmadd_k3);
                 CEXPORT1(vl, fmsub_k3);
@@ -138,6 +138,20 @@
                 CEXPORT1(vl, fmrdiv4);
                 CEXPORT1(vl, fmmod4);
                 CEXPORT1(vl, fmrmod4);
+
+                CEXPORT2(vl, logb1, logb1);
+                CEXPORT2(vl, logb2, logb2);
+                CEXPORT2(vl, loge1, loge1);
+                CEXPORT2(vl, loge2, loge2);
+                CEXPORT2(vl, logd1, logd1);
+                CEXPORT2(vl, logd2, logd2);
+
+                CEXPORT2_X64(vl, logb1, x64_logb1);
+                CEXPORT2_X64(vl, logb2, x64_logb2);
+                CEXPORT2_X64(vl, loge1, x64_loge1);
+                CEXPORT2_X64(vl, loge2, x64_loge2);
+                CEXPORT2_X64(vl, logd1, x64_logd1);
+                CEXPORT2_X64(vl, logd2, x64_logd2);
 
                 CEXPORT1(vl, lramp_set1);
                 CEXPORT1(vl, lramp1);
