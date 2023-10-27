@@ -182,6 +182,10 @@
                 CEXPORT1(vl, pamin3);
                 CEXPORT1(vl, pamax3);
 
+                CEXPORT2(vl, normalize, normalize2);
+                CEXPORT1(vl, normalize1);
+                CEXPORT1(vl, normalize2);
+
                 CEXPORT1(vl, sqr1);
                 CEXPORT1(vl, sqr2);
                 CEXPORT1(vl, ssqrt1);
