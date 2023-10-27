@@ -186,6 +186,24 @@
                 CEXPORT1(vl, normalize1);
                 CEXPORT1(vl, normalize2);
 
+                CEXPORT1(vl, add_k2);
+                CEXPORT1(vl, sub_k2);
+                CEXPORT1(vl, rsub_k2);
+                CEXPORT1(vl, mul_k2);
+                CEXPORT1(vl, div_k2);
+                CEXPORT1(vl, rdiv_k2);
+                CEXPORT1(vl, mod_k2);
+                CEXPORT1(vl, rmod_k2);
+
+                CEXPORT1(vl, add_k3);
+                CEXPORT1(vl, sub_k3);
+                CEXPORT1(vl, rsub_k3);
+                CEXPORT1(vl, mul_k3);
+                CEXPORT1(vl, div_k3);
+                CEXPORT1(vl, rdiv_k3);
+                CEXPORT1(vl, mod_k3);
+                CEXPORT1(vl, rmod_k3);
+
                 CEXPORT1(vl, sqr1);
                 CEXPORT1(vl, sqr2);
                 CEXPORT1(vl, ssqrt1);
