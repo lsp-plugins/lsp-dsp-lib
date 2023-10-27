@@ -169,6 +169,21 @@
                 CEXPORT1(vl, lramp_div3);
                 CEXPORT1(vl, lramp_rdiv3);
 
+                CEXPORT1(vl, add2);
+                CEXPORT1(vl, sub2);
+                CEXPORT1(vl, rsub2);
+                CEXPORT1(vl, mul2);
+                CEXPORT1(vl, div2);
+                CEXPORT1(vl, rdiv2);
+                CEXPORT1(vl, mod2);
+                CEXPORT1(vl, rmod2);
+
+                CEXPORT1(vl, add3);
+                CEXPORT1(vl, sub3);
+                CEXPORT1(vl, mul3);
+                CEXPORT1(vl, div3);
+                CEXPORT1(vl, mod3);
+
                 CEXPORT1(vl, pmin2);
                 CEXPORT1(vl, pmax2);
                 CEXPORT1(vl, psmin2);
