@@ -41,6 +41,11 @@ namespace lsp
             void logd1(float *dst, size_t count);
             void logd1_fma3(float *dst, size_t count);
         }
+
+        namespace avx512
+        {
+            void logd1(float *dst, size_t count);
+        }
     )
 
     IF_ARCH_X86_64(
@@ -48,6 +53,11 @@ namespace lsp
         {
             void x64_logd1(float *dst, size_t count);
             void x64_logd1_fma3(float *dst, size_t count);
+        }
+
+        namespace avx512
+        {
+            void x64_logd1(float *dst, size_t count);
         }
     )
 
@@ -121,6 +131,9 @@ UTEST_BEGIN("dsp.pmath", logd1)
         IF_ARCH_X86_64(CALL(generic::logd1, avx2::x64_logd1, 32));
         IF_ARCH_X86(CALL(generic::logd1, avx2::logd1_fma3, 32));
         IF_ARCH_X86_64(CALL(generic::logd1, avx2::x64_logd1_fma3, 32));
+        IF_ARCH_X86(CALL(generic::logd1, avx512::logd1, 64));
+        IF_ARCH_X86_64(CALL(generic::logd1, avx512::x64_logd1, 64));
+
         IF_ARCH_ARM(CALL(generic::logd1, neon_d32::logd1, 16));
         IF_ARCH_AARCH64(CALL(generic::logd1, asimd::logd1, 16));
     }

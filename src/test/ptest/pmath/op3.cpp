@@ -62,6 +62,15 @@ namespace lsp
             void    mod3(float *dst, const float *src1, const float *src2, size_t count);
             void    mod3_fma3(float *dst, const float *src1, const float *src2, size_t count);
         }
+
+        namespace avx512
+        {
+            void    add3(float *dst, const float *src1, const float *src2, size_t count);
+            void    sub3(float *dst, const float *src1, const float *src2, size_t count);
+            void    mul3(float *dst, const float *src1, const float *src2, size_t count);
+            void    div3(float *dst, const float *src1, const float *src2, size_t count);
+            void    mod3(float *dst, const float *src1, const float *src2, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -127,6 +136,7 @@ PTEST_BEGIN("dsp.pmath", op3, 5, 1000)
             CALL(generic::add3);
             IF_ARCH_X86(CALL(sse::add3));
             IF_ARCH_X86(CALL(avx::add3));
+            IF_ARCH_X86(CALL(avx512::add3));
             IF_ARCH_ARM(CALL(neon_d32::add3));
             IF_ARCH_AARCH64(CALL(asimd::add3));
             PTEST_SEPARATOR;
@@ -134,6 +144,7 @@ PTEST_BEGIN("dsp.pmath", op3, 5, 1000)
             CALL(generic::sub3);
             IF_ARCH_X86(CALL(sse::sub3));
             IF_ARCH_X86(CALL(avx::sub3));
+            IF_ARCH_X86(CALL(avx512::sub3));
             IF_ARCH_ARM(CALL(neon_d32::sub3));
             IF_ARCH_AARCH64(CALL(asimd::sub3));
             PTEST_SEPARATOR;
@@ -141,6 +152,7 @@ PTEST_BEGIN("dsp.pmath", op3, 5, 1000)
             CALL(generic::mul3);
             IF_ARCH_X86(CALL(sse::mul3));
             IF_ARCH_X86(CALL(avx::mul3));
+            IF_ARCH_X86(CALL(avx512::mul3));
             IF_ARCH_ARM(CALL(neon_d32::mul3));
             IF_ARCH_AARCH64(CALL(asimd::mul3));
             PTEST_SEPARATOR;
@@ -148,6 +160,7 @@ PTEST_BEGIN("dsp.pmath", op3, 5, 1000)
             CALL(generic::div3);
             IF_ARCH_X86(CALL(sse::div3));
             IF_ARCH_X86(CALL(avx::div3));
+            IF_ARCH_X86(CALL(avx512::div3));
             IF_ARCH_ARM(CALL(neon_d32::div3));
             IF_ARCH_AARCH64(CALL(asimd::div3));
             PTEST_SEPARATOR;
@@ -156,6 +169,7 @@ PTEST_BEGIN("dsp.pmath", op3, 5, 1000)
             IF_ARCH_X86(CALL(sse2::mod3));
             IF_ARCH_X86(CALL(avx::mod3));
             IF_ARCH_X86(CALL(avx::mod3_fma3));
+            IF_ARCH_X86(CALL(avx512::mod3));
             IF_ARCH_ARM(CALL(neon_d32::mod3));
             IF_ARCH_AARCH64(CALL(asimd::mod3));
             PTEST_SEPARATOR2;

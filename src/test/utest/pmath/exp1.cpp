@@ -42,6 +42,11 @@ namespace lsp
             void exp1(float *dst, size_t count);
             void exp1_fma3(float *dst, size_t count);
         }
+
+        namespace avx512
+        {
+            void exp1(float *dst, size_t count);
+        }
     )
 
     IF_ARCH_X86_64(
@@ -49,6 +54,11 @@ namespace lsp
         {
             void x64_exp1(float *dst, size_t count);
             void x64_exp1_fma3(float *dst, size_t count);
+        }
+
+        namespace avx512
+        {
+            void x64_exp1(float *dst, size_t count);
         }
     )
 
@@ -131,6 +141,8 @@ UTEST_BEGIN("dsp.pmath", exp1)
         IF_ARCH_X86_64(CALL(avx2::x64_exp1, 32));
         IF_ARCH_X86(CALL(avx2::exp1_fma3, 32));
         IF_ARCH_X86_64(CALL(avx2::x64_exp1_fma3, 32));
+        IF_ARCH_X86(CALL(avx512::exp1, 64));
+        IF_ARCH_X86_64(CALL(avx512::x64_exp1, 64));
 
         IF_ARCH_ARM(CALL(neon_d32::exp1, 16));
 

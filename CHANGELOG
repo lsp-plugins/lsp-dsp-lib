@@ -7,6 +7,7 @@
 * Implemented SIMD-optimized gate functions.
 * Fixed bun in AVX-512 implementation of mid/side conversion functions.
 * AVX512 optimization of packed complex functions.
+* Additional optimizations of parallel mathematics functions with AVX-512 instruction set.
 
 === 1.0.18 ===
 * Fixed compilation regression for 32-bit Clang compiler.

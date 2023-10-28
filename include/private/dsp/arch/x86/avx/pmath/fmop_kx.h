@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -30,7 +30,7 @@ namespace lsp
 {
     namespace avx
     {
-    #define OP_DSEL(a, b)   a
+        #define OP_DSEL(a, b)   a
         #define OP_RSEL(a, b)   b
 
         #define FMADDSUB_K3_CORE(DST, SRC1, SRC2, OP) \
@@ -659,7 +659,7 @@ namespace lsp
 
         #undef OP_DSEL
         #undef OP_RSEL
-    }
-}
+    } /* namespace avx */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX_PMATH_FMOP_KX_H_ */

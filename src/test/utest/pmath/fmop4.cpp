@@ -74,6 +74,18 @@ namespace lsp
             void    fmmod4_fma3(float *dst, const float *a, const float *b, const float *c, size_t count);
             void    fmrmod4_fma3(float *dst, const float *a, const float *b, const float *c, size_t count);
         }
+
+        namespace avx512
+        {
+            void    fmadd4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmsub4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmrsub4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmmul4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmdiv4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmrdiv4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmmod4(float *dst, const float *a, const float *b, const float *c, size_t count);
+            void    fmrmod4(float *dst, const float *a, const float *b, const float *c, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -182,6 +194,15 @@ UTEST_BEGIN("dsp.pmath", fmop4)
         IF_ARCH_X86(CALL(generic::fmrsub4, avx::fmrsub4_fma3, 32));
         IF_ARCH_X86(CALL(generic::fmmod4, avx::fmmod4_fma3, 32));
         IF_ARCH_X86(CALL(generic::fmrmod4, avx::fmrmod4_fma3, 32));
+
+        IF_ARCH_X86(CALL(generic::fmadd4, avx512::fmadd4, 64));
+        IF_ARCH_X86(CALL(generic::fmsub4, avx512::fmsub4, 64));
+        IF_ARCH_X86(CALL(generic::fmrsub4, avx512::fmrsub4, 64));
+        IF_ARCH_X86(CALL(generic::fmmul4, avx512::fmmul4, 64));
+        IF_ARCH_X86(CALL(generic::fmdiv4, avx512::fmdiv4, 64));
+        IF_ARCH_X86(CALL(generic::fmrdiv4, avx512::fmrdiv4, 64));
+        IF_ARCH_X86(CALL(generic::fmmod4, avx512::fmmod4, 64));
+        IF_ARCH_X86(CALL(generic::fmrmod4, avx512::fmrmod4, 64));
 
         IF_ARCH_ARM(CALL(generic::fmadd4, neon_d32::fmadd4, 16));
         IF_ARCH_ARM(CALL(generic::fmsub4, neon_d32::fmsub4, 16));

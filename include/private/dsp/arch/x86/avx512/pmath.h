@@ -26,6 +26,16 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_X86_AVX512_IMPL */
 
+#include <private/dsp/arch/x86/avx512/pmath/abs_vv.h>
+#include <private/dsp/arch/x86/avx512/pmath/exp.h>
+#include <private/dsp/arch/x86/avx512/pmath/fmop_kx.h>
+#include <private/dsp/arch/x86/avx512/pmath/fmop_vv.h>
+#include <private/dsp/arch/x86/avx512/pmath/log.h>
+#include <private/dsp/arch/x86/avx512/pmath/lramp.h>
+#include <private/dsp/arch/x86/avx512/pmath/minmax.h>
+#include <private/dsp/arch/x86/avx512/pmath/normalize.h>
+#include <private/dsp/arch/x86/avx512/pmath/op_kx.h>
+#include <private/dsp/arch/x86/avx512/pmath/op_vv.h>
 #include <private/dsp/arch/x86/avx512/pmath/sqr.h>
 #include <private/dsp/arch/x86/avx512/pmath/ssqrt.h>
 

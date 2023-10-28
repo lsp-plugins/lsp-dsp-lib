@@ -55,6 +55,16 @@ namespace lsp
             void pamin3(float *dst, const float *a, const float *b, size_t count);
             void pamax3(float *dst, const float *a, const float *b, size_t count);
         }
+
+        namespace avx512
+        {
+            void pmin3(float *dst, const float *a, const float *b, size_t count);
+            void pmax3(float *dst, const float *a, const float *b, size_t count);
+            void psmin3(float *dst, const float *a, const float *b, size_t count);
+            void psmax3(float *dst, const float *a, const float *b, size_t count);
+            void pamin3(float *dst, const float *a, const float *b, size_t count);
+            void pamax3(float *dst, const float *a, const float *b, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -148,6 +158,13 @@ UTEST_BEGIN("dsp.pmath", minmax3)
         IF_ARCH_X86(CALL(generic::psmax3, avx::psmax3, 32));
         IF_ARCH_X86(CALL(generic::pamin3, avx::pamin3, 32));
         IF_ARCH_X86(CALL(generic::pamax3, avx::pamax3, 32));
+
+        IF_ARCH_X86(CALL(generic::pmin3, avx512::pmin3, 64));
+        IF_ARCH_X86(CALL(generic::pmax3, avx512::pmax3, 64));
+        IF_ARCH_X86(CALL(generic::psmin3, avx512::psmin3, 64));
+        IF_ARCH_X86(CALL(generic::psmax3, avx512::psmax3, 64));
+        IF_ARCH_X86(CALL(generic::pamin3, avx512::pamin3, 64));
+        IF_ARCH_X86(CALL(generic::pamax3, avx512::pamax3, 64));
 
         IF_ARCH_ARM(CALL(generic::pmin3, neon_d32::pmin3, 16));
         IF_ARCH_ARM(CALL(generic::pmax3, neon_d32::pmax3, 16));
