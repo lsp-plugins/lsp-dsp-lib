@@ -5,6 +5,7 @@
 === 1.0.19 ===
 * AVX2 optimization of search functions for maximum and minimum.
 * Implemented SIMD-optimized gate functions.
+* Fixed bun in AVX-512 implementation of mid/side conversion functions.
 * AVX512 optimization of packed complex functions.
 
 === 1.0.18 ===

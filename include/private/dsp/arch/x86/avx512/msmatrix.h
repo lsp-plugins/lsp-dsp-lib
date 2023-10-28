@@ -138,102 +138,102 @@ namespace lsp
             );
         }
 
-        #define LR_TO_PART(P, L, R, OP) \
-                __ASM_EMIT("xor             %[off], %[off]") \
-                __ASM_EMIT("vmovaps         %[X_HALF], %%zmm7") \
-                /*  64x blocks */ \
-                __ASM_EMIT("sub             $64, %[count]") \
-                __ASM_EMIT("vmovaps         %%zmm7, %%zmm6") \
-                __ASM_EMIT("jb              2f") \
-                __ASM_EMIT("1:") \
-                __ASM_EMIT("vmovups         0x00(%[" L "], %[off]), %%ymm0")                /*  ymm0 = l */ \
-                __ASM_EMIT("vmovups         0x40(%[" L "], %[off]), %%ymm1") \
-                __ASM_EMIT("vmovups         0x80(%[" L "], %[off]), %%ymm2") \
-                __ASM_EMIT("vmovups         0xc0(%[" L "], %[off]), %%ymm3") \
-                __ASM_EMIT(OP "ps           0x00(%[" R "], %[off]), %%ymm0, %%ymm0")        /*  ymm0 = l op r */ \
-                __ASM_EMIT(OP "ps           0x40(%[" R "], %[off]), %%ymm1, %%ymm1") \
-                __ASM_EMIT(OP "ps           0x80(%[" R "], %[off]), %%ymm2, %%ymm2") \
-                __ASM_EMIT(OP "ps           0xc0(%[" R "], %[off]), %%ymm3, %%ymm3") \
-                __ASM_EMIT("vmulps          %%ymm6, %%ymm0, %%ymm0")                        /*  ymm0 = (l op r) * 0.5 */ \
-                __ASM_EMIT("vmulps          %%ymm7, %%ymm1, %%ymm1") \
-                __ASM_EMIT("vmulps          %%ymm6, %%ymm2, %%ymm2") \
-                __ASM_EMIT("vmulps          %%ymm7, %%ymm3, %%ymm3") \
-                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[" P "], %[off])") \
-                __ASM_EMIT("vmovups         %%ymm1, 0x40(%[" P "], %[off])") \
-                __ASM_EMIT("vmovups         %%ymm2, 0x80(%[" P "], %[off])") \
-                __ASM_EMIT("vmovups         %%ymm3, 0xc0(%[" P "], %[off])") \
-                __ASM_EMIT("add             $0x100, %[off]") \
-                __ASM_EMIT("sub             $64, %[count]") \
-                __ASM_EMIT("jae             1b") \
-                __ASM_EMIT("2:") \
-                /*  32x block */ \
-                __ASM_EMIT("add             $32, %[count]") \
-                __ASM_EMIT("jl              4f") \
-                __ASM_EMIT("vmovups         0x00(%[" L "], %[off]), %%ymm0")                /*  ymm0 = l */ \
-                __ASM_EMIT("vmovups         0x20(%[" L "], %[off]), %%ymm1") \
-                __ASM_EMIT("vmovups         0x40(%[" L "], %[off]), %%ymm2") \
-                __ASM_EMIT("vmovups         0x60(%[" L "], %[off]), %%ymm3") \
-                __ASM_EMIT(OP "ps           0x00(%[" R "], %[off]), %%ymm0, %%ymm0")        /*  ymm0 = l op r */ \
-                __ASM_EMIT(OP "ps           0x20(%[" R "], %[off]), %%ymm1, %%ymm1") \
-                __ASM_EMIT(OP "ps           0x40(%[" R "], %[off]), %%ymm2, %%ymm2") \
-                __ASM_EMIT(OP "ps           0x60(%[" R "], %[off]), %%ymm3, %%ymm3") \
-                __ASM_EMIT("vmulps          %%ymm6, %%ymm0, %%ymm0")                        /*  ymm0 = (l op r) * 0.5 */ \
-                __ASM_EMIT("vmulps          %%ymm7, %%ymm1, %%ymm1") \
-                __ASM_EMIT("vmulps          %%ymm6, %%ymm2, %%ymm2") \
-                __ASM_EMIT("vmulps          %%ymm7, %%ymm3, %%ymm3") \
-                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[" P "], %[off])") \
-                __ASM_EMIT("vmovups         %%ymm1, 0x20(%[" P "], %[off])") \
-                __ASM_EMIT("vmovups         %%ymm2, 0x40(%[" P "], %[off])") \
-                __ASM_EMIT("vmovups         %%ymm3, 0x60(%[" P "], %[off])") \
-                __ASM_EMIT("sub             $32, %[count]") \
-                __ASM_EMIT("add             $0x80, %[off]") \
-                __ASM_EMIT("4:") \
-                /*  16x block */ \
-                __ASM_EMIT("add             $16, %[count]") \
-                __ASM_EMIT("jl              6f") \
-                __ASM_EMIT("vmovups         0x00(%[" L "], %[off]), %%ymm0")                /*  ymm0 = l */ \
-                __ASM_EMIT("vmovups         0x20(%[" L "], %[off]), %%ymm1") \
-                __ASM_EMIT(OP "ps           0x00(%[" R "], %[off]), %%ymm0, %%ymm0")        /*  ymm0 = l op r */ \
-                __ASM_EMIT(OP "ps           0x20(%[" R "], %[off]), %%ymm1, %%ymm1") \
-                __ASM_EMIT("vmulps          %%ymm6, %%ymm0, %%ymm0")                        /*  ymm0 = (l op r) * 0.5 */ \
-                __ASM_EMIT("vmulps          %%ymm7, %%ymm1, %%ymm1") \
-                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[" P "], %[off])") \
-                __ASM_EMIT("vmovups         %%ymm1, 0x20(%[" P "], %[off])") \
-                __ASM_EMIT("sub             $16, %[count]") \
-                __ASM_EMIT("add             $0x40, %[off]") \
-                __ASM_EMIT("6:") \
-                /*  8x block */ \
-                __ASM_EMIT("add             $8, %[count]") \
-                __ASM_EMIT("jl              8f") \
-                __ASM_EMIT("vmovups         0x00(%[" L "], %[off]), %%ymm0")                /*  ymm0 = l */ \
-                __ASM_EMIT(OP "ps           0x00(%[" R "], %[off]), %%ymm0, %%ymm0")        /*  ymm0 = l op r */ \
-                __ASM_EMIT("vmulps          %%ymm6, %%ymm0, %%ymm0")                        /*  ymm0 = (l op r) * 0.5 */ \
-                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[" P "], %[off])") \
-                __ASM_EMIT("sub             $8, %[count]") \
-                __ASM_EMIT("add             $0x20, %[off]") \
-                __ASM_EMIT("8:") \
-                /*  4x block */ \
-                __ASM_EMIT("add             $4, %[count]") \
-                __ASM_EMIT("jl              10f") \
-                __ASM_EMIT("vmovups         0x00(%[" L "], %[off]), %%xmm0")                /*  xmm0 = l */ \
-                __ASM_EMIT(OP "ps           0x00(%[" R "], %[off]), %%xmm0, %%xmm0")        /*  xmm0 = l op r */ \
-                __ASM_EMIT("vmulps          %%xmm6, %%xmm0, %%xmm0")                        /*  xmm0 = (l op r) * 0.5 */ \
-                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[" P "], %[off])") \
-                __ASM_EMIT("sub             $4, %[count]") \
-                __ASM_EMIT("add             $0x10, %[off]") \
-                __ASM_EMIT("10:") \
-                /*  1x blocks */ \
-                __ASM_EMIT("add             $3, %[count]") \
-                __ASM_EMIT("jl              12f") \
-                __ASM_EMIT("11:") \
-                __ASM_EMIT("vmovss          0x00(%[" L "], %[off]), %%xmm0")                /*  xmm0 = l */ \
-                __ASM_EMIT(OP "ss           0x00(%[" R "], %[off]), %%xmm0, %%xmm0")        /*  xmm0 = l op r */ \
-                __ASM_EMIT("vmulss          %%xmm6, %%xmm0, %%xmm0")                        /*  xmm0 = (l op r) * 0.5 */ \
-                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[" P "], %[off])") \
-                __ASM_EMIT("add             $0x04, %[off]") \
-                __ASM_EMIT("dec             %[count]") \
-                __ASM_EMIT("jge             11b") \
-                __ASM_EMIT("12:")
+	#define LR_TO_PART(P, L, R, OP) \
+		__ASM_EMIT("vmovaps         %[X_HALF], %%zmm7") \
+		__ASM_EMIT("xor             %[off], %[off]") \
+		__ASM_EMIT("vmovaps         %%zmm7, %%zmm6") \
+		/*  64x blocks */ \
+		__ASM_EMIT("sub             $64, %[count]") \
+		__ASM_EMIT("jb              2f") \
+		__ASM_EMIT("1:") \
+		__ASM_EMIT("vmovups         0x00(%[" L "], %[off]), %%zmm0")                /*  zmm0 = l */ \
+		__ASM_EMIT("vmovups         0x40(%[" L "], %[off]), %%zmm1") \
+		__ASM_EMIT("vmovups         0x80(%[" L "], %[off]), %%zmm2") \
+		__ASM_EMIT("vmovups         0xc0(%[" L "], %[off]), %%zmm3") \
+		__ASM_EMIT(OP "ps           0x00(%[" R "], %[off]), %%zmm0, %%zmm0")        /*  zmm0 = l op r */ \
+		__ASM_EMIT(OP "ps           0x40(%[" R "], %[off]), %%zmm1, %%zmm1") \
+		__ASM_EMIT(OP "ps           0x80(%[" R "], %[off]), %%zmm2, %%zmm2") \
+		__ASM_EMIT(OP "ps           0xc0(%[" R "], %[off]), %%zmm3, %%zmm3") \
+		__ASM_EMIT("vmulps          %%zmm6, %%zmm0, %%zmm0")                        /*  zmm0 = (l op r) * 0.5 */ \
+		__ASM_EMIT("vmulps          %%zmm7, %%zmm1, %%zmm1") \
+		__ASM_EMIT("vmulps          %%zmm6, %%zmm2, %%zmm2") \
+		__ASM_EMIT("vmulps          %%zmm7, %%zmm3, %%zmm3") \
+		__ASM_EMIT("vmovups         %%zmm0, 0x00(%[" P "], %[off])") \
+		__ASM_EMIT("vmovups         %%zmm1, 0x40(%[" P "], %[off])") \
+		__ASM_EMIT("vmovups         %%zmm2, 0x80(%[" P "], %[off])") \
+		__ASM_EMIT("vmovups         %%zmm3, 0xc0(%[" P "], %[off])") \
+		__ASM_EMIT("add             $0x100, %[off]") \
+		__ASM_EMIT("sub             $64, %[count]") \
+		__ASM_EMIT("jae             1b") \
+		__ASM_EMIT("2:") \
+		/*  32x block */ \
+		__ASM_EMIT("add             $32, %[count]") \
+		__ASM_EMIT("jl              4f") \
+		__ASM_EMIT("vmovups         0x00(%[" L "], %[off]), %%ymm0")                /*  ymm0 = l */ \
+		__ASM_EMIT("vmovups         0x20(%[" L "], %[off]), %%ymm1") \
+		__ASM_EMIT("vmovups         0x40(%[" L "], %[off]), %%ymm2") \
+		__ASM_EMIT("vmovups         0x60(%[" L "], %[off]), %%ymm3") \
+		__ASM_EMIT(OP "ps           0x00(%[" R "], %[off]), %%ymm0, %%ymm0")        /*  ymm0 = l op r */ \
+		__ASM_EMIT(OP "ps           0x20(%[" R "], %[off]), %%ymm1, %%ymm1") \
+		__ASM_EMIT(OP "ps           0x40(%[" R "], %[off]), %%ymm2, %%ymm2") \
+		__ASM_EMIT(OP "ps           0x60(%[" R "], %[off]), %%ymm3, %%ymm3") \
+		__ASM_EMIT("vmulps          %%ymm6, %%ymm0, %%ymm0")                        /*  ymm0 = (l op r) * 0.5 */ \
+		__ASM_EMIT("vmulps          %%ymm7, %%ymm1, %%ymm1") \
+		__ASM_EMIT("vmulps          %%ymm6, %%ymm2, %%ymm2") \
+		__ASM_EMIT("vmulps          %%ymm7, %%ymm3, %%ymm3") \
+		__ASM_EMIT("vmovups         %%ymm0, 0x00(%[" P "], %[off])") \
+		__ASM_EMIT("vmovups         %%ymm1, 0x20(%[" P "], %[off])") \
+		__ASM_EMIT("vmovups         %%ymm2, 0x40(%[" P "], %[off])") \
+		__ASM_EMIT("vmovups         %%ymm3, 0x60(%[" P "], %[off])") \
+		__ASM_EMIT("sub             $32, %[count]") \
+		__ASM_EMIT("add             $0x80, %[off]") \
+		__ASM_EMIT("4:") \
+		/*  16x block */ \
+		__ASM_EMIT("add             $16, %[count]") \
+		__ASM_EMIT("jl              6f") \
+		__ASM_EMIT("vmovups         0x00(%[" L "], %[off]), %%ymm0")                /*  ymm0 = l */ \
+		__ASM_EMIT("vmovups         0x20(%[" L "], %[off]), %%ymm1") \
+		__ASM_EMIT(OP "ps           0x00(%[" R "], %[off]), %%ymm0, %%ymm0")        /*  ymm0 = l op r */ \
+		__ASM_EMIT(OP "ps           0x20(%[" R "], %[off]), %%ymm1, %%ymm1") \
+		__ASM_EMIT("vmulps          %%ymm6, %%ymm0, %%ymm0")                        /*  ymm0 = (l op r) * 0.5 */ \
+		__ASM_EMIT("vmulps          %%ymm7, %%ymm1, %%ymm1") \
+		__ASM_EMIT("vmovups         %%ymm0, 0x00(%[" P "], %[off])") \
+		__ASM_EMIT("vmovups         %%ymm1, 0x20(%[" P "], %[off])") \
+		__ASM_EMIT("sub             $16, %[count]") \
+		__ASM_EMIT("add             $0x40, %[off]") \
+		__ASM_EMIT("6:") \
+		/*  8x block */ \
+		__ASM_EMIT("add             $8, %[count]") \
+		__ASM_EMIT("jl              8f") \
+		__ASM_EMIT("vmovups         0x00(%[" L "], %[off]), %%ymm0")                /*  ymm0 = l */ \
+		__ASM_EMIT(OP "ps           0x00(%[" R "], %[off]), %%ymm0, %%ymm0")        /*  ymm0 = l op r */ \
+		__ASM_EMIT("vmulps          %%ymm6, %%ymm0, %%ymm0")                        /*  ymm0 = (l op r) * 0.5 */ \
+		__ASM_EMIT("vmovups         %%ymm0, 0x00(%[" P "], %[off])") \
+		__ASM_EMIT("sub             $8, %[count]") \
+		__ASM_EMIT("add             $0x20, %[off]") \
+		__ASM_EMIT("8:") \
+		/*  4x block */ \
+		__ASM_EMIT("add             $4, %[count]") \
+		__ASM_EMIT("jl              10f") \
+		__ASM_EMIT("vmovups         0x00(%[" L "], %[off]), %%xmm0")                /*  xmm0 = l */ \
+		__ASM_EMIT(OP "ps           0x00(%[" R "], %[off]), %%xmm0, %%xmm0")        /*  xmm0 = l op r */ \
+		__ASM_EMIT("vmulps          %%xmm6, %%xmm0, %%xmm0")                        /*  xmm0 = (l op r) * 0.5 */ \
+		__ASM_EMIT("vmovups         %%xmm0, 0x00(%[" P "], %[off])") \
+		__ASM_EMIT("sub             $4, %[count]") \
+		__ASM_EMIT("add             $0x10, %[off]") \
+		__ASM_EMIT("10:") \
+		/*  1x blocks */ \
+		__ASM_EMIT("add             $3, %[count]") \
+		__ASM_EMIT("jl              12f") \
+		__ASM_EMIT("11:") \
+		__ASM_EMIT("vmovss          0x00(%[" L "], %[off]), %%xmm0")                /*  xmm0 = l */ \
+		__ASM_EMIT(OP "ss           0x00(%[" R "], %[off]), %%xmm0, %%xmm0")        /*  xmm0 = l op r */ \
+		__ASM_EMIT("vmulss          %%xmm6, %%xmm0, %%xmm0")                        /*  xmm0 = (l op r) * 0.5 */ \
+		__ASM_EMIT("vmovss          %%xmm0, 0x00(%[" P "], %[off])") \
+		__ASM_EMIT("add             $0x04, %[off]") \
+		__ASM_EMIT("dec             %[count]") \
+		__ASM_EMIT("jge             11b") \
+		__ASM_EMIT("12:")
 
         void lr_to_mid(float *m, const float *l, const float *r, size_t count)
         {
@@ -265,7 +265,7 @@ namespace lsp
             );
         }
 
-        #undef LR_TO_PART
+	#undef LR_TO_PART
 
         void ms_to_lr(float *l, float *r, const float *m, const float *s, size_t count)
         {
