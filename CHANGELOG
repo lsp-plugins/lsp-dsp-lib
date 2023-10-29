@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.20 ===
+
+
 === 1.0.19 ===
 * AVX2 optimization of search functions for maximum and minimum.
 * Implemented SIMD-optimized gate functions.
