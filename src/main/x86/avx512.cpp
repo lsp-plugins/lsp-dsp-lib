@@ -67,6 +67,13 @@
 
             #define CEXPORT1(cond, export) CEXPORT2(cond, export, export)
 
+            #define CEXPORT2_X64(cond, function, export) \
+                IF_ARCH_X86_64(CEXPORT2(cond, function, export))
+
+            #define X64_CEXPORT1(cond, export) \
+                IF_ARCH_X86_64(CEXPORT1(cond, export))
+
+
             void dsp_init(const cpu_features_t *f)
             {
                 const bool vl = (f->features & (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL)) ==
@@ -74,6 +81,148 @@
 
                 CEXPORT1(vl, copy);
                 CEXPORT1(vl, move);
+
+                CEXPORT1(vl, abs1);
+                CEXPORT1(vl, abs2);
+                CEXPORT1(vl, abs_add2);
+                CEXPORT1(vl, abs_sub2);
+                CEXPORT1(vl, abs_rsub2);
+                CEXPORT1(vl, abs_mul2);
+                CEXPORT1(vl, abs_div2);
+                CEXPORT1(vl, abs_rdiv2);
+
+                CEXPORT1(vl, abs_add3);
+                CEXPORT1(vl, abs_sub3);
+                CEXPORT1(vl, abs_rsub3);
+                CEXPORT1(vl, abs_mul3);
+                CEXPORT1(vl, abs_div3);
+                CEXPORT1(vl, abs_rdiv3);
+
+                CEXPORT1(vl, exp1);
+                CEXPORT1(vl, exp2);
+                CEXPORT2_X64(vl, exp1, x64_exp1);
+                CEXPORT2_X64(vl, exp2, x64_exp2);
+
+                CEXPORT1(vl, fmadd_k3);
+                CEXPORT1(vl, fmsub_k3);
+                CEXPORT1(vl, fmrsub_k3);
+                CEXPORT1(vl, fmmul_k3);
+                CEXPORT1(vl, fmdiv_k3);
+                CEXPORT1(vl, fmrdiv_k3);
+                CEXPORT1(vl, fmmod_k3);
+                CEXPORT1(vl, fmrmod_k3);
+
+                CEXPORT1(vl, fmadd_k4);
+                CEXPORT1(vl, fmsub_k4);
+                CEXPORT1(vl, fmrsub_k4);
+                CEXPORT1(vl, fmmul_k4);
+                CEXPORT1(vl, fmdiv_k4);
+                CEXPORT1(vl, fmrdiv_k4);
+                CEXPORT1(vl, fmmod_k4);
+                CEXPORT1(vl, fmrmod_k4);
+
+                CEXPORT1(vl, fmadd3);
+                CEXPORT1(vl, fmsub3);
+                CEXPORT1(vl, fmrsub3);
+                CEXPORT1(vl, fmmul3);
+                CEXPORT1(vl, fmdiv3);
+                CEXPORT1(vl, fmrdiv3);
+                CEXPORT1(vl, fmmod3);
+                CEXPORT1(vl, fmrmod3);
+
+                CEXPORT1(vl, fmadd4);
+                CEXPORT1(vl, fmsub4);
+                CEXPORT1(vl, fmrsub4);
+                CEXPORT1(vl, fmmul4);
+                CEXPORT1(vl, fmdiv4);
+                CEXPORT1(vl, fmrdiv4);
+                CEXPORT1(vl, fmmod4);
+                CEXPORT1(vl, fmrmod4);
+
+                CEXPORT2(vl, logb1, logb1);
+                CEXPORT2(vl, logb2, logb2);
+                CEXPORT2(vl, loge1, loge1);
+                CEXPORT2(vl, loge2, loge2);
+                CEXPORT2(vl, logd1, logd1);
+                CEXPORT2(vl, logd2, logd2);
+
+                CEXPORT2_X64(vl, logb1, x64_logb1);
+                CEXPORT2_X64(vl, logb2, x64_logb2);
+                CEXPORT2_X64(vl, loge1, x64_loge1);
+                CEXPORT2_X64(vl, loge2, x64_loge2);
+                CEXPORT2_X64(vl, logd1, x64_logd1);
+                CEXPORT2_X64(vl, logd2, x64_logd2);
+
+                CEXPORT1(vl, lramp_set1);
+                CEXPORT1(vl, lramp1);
+                CEXPORT1(vl, lramp2);
+                CEXPORT1(vl, lramp_add2);
+                CEXPORT1(vl, lramp_sub2);
+                CEXPORT1(vl, lramp_rsub2);
+                CEXPORT1(vl, lramp_mul2);
+                CEXPORT1(vl, lramp_div2);
+                CEXPORT1(vl, lramp_rdiv2);
+                CEXPORT1(vl, lramp_add3);
+                CEXPORT1(vl, lramp_sub3);
+                CEXPORT1(vl, lramp_rsub3);
+                CEXPORT1(vl, lramp_mul3);
+                CEXPORT1(vl, lramp_div3);
+                CEXPORT1(vl, lramp_rdiv3);
+
+                CEXPORT1(vl, add2);
+                CEXPORT1(vl, sub2);
+                CEXPORT1(vl, rsub2);
+                CEXPORT1(vl, mul2);
+                CEXPORT1(vl, div2);
+                CEXPORT1(vl, rdiv2);
+                CEXPORT1(vl, mod2);
+                CEXPORT1(vl, rmod2);
+
+                CEXPORT1(vl, add3);
+                CEXPORT1(vl, sub3);
+                CEXPORT1(vl, mul3);
+                CEXPORT1(vl, div3);
+                CEXPORT1(vl, mod3);
+
+                CEXPORT1(vl, pmin2);
+                CEXPORT1(vl, pmax2);
+                CEXPORT1(vl, psmin2);
+                CEXPORT1(vl, psmax2);
+                CEXPORT1(vl, pamin2);
+                CEXPORT1(vl, pamax2);
+                CEXPORT1(vl, pmin3);
+                CEXPORT1(vl, pmax3);
+                CEXPORT1(vl, psmin3);
+                CEXPORT1(vl, psmax3);
+                CEXPORT1(vl, pamin3);
+                CEXPORT1(vl, pamax3);
+
+                CEXPORT2(vl, normalize, normalize2);
+                CEXPORT1(vl, normalize1);
+                CEXPORT1(vl, normalize2);
+
+                CEXPORT1(vl, add_k2);
+                CEXPORT1(vl, sub_k2);
+                CEXPORT1(vl, rsub_k2);
+                CEXPORT1(vl, mul_k2);
+                CEXPORT1(vl, div_k2);
+                CEXPORT1(vl, rdiv_k2);
+                CEXPORT1(vl, mod_k2);
+                CEXPORT1(vl, rmod_k2);
+
+                CEXPORT1(vl, add_k3);
+                CEXPORT1(vl, sub_k3);
+                CEXPORT1(vl, rsub_k3);
+                CEXPORT1(vl, mul_k3);
+                CEXPORT1(vl, div_k3);
+                CEXPORT1(vl, rdiv_k3);
+                CEXPORT1(vl, mod_k3);
+                CEXPORT1(vl, rmod_k3);
+
+                CEXPORT1(vl, sqr1);
+                CEXPORT1(vl, sqr2);
+                CEXPORT1(vl, ssqrt1);
+                CEXPORT1(vl, ssqrt2);
 
                 CEXPORT1(vl, limit1);
                 CEXPORT1(vl, limit2);
@@ -99,11 +248,13 @@
                 CEXPORT1(vl, pcomplex_div2);
                 CEXPORT1(vl, pcomplex_rdiv2);
                 CEXPORT1(vl, pcomplex_div3);
+                CEXPORT1(vl, pcomplex_r2c);
                 CEXPORT1(vl, pcomplex_r2c_add2);
                 CEXPORT1(vl, pcomplex_r2c_rsub2);
                 CEXPORT1(vl, pcomplex_r2c_sub2);
                 CEXPORT1(vl, pcomplex_r2c_mul2);
                 CEXPORT1(vl, pcomplex_r2c_div2);
+                CEXPORT1(vl, pcomplex_c2r);
 
                 CEXPORT1(vl, lr_to_ms);
                 CEXPORT1(vl, lr_to_mid);
@@ -111,11 +262,6 @@
                 CEXPORT1(vl, ms_to_lr);
                 CEXPORT1(vl, ms_to_left);
                 CEXPORT1(vl, ms_to_right);
-
-                CEXPORT1(vl, sqr1);
-                CEXPORT1(vl, sqr2);
-                CEXPORT1(vl, ssqrt1);
-                CEXPORT1(vl, ssqrt2);
 
                 CEXPORT1(vl, axis_apply_lin1);
             }

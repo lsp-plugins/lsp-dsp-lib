@@ -26,6 +26,7 @@
 
 #include <lsp-plug.in/dsp/common/dynamics/types.h>
 #include <lsp-plug.in/dsp/common/dynamics/compressor.h>
+#include <lsp-plug.in/dsp/common/dynamics/gate.h>
 
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_DYNAMICS_H_ */

@@ -37,6 +37,12 @@ namespace lsp
             void abs1(float *src, size_t count);
             void abs2(float *dst, const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            void abs1(float *src, size_t count);
+            void abs2(float *dst, const float *src, size_t count);
+        }
     )
 
     IF_ARCH_X86_64(
@@ -156,6 +162,9 @@ UTEST_BEGIN("dsp.pmath", abs)
 
         IF_ARCH_X86_64(CALL(generic::abs1, avx::x64_abs1, 16));
         IF_ARCH_X86_64(CALL(generic::abs2, avx::x64_abs2, 16));
+
+        IF_ARCH_X86(CALL(generic::abs1, avx512::abs1, 64));
+        IF_ARCH_X86(CALL(generic::abs2, avx512::abs2, 64));
 
         IF_ARCH_ARM(CALL(generic::abs1, neon_d32::abs1, 16));
         IF_ARCH_ARM(CALL(generic::abs2, neon_d32::abs2, 16));

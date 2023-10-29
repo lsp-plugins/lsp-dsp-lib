@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -27,14 +27,17 @@ namespace lsp
 {
     namespace generic
     {
-        void pcomplex_r2c(float *dst, const float *src, size_t count);
         void pcomplex_c2r(float *dst, const float *src, size_t count);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
-            void pcomplex_r2c(float *dst, const float *src, size_t count);
+            void pcomplex_c2r(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx512
+        {
             void pcomplex_c2r(float *dst, const float *src, size_t count);
         }
     )
@@ -42,7 +45,6 @@ namespace lsp
     IF_ARCH_ARM(
         namespace neon_d32
         {
-            void pcomplex_r2c(float *dst, const float *src, size_t count);
             void pcomplex_c2r(float *dst, const float *src, size_t count);
         }
     )
@@ -50,7 +52,6 @@ namespace lsp
     IF_ARCH_AARCH64(
         namespace asimd
         {
-            void pcomplex_r2c(float *dst, const float *src, size_t count);
             void pcomplex_c2r(float *dst, const float *src, size_t count);
         }
     )
@@ -58,9 +59,9 @@ namespace lsp
     typedef void (* complex_cvt_t) (float *dst, const float *src, size_t count);
 }
 
-UTEST_BEGIN("dsp.pcomplex", cvt)
+UTEST_BEGIN("dsp.pcomplex", c2r)
 
-    void call(const char *label, size_t align, size_t sk, size_t dk, complex_cvt_t func1, complex_cvt_t func2)
+    void call(const char *label, size_t align, complex_cvt_t func1, complex_cvt_t func2)
     {
         if (!UTEST_SUPPORTED(func1))
             return;
@@ -74,8 +75,8 @@ UTEST_BEGIN("dsp.pcomplex", cvt)
             {
                 printf("Testing %s on input buffer of %d numbers, mask=0x%x...\n", label, int(count), int(mask));
 
-                FloatBuffer src(count*sk, align, mask & 0x01);
-                FloatBuffer dst1(count*dk, align, mask & 0x02);
+                FloatBuffer src(count*2, align, mask & 0x01);
+                FloatBuffer dst1(count, align, mask & 0x02);
                 FloatBuffer dst2(dst1);
 
                 // Call functions
@@ -100,14 +101,15 @@ UTEST_BEGIN("dsp.pcomplex", cvt)
 
     UTEST_MAIN
     {
-        IF_ARCH_X86(call("sse::pcomplex_r2c", 16, 1, 2, generic::pcomplex_r2c, sse::pcomplex_r2c));
-        IF_ARCH_X86(call("sse::pcomplex_c2r", 16, 2, 1, generic::pcomplex_c2r, sse::pcomplex_c2r));
+        #define CALL(func, align) \
+            call(#func, align, generic::pcomplex_c2r, func)
 
-        IF_ARCH_ARM(call("neon_d32::pcomplex_r2c", 16, 1, 2, generic::pcomplex_r2c, neon_d32::pcomplex_r2c));
-        IF_ARCH_ARM(call("neon_d32::pcomplex_c2r", 16, 2, 1, generic::pcomplex_c2r, neon_d32::pcomplex_c2r));
+        IF_ARCH_X86(CALL(sse::pcomplex_c2r, 16));
+        IF_ARCH_X86(CALL(avx512::pcomplex_c2r, 64));
 
-        IF_ARCH_AARCH64(call("asimd::pcomplex_r2c", 16, 1, 2, generic::pcomplex_r2c, asimd::pcomplex_r2c));
-        IF_ARCH_AARCH64(call("asimd::pcomplex_c2r", 16, 2, 1, generic::pcomplex_c2r, asimd::pcomplex_c2r));
+        IF_ARCH_ARM(CALL(neon_d32::pcomplex_c2r, 16));
+
+        IF_ARCH_AARCH64(CALL(asimd::pcomplex_c2r, 16));
     }
 
 UTEST_END

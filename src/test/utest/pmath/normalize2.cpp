@@ -68,6 +68,11 @@ namespace lsp
         {
             void normalize2(float *dst, const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            void normalize2(float *dst, const float *src, size_t count);
+        }
     )
 
 }
@@ -101,8 +106,8 @@ UTEST_BEGIN("dsp.pmath", normalize2)
                 generic::normalize2_test(dst1, src, count);
                 func(dst2, src, count);
 
-                UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");
-                UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
+                UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted (1)");
+                UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted (1)");
 
                 // Compare buffers
                 if (!dst1.equals_adaptive(dst2, 1e-4))
@@ -118,8 +123,8 @@ UTEST_BEGIN("dsp.pmath", normalize2)
                 generic::normalize2_test(dst1, src, count);
                 func(dst2, src, count);
 
-                UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");
-                UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
+                UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted (2)");
+                UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted (2)");
 
                 // Compare buffers
                 if (!dst1.equals_adaptive(dst2, 1e-4))
@@ -141,6 +146,7 @@ UTEST_BEGIN("dsp.pmath", normalize2)
         IF_ARCH_X86(CALL(generic::normalize2, 16));
         IF_ARCH_X86(CALL(sse::normalize2, 16));
         IF_ARCH_X86(CALL(avx::normalize2, 32));
+        IF_ARCH_X86(CALL(avx512::normalize2, 64));
     }
 UTEST_END
 

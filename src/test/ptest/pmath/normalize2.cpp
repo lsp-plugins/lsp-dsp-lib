@@ -72,6 +72,11 @@ namespace lsp
         {
             void normalize2(float *dst, const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            void normalize2(float *dst, const float *src, size_t count);
+        }
     )
 
 }
@@ -79,7 +84,7 @@ namespace lsp
 typedef void (* normalize2_t)(float *dst, const float *src, size_t count);
 
 //-----------------------------------------------------------------------------
-PTEST_BEGIN("dsp.pmath", normalize2, 5, 10000)
+PTEST_BEGIN("dsp.pmath", normalize2, 5, 2000)
 
     void call(const char *label, float *dst, const float *src, size_t count, normalize2_t func)
     {
@@ -120,6 +125,7 @@ PTEST_BEGIN("dsp.pmath", normalize2, 5, 10000)
             CALL(generic::normalize2);
             IF_ARCH_X86(CALL(sse::normalize2));
             IF_ARCH_X86(CALL(avx::normalize2));
+            IF_ARCH_X86(CALL(avx512::normalize2));
             PTEST_SEPARATOR;
         }
 

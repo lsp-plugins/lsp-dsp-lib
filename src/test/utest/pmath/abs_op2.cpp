@@ -48,6 +48,16 @@ namespace lsp
             void    abs_div2(float *dst, const float *src, size_t count);
             void    abs_rdiv2(float *dst, const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            void    abs_add2(float *dst, const float *src, size_t count);
+            void    abs_sub2(float *dst, const float *src, size_t count);
+            void    abs_rsub2(float *dst, const float *src, size_t count);
+            void    abs_mul2(float *dst, const float *src, size_t count);
+            void    abs_div2(float *dst, const float *src, size_t count);
+            void    abs_rdiv2(float *dst, const float *src, size_t count);
+        }
     )
 
     IF_ARCH_X86_64(
@@ -156,6 +166,13 @@ UTEST_BEGIN("dsp.pmath", abs_op2)
         IF_ARCH_X86_64(CALL(generic::abs_mul2, avx::x64_abs_mul2, 32));
         IF_ARCH_X86_64(CALL(generic::abs_div2, avx::x64_abs_div2, 32));
         IF_ARCH_X86_64(CALL(generic::abs_rdiv2, avx::x64_abs_rdiv2, 32));
+
+        IF_ARCH_X86(CALL(generic::abs_add2, avx512::abs_add2, 64));
+        IF_ARCH_X86(CALL(generic::abs_sub2, avx512::abs_sub2, 64));
+        IF_ARCH_X86(CALL(generic::abs_rsub2, avx512::abs_rsub2, 64));
+        IF_ARCH_X86(CALL(generic::abs_mul2, avx512::abs_mul2, 64));
+        IF_ARCH_X86(CALL(generic::abs_div2, avx512::abs_div2, 64));
+        IF_ARCH_X86(CALL(generic::abs_rdiv2, avx512::abs_rdiv2, 64));
 
         IF_ARCH_ARM(CALL(generic::abs_add2, neon_d32::abs_add2, 16));
         IF_ARCH_ARM(CALL(generic::abs_sub2, neon_d32::abs_sub2, 16));

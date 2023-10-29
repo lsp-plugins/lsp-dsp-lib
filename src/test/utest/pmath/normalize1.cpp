@@ -62,6 +62,11 @@ namespace lsp
         {
             void normalize1(float *dst, size_t count);
         }
+
+        namespace avx512
+        {
+            void normalize1(float *dst, size_t count);
+        }
     )
 
 }
@@ -114,6 +119,7 @@ UTEST_BEGIN("dsp.pmath", normalize1)
         IF_ARCH_X86(CALL(generic::normalize1, 16));
         IF_ARCH_X86(CALL(sse::normalize1, 16));
         IF_ARCH_X86(CALL(avx::normalize1, 32));
+        IF_ARCH_X86(CALL(avx512::normalize1, 64));
     }
 UTEST_END
 

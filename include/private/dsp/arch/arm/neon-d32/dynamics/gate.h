@@ -1,0 +1,277 @@
+/*
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ *
+ * This file is part of lsp-dsp-lib
+ * Created on: 20 окт. 2023 г.
+ *
+ * lsp-dsp-lib is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * lsp-dsp-lib is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifndef PRIVATE_DSP_ARCH_ARM_NEON_D32_DYNAMICS_GATE_H_
+#define PRIVATE_DSP_ARCH_ARM_NEON_D32_DYNAMICS_GATE_H_
+
+#include <private/dsp/arch/arm/neon-d32/pmath/exp.h>
+#include <private/dsp/arch/arm/neon-d32/pmath/log.h>
+
+namespace lsp
+{
+    namespace neon_d32
+    {
+    #define PROCESS_KNEE_SINGLE_X8 \
+        /* in: q0 = lx0, q1 = lx1 */ \
+        __ASM_EMIT("add                 %[off], %[gate], #0x10") \
+        __ASM_EMIT("vld4.f32            {d16[], d18[], d20[], d22[]}, [%[off]]")   /* q8 = herm[0] q9=herm[1] q10=herm[2], q11=herm[3] */ \
+        __ASM_EMIT("vld4.f32            {d17[], d19[], d21[], d23[]}, [%[off]]")   /* q8 = herm[0] q9=herm[1] q10=herm[2], q11=herm[3] */ \
+        __ASM_EMIT("vmul.f32            q2, q0, q8")                        /* q2 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmul.f32            q3, q1, q8") \
+        __ASM_EMIT("vadd.f32            q2, q2, q9")                        /* q2 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vadd.f32            q3, q3, q9") \
+        __ASM_EMIT("vmul.f32            q2, q2, q0")                        /* q2 = (herm[0]*lx0+herm[1])*lx0 */ \
+        __ASM_EMIT("vmul.f32            q3, q3, q1") \
+        __ASM_EMIT("vadd.f32            q2, q2, q10")                       /* q2 = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vadd.f32            q3, q3, q10") \
+        __ASM_EMIT("vldm                %[LOG2E], {q15}") \
+        __ASM_EMIT("vmul.f32            q2, q2, q0")                        /* q2 = ((herm[0]*lx0+herm[1])*lx0+herm[2])*lx0 */ \
+        __ASM_EMIT("vmul.f32            q3, q3, q1") \
+        __ASM_EMIT("vadd.f32            q0, q2, q11")                       /* q0 = TV = ((herm[0]*lx0+herm[1])*lx0+herm[2])*lx0+herm[3] */ \
+        __ASM_EMIT("vadd.f32            q1, q3, q11") \
+        EXP_CORE_X8                                                         /* q0 = KV = expf(TV) */ \
+        __ASM_EMIT("vldm                %[mem], {q6-q7}")                   /* q6 = x0 */ \
+        __ASM_EMIT("vld4.f32            {d4[], d6[], d8[], d10[]}, [%[gate]]")  /* q2 = start, q3 = end, q4 = gain_start, q5 = gain_end */ \
+        __ASM_EMIT("vld4.f32            {d5[], d7[], d9[], d11[]}, [%[gate]]")  /* q2 = start, q3 = end, q4 = gain_start, q5 = gain_end */ \
+        __ASM_EMIT("vcgt.f32            q8, q6, q2")                        /* q8 = [x0 > start] */ \
+        __ASM_EMIT("vcgt.f32            q9, q7, q2") \
+        __ASM_EMIT("vcge.f32            q6, q6, q3")                        /* q3 = [x0 >= end] */ \
+        __ASM_EMIT("vcge.f32            q7, q7, q3") \
+        __ASM_EMIT("vbif                q0, q4, q8")                        /* q0 = [x0 <= start] ? gain_start : KV */ \
+        __ASM_EMIT("vbif                q1, q4, q9") \
+        __ASM_EMIT("vbit                q0, q5, q6")                        /* q0 = [x0 >= end] ? gain_end : [x0 <= start] ? gain_start : KV */ \
+        __ASM_EMIT("vbit                q1, q5, q7") \
+        /* out: q0 = g0, q1 = g1 */
+
+    #define PROCESS_KNEE_SINGLE_X4 \
+        /* in: q0 = lx0 */ \
+        __ASM_EMIT("add                 %[off], %[gate], #0x10") \
+        __ASM_EMIT("vld4.f32            {d16[], d18[], d20[], d22[]}, [%[off]]")   /* q8 = herm[0] q9=herm[1] q10=herm[2], q11=herm[3] */ \
+        __ASM_EMIT("vld4.f32            {d17[], d19[], d21[], d23[]}, [%[off]]")   /* q8 = herm[0] q9=herm[1] q10=herm[2], q11=herm[3] */ \
+        __ASM_EMIT("vmul.f32            q2, q0, q8")                        /* q2 = herm[0]*lx0 */ \
+        __ASM_EMIT("vadd.f32            q2, q2, q9")                        /* q2 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vmul.f32            q2, q2, q0")                        /* q2 = (herm[0]*lx0+herm[1])*lx0 */ \
+        __ASM_EMIT("vadd.f32            q2, q2, q10")                       /* q2 = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vldm                %[LOG2E], {q15}") \
+        __ASM_EMIT("vmul.f32            q2, q2, q0")                        /* q2 = ((herm[0]*lx0+herm[1])*lx0+herm[2])*lx0 */ \
+        __ASM_EMIT("vadd.f32            q0, q2, q11")                       /* q0 = TV = ((herm[0]*lx0+herm[1])*lx0+herm[2])*lx0+herm[3] */ \
+        EXP_CORE_X4                                                         /* q0 = KV = expf(TV) */ \
+        __ASM_EMIT("vldm                %[mem], {q6}")                      /* q6 = x0 */ \
+        __ASM_EMIT("vld4.f32            {d4[], d6[], d8[], d10[]}, [%[gate]]")  /* q2 = start, q3 = end, q4 = gain_start, q5 = gain_end */ \
+        __ASM_EMIT("vld4.f32            {d5[], d7[], d9[], d11[]}, [%[gate]]")  /* q2 = start, q3 = end, q4 = gain_start, q5 = gain_end */ \
+        __ASM_EMIT("vcgt.f32            q8, q6, q2")                        /* q8 = [x0 > start] */ \
+        __ASM_EMIT("vcge.f32            q6, q6, q3")                        /* q3 = [x0 >= end] */ \
+        __ASM_EMIT("vbif                q0, q4, q8")                        /* q0 = [x0 <= start] ? gain_start : KV */ \
+        __ASM_EMIT("vbit                q0, q5, q6")                        /* q0 = [x0 >= end] ? gain_end : [x0 <= start] ? gain_start : KV */ \
+        /* out: q0 = g0 */
+
+    #define PROCESS_GATE_FULL_X8 \
+        /* in: q0 = x0, q1 = x1 */ \
+        __ASM_EMIT("vld2.f32            {d26[], d28[]}, [%[gate]]")         /* q13 = start, q14 = end */ \
+        __ASM_EMIT("vld2.f32            {d27[], d29[]}, [%[gate]]")         /* q13 = start, q14 = end */ \
+        __ASM_EMIT("vabs.f32            q0, q0")                            /* q0  = fabsf(x0) */ \
+        __ASM_EMIT("vabs.f32            q1, q1") \
+        __ASM_EMIT("vcgt.f32            q2, q0, q13")                       /* q2 = [fabs(x0) > start]    */ \
+        __ASM_EMIT("vcgt.f32            q3, q1, q13") \
+        __ASM_EMIT("vcgt.f32            q4, q14, q0")                       /* q4 = [fabs(x0) < end] */ \
+        __ASM_EMIT("vcgt.f32            q5, q14, q1") \
+        __ASM_EMIT("vand                q6, q2, q4")                        /* q6 = [fabs(x0) > start] && [fabs(x0) < end] */ \
+        __ASM_EMIT("vand                q7, q3, q5") \
+        __ASM_EMIT("vorr                q6, q6, q7") \
+        __ASM_EMIT("vext.32             q7, q6, q6, #2") \
+        __ASM_EMIT("vorr                q6, q6, q7")  \
+        __ASM_EMIT("vext.32             q7, q6, q6, #1") \
+        __ASM_EMIT("vorr                q6, q6, q7") \
+        __ASM_EMIT("vmov.32             %[off], d12[0]") \
+        __ASM_EMIT("cmp                 %[off], #0") \
+        __ASM_EMIT("bne                 100f") \
+        __ASM_EMIT("add                 %[off], %[gate], #0x08") \
+        __ASM_EMIT("vld1.f32            {d0[], d1[]}, [%[off]]")            /* q0 = gain_start */ \
+        __ASM_EMIT("add                 %[off], %[gate], #0x0c") \
+        __ASM_EMIT("vld1.f32            {d8[], d9[]}, [%[off]]")            /* q4 = gain_end */ \
+        __ASM_EMIT("vmov                q1, q0") \
+        __ASM_EMIT("vbit                q0, q4, q2")                        /* q0 = [fabs(x0) > start] ? gain_end : gain_start */ \
+        __ASM_EMIT("vbit                q1, q4, q3") \
+        __ASM_EMIT("b                   200f") \
+        __ASM_EMIT("100:") \
+        __ASM_EMIT("vldm                %[LOGC], {q14-q15}") \
+        __ASM_EMIT("vstm                %[mem], {q0-q1}")                   /* mem[0x00] = fabfs(x0) */ \
+        LOGE_CORE_X8                                                        /* q0 = lx0 = logf(fabsf(x0)) */ \
+        PROCESS_KNEE_SINGLE_X8                                              /* apply knee 0 */ \
+        __ASM_EMIT("200:") \
+        /* out: q0 = G0, q1= G1 */
+
+    #define PROCESS_GATE_FULL_X4 \
+        /* in: q0 = x0, q1 = x1 */ \
+        __ASM_EMIT("vldm                %[LOGC], {q14-q15}") \
+        __ASM_EMIT("vabs.f32            q0, q0")                            /* q0 = fabsf(x0) */ \
+        __ASM_EMIT("vstm                %[mem], {q0}")                      /* mem[0x00] = fabfs(x0) */ \
+        LOGE_CORE_X4                                                        /* q0 = lx0 = logf(fabsf(x0)) */ \
+        PROCESS_KNEE_SINGLE_X4                                              /* apply knee 0 */ \
+        /* out: q0 = G0 */
+
+        void gate_x1_gain(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count)
+        {
+            IF_ARCH_ARM(
+                float mem[8] __lsp_aligned16;
+                size_t off;
+            );
+
+            ARCH_ARM_ASM(
+                // x8 blocks
+                __ASM_EMIT("subs            %[count], #8")
+                __ASM_EMIT("blo             2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vld1.32         {q0-q1}, [%[src]]!")
+                PROCESS_GATE_FULL_X8
+                __ASM_EMIT("subs            %[count], #8")
+                __ASM_EMIT("vst1.32         {q0-q1}, [%[dst]]!")
+                __ASM_EMIT("bhs             1b")
+                __ASM_EMIT("2:")
+                // x4 block
+                __ASM_EMIT("adds            %[count], #4")
+                __ASM_EMIT("blt             4f")
+                __ASM_EMIT("vld1.32         {q0}, [%[src]]!")
+                PROCESS_GATE_FULL_X4
+                __ASM_EMIT("sub             %[count], #4")
+                __ASM_EMIT("vst1.32         {q0}, [%[dst]]!")
+                __ASM_EMIT("4:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("adds            %[count], #4")
+                __ASM_EMIT("bls             12f")
+                __ASM_EMIT("tst             %[count], #1")
+                __ASM_EMIT("beq             6f")
+                __ASM_EMIT("vld1.32         {d0[0]}, [%[src]]!")
+                __ASM_EMIT("6:")
+                __ASM_EMIT("tst             %[count], #2")
+                __ASM_EMIT("beq             8f")
+                __ASM_EMIT("vld1.32         {d1}, [%[src]]")
+                __ASM_EMIT("8:")
+                PROCESS_GATE_FULL_X4
+                __ASM_EMIT("tst             %[count], #1")
+                __ASM_EMIT("beq             10f")
+                __ASM_EMIT("vst1.32         {d0[0]}, [%[dst]]!")
+                __ASM_EMIT("10:")
+                __ASM_EMIT("tst             %[count], #2")
+                __ASM_EMIT("beq             12f")
+                __ASM_EMIT("vst1.32         {d1}, [%[dst]]")
+                __ASM_EMIT("12:")
+
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count),
+                  [off] "=&r" (off)
+                : [gate] "r" (c),
+                  [L2C] "r" (&LOG2_CONST[0]),
+                  [LOGC] "r" (&LOGE_C[0]),
+                  [mem] "r" (&mem[0]),
+                  [E2C] "r" (&EXP2_CONST[0]),
+                  [LOG2E] "r" (&EXP_LOG2E[0])
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
+            );
+        }
+
+        void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count)
+        {
+            IF_ARCH_ARM(
+                float mem[8] __lsp_aligned16;
+                size_t off;
+            );
+
+            ARCH_ARM_ASM(
+                // x8 blocks
+                __ASM_EMIT("subs            %[count], #8")
+                __ASM_EMIT("blo             2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vld1.32         {q0-q1}, [%[src]]")
+                PROCESS_GATE_FULL_X8
+                __ASM_EMIT("vld1.32         {q2-q3}, [%[src]]!")
+                __ASM_EMIT("subs            %[count], #8")
+                __ASM_EMIT("vmul.f32        q0, q0, q2")
+                __ASM_EMIT("vmul.f32        q1, q1, q3")
+                __ASM_EMIT("vst1.32         {q0-q1}, [%[dst]]!")
+                __ASM_EMIT("bhs             1b")
+                __ASM_EMIT("2:")
+                // x4 block
+                __ASM_EMIT("adds            %[count], #4")
+                __ASM_EMIT("blt             4f")
+                __ASM_EMIT("vld1.32         {q0}, [%[src]]")
+                PROCESS_GATE_FULL_X4
+                __ASM_EMIT("vld1.32         {q2}, [%[src]]!")
+                __ASM_EMIT("sub             %[count], #4")
+                __ASM_EMIT("vmul.f32        q0, q0, q2")
+                __ASM_EMIT("vst1.32         {q0}, [%[dst]]!")
+                __ASM_EMIT("4:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("adds            %[count], #4")
+                __ASM_EMIT("bls             12f")
+                __ASM_EMIT("tst             %[count], #1")
+                __ASM_EMIT("beq             6f")
+                __ASM_EMIT("vld1.32         {d0[0]}, [%[src]]!")
+                __ASM_EMIT("6:")
+                __ASM_EMIT("tst             %[count], #2")
+                __ASM_EMIT("beq             8f")
+                __ASM_EMIT("vld1.32         {d1}, [%[src]]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("vmov            q1, q0")
+                PROCESS_GATE_FULL_X4
+                __ASM_EMIT("vmul.f32        q0, q0, q1")
+                __ASM_EMIT("tst             %[count], #1")
+                __ASM_EMIT("beq             10f")
+                __ASM_EMIT("vst1.32         {d0[0]}, [%[dst]]!")
+                __ASM_EMIT("10:")
+                __ASM_EMIT("tst             %[count], #2")
+                __ASM_EMIT("beq             12f")
+                __ASM_EMIT("vst1.32         {d1}, [%[dst]]")
+                __ASM_EMIT("12:")
+
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count),
+                  [off] "=&r" (off)
+                : [gate] "r" (c),
+                  [L2C] "r" (&LOG2_CONST[0]),
+                  [LOGC] "r" (&LOGE_C[0]),
+                  [mem] "r" (&mem[0]),
+                  [E2C] "r" (&EXP2_CONST[0]),
+                  [LOG2E] "r" (&EXP_LOG2E[0])
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
+            );
+        }
+
+    #undef PROCESS_GATE_FULL_X4
+    #undef PROCESS_GATE_FULL_X8
+    #undef PROCESS_KNEE_SINGLE_X4
+    #undef PROCESS_KNEE_SINGLE_X8
+
+    } /* namespace neon_d32 */
+} /* namespace lsp */
+
+
+
+
+#endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_DYNAMICS_GATE_H_ */

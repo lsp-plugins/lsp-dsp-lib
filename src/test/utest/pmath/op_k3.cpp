@@ -84,6 +84,18 @@ namespace lsp
             void    mod_k3_fma3(float *dst, const float *src, float k, size_t count);
             void    rmod_k3_fma3(float *dst, const float *src, float k, size_t count);
         }
+
+        namespace avx512
+        {
+            void    add_k3(float *dst, const float *src, float k, size_t count);
+            void    sub_k3(float *dst, const float *src, float k, size_t count);
+            void    mul_k3(float *dst, const float *src, float k, size_t count);
+            void    div_k3(float *dst, const float *src, float k, size_t count);
+            void    rsub_k3(float *dst, const float *src, float k, size_t count);
+            void    rdiv_k3(float *dst, const float *src, float k, size_t count);
+            void    mod_k3(float *dst, const float *src, float k, size_t count);
+            void    rmod_k3(float *dst, const float *src, float k, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -193,6 +205,15 @@ UTEST_BEGIN("dsp.pmath", op_k3)
         IF_ARCH_X86(CALL(generic::rmod_k3, avx2::rmod_k3, 32));
         IF_ARCH_X86(CALL(generic::mod_k3, avx2::mod_k3_fma3, 32));
         IF_ARCH_X86(CALL(generic::rmod_k3, avx2::rmod_k3_fma3, 32));
+
+        IF_ARCH_X86(CALL(generic::add_k3, avx512::add_k3, 64));
+        IF_ARCH_X86(CALL(generic::sub_k3, avx512::sub_k3, 64));
+        IF_ARCH_X86(CALL(generic::rsub_k3, avx512::rsub_k3, 64));
+        IF_ARCH_X86(CALL(generic::mul_k3, avx512::mul_k3, 64));
+        IF_ARCH_X86(CALL(generic::div_k3, avx512::div_k3, 64));
+        IF_ARCH_X86(CALL(generic::rdiv_k3, avx512::rdiv_k3, 64));
+        IF_ARCH_X86(CALL(generic::mod_k3, avx512::mod_k3, 64));
+        IF_ARCH_X86(CALL(generic::rmod_k3, avx512::rmod_k3, 64));
 
         IF_ARCH_ARM(CALL(generic::add_k3, neon_d32::add_k3, 16));
         IF_ARCH_ARM(CALL(generic::sub_k3, neon_d32::sub_k3, 16));

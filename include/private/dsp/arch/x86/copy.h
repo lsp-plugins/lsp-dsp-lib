@@ -39,7 +39,7 @@ namespace lsp
                 __ASM_EMIT("1:")
                 __ASM_EMIT("test    $1, %[tmp]")
                 __ASM_EMIT("jz      2f")
-                __ASM_EMIT("movsd   ")
+                __ASM_EMIT("movsl   ")
                 __ASM_EMIT("2:")
                 : [dst] "+D" (dst), [src] "+S" (src),
                   [tmp] "=&r" (tmp), [count] "+c" (count)

@@ -301,6 +301,12 @@ namespace lsp
                   "q12", "q13", "q14", "q15"
             );
         }
+
+    #undef PROCESS_COMP_FULL_X4
+    #undef PROCESS_COMP_FULL_X8
+    #undef PROCESS_KNEE_SINGLE_X4
+    #undef PROCESS_KNEE_SINGLE_X8
+
     } /* namespace neon_d32 */
 } /* namespace lsp */
 

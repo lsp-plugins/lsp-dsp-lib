@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -442,7 +442,123 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
-    }
-}
+
+        void fill(float *dst, float value, size_t count)
+        {
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("test                %[count], %[count]")
+                __ASM_EMIT("jz                  2000f")
+                __ASM_EMIT("vbroadcastss        %[value], %%ymm0")
+
+                /* Align destination */
+                __ASM_EMIT("1:")
+                __ASM_EMIT("test                $0x01f, %[dst]")
+                __ASM_EMIT("jz                  2f")
+                __ASM_EMIT("vmovss              %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add                 $0x4, %[dst]")
+                __ASM_EMIT("dec                 %[count]")
+                __ASM_EMIT("jnz                 1b")
+                __ASM_EMIT("jmp                 2000f")
+                __ASM_EMIT("2:")
+                __ASM_EMIT("vmovaps             %%ymm0, %%ymm1")
+                __ASM_EMIT("vmovaps             %%ymm0, %%ymm2")
+                __ASM_EMIT("vmovaps             %%ymm1, %%ymm3")
+
+                /* Destination is aligned */
+                /* x64 blocks */
+                __ASM_EMIT("sub                 $0x40, %[count]")
+                __ASM_EMIT("jb                  4f")
+                __ASM_EMIT("vmovaps             %%ymm0, %%ymm4")
+                __ASM_EMIT("vmovaps             %%ymm1, %%ymm5")
+                __ASM_EMIT("vmovaps             %%ymm2, %%ymm6")
+                __ASM_EMIT("vmovaps             %%ymm3, %%ymm7")
+                __ASM_EMIT("3:")
+                __ASM_EMIT("vmovaps             %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovaps             %%ymm1, 0x20(%[dst])")
+                __ASM_EMIT("vmovaps             %%ymm2, 0x40(%[dst])")
+                __ASM_EMIT("vmovaps             %%ymm3, 0x60(%[dst])")
+                __ASM_EMIT("vmovaps             %%ymm4, 0x80(%[dst])")
+                __ASM_EMIT("vmovaps             %%ymm5, 0xa0(%[dst])")
+                __ASM_EMIT("vmovaps             %%ymm6, 0xc0(%[dst])")
+                __ASM_EMIT("vmovaps             %%ymm7, 0xe0(%[dst])")
+                __ASM_EMIT("add                 $0x100, %[dst]")
+                __ASM_EMIT("sub                 $0x40, %[count]")
+                __ASM_EMIT("jae                 3b")
+                __ASM_EMIT("4:")
+                /* x32 block */
+                __ASM_EMIT("add                 $0x20, %[count]")
+                __ASM_EMIT("jl                  6f")
+                __ASM_EMIT("vmovaps             %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovaps             %%ymm1, 0x20(%[dst])")
+                __ASM_EMIT("vmovaps             %%ymm2, 0x40(%[dst])")
+                __ASM_EMIT("vmovaps             %%ymm3, 0x60(%[dst])")
+                __ASM_EMIT("sub                 $0x20, %[count]")
+                __ASM_EMIT("add                 $0x80, %[dst]")
+                __ASM_EMIT("6:")
+                /* x16 block */
+                __ASM_EMIT("add                 $0x10, %[count]")
+                __ASM_EMIT("jl                  8f")
+                __ASM_EMIT("vmovaps             %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovaps             %%xmm1, 0x10(%[dst])")
+                __ASM_EMIT("vmovaps             %%xmm2, 0x20(%[dst])")
+                __ASM_EMIT("vmovaps             %%xmm3, 0x30(%[dst])")
+                __ASM_EMIT("sub                 $0x10, %[count]")
+                __ASM_EMIT("add                 $0x40, %[dst]")
+                __ASM_EMIT("8:")
+                /* x8 block */
+                __ASM_EMIT("add                 $0x8, %[count]")
+                __ASM_EMIT("jl                  10f")
+                __ASM_EMIT("vmovaps             %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovaps             %%xmm1, 0x10(%[dst])")
+                __ASM_EMIT("sub                 $0x8, %[count]")
+                __ASM_EMIT("add                 $0x20, %[dst]")
+                __ASM_EMIT("10:")
+                /* x4 block */
+                __ASM_EMIT("add                 $0x4, %[count]")
+                __ASM_EMIT("jl                  12f")
+                __ASM_EMIT("vmovaps             %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("sub                 $0x4, %[count]")
+                __ASM_EMIT("add                 $0x10, %[dst]")
+                __ASM_EMIT("12:")
+                /* x1 block */
+                __ASM_EMIT("add                 $0x3, %[count]")
+                __ASM_EMIT("jl                  14f")
+                __ASM_EMIT("13:")
+                __ASM_EMIT("vmovss              %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add                 $0x04, %[dst]")
+                __ASM_EMIT("dec                 %[count]")
+                __ASM_EMIT("jge                 13b")
+                __ASM_EMIT("14:")
+                /* end */
+                __ASM_EMIT("2000:")
+
+                : [dst] "+r"(dst), [count] "+r" (count)
+                : [value] "o" (value)
+                : "cc", "memory",
+                  "%xmm1", "%xmm2", "%xmm3", "%xmm4",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+
+            #undef FILL_CORE
+        }
+
+        void fill_zero(float *dst, size_t count)
+        {
+            fill(dst, 0.0f, count);
+        }
+
+        void fill_one(float *dst, size_t count)
+        {
+            fill(dst, 1.0f, count);
+        }
+
+        void fill_minus_one(float *dst, size_t count)
+        {
+            fill(dst, -1.0f, count);
+        }
+
+    } /* namespace avx */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX_COPY_H_ */

@@ -161,6 +161,14 @@ namespace lsp
             CEXPORT2_X64(favx, exp1, x64_exp1);
             CEXPORT2_X64(favx, exp2, x64_exp2);
 
+            EXPORT1(min_index);
+            EXPORT1(max_index);
+            EXPORT1(minmax_index);
+
+            EXPORT1(abs_min_index);
+            EXPORT1(abs_max_index);
+            EXPORT1(abs_minmax_index);
+
             CEXPORT1(favx, logb1);
             CEXPORT1(favx, logb2);
             CEXPORT1(favx, loge1);
@@ -199,9 +207,13 @@ namespace lsp
 
             CEXPORT1(favx, compressor_x2_gain);
             CEXPORT1(favx, compressor_x2_curve);
-
             CEXPORT2_X64(favx, compressor_x2_gain, x64_compressor_x2_gain);
             CEXPORT2_X64(favx, compressor_x2_curve, x64_compressor_x2_curve);
+
+            CEXPORT1(favx, gate_x1_gain);
+            CEXPORT1(favx, gate_x1_curve);
+            CEXPORT2_X64(favx, gate_x1_gain, x64_gate_x1_gain);
+            CEXPORT2_X64(favx, gate_x1_curve, x64_gate_x1_curve);
 
             if (f->features & CPU_OPTION_FMA3)
             {
@@ -254,6 +266,11 @@ namespace lsp
                 CEXPORT2(favx, compressor_x2_curve, compressor_x2_curve_fma3);
                 CEXPORT2_X64(favx, compressor_x2_gain, x64_compressor_x2_gain_fma3);
                 CEXPORT2_X64(favx, compressor_x2_curve, x64_compressor_x2_curve_fma3);
+
+                CEXPORT2(favx, gate_x1_gain, gate_x1_gain_fma3);
+                CEXPORT2(favx, gate_x1_curve, gate_x1_curve_fma3);
+                CEXPORT2_X64(favx, gate_x1_gain, x64_gate_x1_gain_fma3);
+                CEXPORT2_X64(favx, gate_x1_curve, x64_gate_x1_curve_fma3);
             }
         }
     } /* namespace avx2 */

@@ -115,6 +115,16 @@ namespace lsp
             void lramp_div3(float *dst, const float *a, const float *b, float v1, float v2, size_t count);
             void lramp_rdiv3(float *dst, const float *a, const float *b, float v1, float v2, size_t count);
         }
+
+        namespace avx512
+        {
+            void lramp_add3(float *dst, const float *a, const float *b, float v1, float v2, size_t count);
+            void lramp_sub3(float *dst, const float *a, const float *b, float v1, float v2, size_t count);
+            void lramp_rsub3(float *dst, const float *a, const float *b, float v1, float v2, size_t count);
+            void lramp_mul3(float *dst, const float *a, const float *b, float v1, float v2, size_t count);
+            void lramp_div3(float *dst, const float *a, const float *b, float v1, float v2, size_t count);
+            void lramp_rdiv3(float *dst, const float *a, const float *b, float v1, float v2, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -255,12 +265,19 @@ UTEST_BEGIN("dsp.pmath", lramp3)
         IF_ARCH_X86(CALL(lramp_div3, sse::lramp_div3, 16));
         IF_ARCH_X86(CALL(lramp_rdiv3, sse::lramp_rdiv3, 16));
 
-        IF_ARCH_X86(CALL(lramp_add3, avx::lramp_add3, 16));
-        IF_ARCH_X86(CALL(lramp_sub3, avx::lramp_sub3, 16));
-        IF_ARCH_X86(CALL(lramp_rsub3, avx::lramp_rsub3, 16));
-        IF_ARCH_X86(CALL(lramp_mul3, avx::lramp_mul3, 16));
-        IF_ARCH_X86(CALL(lramp_div3, avx::lramp_div3, 16));
-        IF_ARCH_X86(CALL(lramp_rdiv3, avx::lramp_rdiv3, 16));
+        IF_ARCH_X86(CALL(lramp_add3, avx::lramp_add3, 32));
+        IF_ARCH_X86(CALL(lramp_sub3, avx::lramp_sub3, 32));
+        IF_ARCH_X86(CALL(lramp_rsub3, avx::lramp_rsub3, 32));
+        IF_ARCH_X86(CALL(lramp_mul3, avx::lramp_mul3, 32));
+        IF_ARCH_X86(CALL(lramp_div3, avx::lramp_div3, 32));
+        IF_ARCH_X86(CALL(lramp_rdiv3, avx::lramp_rdiv3, 32));
+
+        IF_ARCH_X86(CALL(lramp_add3, avx512::lramp_add3, 64));
+        IF_ARCH_X86(CALL(lramp_sub3, avx512::lramp_sub3, 64));
+        IF_ARCH_X86(CALL(lramp_rsub3, avx512::lramp_rsub3, 64));
+        IF_ARCH_X86(CALL(lramp_mul3, avx512::lramp_mul3, 64));
+        IF_ARCH_X86(CALL(lramp_div3, avx512::lramp_div3, 64));
+        IF_ARCH_X86(CALL(lramp_rdiv3, avx512::lramp_rdiv3, 64));
 
         IF_ARCH_ARM(CALL(lramp_add3, neon_d32::lramp_add3, 16));
         IF_ARCH_ARM(CALL(lramp_sub3, neon_d32::lramp_sub3, 16));

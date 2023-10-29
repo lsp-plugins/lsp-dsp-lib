@@ -2358,7 +2358,6 @@ namespace lsp
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
                 __ASM_EMIT("6:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")
@@ -2430,7 +2429,6 @@ namespace lsp
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
                 __ASM_EMIT("4:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")

@@ -63,6 +63,17 @@ namespace lsp
             void lramp_div2(float *dst, const float *src, float v1, float v2, size_t count);
             void lramp_rdiv2(float *dst, const float *src, float v1, float v2, size_t count);
         }
+
+        namespace avx512
+        {
+            void lramp2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_add2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_sub2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_rsub2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_mul2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_div2(float *dst, const float *src, float v1, float v2, size_t count);
+            void lramp_rdiv2(float *dst, const float *src, float v1, float v2, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -133,6 +144,7 @@ PTEST_BEGIN("dsp.pmath", lramp2, 5, 1000)
             CALL(generic::lramp2);
             IF_ARCH_X86(CALL(sse::lramp2));
             IF_ARCH_X86(CALL(avx::lramp2));
+            IF_ARCH_X86(CALL(avx512::lramp2));
             IF_ARCH_ARM(CALL(neon_d32::lramp2));
             IF_ARCH_AARCH64(CALL(asimd::lramp2));
             PTEST_SEPARATOR;
@@ -140,6 +152,7 @@ PTEST_BEGIN("dsp.pmath", lramp2, 5, 1000)
             CALL(generic::lramp_add2);
             IF_ARCH_X86(CALL(sse::lramp_add2));
             IF_ARCH_X86(CALL(avx::lramp_add2));
+            IF_ARCH_X86(CALL(avx512::lramp_add2));
             IF_ARCH_ARM(CALL(neon_d32::lramp_add2));
             IF_ARCH_AARCH64(CALL(asimd::lramp_add2));
             PTEST_SEPARATOR;
@@ -147,6 +160,7 @@ PTEST_BEGIN("dsp.pmath", lramp2, 5, 1000)
             CALL(generic::lramp_sub2);
             IF_ARCH_X86(CALL(sse::lramp_sub2));
             IF_ARCH_X86(CALL(avx::lramp_sub2));
+            IF_ARCH_X86(CALL(avx512::lramp_sub2));
             IF_ARCH_ARM(CALL(neon_d32::lramp_sub2));
             IF_ARCH_AARCH64(CALL(asimd::lramp_sub2));
             PTEST_SEPARATOR;
@@ -154,6 +168,7 @@ PTEST_BEGIN("dsp.pmath", lramp2, 5, 1000)
             CALL(generic::lramp_rsub2);
             IF_ARCH_X86(CALL(sse::lramp_rsub2));
             IF_ARCH_X86(CALL(avx::lramp_rsub2));
+            IF_ARCH_X86(CALL(avx512::lramp_rsub2));
             IF_ARCH_ARM(CALL(neon_d32::lramp_rsub2));
             IF_ARCH_AARCH64(CALL(asimd::lramp_rsub2));
             PTEST_SEPARATOR;
@@ -161,6 +176,7 @@ PTEST_BEGIN("dsp.pmath", lramp2, 5, 1000)
             CALL(generic::lramp_mul2);
             IF_ARCH_X86(CALL(sse::lramp_mul2));
             IF_ARCH_X86(CALL(avx::lramp_mul2));
+            IF_ARCH_X86(CALL(avx512::lramp_mul2));
             IF_ARCH_ARM(CALL(neon_d32::lramp_mul2));
             IF_ARCH_AARCH64(CALL(asimd::lramp_mul2));
             PTEST_SEPARATOR;
@@ -168,6 +184,7 @@ PTEST_BEGIN("dsp.pmath", lramp2, 5, 1000)
             CALL(generic::lramp_div2);
             IF_ARCH_X86(CALL(sse::lramp_div2));
             IF_ARCH_X86(CALL(avx::lramp_div2));
+            IF_ARCH_X86(CALL(avx512::lramp_div2));
             IF_ARCH_ARM(CALL(neon_d32::lramp_div2));
             IF_ARCH_AARCH64(CALL(asimd::lramp_div2));
             PTEST_SEPARATOR;
@@ -175,6 +192,7 @@ PTEST_BEGIN("dsp.pmath", lramp2, 5, 1000)
             CALL(generic::lramp_rdiv2);
             IF_ARCH_X86(CALL(sse::lramp_rdiv2));
             IF_ARCH_X86(CALL(avx::lramp_rdiv2));
+            IF_ARCH_X86(CALL(avx512::lramp_rdiv2));
             IF_ARCH_ARM(CALL(neon_d32::lramp_rdiv2));
             IF_ARCH_AARCH64(CALL(asimd::lramp_rdiv2));
             PTEST_SEPARATOR2;

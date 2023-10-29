@@ -67,6 +67,12 @@ namespace lsp
             void lramp_set1(float *dst, float v1, float v2, size_t count);
             void lramp1(float *dst, float v1, float v2, size_t count);
         }
+
+        namespace avx512
+        {
+            void lramp_set1(float *dst, float v1, float v2, size_t count);
+            void lramp1(float *dst, float v1, float v2, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -158,8 +164,10 @@ UTEST_BEGIN("dsp.pmath", lramp1)
 
         IF_ARCH_X86(CALL(lramp_set1, sse::lramp_set1, 16));
         IF_ARCH_X86(CALL(lramp1, sse::lramp1, 16));
-        IF_ARCH_X86(CALL(lramp_set1, avx::lramp_set1, 16));
-        IF_ARCH_X86(CALL(lramp1, avx::lramp1, 16));
+        IF_ARCH_X86(CALL(lramp_set1, avx::lramp_set1, 32));
+        IF_ARCH_X86(CALL(lramp1, avx::lramp1, 32));
+        IF_ARCH_X86(CALL(lramp_set1, avx512::lramp_set1, 64));
+        IF_ARCH_X86(CALL(lramp1, avx512::lramp1, 64));
 
         IF_ARCH_ARM(CALL(lramp_set1, neon_d32::lramp_set1, 16));
         IF_ARCH_ARM(CALL(lramp1, neon_d32::lramp1, 16));

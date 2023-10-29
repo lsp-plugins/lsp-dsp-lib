@@ -63,9 +63,8 @@ namespace lsp
         __ASM_EMIT("vsqrtps     %%ymm1, %%ymm1") \
         __ASM_EMIT("vmovups     %%ymm0, 0x00(%[" DST "], %[off])") \
         __ASM_EMIT("vmovups     %%ymm1, 0x20(%[" DST "], %[off])") \
-        __ASM_EMIT("add         $0x40, %[off]") \
         __ASM_EMIT("sub         $16, %[count]") \
-        __ASM_EMIT("jae         1b") \
+        __ASM_EMIT("add         $0x40, %[off]") \
         __ASM_EMIT("4:") \
         /* 8x block */ \
         __ASM_EMIT("add         $8, %[count]") \
