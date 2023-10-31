@@ -3,7 +3,7 @@
  *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
- * Created on: 5 окт. 2023 г.
+ * Created on: 1 нояб. 2023 г.
  *
  * lsp-dsp-lib is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,15 +19,17 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PRIVATE_DSP_ARCH_GENERIC_DYNAMICS_H_
-#define PRIVATE_DSP_ARCH_GENERIC_DYNAMICS_H_
+#ifndef LSP_PLUG_IN_DSP_COMMON_DYNAMICS_EXPANDER_H_
+#define LSP_PLUG_IN_DSP_COMMON_DYNAMICS_EXPANDER_H_
 
-#ifndef PRIVATE_DSP_ARCH_GENERIC_IMPL
-    #error "This header should not be included directly"
-#endif /* PRIVATE_DSP_ARCH_GENERIC_IMPL */
+#include <lsp-plug.in/dsp/common/types.h>
+#include <lsp-plug.in/dsp/common/dynamics/types.h>
 
-#include <private/dsp/arch/generic/dynamics/compressor.h>
-#include <private/dsp/arch/generic/dynamics/expander.h>
-#include <private/dsp/arch/generic/dynamics/gate.h>
+LSP_DSP_LIB_SYMBOL(void, uexpander_x1_gain, float *dst, const float *src, const LSP_DSP_LIB_TYPE(expander_knee_t) *c, size_t count);
+LSP_DSP_LIB_SYMBOL(void, dexpander_x1_gain, float *dst, const float *src, const LSP_DSP_LIB_TYPE(expander_knee_t) *c, size_t count);
 
-#endif /* PRIVATE_DSP_ARCH_GENERIC_DYNAMICS_H_ */
+LSP_DSP_LIB_SYMBOL(void, uexpander_x1_curve, float *dst, const float *src, const LSP_DSP_LIB_TYPE(expander_knee_t) *c, size_t count);
+LSP_DSP_LIB_SYMBOL(void, dexpander_x1_curve, float *dst, const float *src, const LSP_DSP_LIB_TYPE(expander_knee_t) *c, size_t count);
+
+
+#endif /* LSP_PLUG_IN_DSP_COMMON_DYNAMICS_EXPANDER_H_ */
