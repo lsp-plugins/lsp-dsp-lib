@@ -27,7 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_X86_AVX512_IMPL */
 
 #include <private/dsp/arch/x86/avx512/dynamics/compressor.h>
-
+#include <private/dsp/arch/x86/avx512/dynamics/gate.h>
 
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX512_DYNAMICS_H_ */

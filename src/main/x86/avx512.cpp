@@ -268,6 +268,8 @@
 
                 CEXPORT1(vl, compressor_x2_gain);
                 CEXPORT1(vl, compressor_x2_curve);
+                CEXPORT1(vl, gate_x1_gain);
+                CEXPORT1(vl, gate_x1_curve);
             }
         } /* namespace avx2 */
     } /* namespace lsp */
