@@ -42,7 +42,7 @@ namespace lsp
                     float lx    = logf(x);
                     dst[i]      = (x >= c->end) ?
                                   expf(c->tilt[0]*lx + c->tilt[1]) :
-                                  expf((c->herm[0]*lx + c->herm[1] - 1.0f)*lx + c->herm[2]);
+                                  expf((c->herm[0]*lx + c->herm[1])*lx + c->herm[2]);
                 }
                 else
                     dst[i]      = 1.0f;
@@ -61,7 +61,7 @@ namespace lsp
                     float lx    = logf(x);
                     dst[i]      = (x <= c->start) ?
                                    expf(c->tilt[0]*lx + c->tilt[1]) :
-                                   expf((c->herm[0]*lx + c->herm[1] - 1.0f)*lx + c->herm[2]);
+                                   expf((c->herm[0]*lx + c->herm[1])*lx + c->herm[2]);
                 }
                 else
                     dst[i]      = 1.0f;
@@ -80,7 +80,7 @@ namespace lsp
                     float lx    = logf(x);
                     dst[i]      = (x >= c->end) ?
                                   x * expf(c->tilt[0]*lx + c->tilt[1]) :
-                                  x * expf((c->herm[0]*lx + c->herm[1] - 1.0f)*lx + c->herm[2]);
+                                  x * expf((c->herm[0]*lx + c->herm[1])*lx + c->herm[2]);
                 }
                 else
                     dst[i]      = x;
@@ -99,7 +99,7 @@ namespace lsp
                     float lx    = logf(x);
                     dst[i]      = (x <= c->start) ?
                                    x * expf(c->tilt[0]*lx + c->tilt[1]) :
-                                   x * expf((c->herm[0]*lx + c->herm[1] - 1.0f)*lx + c->herm[2]);
+                                   x * expf((c->herm[0]*lx + c->herm[1])*lx + c->herm[2]);
                 }
                 else
                     dst[i]      = x;
