@@ -215,6 +215,15 @@ namespace lsp
             CEXPORT2_X64(favx, gate_x1_gain, x64_gate_x1_gain);
             CEXPORT2_X64(favx, gate_x1_curve, x64_gate_x1_curve);
 
+            CEXPORT1(favx, uexpander_x1_gain);
+            CEXPORT1(favx, uexpander_x1_curve);
+            CEXPORT2_X64(favx, uexpander_x1_gain, x64_uexpander_x1_gain);
+            CEXPORT2_X64(favx, uexpander_x1_curve, x64_uexpander_x1_curve);
+            CEXPORT1(favx, dexpander_x1_gain);
+            CEXPORT1(favx, dexpander_x1_curve);
+            CEXPORT2_X64(favx, dexpander_x1_gain, x64_dexpander_x1_gain);
+            CEXPORT2_X64(favx, dexpander_x1_curve, x64_dexpander_x1_curve);
+
             if (f->features & CPU_OPTION_FMA3)
             {
                 CEXPORT2(favx, mod_k2, mod_k2_fma3);

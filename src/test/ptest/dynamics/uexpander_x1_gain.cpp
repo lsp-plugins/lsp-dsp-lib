@@ -42,25 +42,25 @@ namespace lsp
             void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
         }
 
-//        namespace avx2
-//        {
-//            void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+        namespace avx2
+        {
+            void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
 //            void uexpander_x1_gain_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
-//        }
-//
+        }
+
 //        namespace avx512
 //        {
 //            void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
 //        }
     )
 
-//    IF_ARCH_X86_64(
-//        namespace avx2
-//        {
-//            void x64_uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+    IF_ARCH_X86_64(
+        namespace avx2
+        {
+            void x64_uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
 //            void x64_uexpander_x1_gain_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
-//        }
-//    )
+        }
+    )
 
 //    IF_ARCH_ARM(
 //        namespace neon_d32
@@ -129,8 +129,8 @@ PTEST_BEGIN("dsp.dynamics", uexpander_x1_gain, 5, 1000)
 
             CALL(generic::uexpander_x1_gain);
             IF_ARCH_X86(CALL(sse2::uexpander_x1_gain));
-//            IF_ARCH_X86(CALL(avx2::uexpander_x1_gain));
-//            IF_ARCH_X86_64(CALL(avx2::x64_uexpander_x1_gain));
+            IF_ARCH_X86(CALL(avx2::uexpander_x1_gain));
+            IF_ARCH_X86_64(CALL(avx2::x64_uexpander_x1_gain));
 //            IF_ARCH_X86(CALL(avx2::uexpander_x1_gain_fma3));
 //            IF_ARCH_X86_64(CALL(avx2::x64_uexpander_x1_gain_fma3));
 //            IF_ARCH_X86(CALL(avx512::uexpander_x1_gain));

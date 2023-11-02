@@ -40,25 +40,25 @@ namespace lsp
             void uexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
         }
 
-//        namespace avx2
-//        {
-//            void uexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+        namespace avx2
+        {
+            void uexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
 //            void uexpander_x1_curve_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
-//        }
-//
+        }
+
 //        namespace avx512
 //        {
 //            void uexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
 //        }
     )
 
-//    IF_ARCH_X86_64(
-//        namespace avx2
-//        {
-//            void x64_uexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+    IF_ARCH_X86_64(
+        namespace avx2
+        {
+            void x64_uexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
 //            void x64_uexpander_x1_curve_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
-//        }
-//    )
+        }
+    )
 
 //    IF_ARCH_ARM(
 //        namespace neon_d32
@@ -175,9 +175,9 @@ UTEST_BEGIN("dsp.dynamics", uexpander_x1_curve)
             call(#func, align, generic, func);
 
         IF_ARCH_X86(CALL(generic::uexpander_x1_curve, sse2::uexpander_x1_curve, 16));
-//        IF_ARCH_X86(CALL(generic::uexpander_x1_curve, avx2::uexpander_x1_curve, 32));
+        IF_ARCH_X86(CALL(generic::uexpander_x1_curve, avx2::uexpander_x1_curve, 32));
 //        IF_ARCH_X86(CALL(generic::uexpander_x1_curve, avx2::uexpander_x1_curve_fma3, 32));
-//        IF_ARCH_X86_64(CALL(generic::uexpander_x1_curve, avx2::x64_uexpander_x1_curve, 32));
+        IF_ARCH_X86_64(CALL(generic::uexpander_x1_curve, avx2::x64_uexpander_x1_curve, 32));
 //        IF_ARCH_X86_64(CALL(generic::uexpander_x1_curve, avx2::x64_uexpander_x1_curve_fma3, 32));
 //        IF_ARCH_X86(CALL(generic::uexpander_x1_curve, avx512::uexpander_x1_curve, 64));
 

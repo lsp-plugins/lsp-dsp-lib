@@ -42,25 +42,25 @@ namespace lsp
             void dexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
         }
 
-//        namespace avx2
-//        {
-//            void dexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+        namespace avx2
+        {
+            void dexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
 //            void dexpander_x1_curve_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
-//        }
-//
+        }
+
 //        namespace avx512
 //        {
 //            void dexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
 //        }
     )
 
-//    IF_ARCH_X86_64(
-//        namespace avx2
-//        {
-//            void x64_dexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+    IF_ARCH_X86_64(
+        namespace avx2
+        {
+            void x64_dexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
 //            void x64_dexpander_x1_curve_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
-//        }
-//    )
+        }
+    )
 
 //    IF_ARCH_ARM(
 //        namespace neon_d32
@@ -129,8 +129,8 @@ PTEST_BEGIN("dsp.dynamics", dexpander_x1_curve, 5, 1000)
 
             CALL(generic::dexpander_x1_curve);
             IF_ARCH_X86(CALL(sse2::dexpander_x1_curve));
-//            IF_ARCH_X86(CALL(avx2::dexpander_x1_curve));
-//            IF_ARCH_X86_64(CALL(avx2::x64_dexpander_x1_curve));
+            IF_ARCH_X86(CALL(avx2::dexpander_x1_curve));
+            IF_ARCH_X86_64(CALL(avx2::x64_dexpander_x1_curve));
 //            IF_ARCH_X86(CALL(avx2::dexpander_x1_curve_fma3));
 //            IF_ARCH_X86_64(CALL(avx2::x64_dexpander_x1_curve_fma3));
 //            IF_ARCH_X86(CALL(avx512::dexpander_x1_curve));

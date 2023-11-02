@@ -40,25 +40,25 @@ namespace lsp
             void dexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
         }
 
-//        namespace avx2
-//        {
-//            void dexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+        namespace avx2
+        {
+            void dexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
 //            void dexpander_x1_gain_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
-//        }
-//
+        }
+
 //        namespace avx512
 //        {
 //            void dexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
 //        }
     )
 
-//    IF_ARCH_X86_64(
-//        namespace avx2
-//        {
-//            void x64_dexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+    IF_ARCH_X86_64(
+        namespace avx2
+        {
+            void x64_dexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
 //            void x64_dexpander_x1_gain_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
-//        }
-//    )
+        }
+    )
 
 //    IF_ARCH_ARM(
 //        namespace neon_d32
@@ -175,9 +175,9 @@ UTEST_BEGIN("dsp.dynamics", dexpander_x1_gain)
             call(#func, align, generic, func);
 
         IF_ARCH_X86(CALL(generic::dexpander_x1_gain, sse2::dexpander_x1_gain, 16));
-//        IF_ARCH_X86(CALL(generic::dexpander_x1_gain, avx2::dexpander_x1_gain, 32));
+        IF_ARCH_X86(CALL(generic::dexpander_x1_gain, avx2::dexpander_x1_gain, 32));
 //        IF_ARCH_X86(CALL(generic::dexpander_x1_gain, avx2::dexpander_x1_gain_fma3, 32));
-//        IF_ARCH_X86_64(CALL(generic::dexpander_x1_gain, avx2::x64_dexpander_x1_gain, 32));
+        IF_ARCH_X86_64(CALL(generic::dexpander_x1_gain, avx2::x64_dexpander_x1_gain, 32));
 //        IF_ARCH_X86_64(CALL(generic::dexpander_x1_gain, avx2::x64_dexpander_x1_gain_fma3, 32));
 //        IF_ARCH_X86(CALL(generic::dexpander_x1_gain, avx512::dexpander_x1_gain, 64));
 
