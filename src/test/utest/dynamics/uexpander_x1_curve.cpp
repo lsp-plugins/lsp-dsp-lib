@@ -60,12 +60,12 @@ namespace lsp
         }
     )
 
-//    IF_ARCH_ARM(
-//        namespace neon_d32
-//        {
-//            void uexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
-//        }
-//    )
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void uexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+        }
+    )
 
 //    IF_ARCH_AARCH64(
 //        namespace asimd
@@ -181,9 +181,9 @@ UTEST_BEGIN("dsp.dynamics", uexpander_x1_curve)
         IF_ARCH_X86_64(CALL(generic::uexpander_x1_curve, avx2::x64_uexpander_x1_curve_fma3, 32));
         IF_ARCH_X86(CALL(generic::uexpander_x1_curve, avx512::uexpander_x1_curve, 64));
 
-//        IF_ARCH_ARM(CALL(generic::expander_x1_curve, neon_d32::expander_x1_curve, 16));
+        IF_ARCH_ARM(CALL(generic::uexpander_x1_curve, neon_d32::uexpander_x1_curve, 16));
 
-//        IF_ARCH_AARCH64(CALL(generic::expander_x1_curve, asimd::expander_x1_curve, 16));
+//        IF_ARCH_AARCH64(CALL(generic::uexpander_x1_curve, asimd::uexpander_x1_curve, 16));
     }
 UTEST_END
 
