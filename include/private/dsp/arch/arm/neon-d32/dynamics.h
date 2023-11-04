@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL */
 
 #include <private/dsp/arch/arm/neon-d32/dynamics/compressor.h>
+#include <private/dsp/arch/arm/neon-d32/dynamics/expander.h>
 #include <private/dsp/arch/arm/neon-d32/dynamics/gate.h>
 
 

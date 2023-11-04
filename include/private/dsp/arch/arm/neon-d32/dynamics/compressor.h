@@ -147,7 +147,7 @@ namespace lsp
         /* out: q0 = G0, q1= G1 */
 
     #define PROCESS_COMP_FULL_X4 \
-        /* in: q0 = x0, q1 = x1 */ \
+        /* in: v0 = x0 */ \
         __ASM_EMIT("vabs.f32            q0, q0")                        /* q0 = fabsf(x0) */ \
         __ASM_EMIT("vstm                %[mem], {q0}")                  /* mem[0x00] = fabfs(x0) */ \
         __ASM_EMIT("vldm                %[LOGC], {q14-q15}") \
@@ -165,7 +165,7 @@ namespace lsp
         __ASM_EMIT("vldm                %[off], {q2}")                  /* q2 = g0 */ \
         __ASM_EMIT("sub                 %[comp], %[comp], #0x20") \
         __ASM_EMIT("vmul.f32            q0, q0, q2")                    /* q0 = G = */ \
-        /* out: q0 = G0, q1= G1 */
+        /* out: v0 = G0 */
 
         void compressor_x2_gain(float *dst, const float *src, const dsp::compressor_x2_t *c, size_t count)
         {
