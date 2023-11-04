@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL */
 
 #include <private/dsp/arch/aarch64/asimd/dynamics/compressor.h>
+#include <private/dsp/arch/aarch64/asimd/dynamics/expander.h>
 #include <private/dsp/arch/aarch64/asimd/dynamics/gate.h>
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_DYNAMICS_H_ */

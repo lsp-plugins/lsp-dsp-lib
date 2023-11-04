@@ -67,12 +67,12 @@ namespace lsp
         }
     )
 
-//    IF_ARCH_AARCH64(
-//        namespace asimd
-//        {
-//            void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
-//        }
-//    )
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+        }
+    )
 }
 
 typedef void (* expander_x1_func_t)(float *dst, const float *src, const lsp::dsp::expander_knee_t *c, size_t count);
@@ -183,7 +183,7 @@ UTEST_BEGIN("dsp.dynamics", uexpander_x1_gain)
 
         IF_ARCH_ARM(CALL(generic::uexpander_x1_gain, neon_d32::uexpander_x1_gain, 16));
 
-//        IF_ARCH_AARCH64(CALL(generic::uexpander_x1_gain, asimd::uexpander_x1_gain, 16));
+        IF_ARCH_AARCH64(CALL(generic::uexpander_x1_gain, asimd::uexpander_x1_gain, 16));
     }
 UTEST_END
 
