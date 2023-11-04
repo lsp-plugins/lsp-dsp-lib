@@ -464,6 +464,8 @@
 
                 EXPORT1(uexpander_x1_gain);
                 EXPORT1(uexpander_x1_curve);
+                EXPORT1(dexpander_x1_gain);
+                EXPORT1(dexpander_x1_curve);
             }
         } /* namespace asimd */
     } /* namespace lsp */

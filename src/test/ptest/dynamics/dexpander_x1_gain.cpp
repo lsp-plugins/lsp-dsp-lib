@@ -69,12 +69,12 @@ namespace lsp
         }
     )
 
-//    IF_ARCH_AARCH64(
-//        namespace asimd
-//        {
-//            void dexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
-//        }
-//    )
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void dexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+        }
+    )
 }
 
 typedef void (* expander_x1_func_t)(float *dst, const float *src, const lsp::dsp::expander_knee_t *c, size_t count);
@@ -135,7 +135,7 @@ PTEST_BEGIN("dsp.dynamics", dexpander_x1_gain, 5, 1000)
             IF_ARCH_X86_64(CALL(avx2::x64_dexpander_x1_gain_fma3));
             IF_ARCH_X86(CALL(avx512::dexpander_x1_gain));
             IF_ARCH_ARM(CALL(neon_d32::dexpander_x1_gain));
-//            IF_ARCH_AARCH64(CALL(asimd::dexpander_x1_gain));
+            IF_ARCH_AARCH64(CALL(asimd::dexpander_x1_gain));
             PTEST_SEPARATOR;
         }
 
