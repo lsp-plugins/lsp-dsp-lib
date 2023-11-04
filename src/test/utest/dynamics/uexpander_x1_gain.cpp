@@ -92,6 +92,7 @@ UTEST_BEGIN("dsp.dynamics", uexpander_x1_gain)
         exp = {
             0.0316227823f,
             0.12589255f,
+            0.0f,
             { 0.361912072f, 2.5f, 4.31734657f },
             { 1.0f, 2.76310205f }};
 
