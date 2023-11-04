@@ -157,7 +157,7 @@ namespace lsp
         __ASM_EMIT("vandps              0x000 + %[X2C], %%zmm0, %%zmm0")        /* zmm0 = fabsf(x0) */ \
         __ASM_EMIT("vandps              0x000 + %[X2C], %%zmm4, %%zmm4") \
         __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%zmm0, %%k4")     /* k4   = [x0 > start] */ \
-        __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%zmm0, %%k6") \
+        __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%zmm4, %%k6") \
         __ASM_EMIT("korw                %%k6, %%k4, %%k4") \
         __ASM_EMIT("kmovw               %%k4, %k[mask]") \
         __ASM_EMIT("test                %k[mask], %k[mask]") \
