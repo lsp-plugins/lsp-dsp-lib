@@ -146,14 +146,18 @@ namespace lsp
         /* in: zmm0 = x0, zmm4 = x1 */ \
         __ASM_EMIT("vandps              0x00 + %[C2C], %%zmm0, %%zmm0")         /* zmm0 = fabsf(x0) */ \
         __ASM_EMIT("vandps              0x00 + %[C2C], %%zmm4, %%zmm4") \
-        __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%zmm0, %%k4")     /* k4   = [fabsf(x0) > start] */ \
-        __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%zmm4, %%k6") \
+        __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%zmm0, %%k4")     /* k4   = [fabsf(x0) > start[0] ] */ \
+		__ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%zmm4, %%k5") \
+        __ASM_EMIT("vcmpps              $6, 0x200 + %[knee], %%zmm0, %%k6") 	/* k6   = [fabsf(x0) > start[1] ] */ \
+		__ASM_EMIT("vcmpps              $6, 0x200 + %[knee], %%zmm4, %%k7") \
         __ASM_EMIT("korw                %%k6, %%k4, %%k4") \
+		__ASM_EMIT("korw                %%k7, %%k5, %%k5") \
+		__ASM_EMIT("korw                %%k5, %%k4, %%k4") \
         __ASM_EMIT("kmovw               %%k4, %k[mask]") \
         __ASM_EMIT("test                %k[mask], %k[mask]") \
         __ASM_EMIT("jnz                 100f") \
         __ASM_EMIT("vmovaps             0x080 + %[knee], %%zmm0")               /* zmm0 = g0 */ \
-        __ASM_EMIT("vmulps              0x180 + %[knee], %%zmm0, %%zmm0")       /* zmm0 = G0 = g0*g1 */ \
+        __ASM_EMIT("vmulps              0x280 + %[knee], %%zmm0, %%zmm0")       /* zmm0 = G0 = g0*g1 */ \
         __ASM_EMIT("vmovaps             %%zmm0, %%zmm4")                        /* zmm4 = G1 = g0*g1 */ \
         __ASM_EMIT("jmp                 200f") \
         __ASM_EMIT("100:") \
@@ -176,12 +180,14 @@ namespace lsp
     #define PROCESS_COMP_FULL_X16 \
         /* in: zmm0 = x0 */ \
         __ASM_EMIT("vandps              0x00 + %[C2C], %%zmm0, %%zmm0")         /* zmm0 = fabsf(x0) */ \
-        __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%zmm0, %%k4")     /* k4   = [fabsf(x0) > start] */ \
+        __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%zmm0, %%k4")     /* k4   = [fabsf(x0) > start[0] ] */ \
+		__ASM_EMIT("vcmpps              $6, 0x200 + %[knee], %%zmm0, %%k6")     /* k6   = [fabsf(x0) > start[1] ] */ \
+		__ASM_EMIT("korw				%%k6, %%k4, %%k4") \
         __ASM_EMIT("kmovw               %%k4, %k[mask]") \
         __ASM_EMIT("test                %k[mask], %k[mask]") \
         __ASM_EMIT("jnz                 100f") \
         __ASM_EMIT("vmovaps             0x080 + %[knee], %%zmm0")               /* zmm0 = g0 */ \
-        __ASM_EMIT("vmulps              0x180 + %[knee], %%zmm0, %%zmm0")       /* zmm0 = g0*g1 */ \
+        __ASM_EMIT("vmulps              0x280 + %[knee], %%zmm0, %%zmm0")       /* zmm0 = g0*g1 */ \
         __ASM_EMIT("jmp                 200f") \
         __ASM_EMIT("100:") \
         __ASM_EMIT("vmovaps             %%zmm0, 0x000 + %[mem]")                /* *mem = fabsf(x0) */ \
@@ -198,12 +204,14 @@ namespace lsp
     #define PROCESS_COMP_FULL_X8 \
         /* in: ymm0 = x0 */ \
         __ASM_EMIT("vandps              0x00 + %[C2C], %%ymm0, %%ymm0")         /* ymm0 = fabsf(x0) */ \
-        __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%ymm0, %%k4")     /* k4   = [fabsf(x0) > start] */ \
+        __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%ymm0, %%k4")     /* k4   = [fabsf(x0) > start[0] ] */ \
+		__ASM_EMIT("vcmpps              $6, 0x200 + %[knee], %%ymm0, %%k6")     /* k6   = [fabsf(x0) > start[1] ] */ \
+		__ASM_EMIT("korw				%%k6, %%k4, %%k4") \
         __ASM_EMIT("kmovw               %%k4, %k[mask]") \
         __ASM_EMIT("test                %k[mask], %k[mask]") \
         __ASM_EMIT("jnz                 100f") \
         __ASM_EMIT("vmovaps             0x080 + %[knee], %%ymm0")               /* ymm0 = g0 */ \
-        __ASM_EMIT("vmulps              0x180 + %[knee], %%ymm0, %%ymm0")       /* ymm0 = g0*g1 */ \
+        __ASM_EMIT("vmulps              0x280 + %[knee], %%ymm0, %%ymm0")       /* ymm0 = g0*g1 */ \
         __ASM_EMIT("jmp                 200f") \
         __ASM_EMIT("100:") \
         __ASM_EMIT("vmovaps             %%ymm0, 0x000 + %[mem]")                /* *mem = fabsf(x0) */ \
