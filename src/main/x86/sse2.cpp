@@ -151,10 +151,10 @@
                 EXPORT1(compressor_x2_curve)
                 EXPORT1(gate_x1_gain)
                 EXPORT1(gate_x1_curve)
-                EXPORT1(uexpander_x1_gain)
-                EXPORT1(uexpander_x1_curve)
-                EXPORT1(dexpander_x1_gain)
-                EXPORT1(dexpander_x1_curve)
+//                EXPORT1(uexpander_x1_gain)
+//                EXPORT1(uexpander_x1_curve)
+//                EXPORT1(dexpander_x1_gain)
+//                EXPORT1(dexpander_x1_curve)
             }
 
             #undef EXPORT1

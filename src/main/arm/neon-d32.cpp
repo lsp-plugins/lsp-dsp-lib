@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -418,10 +418,10 @@
                 EXPORT1(compressor_x2_curve);
                 EXPORT1(gate_x1_gain);
                 EXPORT1(gate_x1_curve);
-                EXPORT1(uexpander_x1_gain);
-                EXPORT1(uexpander_x1_curve);
-                EXPORT1(dexpander_x1_gain);
-                EXPORT1(dexpander_x1_curve);
+//                EXPORT1(uexpander_x1_gain);
+//                EXPORT1(uexpander_x1_curve);
+//                EXPORT1(dexpander_x1_gain);
+//                EXPORT1(dexpander_x1_curve);
             }
         } /* namespace neon_d32 */
     } /* namespace lsp */
