@@ -24,9 +24,6 @@
 
 #include <lsp-plug.in/dsp/common/types.h>
 
-#define LSP_DSP_LIB_EXP_ZERO_SAT    1e-10f
-#define LSP_DSP_LIB_EXP_INF_SAT     1e+10f
-
 LSP_DSP_LIB_BEGIN_NAMESPACE
 
 #pragma pack(push, 1)
