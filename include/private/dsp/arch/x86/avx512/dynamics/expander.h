@@ -336,10 +336,8 @@ namespace lsp
                 PROCESS_UEXP_FULL_X32
                 __ASM_EMIT("vmulps          0x00(%[src]), %%zmm0, %%zmm0")
                 __ASM_EMIT("vmulps          0x40(%[src]), %%zmm4, %%zmm4")
-                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
-                __ASM_EMIT("vmovups         %%ymm4, 0x20(%[dst])")
-                __ASM_EMIT("vmovups         %%ymm8, 0x40(%[dst])")
-                __ASM_EMIT("vmovups         %%ymm12, 0x60(%[dst])")
+                __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
+                __ASM_EMIT("vmovups         %%zmm4, 0x40(%[dst])")
                 __ASM_EMIT("add             $0x80, %[src]")
                 __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
