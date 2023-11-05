@@ -281,15 +281,15 @@ namespace lsp
                 CEXPORT2_X64(favx, gate_x1_gain, x64_gate_x1_gain_fma3);
                 CEXPORT2_X64(favx, gate_x1_curve, x64_gate_x1_curve_fma3);
 
-//                CEXPORT2(favx, uexpander_x1_gain, uexpander_x1_gain_fma3);
-//                CEXPORT2(favx, uexpander_x1_curve, uexpander_x1_curve_fma3);
-//                CEXPORT2_X64(favx, uexpander_x1_gain, x64_uexpander_x1_gain_fma3);
-//                CEXPORT2_X64(favx, uexpander_x1_curve, x64_uexpander_x1_curve_fma3);
-//
-//                CEXPORT2(favx, dexpander_x1_gain, dexpander_x1_gain_fma3);
-//                CEXPORT2(favx, dexpander_x1_curve, dexpander_x1_curve_fma3);
-//                CEXPORT2_X64(favx, dexpander_x1_gain, x64_dexpander_x1_gain_fma3);
-//                CEXPORT2_X64(favx, dexpander_x1_curve, x64_dexpander_x1_curve_fma3);
+                CEXPORT2(favx, uexpander_x1_gain, uexpander_x1_gain_fma3);
+                CEXPORT2(favx, uexpander_x1_curve, uexpander_x1_curve_fma3);
+                CEXPORT2_X64(favx, uexpander_x1_gain, x64_uexpander_x1_gain_fma3);
+                CEXPORT2_X64(favx, uexpander_x1_curve, x64_uexpander_x1_curve_fma3);
+
+                CEXPORT2(favx, dexpander_x1_gain, dexpander_x1_gain_fma3);
+                CEXPORT2(favx, dexpander_x1_curve, dexpander_x1_curve_fma3);
+                CEXPORT2_X64(favx, dexpander_x1_gain, x64_dexpander_x1_gain_fma3);
+                CEXPORT2_X64(favx, dexpander_x1_curve, x64_dexpander_x1_curve_fma3);
             }
         }
     } /* namespace avx2 */
