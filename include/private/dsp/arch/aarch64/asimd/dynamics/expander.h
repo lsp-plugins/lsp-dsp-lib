@@ -34,11 +34,9 @@ namespace lsp
     namespace asimd
     {
         IF_ARCH_AARCH64(
-            static const uint32_t expander_const[] __lsp_aligned16 =
+            static const float expander_const[] __lsp_aligned16 =
             {
-                LSP_DSP_VEC4(0x3f800000),   // 1.0f
-                LSP_DSP_VEC4(0x2edbe6ff),   // 1e-10f
-                LSP_DSP_VEC4(0x501502f9)    // 1e+10f
+                LSP_DSP_VEC4(1.0f)
             };
         )
 
@@ -46,69 +44,63 @@ namespace lsp
         /* in: v0 = lx0, v1 = lx1 */ \
         __ASM_EMIT("add                 %[off], %[exp], #0x10") \
         __ASM_EMIT("ldp                 q6, q7, [%[mem], #0x00]")           /* v6 = x0, v7 = x1 */ \
-        __ASM_EMIT("ld4r                {v12.4s, v13.4s, v14.4s, v15.4s}, [%[exp]]")   /* v12=start, v13=end, v14=herm[0], v15=herm[1] */ \
-        __ASM_EMIT("ld3r                {v28.4s, v29.4s, v30.4s}, [%[off]]" )           /* v28=herm[2], v29=tilt[0], v30=tilt[1] */ \
-        __ASM_EMIT("fmul                v2.4s, v0.4s, v14.4s")              /* v2 = herm[0]*lx0 */ \
-        __ASM_EMIT("fmul                v3.4s, v1.4s, v14.4s") \
-        __ASM_EMIT("fadd                v2.4s, v2.4s, v15.4s")              /* v2 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("fadd                v3.4s, v3.4s, v15.4s") \
+        __ASM_EMIT("ld4r                {v12.4s, v13.4s, v14.4s, v15.4s}, [%[exp]]")   /* v12=start, v13=end, v14=threshold, v15=herm[0] */ \
+        __ASM_EMIT("ld4r                {v28.4s, v29.4s, v30.4s, v31.4s}, [%[off]]" )  /* v28=herm[1], v29=herm[2], v30=tilt[0], v31=tilt[1] */ \
+        __ASM_EMIT("fmul                v2.4s, v0.4s, v15.4s")              /* v2 = herm[0]*lx0 */ \
+        __ASM_EMIT("fmul                v3.4s, v1.4s, v15.4s") \
+        __ASM_EMIT("fadd                v2.4s, v2.4s, v28.4s")              /* v2 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("fadd                v3.4s, v3.4s, v28.4s") \
         __ASM_EMIT("fmul                v2.4s, v2.4s, v0.4s")               /* v2 = (herm[0]*lx0+herm[1])*lx0 */ \
         __ASM_EMIT("fmul                v3.4s, v3.4s, v1.4s") \
-        __ASM_EMIT("fmul                v4.4s, v0.4s, v29.4s")              /* v4 = tilt[0]*lx0 */ \
-        __ASM_EMIT("fmul                v5.4s, v1.4s, v29.4s") \
+        __ASM_EMIT("fmul                v4.4s, v0.4s, v30.4s")              /* v4 = tilt[0]*lx0 */ \
+        __ASM_EMIT("fmul                v5.4s, v1.4s, v30.4s") \
         __ASM_EMIT("fcmge               v6.4s, v6.4s, v13.4s")              /* v6 = [x0 >= end] */ \
         __ASM_EMIT("fcmge               v7.4s, v7.4s, v13.4s") \
-        __ASM_EMIT("fadd                v0.4s, v4.4s, v30.4s")              /* v0 = TV = tilt[0]*lx0+tilt[1] */ \
-        __ASM_EMIT("fadd                v1.4s, v5.4s, v30.4s") \
-        __ASM_EMIT("fadd                v2.4s, v2.4s, v28.4s")              /* v2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
-        __ASM_EMIT("fadd                v3.4s, v3.4s, v28.4s") \
+        __ASM_EMIT("fadd                v0.4s, v4.4s, v31.4s")              /* v0 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("fadd                v1.4s, v5.4s, v31.4s") \
+        __ASM_EMIT("fadd                v2.4s, v2.4s, v29.4s")              /* v2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("fadd                v3.4s, v3.4s, v29.4s") \
         __ASM_EMIT("bif                 v0.16b, v2.16b, v6.16b")            /* v0 = [x0 >= end] ? TV : KV */ \
         __ASM_EMIT("bif                 v1.16b, v3.16b, v7.16b") \
         EXP_CORE_X8                                                         /* v0 = EV = expf([x0 >= end] ? TV : KV) */ \
         __ASM_EMIT("ldp                 q2, q3, [%[mem], #0x00]")           /* v2 = x0, v3 = x1 */ \
         __ASM_EMIT("ld1r                {v12.4s}, [%[exp]]")                /* v12= start */ \
         __ASM_EMIT("ldr                 q10, [%[X2C], #0x00]")              /* v10= 1.0 */ \
-        __ASM_EMIT("ldr                 q11, [%[X2C], #0x20]")              /* v11= up_limit */ \
         __ASM_EMIT("fcmge               v4.4s, v12.4s, v2.4s")              /* v4 = [x0 <= start] */ \
         __ASM_EMIT("fcmge               v5.4s, v12.4s, v3.4s") \
-        __ASM_EMIT("fcmgt               v6.4s, v2.4s, v11.4s")              /* v6 = [x0 > up_limit] */ \
-        __ASM_EMIT("fcmgt               v7.4s, v3.4s, v11.4s") \
         __ASM_EMIT("bit                 v0.16b, v10.16b, v4.16b")           /* v0 = G = [x0 <= start] ? 1.0 : EV */ \
         __ASM_EMIT("bit                 v1.16b, v10.16b, v5.16b") \
-        __ASM_EMIT("bit                 v0.16b, v11.16b, v6.16b")           /* v0 = [x0 > up_limit] ? up_limit :  [x0 <= start] ? 1.0 : EV */ \
-        __ASM_EMIT("bit                 v1.16b, v11.16b, v7.16b") \
         /* out: v0 = g0, v1 = g1 */
 
     #define PROCESS_UKNEE_SINGLE_X4 \
         /* in: v0 = lx0 */ \
         __ASM_EMIT("add                 %[off], %[exp], #0x10") \
         __ASM_EMIT("ldr                 q6, [%[mem], #0x00]")               /* v6 = x0 */ \
-        __ASM_EMIT("ld4r                {v12.4s, v13.4s, v14.4s, v15.4s}, [%[exp]]")   /* v12=start, v13=end, v14=herm[0], v15=herm[1] */ \
-        __ASM_EMIT("ld3r                {v28.4s, v29.4s, v30.4s}, [%[off]]" )           /* v28=herm[2], v29=tilt[0], v30=tilt[1] */ \
-        __ASM_EMIT("fmul                v2.4s, v0.4s, v14.4s")              /* v2 = herm[0]*lx0 */ \
-        __ASM_EMIT("fadd                v2.4s, v2.4s, v15.4s")              /* v2 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("ld4r                {v12.4s, v13.4s, v14.4s, v15.4s}, [%[exp]]")   /* v12=start, v13=end, v14=threshold, v15=herm[0] */ \
+        __ASM_EMIT("ld4r                {v28.4s, v29.4s, v30.4s, v31.4s}, [%[off]]" )  /* v28=herm[1], v29=herm[2], v30=tilt[0], v31=tilt[1] */ \
+        __ASM_EMIT("fmul                v2.4s, v0.4s, v15.4s")              /* v2 = herm[0]*lx0 */ \
+        __ASM_EMIT("fadd                v2.4s, v2.4s, v28.4s")              /* v2 = herm[0]*lx0+herm[1] */ \
         __ASM_EMIT("fmul                v2.4s, v2.4s, v0.4s")               /* v2 = (herm[0]*lx0+herm[1])*lx0 */ \
-        __ASM_EMIT("fmul                v4.4s, v0.4s, v29.4s")              /* v4 = tilt[0]*lx0 */ \
+        __ASM_EMIT("fmul                v4.4s, v0.4s, v30.4s")              /* v4 = tilt[0]*lx0 */ \
         __ASM_EMIT("fcmge               v6.4s, v6.4s, v13.4s")              /* v6 = [x0 >= end] */ \
-        __ASM_EMIT("fadd                v0.4s, v4.4s, v30.4s")              /* v0 = TV = tilt[0]*lx0+tilt[1] */ \
-        __ASM_EMIT("fadd                v2.4s, v2.4s, v28.4s")              /* v2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("fadd                v0.4s, v4.4s, v31.4s")              /* v0 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("fadd                v2.4s, v2.4s, v29.4s")              /* v2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
         __ASM_EMIT("bif                 v0.16b, v2.16b, v6.16b")            /* v0 = [x0 >= end] ? TV : KV */ \
         EXP_CORE_X4                                                         /* v0 = EV = expf([x0 >= end] ? TV : KV) */ \
         __ASM_EMIT("ldr                 q2, [%[mem], #0x00]")               /* v2 = x0 */ \
         __ASM_EMIT("ld1r                {v12.4s}, [%[exp]]")                /* v12= start */ \
         __ASM_EMIT("ldr                 q10, [%[X2C], #0x00]")              /* v10= 1.0 */ \
-        __ASM_EMIT("ldr                 q11, [%[X2C], #0x20]")              /* v11= up_limit */ \
         __ASM_EMIT("fcmge               v4.4s, v12.4s, v2.4s")              /* v4 = [x0 <= start] */ \
-        __ASM_EMIT("fcmgt               v6.4s, v2.4s, v11.4s")              /* v6 = [x0 > up_limit] */ \
         __ASM_EMIT("bit                 v0.16b, v10.16b, v4.16b")           /* v0 = G = [x0 <= start] ? 1.0 : EV */ \
-        __ASM_EMIT("bit                 v0.16b, v11.16b, v6.16b")           /* v0 = [x0 > up_limit] ? up_limit :  [x0 <= start] ? 1.0 : EV */ \
         /* out: v0 = g0 */
 
     #define PROCESS_UEXP_FULL_X8 \
         /* in: v0 = x0, v1 = x1 */ \
-        __ASM_EMIT("ld1r                {v12.4s}, [%[exp]]")                /* v12 = start */ \
+        __ASM_EMIT("ld3r                {v12.4s, v13.4s, v14.4s}, [%[exp]]")/* v12 = start, v13 = end, v14 = threshold */ \
         __ASM_EMIT("fabs                v0.4s, v0.4s")                      /* v0  = fabsf(x0) */ \
         __ASM_EMIT("fabs                v1.4s, v1.4s") \
+        __ASM_EMIT("fmin                v0.4s, v0.4s, v14.4s")              /* v0  = min(fabsf(x0), threshold) */ \
+        __ASM_EMIT("fmin                v1.4s, v1.4s, v14.4s") \
         __ASM_EMIT("fcmgt               v2.4s, v0.4s, v12.4s")              /* v2  = [fabs(x0) > start] */ \
         __ASM_EMIT("fcmgt               v3.4s, v1.4s, v12.4s") \
         __ASM_EMIT("orr                 v2.16b, v2.16b, v3.16b") \
@@ -131,7 +123,9 @@ namespace lsp
 
     #define PROCESS_UEXP_FULL_X4 \
         /* in: v0 = x0 */ \
+        __ASM_EMIT("ld3r                {v12.4s, v13.4s, v14.4s}, [%[exp]]")/* v12 = start, v13 = end, v14 = threshold */ \
         __ASM_EMIT("fabs                v0.4s, v0.4s")                      /* v0  = fabsf(x0) */ \
+        __ASM_EMIT("fmin                v0.4s, v0.4s, v14.4s")              /* v0  = min(fabsf(x0), threshold) */ \
         __ASM_EMIT("str                 q0, [%[mem], #0x00]")               /* mem[0x00] = fabfs(x0) */ \
         LOGE_CORE_X4                                                        /* v0= lx0 = logf(fabsf(x0)) */ \
         PROCESS_UKNEE_SINGLE_X4                                             /* apply knee 1 */ \
@@ -303,35 +297,35 @@ namespace lsp
         /* in: v0 = lx0, v1 = lx1 */ \
         __ASM_EMIT("add                 %[off], %[exp], #0x10") \
         __ASM_EMIT("ldp                 q6, q7, [%[mem], #0x00]")           /* v6 = x0, v7 = x1 */ \
-        __ASM_EMIT("ld4r                {v12.4s, v13.4s, v14.4s, v15.4s}, [%[exp]]")   /* v12=start, v13=end, v14=herm[0], v15=herm[1] */ \
-        __ASM_EMIT("ld3r                {v28.4s, v29.4s, v30.4s}, [%[off]]" )           /* v28=herm[2], v29=tilt[0], v30=tilt[1] */ \
-        __ASM_EMIT("fmul                v2.4s, v0.4s, v14.4s")              /* v2 = herm[0]*lx0 */ \
-        __ASM_EMIT("fmul                v3.4s, v1.4s, v14.4s") \
-        __ASM_EMIT("fadd                v2.4s, v2.4s, v15.4s")              /* v2 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("fadd                v3.4s, v3.4s, v15.4s") \
+        __ASM_EMIT("ld4r                {v12.4s, v13.4s, v14.4s, v15.4s}, [%[exp]]")   /* v12=start, v13=end, v14=threshold, v15=herm[0] */ \
+        __ASM_EMIT("ld4r                {v28.4s, v29.4s, v30.4s, v31.4s}, [%[off]]" )  /* v28=herm[1], v29=herm[2], v30=tilt[0], v31=tilt[1] */ \
+        __ASM_EMIT("fmul                v2.4s, v0.4s, v15.4s")              /* v2 = herm[0]*lx0 */ \
+        __ASM_EMIT("fmul                v3.4s, v1.4s, v15.4s") \
+        __ASM_EMIT("fadd                v2.4s, v2.4s, v28.4s")              /* v2 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("fadd                v3.4s, v3.4s, v28.4s") \
         __ASM_EMIT("fmul                v2.4s, v2.4s, v0.4s")               /* v2 = (herm[0]*lx0+herm[1])*lx0 */ \
         __ASM_EMIT("fmul                v3.4s, v3.4s, v1.4s") \
-        __ASM_EMIT("fmul                v4.4s, v0.4s, v29.4s")              /* v4 = tilt[0]*lx0 */ \
-        __ASM_EMIT("fmul                v5.4s, v1.4s, v29.4s") \
+        __ASM_EMIT("fmul                v4.4s, v0.4s, v30.4s")              /* v4 = tilt[0]*lx0 */ \
+        __ASM_EMIT("fmul                v5.4s, v1.4s, v30.4s") \
         __ASM_EMIT("fcmge               v6.4s, v12.4s, v6.4s")              /* v6 = [x0 <= start] */ \
         __ASM_EMIT("fcmge               v7.4s, v12.4s, v7.4s") \
-        __ASM_EMIT("fadd                v0.4s, v4.4s, v30.4s")              /* v0 = TV = tilt[0]*lx0+tilt[1] */ \
-        __ASM_EMIT("fadd                v1.4s, v5.4s, v30.4s") \
-        __ASM_EMIT("fadd                v2.4s, v2.4s, v28.4s")              /* v2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
-        __ASM_EMIT("fadd                v3.4s, v3.4s, v28.4s") \
+        __ASM_EMIT("fadd                v0.4s, v4.4s, v31.4s")              /* v0 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("fadd                v1.4s, v5.4s, v31.4s") \
+        __ASM_EMIT("fadd                v2.4s, v2.4s, v29.4s")              /* v2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("fadd                v3.4s, v3.4s, v29.4s") \
         __ASM_EMIT("bif                 v0.16b, v2.16b, v6.16b")            /* v0 = [x0 <= start] ? TV : KV */ \
         __ASM_EMIT("bif                 v1.16b, v3.16b, v7.16b") \
         EXP_CORE_X8                                                         /* v0 = EV = expf([x0 >= end] ? TV : KV) */ \
         __ASM_EMIT("ldp                 q2, q3, [%[mem], #0x00]")           /* v2 = x0, v3 = x1 */ \
-        __ASM_EMIT("ld2r                {v12.4s, v13.4s}, [%[exp]]")        /* v12= start, v13 = end */ \
-        __ASM_EMIT("ldp                 q10, q11, [%[X2C], #0x00]")         /* v10= 1.0, v11 = down_limit */ \
+        __ASM_EMIT("ld3r                {v12.4s, v13.4s, v14.4s}, [%[exp]]")/* v12= start, v13 = end, v14=threshold */ \
+        __ASM_EMIT("ldr                 q10, [%[X2C], #0x00]")              /* v10= 1.0 */ \
         __ASM_EMIT("fcmge               v4.4s, v2.4s, v13.4s")              /* v4 = [x0 >= end] */ \
         __ASM_EMIT("fcmge               v5.4s, v3.4s, v13.4s") \
-        __ASM_EMIT("fcmge               v6.4s, v2.4s, v11.4s")              /* v6 = [x0 >= down_limit] */ \
-        __ASM_EMIT("fcmge               v7.4s, v3.4s, v11.4s") \
-        __ASM_EMIT("bit                 v0.16b, v10.16b, v4.16b")           /* v0 = G = [x0 >= end] ? 1.0 : EV */ \
+        __ASM_EMIT("fcmge               v6.4s, v2.4s, v14.4s")              /* v6 = [x0 >= threshold] */ \
+        __ASM_EMIT("fcmge               v7.4s, v3.4s, v14.4s") \
+        __ASM_EMIT("bit                 v0.16b, v10.16b, v4.16b")           /* v0 = [x0 >= end] ? 1.0 : EV */ \
         __ASM_EMIT("bit                 v1.16b, v10.16b, v5.16b") \
-        __ASM_EMIT("and                 v0.16b, v0.16b, v6.16b") \
+        __ASM_EMIT("and                 v0.16b, v0.16b, v6.16b")            /* v0 = G = [x0 < threshold] ? 0.0 : [x0 >= end] ? 1.0 : EV */ \
         __ASM_EMIT("and                 v1.16b, v1.16b, v7.16b") \
         /* out: v0 = g0, v1 = g1 */
 
@@ -339,24 +333,24 @@ namespace lsp
         /* in: v0 = lx0 */ \
         __ASM_EMIT("add                 %[off], %[exp], #0x10") \
         __ASM_EMIT("ldr                 q6, [%[mem], #0x00]")               /* v6 = x0 */ \
-        __ASM_EMIT("ld4r                {v12.4s, v13.4s, v14.4s, v15.4s}, [%[exp]]")   /* v12=start, v13=end, v14=herm[0], v15=herm[1] */ \
-        __ASM_EMIT("ld3r                {v28.4s, v29.4s, v30.4s}, [%[off]]" )           /* v28=herm[2], v29=tilt[0], v30=tilt[1] */ \
-        __ASM_EMIT("fmul                v2.4s, v0.4s, v14.4s")              /* v2 = herm[0]*lx0 */ \
-        __ASM_EMIT("fadd                v2.4s, v2.4s, v15.4s")              /* v2 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("ld4r                {v12.4s, v13.4s, v14.4s, v15.4s}, [%[exp]]")   /* v12=start, v13=end, v14=threshold, v15=herm[0] */ \
+        __ASM_EMIT("ld4r                {v28.4s, v29.4s, v30.4s, v31.4s}, [%[off]]" )  /* v28=herm[1], v29=herm[2], v30=tilt[0], v31=tilt[1] */ \
+        __ASM_EMIT("fmul                v2.4s, v0.4s, v15.4s")              /* v2 = herm[0]*lx0 */ \
+        __ASM_EMIT("fadd                v2.4s, v2.4s, v28.4s")              /* v2 = herm[0]*lx0+herm[1] */ \
         __ASM_EMIT("fmul                v2.4s, v2.4s, v0.4s")               /* v2 = (herm[0]*lx0+herm[1])*lx0 */ \
-        __ASM_EMIT("fmul                v4.4s, v0.4s, v29.4s")              /* v4 = tilt[0]*lx0 */ \
+        __ASM_EMIT("fmul                v4.4s, v0.4s, v30.4s")              /* v4 = tilt[0]*lx0 */ \
         __ASM_EMIT("fcmge               v6.4s, v12.4s, v6.4s")              /* v6 = [x0 <= start] */ \
-        __ASM_EMIT("fadd                v0.4s, v4.4s, v30.4s")              /* v0 = TV = tilt[0]*lx0+tilt[1] */ \
-        __ASM_EMIT("fadd                v2.4s, v2.4s, v28.4s")              /* v2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("fadd                v0.4s, v4.4s, v31.4s")              /* v0 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("fadd                v2.4s, v2.4s, v29.4s")              /* v2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
         __ASM_EMIT("bif                 v0.16b, v2.16b, v6.16b")            /* v0 = [x0 <= start] ? TV : KV */ \
         EXP_CORE_X4                                                         /* v0 = EV = expf([x0 >= end] ? TV : KV) */ \
         __ASM_EMIT("ldr                 q2, [%[mem], #0x00]")               /* v2 = x0 */ \
-        __ASM_EMIT("ld2r                {v12.4s, v13.4s}, [%[exp]]")        /* v12= start, v13 = end */ \
-        __ASM_EMIT("ldp                 q10, q11, [%[X2C], #0x00]")         /* v10= 1.0, v11 = down_limit */ \
+        __ASM_EMIT("ld3r                {v12.4s, v13.4s, v14.4s}, [%[exp]]")/* v12= start, v13 = end, v14=threshold */ \
+        __ASM_EMIT("ldr                 q10, [%[X2C], #0x00]")              /* v10= 1.0 */ \
         __ASM_EMIT("fcmge               v4.4s, v2.4s, v13.4s")              /* v4 = [x0 >= end] */ \
-        __ASM_EMIT("fcmge               v6.4s, v2.4s, v11.4s")              /* v6 = [x0 >= down_limit] */ \
-        __ASM_EMIT("bit                 v0.16b, v10.16b, v4.16b")           /* v0 = G = [x0 >= end] ? 1.0 : EV */ \
-        __ASM_EMIT("and                 v0.16b, v0.16b, v6.16b") \
+        __ASM_EMIT("fcmge               v6.4s, v2.4s, v14.4s")              /* v6 = [x0 >= threshold] */ \
+        __ASM_EMIT("bit                 v0.16b, v10.16b, v4.16b")           /* v0 = [x0 >= end] ? 1.0 : EV */ \
+        __ASM_EMIT("and                 v0.16b, v0.16b, v6.16b")            /* v0 = G = [x0 < threshold] ? 0.0 : [x0 >= end] ? 1.0 : EV */ \
         /* out: v0 = g0 */
 
     #define PROCESS_DEXP_FULL_X8 \
@@ -560,4 +554,4 @@ namespace lsp
 
 
 
-#endif /* INCLUDE_PRIVATE_DSP_ARCH_AARCH64_ASIMD_DYNAMICS_EXPANDER_H_ */
+#endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_DYNAMICS_EXPANDER_H_ */
