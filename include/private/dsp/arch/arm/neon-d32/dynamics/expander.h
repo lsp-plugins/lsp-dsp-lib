@@ -30,87 +30,80 @@ namespace lsp
     namespace neon_d32
     {
         IF_ARCH_ARM(
-            static const uint32_t expander_const[] __lsp_aligned16 =
+            static const float expander_const[] __lsp_aligned16 =
             {
-                LSP_DSP_VEC4(0x3f800000),   // 1.0f
-                LSP_DSP_VEC4(0x2edbe6ff),   // 1e-10f
-                LSP_DSP_VEC4(0x501502f9)    // 1e+10f
+                LSP_DSP_VEC4(1.0f)
             };
         )
 
     #define PROCESS_UKNEE_SINGLE_X8 \
         /* in: q0 = lx0, q1 = lx1 */ \
-        __ASM_EMIT("add                 %[off], %[exp], #0x04") \
-        __ASM_EMIT("vld4.f32            {d16[], d18[], d20[], d22[]}, [%[off]]")    /* q8 = end, q9=herm[0] q10=herm[1] q11=herm[2] */ \
-        __ASM_EMIT("vld4.f32            {d17[], d19[], d21[], d23[]}, [%[off]]")    /* q8 = end, q9=herm[0] q10=herm[1] q11=herm[2] */ \
-        __ASM_EMIT("add                 %[off], %[exp], #0x14") \
-        __ASM_EMIT("vld2.f32            {d24[], d26[]}, [%[off]]")          /* q12 = tilt[0] q13=tilt[1] */ \
-        __ASM_EMIT("vld2.f32            {d25[], d27[]}, [%[off]]")          /* q12 = tilt[0] q13=tilt[1] */ \
-        __ASM_EMIT("vmul.f32            q2, q0, q9")                        /* q2 = herm[0]*lx0 */ \
-        __ASM_EMIT("vmul.f32            q3, q1, q9") \
-        __ASM_EMIT("vmul.f32            q4, q0, q12")                       /* q4 = tilt[0]*lx0 */ \
-        __ASM_EMIT("vmul.f32            q5, q1, q12") \
-        __ASM_EMIT("vadd.f32            q2, q2, q10")                       /* q2 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("vadd.f32            q3, q3, q10") \
+        __ASM_EMIT("add                 %[off], %[exp], #0x10") \
+        __ASM_EMIT("vld4.f32            {d16[], d18[], d20[], d22[]}, [%[exp]]")    /* q8 = start, q9=end, q10=threshold q11=herm[0] */ \
+        __ASM_EMIT("vld4.f32            {d17[], d19[], d21[], d23[]}, [%[exp]]")    /* q8 = start, q9=end, q10=threshold q11=herm[0] */ \
+        __ASM_EMIT("vld4.f32            {d24[], d26[], d28[], d30[]}, [%[off]]")    /* q12 = herm[1], q13=herm[2], q14=tilt[0] q15=tilt[1] */ \
+        __ASM_EMIT("vld4.f32            {d25[], d27[], d29[], d31[]}, [%[off]]")    /* q12 = herm[1], q13=herm[2], q14=tilt[0] q15=tilt[1] */ \
+        __ASM_EMIT("vmul.f32            q2, q0, q11")                       /* q2 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmul.f32            q3, q1, q11") \
+        __ASM_EMIT("vmul.f32            q4, q0, q14")                       /* q4 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vmul.f32            q5, q1, q14") \
+        __ASM_EMIT("vadd.f32            q2, q2, q12")                       /* q2 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vadd.f32            q3, q3, q12") \
         __ASM_EMIT("vldm                %[mem], {q6-q7}")                   /* q6 = x0, q7 = x1 */ \
         __ASM_EMIT("vmul.f32            q2, q2, q0")                        /* q2 = (herm[0]*lx0+herm[1])*lx0 */ \
         __ASM_EMIT("vmul.f32            q3, q3, q1") \
-        __ASM_EMIT("vcge.f32            q6, q6, q8")                        /* q6 = [x0 >= end] */ \
-        __ASM_EMIT("vcge.f32            q7, q7, q8") \
-        __ASM_EMIT("vadd.f32            q2, q2, q11")                       /* q2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
-        __ASM_EMIT("vadd.f32            q3, q3, q11") \
-        __ASM_EMIT("vadd.f32            q0, q4, q13")                       /* q0 = TV = tilt[0]*lx0+tilt[1] */ \
-        __ASM_EMIT("vadd.f32            q1, q5, q13") \
+        __ASM_EMIT("vcge.f32            q6, q6, q9")                        /* q6 = [x0 >= end] */ \
+        __ASM_EMIT("vcge.f32            q7, q7, q9") \
+        __ASM_EMIT("vadd.f32            q2, q2, q13")                       /* q2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vadd.f32            q3, q3, q13") \
+        __ASM_EMIT("vadd.f32            q0, q4, q15")                       /* q0 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vadd.f32            q1, q5, q15") \
         __ASM_EMIT("vldm                %[LOG2E], {q15}") \
         __ASM_EMIT("vbif                q0, q2, q6")                        /* q0 = [x0 >= end] ? TV : KV */ \
         __ASM_EMIT("vbif                q1, q3, q7") \
         EXP_CORE_X8                                                         /* q0 = EV = expf([x0 >= end] ? TV : KV) */ \
         __ASM_EMIT("vld1.f32            {d20[], d21[]}, [%[exp]]")          /* q10= start */ \
         __ASM_EMIT("vldm                %[mem], {q2-q3}")                   /* q2 = x0, q3=x1 */ \
-        __ASM_EMIT("vldm                %[X2C], {q11-q13}")                 /* q11= 1.0, q12 = down_limit, q13 = up_limit */ \
+        __ASM_EMIT("vldm                %[X2C], {q11}")                     /* q11= 1.0 */ \
         __ASM_EMIT("vcle.f32            q6, q2, q10")                       /* q6 = [x0 <= start] */ \
         __ASM_EMIT("vcle.f32            q7, q3, q10") \
-        __ASM_EMIT("vcgt.f32            q8, q2, q13")                       /* q8 = [x0 > up_limit] */ \
-        __ASM_EMIT("vcgt.f32            q9, q3, q13") \
         __ASM_EMIT("vbit                q0, q11, q6")                       /* q0 = [x0 <= start] ? 1.0 : EV */ \
         __ASM_EMIT("vbit                q1, q11, q7") \
-        __ASM_EMIT("vbit                q0, q13, q8")                       /* q0 = [x0 > up_limit] ? up_limit : [x0 <= start] ? gain : EV */ \
-        __ASM_EMIT("vbit                q1, q13, q9") \
         /* out: q0 = g0, q1 = g1 */
 
     #define PROCESS_UKNEE_SINGLE_X4 \
         /* in: q0 = lx0 */ \
-        __ASM_EMIT("add                 %[off], %[exp], #0x04") \
-        __ASM_EMIT("vld4.f32            {d16[], d18[], d20[], d22[]}, [%[off]]")    /* q8 = end, q9=herm[0] q10=herm[1] q11=herm[2] */ \
-        __ASM_EMIT("vld4.f32            {d17[], d19[], d21[], d23[]}, [%[off]]")    /* q8 = end, q9=herm[0] q10=herm[1] q11=herm[2] */ \
-        __ASM_EMIT("add                 %[off], %[exp], #0x14") \
-        __ASM_EMIT("vld2.f32            {d24[], d26[]}, [%[off]]")          /* q12 = tilt[0] q13=tilt[1] */ \
-        __ASM_EMIT("vld2.f32            {d25[], d27[]}, [%[off]]")          /* q12 = tilt[0] q13=tilt[1] */ \
-        __ASM_EMIT("vmul.f32            q2, q0, q9")                        /* q2 = herm[0]*lx0 */ \
-        __ASM_EMIT("vmul.f32            q4, q0, q12")                       /* q4 = tilt[0]*lx0 */ \
-        __ASM_EMIT("vadd.f32            q2, q2, q10")                       /* q2 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("vldm                %[mem], {q6}")                      /* q6 = x0 */ \
+        __ASM_EMIT("add                 %[off], %[exp], #0x10") \
+        __ASM_EMIT("vld4.f32            {d16[], d18[], d20[], d22[]}, [%[exp]]")    /* q8 = start, q9=end, q10=threshold q11=herm[0] */ \
+        __ASM_EMIT("vld4.f32            {d17[], d19[], d21[], d23[]}, [%[exp]]")    /* q8 = start, q9=end, q10=threshold q11=herm[0] */ \
+        __ASM_EMIT("vld4.f32            {d24[], d26[], d28[], d30[]}, [%[off]]")    /* q12 = herm[1], q13=herm[2], q14=tilt[0] q15=tilt[1] */ \
+        __ASM_EMIT("vld4.f32            {d25[], d27[], d29[], d31[]}, [%[off]]")    /* q12 = herm[1], q13=herm[2], q14=tilt[0] q15=tilt[1] */ \
+        __ASM_EMIT("vmul.f32            q2, q0, q11")                       /* q2 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmul.f32            q4, q0, q14")                       /* q4 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vadd.f32            q2, q2, q12")                       /* q2 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vldm                %[mem], {q6}")                      /* q6 = x0, q7 = x1 */ \
         __ASM_EMIT("vmul.f32            q2, q2, q0")                        /* q2 = (herm[0]*lx0+herm[1])*lx0 */ \
-        __ASM_EMIT("vcge.f32            q6, q6, q8")                        /* q6 = [x0 >= end] */ \
-        __ASM_EMIT("vadd.f32            q2, q2, q11")                       /* q2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
-        __ASM_EMIT("vadd.f32            q0, q4, q13")                       /* q0 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vcge.f32            q6, q6, q9")                        /* q6 = [x0 >= end] */ \
+        __ASM_EMIT("vadd.f32            q2, q2, q13")                       /* q2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vadd.f32            q0, q4, q15")                       /* q0 = TV = tilt[0]*lx0+tilt[1] */ \
         __ASM_EMIT("vldm                %[LOG2E], {q15}") \
         __ASM_EMIT("vbif                q0, q2, q6")                        /* q0 = [x0 >= end] ? TV : KV */ \
         EXP_CORE_X4                                                         /* q0 = EV = expf([x0 >= end] ? TV : KV) */ \
         __ASM_EMIT("vld1.f32            {d20[], d21[]}, [%[exp]]")          /* q10= start */ \
-        __ASM_EMIT("vldm                %[mem], {q2}")                      /* q2 = x0 */ \
-        __ASM_EMIT("vldm                %[X2C], {q11-q13}")                 /* q11= 1.0, q12 = down_limit, q13 = up_limit */ \
+        __ASM_EMIT("vldm                %[mem], {q2-q3}")                   /* q2 = x0, q3=x1 */ \
+        __ASM_EMIT("vldm                %[X2C], {q11}")                     /* q11= 1.0 */ \
         __ASM_EMIT("vcle.f32            q6, q2, q10")                       /* q6 = [x0 <= start] */ \
-        __ASM_EMIT("vcgt.f32            q8, q2, q13")                       /* q8 = [x0 > up_limit] */ \
         __ASM_EMIT("vbit                q0, q11, q6")                       /* q0 = [x0 <= start] ? 1.0 : EV */ \
-        __ASM_EMIT("vbit                q0, q13, q8")                       /* q0 = [x0 > up_limit] ? up_limit : [x0 <= start] ? gain : EV */ \
         /* out: q0 = g0 */
 
     #define PROCESS_UEXP_FULL_X8 \
         /* in: q0 = x0, q1 = x1 */ \
-        __ASM_EMIT("vld1.f32            {d26[], d27[]}, [%[exp]]")          /* q13 = start */ \
+        __ASM_EMIT("vld3.f32            {d26[], d28[], d30[]}, [%[exp]]")   /* q13 = start, q14=end, q15=thresh */ \
+        __ASM_EMIT("vld3.f32            {d27[], d29[], d31[]}, [%[exp]]")   /* q13 = start, q14=end, q15=thresh */ \
         __ASM_EMIT("vabs.f32            q0, q0")                            /* q0  = fabsf(x0) */ \
         __ASM_EMIT("vabs.f32            q1, q1") \
+        __ASM_EMIT("vmin.f32            q0, q0, q15")                       /* q0  = min(fabsf(x0), thresh */ \
+        __ASM_EMIT("vmin.f32            q1, q1, q15") \
         __ASM_EMIT("vcgt.f32            q2, q0, q13")                       /* q2 = [fabs(x0) > start] */ \
         __ASM_EMIT("vcgt.f32            q3, q1, q13") \
         __ASM_EMIT("vorr                q2, q2, q3")  \
@@ -134,7 +127,10 @@ namespace lsp
 
     #define PROCESS_UEXP_FULL_X4 \
         /* in: q0 = x0, q1 = x1 */ \
+        __ASM_EMIT("vld3.f32            {d26[], d28[], d30[]}, [%[exp]]")   /* q13 = start, q14=end, q15=thresh */ \
+        __ASM_EMIT("vld3.f32            {d27[], d29[], d31[]}, [%[exp]]")   /* q13 = start, q14=end, q15=thresh */ \
         __ASM_EMIT("vabs.f32            q0, q0")                            /* q0 = fabsf(x0) */ \
+        __ASM_EMIT("vmin.f32            q0, q0, q15")                       /* q0  = min(fabsf(x0), thresh */ \
         __ASM_EMIT("vstm                %[mem], {q0}")                      /* mem[0x00] = fabfs(x0) */ \
         __ASM_EMIT("vldm                %[LOGC], {q14-q15}") \
         LOGE_CORE_X4                                                        /* q0 = lx0 = logf(fabsf(x0)) */ \
@@ -286,69 +282,69 @@ namespace lsp
     #define PROCESS_DKNEE_SINGLE_X8 \
         /* in: q0 = lx0, q1 = lx1 */ \
         __ASM_EMIT("add                 %[off], %[exp], #0x10") \
-        __ASM_EMIT("vld4.f32            {d16[], d18[], d20[], d22[]}, [%[exp]]")    /* q8 = start, q9=end, q10=herm[0] q11=herm[1] */ \
-        __ASM_EMIT("vld4.f32            {d17[], d19[], d21[], d23[]}, [%[exp]]")    /* q8 = start, q9=end, q10=herm[0] q11=herm[1] */ \
-        __ASM_EMIT("vld3.f32            {d24[], d26[], d28[]}, [%[off]]")           /* q12= herm[2], q13 = tilt[0], q14=tilt[1] */ \
-        __ASM_EMIT("vld3.f32            {d25[], d27[], d29[]}, [%[off]]")           /* q12= herm[2], q13 = tilt[0], q14=tilt[1] */ \
-        __ASM_EMIT("vmul.f32            q2, q0, q10")                       /* q2 = herm[0]*lx0 */ \
-        __ASM_EMIT("vmul.f32            q3, q1, q10") \
-        __ASM_EMIT("vmul.f32            q4, q0, q13")                       /* q4 = tilt[0]*lx0 */ \
-        __ASM_EMIT("vmul.f32            q5, q1, q13") \
-        __ASM_EMIT("vadd.f32            q2, q2, q11")                       /* q2 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("vadd.f32            q3, q3, q11") \
+        __ASM_EMIT("vld4.f32            {d16[], d18[], d20[], d22[]}, [%[exp]]")    /* q8 = start, q9=end, q10=threshold q11=herm[0] */ \
+        __ASM_EMIT("vld4.f32            {d17[], d19[], d21[], d23[]}, [%[exp]]")    /* q8 = start, q9=end, q10=threshold q11=herm[0] */ \
+        __ASM_EMIT("vld4.f32            {d24[], d26[], d28[], d30[]}, [%[off]]")    /* q12 = herm[1], q13=herm[2], q14=tilt[0] q15=tilt[1] */ \
+        __ASM_EMIT("vld4.f32            {d25[], d27[], d29[], d31[]}, [%[off]]")    /* q12 = herm[1], q13=herm[2], q14=tilt[0] q15=tilt[1] */ \
+        __ASM_EMIT("vmul.f32            q2, q0, q11")                       /* q2 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmul.f32            q3, q1, q11") \
+        __ASM_EMIT("vmul.f32            q4, q0, q14")                       /* q4 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vmul.f32            q5, q1, q14") \
+        __ASM_EMIT("vadd.f32            q2, q2, q12")                       /* q2 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vadd.f32            q3, q3, q12") \
         __ASM_EMIT("vldm                %[mem], {q6-q7}")                   /* q6 = x0, q7=x7 */ \
         __ASM_EMIT("vmul.f32            q2, q2, q0")                        /* q2 = (herm[0]*lx0+herm[1])*lx0 */ \
         __ASM_EMIT("vmul.f32            q3, q3, q1") \
         __ASM_EMIT("vcle.f32            q6, q6, q8")                        /* q6 = [x0 <= start] */ \
         __ASM_EMIT("vcle.f32            q7, q7, q8") \
-        __ASM_EMIT("vadd.f32            q2, q2, q12")                       /* q2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
-        __ASM_EMIT("vadd.f32            q3, q3, q12") \
-        __ASM_EMIT("vadd.f32            q0, q4, q14")                       /* q0 = TV = tilt[0]*lx0+tilt[1] */ \
-        __ASM_EMIT("vadd.f32            q1, q5, q14") \
+        __ASM_EMIT("vadd.f32            q2, q2, q13")                       /* q2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vadd.f32            q3, q3, q13") \
+        __ASM_EMIT("vadd.f32            q0, q4, q15")                       /* q0 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vadd.f32            q1, q5, q15") \
         __ASM_EMIT("vldm                %[LOG2E], {q15}") \
         __ASM_EMIT("vbif                q0, q2, q6")                        /* q0 = [x0 <= start] ? TV : KV */ \
         __ASM_EMIT("vbif                q1, q3, q7") \
         EXP_CORE_X8                                                         /* q0 = EV = expf([x0 >= end] ? TV : KV) */ \
-        __ASM_EMIT("vld2.f32            {d20[], d22[]}, [%[exp]]")          /* q10= start, q11=end */ \
-        __ASM_EMIT("vld2.f32            {d21[], d23[]}, [%[exp]]")          /* q10= start, q11=end */ \
+        __ASM_EMIT("vld3.f32            {d20[], d22[], d24[]}, [%[exp]]")   /* q10= start, q11=end, q12=threshold */ \
+        __ASM_EMIT("vld3.f32            {d21[], d23[], d25[]}, [%[exp]]")   /* q10= start, q11=end, q12=threshold */ \
         __ASM_EMIT("vldm                %[mem], {q2-q3}")                   /* q2 = x0, q3=x1 */ \
-        __ASM_EMIT("vldm                %[X2C], {q12-q13}")                 /* q12= 1.0, q13 = down_limit */ \
+        __ASM_EMIT("vldm                %[X2C], {q13}")                     /* q13= 1.0 */ \
         __ASM_EMIT("vcge.f32            q6, q2, q11")                       /* q6 = [x0 >= end] */ \
         __ASM_EMIT("vcge.f32            q7, q3, q11") \
-        __ASM_EMIT("vcge.f32            q8, q2, q13")                       /* q8 = [x0 >= down_limit] */ \
-        __ASM_EMIT("vcge.f32            q9, q3, q13") \
-        __ASM_EMIT("vbit                q0, q12, q6")                       /* q0 = [x0 >= end] ? 1.0 : EV */ \
-        __ASM_EMIT("vbit                q1, q12, q7") \
-        __ASM_EMIT("vand                q0, q0, q8")                        /* q0 = [x0 < down_limit] ? 0.0 : [x0 <= start] ? gain : EV */ \
+        __ASM_EMIT("vcge.f32            q8, q2, q12")                       /* q8 = [x0 >= threshold] */ \
+        __ASM_EMIT("vcge.f32            q9, q3, q12") \
+        __ASM_EMIT("vbit                q0, q13, q6")                       /* q0 = [x0 >= end] ? 1.0 : EV */ \
+        __ASM_EMIT("vbit                q1, q13, q7") \
+        __ASM_EMIT("vand                q0, q0, q8")                        /* q0 = [x0 < threshold] ? 0.0 : [x0 <= start] ? gain : EV */ \
         __ASM_EMIT("vand                q1, q1, q8") \
         /* out: q0 = g0, q1 = g1 */
 
     #define PROCESS_DKNEE_SINGLE_X4 \
         /* in: q0 = lx0 */ \
         __ASM_EMIT("add                 %[off], %[exp], #0x10") \
-        __ASM_EMIT("vld4.f32            {d16[], d18[], d20[], d22[]}, [%[exp]]")    /* q8 = start, q9=end, q10=herm[0] q11=herm[1] */ \
-        __ASM_EMIT("vld4.f32            {d17[], d19[], d21[], d23[]}, [%[exp]]")    /* q8 = start, q9=end, q10=herm[0] q11=herm[1] */ \
-        __ASM_EMIT("vld3.f32            {d24[], d26[], d28[]}, [%[off]]")           /* q12= herm[2], q13 = tilt[0], q14=tilt[1] */ \
-        __ASM_EMIT("vld3.f32            {d25[], d27[], d29[]}, [%[off]]")           /* q12= herm[2], q13 = tilt[0], q14=tilt[1] */ \
-        __ASM_EMIT("vmul.f32            q2, q0, q10")                       /* q2 = herm[0]*lx0 */ \
-        __ASM_EMIT("vmul.f32            q4, q0, q13")                       /* q4 = tilt[0]*lx0 */ \
-        __ASM_EMIT("vadd.f32            q2, q2, q11")                       /* q2 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vld4.f32            {d16[], d18[], d20[], d22[]}, [%[exp]]")    /* q8 = start, q9=end, q10=threshold q11=herm[0] */ \
+        __ASM_EMIT("vld4.f32            {d17[], d19[], d21[], d23[]}, [%[exp]]")    /* q8 = start, q9=end, q10=threshold q11=herm[0] */ \
+        __ASM_EMIT("vld4.f32            {d24[], d26[], d28[], d30[]}, [%[off]]")    /* q12 = herm[1], q13=herm[2], q14=tilt[0] q15=tilt[1] */ \
+        __ASM_EMIT("vld4.f32            {d25[], d27[], d29[], d31[]}, [%[off]]")    /* q12 = herm[1], q13=herm[2], q14=tilt[0] q15=tilt[1] */ \
+        __ASM_EMIT("vmul.f32            q2, q0, q11")                       /* q2 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmul.f32            q4, q0, q14")                       /* q4 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vadd.f32            q2, q2, q12")                       /* q2 = herm[0]*lx0+herm[1] */ \
         __ASM_EMIT("vldm                %[mem], {q6}")                      /* q6 = x0 */ \
         __ASM_EMIT("vmul.f32            q2, q2, q0")                        /* q2 = (herm[0]*lx0+herm[1])*lx0 */ \
         __ASM_EMIT("vcle.f32            q6, q6, q8")                        /* q6 = [x0 <= start] */ \
-        __ASM_EMIT("vadd.f32            q2, q2, q12")                       /* q2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
-        __ASM_EMIT("vadd.f32            q0, q4, q14")                       /* q0 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vadd.f32            q2, q2, q13")                       /* q2 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vadd.f32            q0, q4, q15")                       /* q0 = TV = tilt[0]*lx0+tilt[1] */ \
         __ASM_EMIT("vldm                %[LOG2E], {q15}") \
         __ASM_EMIT("vbif                q0, q2, q6")                        /* q0 = [x0 <= start] ? TV : KV */ \
         EXP_CORE_X4                                                         /* q0 = EV = expf([x0 >= end] ? TV : KV) */ \
-        __ASM_EMIT("vld2.f32            {d20[], d22[]}, [%[exp]]")          /* q10= start, q11=end */ \
-        __ASM_EMIT("vld2.f32            {d21[], d23[]}, [%[exp]]")          /* q10= start, q11=end */ \
+        __ASM_EMIT("vld3.f32            {d20[], d22[], d24[]}, [%[exp]]")   /* q10= start, q11=end, q12=threshold */ \
+        __ASM_EMIT("vld3.f32            {d21[], d23[], d25[]}, [%[exp]]")   /* q10= start, q11=end, q12=threshold */ \
         __ASM_EMIT("vldm                %[mem], {q2}")                      /* q2 = x0 */ \
-        __ASM_EMIT("vldm                %[X2C], {q12-q13}")                 /* q12= 1.0, q13 = down_limit */ \
+        __ASM_EMIT("vldm                %[X2C], {q13}")                     /* q13= 1.0 */ \
         __ASM_EMIT("vcge.f32            q6, q2, q11")                       /* q6 = [x0 >= end] */ \
-        __ASM_EMIT("vcge.f32            q8, q2, q13")                       /* q8 = [x0 >= down_limit] */ \
-        __ASM_EMIT("vbit                q0, q12, q6")                       /* q0 = [x0 >= end] ? 1.0 : EV */ \
-        __ASM_EMIT("vand                q0, q0, q8")                        /* q0 = [x0 < down_limit] ? 0.0 : [x0 <= start] ? gain : EV */ \
+        __ASM_EMIT("vcge.f32            q8, q2, q12")                       /* q8 = [x0 >= threshold] */ \
+        __ASM_EMIT("vbit                q0, q13, q6")                       /* q0 = [x0 >= end] ? 1.0 : EV */ \
+        __ASM_EMIT("vand                q0, q0, q8")                        /* q0 = [x0 < threshold] ? 0.0 : [x0 <= start] ? gain : EV */ \
         /* out: q0 = g0 */
 
     #define PROCESS_DEXP_FULL_X8 \

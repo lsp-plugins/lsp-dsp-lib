@@ -38,8 +38,9 @@ namespace lsp
         {
             float   start[16];      // +0x000
             float   end[16];        // +0x040
-            float   herm[48];       // +0x080
-            float   tilt[32];       // +0x140
+            float   threshold[16];  // +0x080
+            float   herm[48];       // +0x0c0
+            float   tilt[32];       // +0x180
         } expander_knee_t;
     #pragma pack(pop)
 
@@ -47,8 +48,6 @@ namespace lsp
         {
             LSP_DSP_VEC16(0x7fffffff),  // abs
             LSP_DSP_VEC16(0x3f800000),  // 1.0f
-            LSP_DSP_VEC16(0x2edbe6ff),  // 1e-10f
-            LSP_DSP_VEC16(0x501502f9)   // 1e+10f
         };
 
     #define UNPACK_EXP_KNEE(DST, SRC) \
@@ -59,30 +58,32 @@ namespace lsp
         __ASM_EMIT("vbroadcastss        0x10(%[" SRC "]), %%zmm4") \
         __ASM_EMIT("vbroadcastss        0x14(%[" SRC "]), %%zmm5") \
         __ASM_EMIT("vbroadcastss        0x18(%[" SRC "]), %%zmm6") \
+        __ASM_EMIT("vbroadcastss        0x1c(%[" SRC "]), %%zmm7") \
         __ASM_EMIT("vmovaps             %%zmm0, 0x000 + %[" DST "]") \
         __ASM_EMIT("vmovaps             %%zmm1, 0x040 + %[" DST "]") \
         __ASM_EMIT("vmovaps             %%zmm2, 0x080 + %[" DST "]") \
         __ASM_EMIT("vmovaps             %%zmm3, 0x0c0 + %[" DST "]") \
         __ASM_EMIT("vmovaps             %%zmm4, 0x100 + %[" DST "]") \
         __ASM_EMIT("vmovaps             %%zmm5, 0x140 + %[" DST "]") \
-        __ASM_EMIT("vmovaps             %%zmm6, 0x180 + %[" DST "]")
+        __ASM_EMIT("vmovaps             %%zmm6, 0x180 + %[" DST "]") \
+        __ASM_EMIT("vmovaps             %%zmm7, 0x1c0 + %[" DST "]")
 
     #define PROCESS_UKNEE_SINGLE_X32 \
         /* in: zmm0 = lx0, zmm4 = lx1 */ \
-        __ASM_EMIT("vmulps              0x080 + %[knee], %%zmm0, %%zmm1")       /* zmm1 = herm[0]*lx0 */ \
-        __ASM_EMIT("vmulps              0x080 + %[knee], %%zmm4, %%zmm5") \
-        __ASM_EMIT("vmulps              0x140 + %[knee], %%zmm0, %%zmm2")       /* zmm2 = tilt[0]*lx0 */ \
-        __ASM_EMIT("vmulps              0x140 + %[knee], %%zmm4, %%zmm6") \
+        __ASM_EMIT("vmulps              0x0c0 + %[knee], %%zmm0, %%zmm1")       /* zmm1 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x0c0 + %[knee], %%zmm4, %%zmm5") \
+        __ASM_EMIT("vmulps              0x180 + %[knee], %%zmm0, %%zmm2")       /* zmm2 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x180 + %[knee], %%zmm4, %%zmm6") \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%zmm3")                /* zmm3 = x0 */ \
         __ASM_EMIT("vmovaps             0x040 + %[mem], %%zmm7") \
-        __ASM_EMIT("vaddps              0x0c0 + %[knee], %%zmm1, %%zmm1")       /* zmm1 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("vaddps              0x0c0 + %[knee], %%zmm5, %%zmm5") \
-        __ASM_EMIT("vaddps              0x180 + %[knee], %%zmm2, %%zmm2")       /* zmm2 = TV = tilt[0]*lx0+tilt[1] */ \
-        __ASM_EMIT("vaddps              0x180 + %[knee], %%zmm6, %%zmm6") \
+        __ASM_EMIT("vaddps              0x100 + %[knee], %%zmm1, %%zmm1")       /* zmm1 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vaddps              0x100 + %[knee], %%zmm5, %%zmm5") \
+        __ASM_EMIT("vaddps              0x1c0 + %[knee], %%zmm2, %%zmm2")       /* zmm2 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vaddps              0x1c0 + %[knee], %%zmm6, %%zmm6") \
         __ASM_EMIT("vcmpps              $5, 0x040 + %[knee], %%zmm3, %%k4")     /* k4   = [x0 >= end] */ \
         __ASM_EMIT("vcmpps              $5, 0x040 + %[knee], %%zmm7, %%k6") \
-        __ASM_EMIT("vfmadd213ps         0x100 + %[knee], %%zmm1, %%zmm0")       /* zmm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
-        __ASM_EMIT("vfmadd213ps         0x100 + %[knee], %%zmm5, %%zmm4") \
+        __ASM_EMIT("vfmadd213ps         0x140 + %[knee], %%zmm1, %%zmm0")       /* zmm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vfmadd213ps         0x140 + %[knee], %%zmm5, %%zmm4") \
         __ASM_EMIT("vmovaps             %%zmm2, %%zmm0 %{%%k4%}")               /* zmm0 = [x0 >= end] ? TV : KV */ \
         __ASM_EMIT("vmovaps             %%zmm6, %%zmm4 %{%%k6%}") \
         EXP_CORE_X32                                                            /* zmm0 = EV = expf([x0 >= end] ? TV : KV) */ \
@@ -90,72 +91,64 @@ namespace lsp
         __ASM_EMIT("vmovaps             0x040 + %[mem], %%zmm5") \
         __ASM_EMIT("vcmpps              $2, 0x000 + %[knee], %%zmm1, %%k4")     /* k4   = [x0 <= start] */ \
         __ASM_EMIT("vcmpps              $2, 0x000 + %[knee], %%zmm5, %%k6") \
-        __ASM_EMIT("vcmpps              $6, 0x0c0 + %[X2C], %%zmm1, %%k5")       /* k5   = [x0 > up_limit] */ \
-        __ASM_EMIT("vcmpps              $6, 0x0c0 + %[X2C], %%zmm5, %%k7") \
         __ASM_EMIT("vmovaps             0x040 + %[X2C], %%zmm0 %{%%k4%}")       /* zmm0 = [x0 <= start] ? 1.0 : EV */ \
         __ASM_EMIT("vmovaps             0x040 + %[X2C], %%zmm4 %{%%k6%}") \
-        __ASM_EMIT("vmovaps             0x0c0 + %[X2C], %%zmm0 %{%%k5%}")       /* zmm0 = [x0 > up_limit] ? up_limit : [x0 <= start] ? 1.0 : EV */ \
-        __ASM_EMIT("vmovaps             0x0c0 + %[X2C], %%zmm4 %{%%k7%}") \
         /* out: zmm0 = g0, zmm4 = g1 */
 
     #define PROCESS_UKNEE_SINGLE_X16 \
         /* in: zmm0 = lx0 */ \
-        __ASM_EMIT("vmulps              0x080 + %[knee], %%zmm0, %%zmm1")       /* zmm1 = herm[0]*lx0 */ \
-        __ASM_EMIT("vmulps              0x140 + %[knee], %%zmm0, %%zmm2")       /* zmm2 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x0c0 + %[knee], %%zmm0, %%zmm1")       /* zmm1 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x180 + %[knee], %%zmm0, %%zmm2")       /* zmm2 = tilt[0]*lx0 */ \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%zmm3")                /* zmm3 = x0 */ \
-        __ASM_EMIT("vaddps              0x0c0 + %[knee], %%zmm1, %%zmm1")       /* zmm1 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("vaddps              0x180 + %[knee], %%zmm2, %%zmm2")       /* zmm2 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vaddps              0x100 + %[knee], %%zmm1, %%zmm1")       /* zmm1 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vaddps              0x1c0 + %[knee], %%zmm2, %%zmm2")       /* zmm2 = TV = tilt[0]*lx0+tilt[1] */ \
         __ASM_EMIT("vcmpps              $5, 0x040 + %[knee], %%zmm3, %%k4")     /* k4   = [x0 >= end] */ \
-        __ASM_EMIT("vfmadd213ps         0x100 + %[knee], %%zmm1, %%zmm0")       /* zmm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vfmadd213ps         0x140 + %[knee], %%zmm1, %%zmm0")       /* zmm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
         __ASM_EMIT("vmovaps             %%zmm2, %%zmm0 %{%%k4%}")               /* zmm0 = [x0 >= end] ? TV : KV */ \
         EXP_CORE_X16                                                            /* zmm0 = EV = expf([x0 >= end] ? TV : KV) */ \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%zmm1")                /* zmm1 = x0 */ \
         __ASM_EMIT("vcmpps              $2, 0x000 + %[knee], %%zmm1, %%k4")     /* k4   = [x0 <= start] */ \
-        __ASM_EMIT("vcmpps              $6, 0x0c0 + %[X2C], %%zmm1, %%k5")      /* k5   = [x0 > up_limit] */ \
         __ASM_EMIT("vmovaps             0x040 + %[X2C], %%zmm0 %{%%k4%}")       /* zmm0 = [x0 <= start] ? 1.0 : EV */ \
-        __ASM_EMIT("vmovaps             0x0c0 + %[X2C], %%zmm0 %{%%k5%}")       /* zmm0 = [x0 > up_limit] ? up_limit : [x0 <= start] ? 1.0 : EV */ \
         /* out: zmm0 = g0 */
 
     #define PROCESS_UKNEE_SINGLE_X8 \
         /* in: ymm0 = lx0 */ \
-        __ASM_EMIT("vmulps              0x080 + %[knee], %%ymm0, %%ymm1")       /* ymm1 = herm[0]*lx0 */ \
-        __ASM_EMIT("vmulps              0x140 + %[knee], %%ymm0, %%ymm2")       /* ymm2 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x0c0 + %[knee], %%ymm0, %%ymm1")       /* ymm1 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x180 + %[knee], %%ymm0, %%ymm2")       /* ymm2 = tilt[0]*lx0 */ \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%ymm3")                /* ymm3 = x0 */ \
-        __ASM_EMIT("vaddps              0x0c0 + %[knee], %%ymm1, %%ymm1")       /* ymm1 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("vaddps              0x180 + %[knee], %%ymm2, %%ymm2")       /* ymm2 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vaddps              0x100 + %[knee], %%ymm1, %%ymm1")       /* ymm1 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vaddps              0x1c0 + %[knee], %%ymm2, %%ymm2")       /* ymm2 = TV = tilt[0]*lx0+tilt[1] */ \
         __ASM_EMIT("vcmpps              $5, 0x040 + %[knee], %%ymm3, %%k4")     /* k4   = [x0 >= end] */ \
-        __ASM_EMIT("vfmadd213ps         0x100 + %[knee], %%ymm1, %%ymm0")       /* ymm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vfmadd213ps         0x140 + %[knee], %%ymm1, %%ymm0")       /* ymm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
         __ASM_EMIT("vmovaps             %%ymm2, %%ymm0 %{%%k4%}")               /* ymm0 = [x0 >= end] ? TV : KV */ \
         EXP_CORE_X8                                                             /* ymm0 = EV = expf([x0 >= end] ? TV : KV) */ \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%ymm1")                /* ymm1 = x0 */ \
         __ASM_EMIT("vcmpps              $2, 0x000 + %[knee], %%ymm1, %%k4")     /* k4   = [x0 <= start] */ \
-        __ASM_EMIT("vcmpps              $6, 0x0c0 + %[X2C], %%ymm1, %%k5")      /* k5   = [x0 > up_limit] */ \
         __ASM_EMIT("vmovaps             0x040 + %[X2C], %%ymm0 %{%%k4%}")       /* ymm0 = [x0 <= start] ? 1.0 : EV */ \
-        __ASM_EMIT("vmovaps             0x0c0 + %[X2C], %%ymm0 %{%%k5%}")       /* ymm0 = [x0 > up_limit] ? up_limit : [x0 <= start] ? 1.0 : EV */ \
         /* out: ymm0 = g0 */
 
     #define PROCESS_UKNEE_SINGLE_X4 \
         /* in: xmm0 = lx0 */ \
-        __ASM_EMIT("vmulps              0x080 + %[knee], %%xmm0, %%xmm1")       /* xmm1 = herm[0]*lx0 */ \
-        __ASM_EMIT("vmulps              0x140 + %[knee], %%xmm0, %%xmm2")       /* xmm2 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x0c0 + %[knee], %%xmm0, %%xmm1")       /* xmm1 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x180 + %[knee], %%xmm0, %%xmm2")       /* xmm2 = tilt[0]*lx0 */ \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%xmm3")                /* xmm3 = x0 */ \
-        __ASM_EMIT("vaddps              0x0c0 + %[knee], %%xmm1, %%xmm1")       /* xmm1 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("vaddps              0x180 + %[knee], %%xmm2, %%xmm2")       /* xmm2 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vaddps              0x100 + %[knee], %%xmm1, %%xmm1")       /* xmm1 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vaddps              0x1c0 + %[knee], %%xmm2, %%xmm2")       /* xmm2 = TV = tilt[0]*lx0+tilt[1] */ \
         __ASM_EMIT("vcmpps              $5, 0x040 + %[knee], %%xmm3, %%k4")     /* k4   = [x0 >= end] */ \
-        __ASM_EMIT("vfmadd213ps         0x100 + %[knee], %%xmm1, %%xmm0")       /* xmm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vfmadd213ps         0x140 + %[knee], %%xmm1, %%xmm0")       /* xmm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
         __ASM_EMIT("vmovaps             %%xmm2, %%xmm0 %{%%k4%}")               /* xmm0 = [x0 >= end] ? TV : KV */ \
         EXP_CORE_X4                                                             /* xmm0 = EV = expf([x0 >= end] ? TV : KV) */ \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%xmm1")                /* xmm1 = x0 */ \
         __ASM_EMIT("vcmpps              $2, 0x000 + %[knee], %%xmm1, %%k4")     /* k4   = [x0 <= start] */ \
-        __ASM_EMIT("vcmpps              $6, 0x0c0 + %[X2C], %%xmm1, %%k5")      /* k5   = [x0 > up_limit] */ \
         __ASM_EMIT("vmovaps             0x040 + %[X2C], %%xmm0 %{%%k4%}")       /* xmm0 = [x0 <= start] ? 1.0 : EV */ \
-        __ASM_EMIT("vmovaps             0x0c0 + %[X2C], %%xmm0 %{%%k5%}")       /* xmm0 = [x0 > up_limit] ? up_limit : [x0 <= start] ? 1.0 : EV */ \
         /* out: xmm0 = g0 */
 
     #define PROCESS_UEXP_FULL_X32 \
         /* in: zmm0 = x0, zmm4 = x1 */ \
         __ASM_EMIT("vandps              0x000 + %[X2C], %%zmm0, %%zmm0")        /* zmm0 = fabsf(x0) */ \
         __ASM_EMIT("vandps              0x000 + %[X2C], %%zmm4, %%zmm4") \
+        __ASM_EMIT("vminps              0x080 + %[knee], %%zmm0, %%zmm0")       /* zmm0 = min(fabsf(x0), threshold) */ \
+        __ASM_EMIT("vminps              0x080 + %[knee], %%zmm4, %%zmm4") \
         __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%zmm0, %%k4")     /* k4   = [x0 > start] */ \
         __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%zmm4, %%k6") \
         __ASM_EMIT("korw                %%k6, %%k4, %%k4") \
@@ -176,6 +169,7 @@ namespace lsp
     #define PROCESS_UEXP_FULL_X16 \
         /* in: zmm0 = x0 */ \
         __ASM_EMIT("vandps              0x000 + %[X2C], %%zmm0, %%zmm0")        /* zmm0 = fabsf(x0) */ \
+        __ASM_EMIT("vminps              0x080 + %[knee], %%zmm0, %%zmm0")       /* zmm0 = min(fabsf(x0), threshold) */ \
         __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%zmm0, %%k4")     /* k4   = [x0 > start] */ \
         __ASM_EMIT("kmovw               %%k4, %k[mask]") \
         __ASM_EMIT("test                %k[mask], %k[mask]") \
@@ -192,10 +186,11 @@ namespace lsp
     #define PROCESS_UEXP_FULL_X8 \
         /* in: ymm0 = x0 */ \
         __ASM_EMIT("vcmpps              $6, 0x000 + %[knee], %%ymm0, %%k4")     /* k4   = [x0 > start] */ \
+        __ASM_EMIT("vminps              0x080 + %[knee], %%ymm0, %%ymm0")       /* ymm0 = min(fabsf(x0), threshold) */ \
         __ASM_EMIT("kmovw               %%k4, %k[mask]") \
         __ASM_EMIT("test                %k[mask], %k[mask]") \
         __ASM_EMIT("jnz                 100f") \
-        __ASM_EMIT("vmovaps             0x040 + %[X2C], %%ymm0")                /* zmm0 = 1.0f */ \
+        __ASM_EMIT("vmovaps             0x040 + %[X2C], %%ymm0")                /* ymm0 = 1.0f */ \
         __ASM_EMIT("jmp                 200f") \
         __ASM_EMIT("100:") \
         __ASM_EMIT("vandps              0x00 + %[X2C], %%ymm0, %%ymm0")         /* ymm0 = fabsf(x0) */ \
@@ -208,6 +203,7 @@ namespace lsp
     #define PROCESS_UEXP_FULL_X4 \
         /* in: xmm0 = x0 */ \
         __ASM_EMIT("vandps              0x000 + %[X2C], %%xmm0, %%xmm0")        /* xmm0 = fabsf(x0) */ \
+        __ASM_EMIT("vminps              0x080 + %[knee], %%xmm0, %%xmm0")       /* xmm0 = min(fabsf(x0), threshold) */ \
         __ASM_EMIT("vmovaps             %%xmm0, 0x000 + %[mem]")                /* store fabsf(x0) */ \
         LOGE_CORE_X4                                                            /* xmm0 = lx0 = logf(fabsf(x0)) */ \
         PROCESS_UKNEE_SINGLE_X4                                                 /* apply knee */ \
@@ -432,20 +428,20 @@ namespace lsp
 
     #define PROCESS_DKNEE_SINGLE_X32 \
         /* in: ymm0 = lx0, ymm4 = lx1, ymm8 = lx2, ymm12 = lx3 */ \
-        __ASM_EMIT("vmulps              0x080 + %[knee], %%zmm0, %%zmm1")       /* zmm1 = herm[0]*lx0 */ \
-        __ASM_EMIT("vmulps              0x080 + %[knee], %%zmm4, %%zmm5") \
-        __ASM_EMIT("vmulps              0x140 + %[knee], %%zmm0, %%zmm2")       /* zmm2 = tilt[0]*lx0 */ \
-        __ASM_EMIT("vmulps              0x140 + %[knee], %%zmm4, %%zmm6") \
+        __ASM_EMIT("vmulps              0x0c0 + %[knee], %%zmm0, %%zmm1")       /* zmm1 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x0c0 + %[knee], %%zmm4, %%zmm5") \
+        __ASM_EMIT("vmulps              0x180 + %[knee], %%zmm0, %%zmm2")       /* zmm2 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x180 + %[knee], %%zmm4, %%zmm6") \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%zmm3")                /* zmm3 = x0 */ \
         __ASM_EMIT("vmovaps             0x040 + %[mem], %%zmm7") \
-        __ASM_EMIT("vaddps              0x0c0 + %[knee], %%zmm1, %%zmm1")       /* zmm1 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("vaddps              0x0c0 + %[knee], %%zmm5, %%zmm5") \
-        __ASM_EMIT("vaddps              0x180 + %[knee], %%zmm2, %%zmm2")       /* zmm2 = TV = tilt[0]*lx0+tilt[1] */ \
-        __ASM_EMIT("vaddps              0x180 + %[knee], %%zmm6, %%zmm6") \
+        __ASM_EMIT("vaddps              0x100 + %[knee], %%zmm1, %%zmm1")       /* zmm1 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vaddps              0x100 + %[knee], %%zmm5, %%zmm5") \
+        __ASM_EMIT("vaddps              0x1c0 + %[knee], %%zmm2, %%zmm2")       /* zmm2 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vaddps              0x1c0 + %[knee], %%zmm6, %%zmm6") \
         __ASM_EMIT("vcmpps              $2, 0x000 + %[knee], %%zmm3, %%k4")     /* k4   = [x0 <= start] */ \
         __ASM_EMIT("vcmpps              $2, 0x000 + %[knee], %%zmm7, %%k6") \
-        __ASM_EMIT("vfmadd213ps         0x100 + %[knee], %%zmm1, %%zmm0")       /* zmm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
-        __ASM_EMIT("vfmadd213ps         0x100 + %[knee], %%zmm5, %%zmm4") \
+        __ASM_EMIT("vfmadd213ps         0x140 + %[knee], %%zmm1, %%zmm0")       /* zmm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vfmadd213ps         0x140 + %[knee], %%zmm5, %%zmm4") \
         __ASM_EMIT("vmovaps             %%zmm2, %%zmm0 %{%%k4%}")               /* zmm0 = [x0 <= start] ? TV : KV */ \
         __ASM_EMIT("vmovaps             %%zmm6, %%zmm4 %{%%k6%}") \
         EXP_CORE_X32                                                            /* zmm0 = EV = expf([x0 <= start] ? TV : KV) */ \
@@ -453,66 +449,66 @@ namespace lsp
         __ASM_EMIT("vmovaps             0x040 + %[mem], %%zmm5") \
         __ASM_EMIT("vcmpps              $5, 0x040 + %[knee], %%zmm1, %%k4")     /* k4   = [x0 >= end] */ \
         __ASM_EMIT("vcmpps              $5, 0x040 + %[knee], %%zmm5, %%k6") \
-        __ASM_EMIT("vcmpps              $1, 0x080 + %[X2C], %%zmm1, %%k5")      /* k5   = [x0 < down_limit] */ \
-        __ASM_EMIT("vcmpps              $1, 0x080 + %[X2C], %%zmm5, %%k7") \
+        __ASM_EMIT("vcmpps              $1, 0x080 + %[knee], %%zmm1, %%k5")     /* k5   = [x0 < threshold] */ \
+        __ASM_EMIT("vcmpps              $1, 0x080 + %[knee], %%zmm5, %%k7") \
         __ASM_EMIT("vmovaps             0x040 + %[X2C], %%zmm0 %{%%k4%}")       /* zmm0 = [x0 >= end] ? 1.0 : EV */ \
         __ASM_EMIT("vmovaps             0x040 + %[X2C], %%zmm4 %{%%k6%}") \
-        __ASM_EMIT("vxorps              %%zmm0, %%zmm0, %%zmm0 %{%%k5%}")       /* zmm0 = [x0 < down_limit] ? 0 : [x0 >= end] ? 1.0 : EV */ \
+        __ASM_EMIT("vxorps              %%zmm0, %%zmm0, %%zmm0 %{%%k5%}")       /* zmm0 = [x0 < threshold] ? 0 : [x0 >= end] ? 1.0 : EV */ \
         __ASM_EMIT("vxorps              %%zmm4, %%zmm4, %%zmm4 %{%%k7%}") \
         /* out: ymm0 = g0, ymm4 = g1, ymm8 = g2, ymm12 = g3 */
 
     #define PROCESS_DKNEE_SINGLE_X16 \
         /* in: zmm0 = lx0 */ \
-        __ASM_EMIT("vmulps              0x080 + %[knee], %%zmm0, %%zmm1")       /* zmm1 = herm[0]*lx0 */ \
-        __ASM_EMIT("vmulps              0x140 + %[knee], %%zmm0, %%zmm2")       /* zmm2 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x0c0 + %[knee], %%zmm0, %%zmm1")       /* zmm1 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x180 + %[knee], %%zmm0, %%zmm2")       /* zmm2 = tilt[0]*lx0 */ \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%zmm3")                /* zmm3 = x0 */ \
-        __ASM_EMIT("vaddps              0x0c0 + %[knee], %%zmm1, %%zmm1")       /* zmm1 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("vaddps              0x180 + %[knee], %%zmm2, %%zmm2")       /* zmm2 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vaddps              0x100 + %[knee], %%zmm1, %%zmm1")       /* zmm1 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vaddps              0x1c0 + %[knee], %%zmm2, %%zmm2")       /* zmm2 = TV = tilt[0]*lx0+tilt[1] */ \
         __ASM_EMIT("vcmpps              $2, 0x000 + %[knee], %%zmm3, %%k4")     /* k4   = [x0 <= start] */ \
-        __ASM_EMIT("vfmadd213ps         0x100 + %[knee], %%zmm1, %%zmm0")       /* zmm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vfmadd213ps         0x140 + %[knee], %%zmm1, %%zmm0")       /* zmm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
         __ASM_EMIT("vmovaps             %%zmm2, %%zmm0 %{%%k4%}")               /* zmm0 = [x0 <= start] ? TV : KV */ \
         EXP_CORE_X16                                                            /* zmm0 = EV = expf([x0 <= start] ? TV : KV) */ \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%zmm1")                /* zmm1 = x0 */ \
         __ASM_EMIT("vcmpps              $5, 0x040 + %[knee], %%zmm1, %%k4")     /* k4   = [x0 >= end] */ \
-        __ASM_EMIT("vcmpps              $1, 0x080 + %[X2C], %%zmm1, %%k5")      /* k5   = [x0 < down_limit] */ \
+        __ASM_EMIT("vcmpps              $1, 0x080 + %[knee], %%zmm1, %%k5")     /* k5   = [x0 < threshold] */ \
         __ASM_EMIT("vmovaps             0x040 + %[X2C], %%zmm0 %{%%k4%}")       /* zmm0 = [x0 >= end] ? 1.0 : EV */ \
-        __ASM_EMIT("vxorps              %%zmm0, %%zmm0, %%zmm0 %{%%k5%}")       /* zmm0 = [x0 < down_limit] ? 0 : [x0 >= end] ? 1.0 : EV */ \
+        __ASM_EMIT("vxorps              %%zmm0, %%zmm0, %%zmm0 %{%%k5%}")       /* zmm0 = [x0 < threshold] ? 0 : [x0 >= end] ? 1.0 : EV */ \
         /* out: zmm0 = g0 */
 
     #define PROCESS_DKNEE_SINGLE_X8 \
         /* in: ymm0 = lx0 */ \
-        __ASM_EMIT("vmulps              0x080 + %[knee], %%ymm0, %%ymm1")       /* ymm1 = herm[0]*lx0 */ \
-        __ASM_EMIT("vmulps              0x140 + %[knee], %%ymm0, %%ymm2")       /* ymm2 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x0c0 + %[knee], %%ymm0, %%ymm1")       /* ymm1 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x180 + %[knee], %%ymm0, %%ymm2")       /* ymm2 = tilt[0]*lx0 */ \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%ymm3")                /* ymm3 = x0 */ \
-        __ASM_EMIT("vaddps              0x0c0 + %[knee], %%ymm1, %%ymm1")       /* ymm1 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("vaddps              0x180 + %[knee], %%ymm2, %%ymm2")       /* ymm2 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vaddps              0x100 + %[knee], %%ymm1, %%ymm1")       /* ymm1 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vaddps              0x1c0 + %[knee], %%ymm2, %%ymm2")       /* ymm2 = TV = tilt[0]*lx0+tilt[1] */ \
         __ASM_EMIT("vcmpps              $2, 0x000 + %[knee], %%ymm3, %%k4")     /* k4   = [x0 <= start] */ \
-        __ASM_EMIT("vfmadd213ps         0x100 + %[knee], %%ymm1, %%ymm0")       /* ymm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vfmadd213ps         0x140 + %[knee], %%ymm1, %%ymm0")       /* ymm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
         __ASM_EMIT("vmovaps             %%ymm2, %%ymm0 %{%%k4%}")               /* ymm0 = [x0 <= start] ? TV : KV */ \
         EXP_CORE_X8                                                             /* ymm0 = EV = expf([x0 <= start] ? TV : KV) */ \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%ymm1")                /* ymm1 = x0 */ \
         __ASM_EMIT("vcmpps              $5, 0x040 + %[knee], %%ymm1, %%k4")     /* k4   = [x0 >= end] */ \
-        __ASM_EMIT("vcmpps              $1, 0x080 + %[X2C], %%ymm1, %%k5")      /* k5   = [x0 < down_limit] */ \
+        __ASM_EMIT("vcmpps              $1, 0x080 + %[knee], %%ymm1, %%k5")     /* k5   = [x0 < threshold] */ \
         __ASM_EMIT("vmovaps             0x040 + %[X2C], %%ymm0 %{%%k4%}")       /* ymm0 = [x0 >= end] ? 1.0 : EV */ \
-        __ASM_EMIT("vxorps              %%ymm0, %%ymm0, %%ymm0 %{%%k5%}")       /* ymm0 = [x0 < down_limit] ? 0 : [x0 >= end] ? 1.0 : EV */ \
+        __ASM_EMIT("vxorps              %%ymm0, %%ymm0, %%ymm0 %{%%k5%}")       /* ymm0 = [x0 < threshold] ? 0 : [x0 >= end] ? 1.0 : EV */ \
         /* out: ymm0 = g0 */
 
     #define PROCESS_DKNEE_SINGLE_X4 \
         /* in: xmm0 = lx0 */ \
-        __ASM_EMIT("vmulps              0x080 + %[knee], %%xmm0, %%xmm1")       /* xmm1 = herm[0]*lx0 */ \
-        __ASM_EMIT("vmulps              0x140 + %[knee], %%xmm0, %%xmm2")       /* xmm2 = tilt[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x0c0 + %[knee], %%xmm0, %%xmm1")       /* xmm1 = herm[0]*lx0 */ \
+        __ASM_EMIT("vmulps              0x180 + %[knee], %%xmm0, %%xmm2")       /* xmm2 = tilt[0]*lx0 */ \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%xmm3")                /* xmm3 = x0 */ \
-        __ASM_EMIT("vaddps              0x0c0 + %[knee], %%xmm1, %%xmm1")       /* xmm1 = herm[0]*lx0+herm[1] */ \
-        __ASM_EMIT("vaddps              0x180 + %[knee], %%xmm2, %%xmm2")       /* xmm2 = TV = tilt[0]*lx0+tilt[1] */ \
+        __ASM_EMIT("vaddps              0x100 + %[knee], %%xmm1, %%xmm1")       /* xmm1 = herm[0]*lx0+herm[1] */ \
+        __ASM_EMIT("vaddps              0x1c0 + %[knee], %%xmm2, %%xmm2")       /* xmm2 = TV = tilt[0]*lx0+tilt[1] */ \
         __ASM_EMIT("vcmpps              $2, 0x000 + %[knee], %%xmm3, %%k4")     /* k4   = [x0 <= start] */ \
-        __ASM_EMIT("vfmadd213ps         0x100 + %[knee], %%xmm1, %%xmm0")       /* xmm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
+        __ASM_EMIT("vfmadd213ps         0x140 + %[knee], %%xmm1, %%xmm0")       /* xmm0 = KV = (herm[0]*lx0+herm[1])*lx0+herm[2] */ \
         __ASM_EMIT("vmovaps             %%xmm2, %%xmm0 %{%%k4%}")               /* xmm0 = [x0 <= start] ? TV : KV */ \
         EXP_CORE_X4                                                             /* xmm0 = EV = expf([x0 <= start] ? TV : KV) */ \
         __ASM_EMIT("vmovaps             0x000 + %[mem], %%xmm1")                /* xmm1 = x0 */ \
         __ASM_EMIT("vcmpps              $5, 0x040 + %[knee], %%xmm1, %%k4")     /* k4   = [x0 >= end] */ \
-        __ASM_EMIT("vcmpps              $1, 0x080 + %[X2C], %%xmm1, %%k5")      /* k5   = [x0 < down_limit] */ \
+        __ASM_EMIT("vcmpps              $1, 0x080 + %[knee], %%xmm1, %%k5")     /* k5   = [x0 < threshold] */ \
         __ASM_EMIT("vmovaps             0x040 + %[X2C], %%xmm0 %{%%k4%}")       /* xmm0 = [x0 >= end] ? 1.0 : EV */ \
-        __ASM_EMIT("vxorps              %%xmm0, %%xmm0, %%xmm0 %{%%k5%}")       /* xmm0 = [x0 < down_limit] ? 0 : [x0 >= end] ? 1.0 : EV */ \
+        __ASM_EMIT("vxorps              %%xmm0, %%xmm0, %%xmm0 %{%%k5%}")       /* xmm0 = [x0 < threshold] ? 0 : [x0 >= end] ? 1.0 : EV */ \
         /* out: xmm0 = g0 */
 
     #define PROCESS_DEXP_FULL_X32 \

@@ -34,10 +34,9 @@ namespace lsp
         {
             for (size_t i=0; i<count; ++i)
             {
-                float x     = fabsf(src[i]);
-                if (x > LSP_DSP_LIB_EXP_INF_SAT)
-                    dst[i]      = LSP_DSP_LIB_EXP_INF_SAT;
-                else if (x > c->start)
+                float x     = lsp_min(fabsf(src[i]), c->threshold);
+
+                if (x > c->start)
                 {
                     float lx    = logf(x);
                     dst[i]      = (x >= c->end) ?
@@ -49,33 +48,13 @@ namespace lsp
             }
         }
 
-        void dexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
-        {
-            for (size_t i=0; i<count; ++i)
-            {
-                float x     = fabsf(src[i]);
-                if (x < LSP_DSP_LIB_EXP_ZERO_SAT)
-                    dst[i]      = 0.0f;
-                else if (x < c->end)
-                {
-                    float lx    = logf(x);
-                    dst[i]      = (x <= c->start) ?
-                                   expf(c->tilt[0]*lx + c->tilt[1]) :
-                                   expf((c->herm[0]*lx + c->herm[1])*lx + c->herm[2]);
-                }
-                else
-                    dst[i]      = 1.0f;
-            }
-        }
-
         void uexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             for (size_t i=0; i<count; ++i)
             {
-                float x     = fabsf(src[i]);
-                if (x > LSP_DSP_LIB_EXP_INF_SAT)
-                    dst[i]      = LSP_DSP_LIB_EXP_INF_SAT * x;
-                else if (x > c->start)
+                float x     = lsp_min(fabsf(src[i]), c->threshold);
+
+                if (x > c->start)
                 {
                     float lx    = logf(x);
                     dst[i]      = (x >= c->end) ?
@@ -87,12 +66,31 @@ namespace lsp
             }
         }
 
+        void dexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                float x     = fabsf(src[i]);
+                if (x < c->threshold)
+                    dst[i]      = 0.0f;
+                else if (x < c->end)
+                {
+                    float lx    = logf(x);
+                    dst[i]      = (x <= c->start) ?
+                                  expf(c->tilt[0]*lx + c->tilt[1]) :
+                                  expf((c->herm[0]*lx + c->herm[1])*lx + c->herm[2]);
+                }
+                else
+                    dst[i]      = 1.0f;
+            }
+        }
+
         void dexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             for (size_t i=0; i<count; ++i)
             {
                 float x     = fabsf(src[i]);
-                if (x < LSP_DSP_LIB_EXP_ZERO_SAT)
+                if (x < c->threshold)
                     dst[i]      = 0.0f;
                 else if (x < c->end)
                 {

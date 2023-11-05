@@ -243,7 +243,7 @@ namespace lsp
             IF_ARCH_X86(
                 comp_knee_t knee[2] __lsp_aligned64;
                 float mem[96] __lsp_aligned64;
-                float stub[16] __lsp_aligned32;
+                float stub[16] __lsp_aligned64;
                 size_t mask;
             );
 

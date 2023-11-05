@@ -105,10 +105,12 @@ PTEST_BEGIN("dsp.dynamics", dexpander_x1_curve, 5, 1000)
 
         dsp::expander_knee_t exp;
         exp = {
-           0.0316227823f,
-           0.12589255f,
-           { -0.361912072f, -1.49999988f, -1.55424464f },
-           { 1.0f, 2.76310205f }};
+            0.0316223241f,
+            0.125894368f,
+            1.0e-07f,
+            { -0.361904532f, -1.49995828f, -1.55419087f },
+            { 1.0f, 2.76310205f }
+        };
 
         float *src          = ptr;
         float *dst          = &src[buf_size];
