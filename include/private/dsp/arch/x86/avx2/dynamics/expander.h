@@ -47,9 +47,7 @@ namespace lsp
         static const uint32_t expander_const[] __lsp_aligned32 =
         {
             LSP_DSP_VEC8(0x7fffffff),   // abs
-            LSP_DSP_VEC8(0x3f800000),   // 1.0f
-            LSP_DSP_VEC8(0x2edbe6ff),   // 1e-10f
-            LSP_DSP_VEC8(0x501502f9)    // 1e+10f
+            LSP_DSP_VEC8(0x3f800000)    // 1.0f
         };
 
 
