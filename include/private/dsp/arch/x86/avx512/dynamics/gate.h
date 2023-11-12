@@ -209,7 +209,7 @@ namespace lsp
             IF_ARCH_X86(
                 gate_knee_t knee __lsp_aligned64;
                 float mem[32] __lsp_aligned64;
-                float stub[8] __lsp_aligned64;
+                float stub[16] __lsp_aligned64;
                 size_t mask;
             );
 
@@ -307,9 +307,9 @@ namespace lsp
         void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
-                comp_knee_t knee __lsp_aligned64;
+                gate_knee_t knee __lsp_aligned64;
                 float mem[32] __lsp_aligned64;
-                float stub[8] __lsp_aligned64;
+                float stub[16] __lsp_aligned64;
                 size_t mask;
             );
 
