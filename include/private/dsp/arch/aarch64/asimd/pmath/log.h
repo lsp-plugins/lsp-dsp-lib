@@ -35,14 +35,12 @@ namespace lsp
             {
                 LSP_DSP_VEC4(0x007fffff), // MM = frac
                 LSP_DSP_VEC4(0x0000007f), // ME = 127
-                LSP_DSP_VEC4(0x3d888889), // C0 = 1/15 = 0.0666666701436043
-                LSP_DSP_VEC4(0x3d9d89d9), // C1 = 1/13 = 0.0769230797886848
-                LSP_DSP_VEC4(0x3dba2e8c), // C2 = 1/11 = 0.0909090936183929
-                LSP_DSP_VEC4(0x3de38e39), // C3 = 1/9 = 0.1111111119389534
-                LSP_DSP_VEC4(0x3e124925), // C4 = 1/7 = 0.1428571492433548
-                LSP_DSP_VEC4(0x3e4ccccd), // C5 = 1/5 = 0.2000000029802322
-                LSP_DSP_VEC4(0x3eaaaaab), // C6 = 1/3 = 0.3333333432674408
-                LSP_DSP_VEC4(0x3f800000), // C7 = 1.0f
+                LSP_DSP_VEC4(0x3dba2e8c), // C0 = 1/11 = 0.0909090936183929
+                LSP_DSP_VEC4(0x3de38e39), // C1 = 1/9 = 0.1111111119389534
+                LSP_DSP_VEC4(0x3e124925), // C2 = 1/7 = 0.1428571492433548
+                LSP_DSP_VEC4(0x3e4ccccd), // C3 = 1/5 = 0.2000000029802322
+                LSP_DSP_VEC4(0x3eaaaaab), // C4 = 1/3 = 0.3333333432674408
+                LSP_DSP_VEC4(0x3f800000), // C5 = 1.0f
             };
 
             static const float LOGB_C[] __lsp_aligned16 =
@@ -64,7 +62,7 @@ namespace lsp
             };
         )
 
-    #define LOGN_CORE_X8(MM, ME, C0, C1, C2, C3, C4, C5, C6, C7) \
+    #define LOGN_CORE_X8(MM, ME, C0, C1, C2, C3, C4, C5) \
         /* v0 = x */ \
         __ASM_EMIT("ushr            v2.4s, v0.4s, #23")             /* v2   = ilog2(x) + 127 */ \
         __ASM_EMIT("ushr            v3.4s, v1.4s, #23") \
@@ -72,14 +70,14 @@ namespace lsp
         __ASM_EMIT("and             v1.16b, v1.16b, " MM ".16b") \
         __ASM_EMIT("sub             v2.4s, v2.4s, " ME ".4s")       /* v2   = r - ME = ilog2(x) */ \
         __ASM_EMIT("sub             v3.4s, v3.4s, " ME ".4s") \
-        __ASM_EMIT("orr             v0.16b, v0.16b, " C7 ".16b")    /* v0   = X = (x & MM) | (C7 = 1.0f) */ \
-        __ASM_EMIT("orr             v1.16b, v1.16b, " C7 ".16b") \
+        __ASM_EMIT("orr             v0.16b, v0.16b, " C5 ".16b")    /* v0   = X = (x & MM) | (C7 = 1.0f) */ \
+        __ASM_EMIT("orr             v1.16b, v1.16b, " C5 ".16b") \
         __ASM_EMIT("scvtf           v2.4s, v2.4s")                  /* v2   = R = float(r) */ \
         __ASM_EMIT("scvtf           v3.4s, v3.4s") \
-        __ASM_EMIT("fadd            v4.4s, v0.4s, " C7 ".4s")       /* v4   = XB = X + (C7 = 1) */ \
-        __ASM_EMIT("fadd            v5.4s, v1.4s, " C7 ".4s") \
-        __ASM_EMIT("fsub            v0.4s, v0.4s, " C7 ".4s")       /* v0   = XT = X - (C7 = 1) */ \
-        __ASM_EMIT("fsub            v1.4s, v1.4s, " C7 ".4s") \
+        __ASM_EMIT("fadd            v4.4s, v0.4s, " C5 ".4s")       /* v4   = XB = X + (C7 = 1) */ \
+        __ASM_EMIT("fadd            v5.4s, v1.4s, " C5 ".4s") \
+        __ASM_EMIT("fsub            v0.4s, v0.4s, " C5 ".4s")       /* v0   = XT = X - (C7 = 1) */ \
+        __ASM_EMIT("fsub            v1.4s, v1.4s, " C5 ".4s") \
         __ASM_EMIT("frecpe          v6.4s, v4.4s")                  /* v6   = xb */ \
         __ASM_EMIT("frecpe          v7.4s, v5.4s") \
         __ASM_EMIT("frecps          v8.4s, v6.4s, v4.4s")           /* v8   = (2 - XB*xb) */ \
@@ -115,27 +113,19 @@ namespace lsp
         __ASM_EMIT("fmul            v7.4s, v7.4s, v5.4s") \
         __ASM_EMIT("fadd            v6.4s, v6.4s, " C5 ".4s")       /* v6   = C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
         __ASM_EMIT("fadd            v7.4s, v7.4s, " C5 ".4s") \
-        __ASM_EMIT("fmul            v6.4s, v6.4s, v4.4s")           /* v6   = Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-        __ASM_EMIT("fmul            v7.4s, v7.4s, v5.4s") \
-        __ASM_EMIT("fadd            v6.4s, v6.4s, " C6 ".4s")       /* v6   = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-        __ASM_EMIT("fadd            v7.4s, v7.4s, " C6 ".4s") \
-        __ASM_EMIT("fmul            v6.4s, v6.4s, v4.4s")           /* v6   = Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-        __ASM_EMIT("fmul            v7.4s, v7.4s, v5.4s") \
-        __ASM_EMIT("fadd            v6.4s, v6.4s, " C7 ".4s")       /* v6   = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-        __ASM_EMIT("fadd            v7.4s, v7.4s, " C7 ".4s") \
-        __ASM_EMIT("fmul            v0.4s, v0.4s, v6.4s")           /* v0   = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+        __ASM_EMIT("fmul            v0.4s, v0.4s, v6.4s")           /* v0   = y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
         __ASM_EMIT("fmul            v1.4s, v1.4s, v7.4s") \
         /* v0 = y*L, v2 = R */
 
-    #define LOGN_CORE_X4(MM, ME, C0, C1, C2, C3, C4, C5, C6, C7) \
+    #define LOGN_CORE_X4(MM, ME, C0, C1, C2, C3, C4, C5) \
         /* v0 = x */ \
         __ASM_EMIT("ushr            v2.4s, v0.4s, #23")             /* v2   = ilog2(x) + 127 */ \
         __ASM_EMIT("and             v0.16b, v0.16b, " MM ".16b")    /* v0   = x & MM */ \
         __ASM_EMIT("sub             v2.4s, v2.4s, " ME ".4s")       /* v2   = r - ME = ilog2(x) */ \
-        __ASM_EMIT("orr             v0.16b, v0.16b, " C7 ".16b")    /* v0   = X = (x & MM) | (C7 = 1.0f) */ \
+        __ASM_EMIT("orr             v0.16b, v0.16b, " C5 ".16b")    /* v0   = X = (x & MM) | (C7 = 1.0f) */ \
         __ASM_EMIT("scvtf           v2.4s, v2.4s")                  /* v2   = R = float(r) */ \
-        __ASM_EMIT("fadd            v4.4s, v0.4s, " C7 ".4s")       /* v4   = XB = X + (C7 = 1) */ \
-        __ASM_EMIT("fsub            v0.4s, v0.4s, " C7 ".4s")       /* v0   = XT = X - (C7 = 1) */ \
+        __ASM_EMIT("fadd            v4.4s, v0.4s, " C5 ".4s")       /* v4   = XB = X + (C7 = 1) */ \
+        __ASM_EMIT("fsub            v0.4s, v0.4s, " C5 ".4s")       /* v0   = XT = X - (C7 = 1) */ \
         __ASM_EMIT("frecpe          v6.4s, v4.4s")                  /* v6   = xb */ \
         __ASM_EMIT("frecps          v8.4s, v6.4s, v4.4s")           /* v8   = (2 - XB*xb) */ \
         __ASM_EMIT("fmul            v6.4s, v8.4s, v6.4s")           /* v6   = xb' = xb * (2 - XB*xb) */ \
@@ -154,11 +144,7 @@ namespace lsp
         __ASM_EMIT("fadd            v6.4s, v6.4s, " C4 ".4s")       /* v6   = C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))) */ \
         __ASM_EMIT("fmul            v6.4s, v6.4s, v4.4s")           /* v6   = Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
         __ASM_EMIT("fadd            v6.4s, v6.4s, " C5 ".4s")       /* v6   = C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
-        __ASM_EMIT("fmul            v6.4s, v6.4s, v4.4s")           /* v6   = Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-        __ASM_EMIT("fadd            v6.4s, v6.4s, " C6 ".4s")       /* v6   = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-        __ASM_EMIT("fmul            v6.4s, v6.4s, v4.4s")           /* v6   = Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-        __ASM_EMIT("fadd            v6.4s, v6.4s, " C7 ".4s")       /* v6   = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-        __ASM_EMIT("fmul            v0.4s, v0.4s, v6.4s")           /* v0   = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+        __ASM_EMIT("fmul            v0.4s, v0.4s, v6.4s")           /* v0   = y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
         /* v0 = y*L, v2 = R */
 
     #define LOGN_CORE_LOAD \
@@ -166,19 +152,18 @@ namespace lsp
         __ASM_EMIT("ldp             q16, q17, [%[L2C], #0x00]")     /* v16  = MM, v17 = ME */ \
         __ASM_EMIT("ldp             q18, q19, [%[L2C], #0x20]")     /* v18  = C0, v19 = C1 */ \
         __ASM_EMIT("ldp             q20, q21, [%[L2C], #0x40]")     /* v20  = C2, v21 = C3 */ \
-        __ASM_EMIT("ldp             q22, q23, [%[L2C], #0x60]")     /* v22  = C4, v23 = C5 */ \
-        __ASM_EMIT("ldp             q24, q25, [%[L2C], #0x80]")     /* v24  = C6, v25 = C7 */
+        __ASM_EMIT("ldp             q22, q23, [%[L2C], #0x60]")     /* v22  = C4, v23 = C5 */
 
     #define LOGB_CORE_X8_NOLOAD \
         /* in: v0 = x1, v1 = x2 */ \
-        LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23") \
         __ASM_EMIT("fmla            v2.4s, v0.4s, v26.4s")          /* v2   = R + 2*y*L*M_LOG2E */ \
         __ASM_EMIT("fmla            v3.4s, v1.4s, v27.4s") \
         /* out: v0 = logb(x0), v1 = logb(x1) */
 
     #define LOGB_CORE_X4_NOLOAD \
         /* in: v0 = x1 */ \
-        LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23") \
         __ASM_EMIT("fmla            v2.4s, v0.4s, v26.4s")          /* v2   = R + 2*y*L*M_LOG2E */ \
         /* out: v0 = logb(x0) */
 
@@ -196,7 +181,7 @@ namespace lsp
 
     #define LOGE_CORE_X8_NOLOAD \
         /* in: v0 = x1, v1 = x2 */ \
-        LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23") \
         __ASM_EMIT("fadd            v0.4s, v0.4s, v0.4s")           /* v0 = 2*y*L */ \
         __ASM_EMIT("fadd            v1.4s, v1.4s, v1.4s") \
         __ASM_EMIT("fmla            v0.4s, v2.4s, v26.4s")          /* v0 = 2*y*L + R/log2(E) */ \
@@ -205,7 +190,7 @@ namespace lsp
 
     #define LOGE_CORE_X4_NOLOAD \
         /* in: v0 = x1 */ \
-        LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23") \
         __ASM_EMIT("fadd            v0.4s, v0.4s, v0.4s")           /* v0 = 2*y*L */ \
         __ASM_EMIT("fmla            v0.4s, v2.4s, v26.4s")          /* v0 = 2*y*L + R/log2(E) */ \
         /* out: v0 = loge(x0) */
@@ -224,7 +209,7 @@ namespace lsp
 
     #define LOGD_CORE_X8_NOLOAD \
         /* in: v0 = x1, v1 = x2 */ \
-        LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        LOGN_CORE_X8("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23") \
         __ASM_EMIT("fmul            v0.4s, v0.4s, v26.4s")          /* v0 = 2*y*L*log10(E) */ \
         __ASM_EMIT("fmul            v1.4s, v1.4s, v26.4s") \
         __ASM_EMIT("fmla            v0.4s, v2.4s, v27.4s")          /* v0 = 2*y*L*log10(E) + R/log2(10) */ \
@@ -233,7 +218,7 @@ namespace lsp
 
     #define LOGD_CORE_X4_NOLOAD \
         /* in: v0 = x1 */ \
-        LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25") \
+        LOGN_CORE_X4("v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23") \
         __ASM_EMIT("fmul            v0.4s, v0.4s, v26.4s")          /* v0 = 2*y*L*log10(E) */ \
         __ASM_EMIT("fmla            v0.4s, v2.4s, v27.4s")          /* v0 = 2*y*L*log10(E) + R/log2(10) */ \
         /* out: v0 = logd(x0) */
