@@ -264,6 +264,7 @@ namespace lsp
         void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[16] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -338,6 +339,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -354,6 +356,7 @@ namespace lsp
         void x64_uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[32] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -444,6 +447,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -462,6 +466,7 @@ namespace lsp
         void uexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[16] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -542,6 +547,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -558,6 +564,7 @@ namespace lsp
         void x64_uexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[32] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -658,6 +665,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -886,6 +894,7 @@ namespace lsp
         void dexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[16] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -960,6 +969,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -976,6 +986,7 @@ namespace lsp
         void x64_dexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[32] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -1066,6 +1077,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -1084,6 +1096,7 @@ namespace lsp
         void dexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[16] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -1164,6 +1177,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -1180,6 +1194,7 @@ namespace lsp
         void x64_dexpander_x1_curve(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[32] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -1280,6 +1295,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -1492,6 +1508,7 @@ namespace lsp
         void uexpander_x1_gain_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[16] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -1566,6 +1583,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -1582,6 +1600,7 @@ namespace lsp
         void x64_uexpander_x1_gain_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[32] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -1672,6 +1691,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -1690,6 +1710,7 @@ namespace lsp
         void uexpander_x1_curve_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[16] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -1770,6 +1791,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -1786,6 +1808,7 @@ namespace lsp
         void x64_uexpander_x1_curve_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[32] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -1886,6 +1909,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -2106,6 +2130,7 @@ namespace lsp
         void dexpander_x1_gain_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[16] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -2180,6 +2205,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -2196,6 +2222,7 @@ namespace lsp
         void x64_dexpander_x1_gain_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[32] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -2286,6 +2313,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -2304,6 +2332,7 @@ namespace lsp
         void dexpander_x1_curve_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[16] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -2384,6 +2413,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
@@ -2400,6 +2430,7 @@ namespace lsp
         void x64_dexpander_x1_curve_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count)
         {
             IF_ARCH_X86(
+                float stub0[16] __lsp_aligned32;
                 expander_knee_t knee __lsp_aligned32;
                 float mem[32] __lsp_aligned32;
                 float stub[16] __lsp_aligned32;
@@ -2500,6 +2531,7 @@ namespace lsp
                 : [exp] "r" (c),
                   [knee] "o" (knee),
                   [mem] "o" (mem),
+                  [stub0] "o" (stub0),
                   [stub] "o" (stub),
                   [X2C] "o" (expander_const),
                   [L2C] "o" (LOG2_CONST),
