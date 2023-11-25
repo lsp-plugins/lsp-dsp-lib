@@ -35,15 +35,12 @@ namespace lsp
             {
                 LSP_DSP_VEC4(0x007fffff), // frac
                 LSP_DSP_VEC4(0x0000007f), // 127
-                LSP_DSP_VEC4(0x3d888889), // C0 = 1/15 = 0.0666666701436043
-                LSP_DSP_VEC4(0x3d9d89d9), // C1 = 1/13 = 0.0769230797886848
-                LSP_DSP_VEC4(0x3dba2e8c), // C2 = 1/11 = 0.0909090936183929
-                LSP_DSP_VEC4(0x3f800000), // 1.0f = C7
-
-                LSP_DSP_VEC4(0x3de38e39), // C3 = 1/9 = 0.1111111119389534
-                LSP_DSP_VEC4(0x3e124925), // C4 = 1/7 = 0.1428571492433548
-                LSP_DSP_VEC4(0x3e4ccccd), // C5 = 1/5 = 0.2000000029802322
-                LSP_DSP_VEC4(0x3eaaaaab), // C6 = 1/3 = 0.3333333432674408
+                LSP_DSP_VEC4(0x3dba2e8c), // C0 = 1/11 = 0.0909090936183929
+                LSP_DSP_VEC4(0x3de38e39), // C1 = 1/9 = 0.1111111119389534
+                LSP_DSP_VEC4(0x3e124925), // C2 = 1/7 = 0.1428571492433548
+                LSP_DSP_VEC4(0x3f800000), // 1.0f = C5
+                LSP_DSP_VEC4(0x3e4ccccd), // C3 = 1/5 = 0.2000000029802322
+                LSP_DSP_VEC4(0x3eaaaaab), // C4 = 1/3 = 0.3333333432674408
             };
 
             static const float LOGB_C[] __lsp_aligned16 =
@@ -106,7 +103,7 @@ namespace lsp
         __ASM_EMIT("vmul.f32        q7, q7, q5")                     \
         __ASM_EMIT("vadd.f32        q6, q6, q12")                   /* q6   = C2+Y*(C1+C0*Y) */ \
         __ASM_EMIT("vadd.f32        q7, q7, q12")                    \
-        __ASM_EMIT("vldm            %[L2C], {q8-q11}")              /* q8   = C3, q9 = C4, q10 = C5, q11 = C6, q13 = C7 */ \
+        __ASM_EMIT("vldm            %[L2C], {q8-q9}")               /* q8   = C3, q9 = C4, */ \
         __ASM_EMIT("vmul.f32        q6, q6, q4")                    /* q6   = Y*(C2+Y*(C1+C0*Y)) */ \
         __ASM_EMIT("vmul.f32        q7, q7, q5")                     \
         __ASM_EMIT("vadd.f32        q6, q6, q8")                    /* q6   = C3+Y*(C2+Y*(C1+C0*Y)) */ \
@@ -117,18 +114,10 @@ namespace lsp
         __ASM_EMIT("vadd.f32        q7, q7, q9")                     \
         __ASM_EMIT("vmul.f32        q6, q6, q4")                    /* q6   = Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
         __ASM_EMIT("vmul.f32        q7, q7, q5")                     \
-        __ASM_EMIT("vadd.f32        q6, q6, q10")                   /* q6   = C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
-        __ASM_EMIT("vadd.f32        q7, q7, q10")                    \
-        __ASM_EMIT("vmul.f32        q6, q6, q4")                    /* q6   = Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-        __ASM_EMIT("vmul.f32        q7, q7, q5")                     \
-        __ASM_EMIT("vadd.f32        q6, q6, q11")                   /* q6   = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-        __ASM_EMIT("vadd.f32        q7, q7, q11")                    \
-        __ASM_EMIT("vmul.f32        q6, q6, q4")                    /* q6   = Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-        __ASM_EMIT("vmul.f32        q7, q7, q5")                     \
-        __ASM_EMIT("vadd.f32        q6, q6, q13")                   /* q6   = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
+        __ASM_EMIT("vadd.f32        q6, q6, q13")                   /* q6   = C5+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
         __ASM_EMIT("vadd.f32        q7, q7, q13")                    \
         __ASM_EMIT("sub             %[L2C], #0x60")                  \
-        __ASM_EMIT("vmul.f32        q0, q0, q6")                    /* q0   = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+        __ASM_EMIT("vmul.f32        q0, q0, q6")                    /* q0   = y*(C5+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
         __ASM_EMIT("vmul.f32        q1, q1, q7")                     \
         /* q0 = y*L, q2 = R */
 
@@ -155,19 +144,15 @@ namespace lsp
         __ASM_EMIT("vadd.f32        q6, q6, q11")                   /* q6   = C1+C0*Y */ \
         __ASM_EMIT("vmul.f32        q6, q6, q4")                    /* q6   = Y*(C1+C0*Y) */ \
         __ASM_EMIT("vadd.f32        q6, q6, q12")                   /* q6   = C2+Y*(C1+C0*Y) */ \
-        __ASM_EMIT("vldm            %[L2C], {q8-q11}")              /* q8   = C3, q9 = C4, q10 = C5, q11 = C6, q13 = C7 */ \
+        __ASM_EMIT("vldm            %[L2C], {q8-q9}")               /* q8   = C3, q9 = C4 */ \
         __ASM_EMIT("vmul.f32        q6, q6, q4")                    /* q6   = Y*(C2+Y*(C1+C0*Y)) */ \
         __ASM_EMIT("vadd.f32        q6, q6, q8")                    /* q6   = C3+Y*(C2+Y*(C1+C0*Y)) */ \
         __ASM_EMIT("vmul.f32        q6, q6, q4")                    /* q6   = Y*(C3+Y*(C2+Y*(C1+C0*Y))) */ \
         __ASM_EMIT("vadd.f32        q6, q6, q9")                    /* q6   = C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))) */ \
         __ASM_EMIT("vmul.f32        q6, q6, q4")                    /* q6   = Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
-        __ASM_EMIT("vadd.f32        q6, q6, q10")                   /* q6   = C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
-        __ASM_EMIT("vmul.f32        q6, q6, q4")                    /* q6   = Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-        __ASM_EMIT("vadd.f32        q6, q6, q11")                   /* q6   = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-        __ASM_EMIT("vmul.f32        q6, q6, q4")                    /* q6   = Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-        __ASM_EMIT("vadd.f32        q6, q6, q13")                   /* q6   = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
+        __ASM_EMIT("vadd.f32        q6, q6, q13")                   /* q6   = C5+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
         __ASM_EMIT("sub             %[L2C], #0x60")                  \
-        __ASM_EMIT("vmul.f32        q0, q0, q6")                    /* q0   = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+        __ASM_EMIT("vmul.f32        q0, q0, q6")                    /* q0   = y*(C5+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
         /* q0 = y*L, q2 = R */
 
     #define LOGB_CORE_X8 \
