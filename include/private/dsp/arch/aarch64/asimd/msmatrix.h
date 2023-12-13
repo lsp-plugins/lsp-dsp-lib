@@ -115,7 +115,7 @@ namespace lsp
                 __ASM_EMIT("add         %[s], %[s], #0x10")
                 __ASM_EMIT("6:")
                 // x1 blocks
-                __ASM_EMIT("adds        %[count], %[count], #1")
+                __ASM_EMIT("adds        %[count], %[count], #3")
                 __ASM_EMIT("b.lt        8f")
                 __ASM_EMIT("7:")
                 __ASM_EMIT("ld1r        {v0.4s}, [%[l]]")               // v0   = l
@@ -209,7 +209,7 @@ namespace lsp
                 __ASM_EMIT("add         %[s], %[s], #0x10")
                 __ASM_EMIT("6:")
                 // x1 blocks
-                __ASM_EMIT("adds        %[count], %[count], #1")
+                __ASM_EMIT("adds        %[count], %[count], #3")
                 __ASM_EMIT("b.lt        8f")
                 __ASM_EMIT("7:")
                 __ASM_EMIT("ld1r        {v0.4s}, [%[m]]")               // v0   = m
@@ -292,7 +292,7 @@ namespace lsp
                 __ASM_EMIT("add         %[dst], %[dst], #0x10") \
                 __ASM_EMIT("6:") \
                 /* x1 blocks */ \
-                __ASM_EMIT("adds        %[count], %[count], #1") \
+                __ASM_EMIT("adds        %[count], %[count], #3") \
                 __ASM_EMIT("b.lt        8f") \
                 __ASM_EMIT("7:") \
                 __ASM_EMIT("ld1r        {v0.4s}, [%[l]]")               /* v0   = l */ \
@@ -386,7 +386,7 @@ namespace lsp
             __ASM_EMIT("add         %[dst], %[dst], #0x10") \
             __ASM_EMIT("6:") \
             /* x1 blocks */ \
-            __ASM_EMIT("adds        %[count], %[count], #1") \
+            __ASM_EMIT("adds        %[count], %[count], #3") \
             __ASM_EMIT("b.lt        8f") \
             __ASM_EMIT("7:") \
             __ASM_EMIT("ld1r        {v0.4s}, [%[m]]")               /* v0   = m */ \
