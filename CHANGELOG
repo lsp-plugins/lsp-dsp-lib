@@ -9,6 +9,7 @@
 * Fixed Mid/Side conversion functions for AArch64 architecture (contributed by
   marcan at GitHub).
 * Updated build scripts.
+* Updated module versions in dependencies.
 
 === 1.0.19 ===
 * AVX2 optimization of search functions for maximum and minimum.
