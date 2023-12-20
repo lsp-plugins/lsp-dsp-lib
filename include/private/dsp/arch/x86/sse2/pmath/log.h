@@ -36,14 +36,12 @@ namespace lsp
                 LSP_DSP_VEC4(0x007fffff), // frac
                 LSP_DSP_VEC4(0x3f800000), // 1.0f
                 LSP_DSP_VEC4(0x0000007f), // 127
-                LSP_DSP_VEC4(0x3d888889), // C0 = 1/15 = 0.0666666701436043
-                LSP_DSP_VEC4(0x3d9d89d9), // C1 = 1/13 = 0.0769230797886848
-                LSP_DSP_VEC4(0x3dba2e8c), // C2 = 1/11 = 0.0909090936183929
-                LSP_DSP_VEC4(0x3de38e39), // C3 = 1/9 = 0.1111111119389534
-                LSP_DSP_VEC4(0x3e124925), // C4 = 1/7 = 0.1428571492433548
-                LSP_DSP_VEC4(0x3e4ccccd), // C5 = 1/5 = 0.2000000029802322
-                LSP_DSP_VEC4(0x3eaaaaab), // C6 = 1/3 = 0.3333333432674408
-                LSP_DSP_VEC4(0x3f800000)  // C7 = 1/1 = 1.0000000000000000
+                LSP_DSP_VEC4(0x3dba2e8c), // C0 = 1/11 = 0.0909090936183929
+                LSP_DSP_VEC4(0x3de38e39), // C1 = 1/9 = 0.1111111119389534
+                LSP_DSP_VEC4(0x3e124925), // C2 = 1/7 = 0.1428571492433548
+                LSP_DSP_VEC4(0x3e4ccccd), // C3 = 1/5 = 0.2000000029802322
+                LSP_DSP_VEC4(0x3eaaaaab), // C4 = 1/3 = 0.3333333432674408
+                LSP_DSP_VEC4(0x3f800000)  // C5 = 1/1 = 1.0000000000000000
             };
 
             static const float LOGB_C[] __lsp_aligned16 =
@@ -112,15 +110,7 @@ namespace lsp
         __ASM_EMIT("mulps       %%xmm6, %%xmm7")                \
         __ASM_EMIT("addps       0x80 + %[L2C], %%xmm3")         /* xmm3 = C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
         __ASM_EMIT("addps       0x80 + %[L2C], %%xmm7")         \
-        __ASM_EMIT("mulps       %%xmm2, %%xmm3")                /* xmm3 = Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-        __ASM_EMIT("mulps       %%xmm6, %%xmm7")                \
-        __ASM_EMIT("addps       0x90 + %[L2C], %%xmm3")         /* xmm3 = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-        __ASM_EMIT("addps       0x90 + %[L2C], %%xmm7")         \
-        __ASM_EMIT("mulps       %%xmm2, %%xmm3")                /* xmm3 = Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-        __ASM_EMIT("mulps       %%xmm6, %%xmm7")                \
-        __ASM_EMIT("addps       0xa0 + %[L2C], %%xmm3")         /* xmm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-        __ASM_EMIT("addps       0xa0 + %[L2C], %%xmm7")         \
-        __ASM_EMIT("mulps       %%xmm3, %%xmm0")                /* xmm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+        __ASM_EMIT("mulps       %%xmm3, %%xmm0")                /* xmm0 = y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
         __ASM_EMIT("mulps       %%xmm7, %%xmm4")                \
         /* xmm0 = y*L, xmm1 = R */
 
@@ -150,11 +140,7 @@ namespace lsp
         __ASM_EMIT("addps       0x70 + %[L2C], %%xmm3")         /* xmm3 = C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))) */ \
         __ASM_EMIT("mulps       %%xmm2, %%xmm3")                /* xmm3 = Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
         __ASM_EMIT("addps       0x80 + %[L2C], %%xmm3")         /* xmm3 = C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
-        __ASM_EMIT("mulps       %%xmm2, %%xmm3")                /* xmm3 = Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-        __ASM_EMIT("addps       0x90 + %[L2C], %%xmm3")         /* xmm3 = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-        __ASM_EMIT("mulps       %%xmm2, %%xmm3")                /* xmm3 = Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-        __ASM_EMIT("addps       0xa0 + %[L2C], %%xmm3")         /* xmm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-        __ASM_EMIT("mulps       %%xmm3, %%xmm0")                /* xmm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+        __ASM_EMIT("mulps       %%xmm3, %%xmm0")                /* xmm0 = y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
         /* xmm0 = y*L, xmm1 = R */
 
     #define LOGB_CORE_X8 \
@@ -576,9 +562,7 @@ namespace lsp
             float y = (X-1)/(X+1);
             float y2 = y*y;
 
-            float L = 1/13.0f + y2 * 1/15.0f;
-            L = 1/11.0f + y2 * L;
-            L = 1/9.0f + y2 * L;
+            float L = 1/9.0f + y2 * L;
             L = 1/7.0f + y2 * L;
             L = 1/5.0f + y2 * L;
             L = 1/3.0f + y2 * L;

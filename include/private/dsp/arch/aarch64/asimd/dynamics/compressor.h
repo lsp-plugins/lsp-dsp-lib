@@ -22,6 +22,10 @@
 #ifndef PRIVATE_DSP_ARCH_AARCH64_ASIMD_DYNAMICS_COMPRESSOR_H_
 #define PRIVATE_DSP_ARCH_AARCH64_ASIMD_DYNAMICS_COMPRESSOR_H_
 
+#ifndef PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL
+    #error "This header should not be included directly"
+#endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL */
+
 #include <private/dsp/arch/aarch64/asimd/pmath/exp.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/log.h>
 
@@ -126,6 +130,7 @@ namespace lsp
 
     #define PROCESS_COMP_FULL_X4 \
         /* in: q0 = x0, q1 = x1 */ \
+        __ASM_EMIT("fabs                v0.4s, v0.4s")                      /* v0  = fabsf(x0) */ \
         __ASM_EMIT("str                 q0, [%[mem], #0x00]")               /* mem[0x00] = fabfs(x0) */ \
         LOGE_CORE_X4                                                        /* v0= lx0 = logf(fabsf(x0)) */ \
         __ASM_EMIT("str                 q0, [%[mem], #0x20]")               /* mem[0x20] = lx0 */ \

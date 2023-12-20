@@ -33,57 +33,57 @@ namespace lsp
 {
     namespace generic
     {
-        void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+        void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
     }
 
     IF_ARCH_X86(
         namespace sse2
         {
-            void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
         }
 
         namespace avx2
         {
-            void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
-            void gate_x1_curve_fma3(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+            void uexpander_x1_gain_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
         }
 
         namespace avx512
         {
-            void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
         }
     )
 
     IF_ARCH_X86_64(
         namespace avx2
         {
-            void x64_gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
-            void x64_gate_x1_curve_fma3(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void x64_uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
+            void x64_uexpander_x1_gain_fma3(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
         }
     )
 
     IF_ARCH_ARM(
         namespace neon_d32
         {
-            void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
         }
     )
 
     IF_ARCH_AARCH64(
         namespace asimd
         {
-            void gate_x1_curve(float *dst, const float *src, const dsp::gate_knee_t *c, size_t count);
+            void uexpander_x1_gain(float *dst, const float *src, const dsp::expander_knee_t *c, size_t count);
         }
     )
 }
 
-typedef void (* gate_x1_func_t)(float *dst, const float *src, const lsp::dsp::gate_knee_t *c, size_t count);
+typedef void (* expander_x1_func_t)(float *dst, const float *src, const lsp::dsp::expander_knee_t *c, size_t count);
 
 //-----------------------------------------------------------------------------
 // Performance test for logarithmic axis calculation
-PTEST_BEGIN("dsp.dynamics", gate_x1_curve, 5, 1000)
+PTEST_BEGIN("dsp.dynamics", uexpander_x1_gain, 5, 1000)
 
-    void call(const char *label, float *dst, const float *src, const dsp::gate_knee_t *gate, size_t count, gate_x1_func_t func)
+    void call(const char *label, float *dst, const float *src, const dsp::expander_knee_t *gate, size_t count, expander_x1_func_t func)
     {
         if (!PTEST_SUPPORTED(func))
             return;
@@ -103,14 +103,13 @@ PTEST_BEGIN("dsp.dynamics", gate_x1_curve, 5, 1000)
         uint8_t *data       = NULL;
         float *ptr          = alloc_aligned<float>(data, buf_size * 2, 64);
 
-        dsp::gate_knee_t gate;
-
-        gate = {
-            0.00794381928f,
-            0.0631000027f,
-            0.0631000027f,
-            1.0f,
-            {-0.620928824f, -7.07709408f, -24.8873253f, -27.8333282f}
+        dsp::expander_knee_t exp;
+        exp = {
+            0.0316223241f,
+            0.125894368f,
+            63.0957451f,
+            { 0.361904532f, 2.49995828f, 4.31729317f },
+            { 1.0f, 2.76310205f }
         };
 
         float *src          = ptr;
@@ -124,21 +123,21 @@ PTEST_BEGIN("dsp.dynamics", gate_x1_curve, 5, 1000)
         }
 
         #define CALL(func) \
-            call(#func, dst, src, &gate, count, func)
+            call(#func, dst, src, &exp, count, func)
 
         for (size_t i=MIN_RANK; i <= MAX_RANK; ++i)
         {
             size_t count = 1 << i;
 
-            CALL(generic::gate_x1_curve);
-            IF_ARCH_X86(CALL(sse2::gate_x1_curve));
-            IF_ARCH_X86(CALL(avx2::gate_x1_curve));
-            IF_ARCH_X86_64(CALL(avx2::x64_gate_x1_curve));
-            IF_ARCH_X86(CALL(avx2::gate_x1_curve_fma3));
-            IF_ARCH_X86_64(CALL(avx2::x64_gate_x1_curve_fma3));
-            IF_ARCH_X86(CALL(avx512::gate_x1_curve));
-            IF_ARCH_ARM(CALL(neon_d32::gate_x1_curve));
-            IF_ARCH_AARCH64(CALL(asimd::gate_x1_curve));
+            CALL(generic::uexpander_x1_gain);
+            IF_ARCH_X86(CALL(sse2::uexpander_x1_gain));
+            IF_ARCH_X86(CALL(avx2::uexpander_x1_gain));
+            IF_ARCH_X86_64(CALL(avx2::x64_uexpander_x1_gain));
+            IF_ARCH_X86(CALL(avx2::uexpander_x1_gain_fma3));
+            IF_ARCH_X86_64(CALL(avx2::x64_uexpander_x1_gain_fma3));
+            IF_ARCH_X86(CALL(avx512::uexpander_x1_gain));
+            IF_ARCH_ARM(CALL(neon_d32::uexpander_x1_gain));
+            IF_ARCH_AARCH64(CALL(asimd::uexpander_x1_gain));
             PTEST_SEPARATOR;
         }
 

@@ -43,6 +43,7 @@
     #define PRIVATE_DSP_ARCH_X86_AVX512_IMPL
         #include <private/dsp/arch/x86/avx512/complex.h>
         #include <private/dsp/arch/x86/avx512/copy.h>
+        #include <private/dsp/arch/x86/avx512/dynamics.h>
         #include <private/dsp/arch/x86/avx512/float.h>
         #include <private/dsp/arch/x86/avx512/graphics/axis.h>
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
@@ -264,6 +265,16 @@
                 CEXPORT1(vl, ms_to_right);
 
                 CEXPORT1(vl, axis_apply_lin1);
+
+                CEXPORT1(vl, compressor_x2_gain);
+                CEXPORT1(vl, compressor_x2_curve);
+                CEXPORT1(vl, gate_x1_gain);
+                CEXPORT1(vl, gate_x1_curve);
+
+                CEXPORT1(vl, uexpander_x1_gain);
+                CEXPORT1(vl, uexpander_x1_curve);
+                CEXPORT1(vl, dexpander_x1_gain);
+                CEXPORT1(vl, dexpander_x1_curve);
             }
         } /* namespace avx2 */
     } /* namespace lsp */

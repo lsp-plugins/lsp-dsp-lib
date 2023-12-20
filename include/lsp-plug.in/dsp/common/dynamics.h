@@ -26,6 +26,7 @@
 
 #include <lsp-plug.in/dsp/common/dynamics/types.h>
 #include <lsp-plug.in/dsp/common/dynamics/compressor.h>
+#include <lsp-plug.in/dsp/common/dynamics/expander.h>
 #include <lsp-plug.in/dsp/common/dynamics/gate.h>
 
 

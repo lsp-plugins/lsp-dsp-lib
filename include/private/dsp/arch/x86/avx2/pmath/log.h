@@ -36,14 +36,12 @@ namespace lsp
                 LSP_DSP_VEC8(0x007fffff), // frac
                 LSP_DSP_VEC8(0x0000007f), // 127
                 LSP_DSP_VEC8(0x3f800000), // 1.0f
-                LSP_DSP_VEC8(0x3d888889), // C0 = 1/15 = 0.0666666701436043
-                LSP_DSP_VEC8(0x3d9d89d9), // C1 = 1/13 = 0.0769230797886848
-                LSP_DSP_VEC8(0x3dba2e8c), // C2 = 1/11 = 0.0909090936183929
-                LSP_DSP_VEC8(0x3de38e39), // C3 = 1/9 = 0.1111111119389534
-                LSP_DSP_VEC8(0x3e124925), // C4 = 1/7 = 0.1428571492433548
-                LSP_DSP_VEC8(0x3e4ccccd), // C5 = 1/5 = 0.2000000029802322
-                LSP_DSP_VEC8(0x3eaaaaab), // C6 = 1/3 = 0.3333333432674408
-                LSP_DSP_VEC8(0x3f800000)  // C7 = 1/1 = 1.0000000000000000
+                LSP_DSP_VEC8(0x3dba2e8c), // C0 = 1/11 = 0.0909090936183929
+                LSP_DSP_VEC8(0x3de38e39), // C1 = 1/9 = 0.1111111119389534
+                LSP_DSP_VEC8(0x3e124925), // C2 = 1/7 = 0.1428571492433548
+                LSP_DSP_VEC8(0x3e4ccccd), // C3 = 1/5 = 0.2000000029802322
+                LSP_DSP_VEC8(0x3eaaaaab), // C4 = 1/3 = 0.3333333432674408
+                LSP_DSP_VEC8(0x3f800000)  // C5 = 1/1 = 1.0000000000000000
             };
 
             static const float LOGB_C[] __lsp_aligned32 =
@@ -142,23 +140,7 @@ namespace lsp
             __ASM_EMIT("vaddps          0x100 + %[L2C], %%ymm7, %%ymm7")    \
             __ASM_EMIT("vaddps          0x100 + %[L2C], %%ymm11, %%ymm11")  \
             __ASM_EMIT("vaddps          0x100 + %[L2C], %%ymm15, %%ymm15")  \
-            __ASM_EMIT("vmulps          %%ymm2, %%ymm3, %%ymm3")            /* ymm3 = Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-            __ASM_EMIT("vmulps          %%ymm6, %%ymm7, %%ymm7")            \
-            __ASM_EMIT("vmulps          %%ymm10, %%ymm11, %%ymm11")         \
-            __ASM_EMIT("vmulps          %%ymm14, %%ymm15, %%ymm15")         \
-            __ASM_EMIT("vaddps          0x120 + %[L2C], %%ymm3, %%ymm3")    /* ymm3 = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-            __ASM_EMIT("vaddps          0x120 + %[L2C], %%ymm7, %%ymm7")    \
-            __ASM_EMIT("vaddps          0x120 + %[L2C], %%ymm11, %%ymm11")  \
-            __ASM_EMIT("vaddps          0x120 + %[L2C], %%ymm15, %%ymm15")  \
-            __ASM_EMIT("vmulps          %%ymm2, %%ymm3, %%ymm3")            /* ymm3 = Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-            __ASM_EMIT("vmulps          %%ymm6, %%ymm7, %%ymm7")            \
-            __ASM_EMIT("vmulps          %%ymm10, %%ymm11, %%ymm11")         \
-            __ASM_EMIT("vmulps          %%ymm14, %%ymm15, %%ymm15")         \
-            __ASM_EMIT("vaddps          0x140 + %[L2C], %%ymm3, %%ymm3")    /* ymm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-            __ASM_EMIT("vaddps          0x140 + %[L2C], %%ymm7, %%ymm7")    \
-            __ASM_EMIT("vaddps          0x140 + %[L2C], %%ymm11, %%ymm11")  \
-            __ASM_EMIT("vaddps          0x140 + %[L2C], %%ymm15, %%ymm15")  \
-            __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+            __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
             __ASM_EMIT("vmulps          %%ymm4, %%ymm7, %%ymm4")            \
             __ASM_EMIT("vmulps          %%ymm8, %%ymm11, %%ymm8")           \
             __ASM_EMIT("vmulps          %%ymm12, %%ymm15, %%ymm12")         \
@@ -203,15 +185,7 @@ namespace lsp
             __ASM_EMIT("vmulps          %%ymm6, %%ymm7, %%ymm7")            \
             __ASM_EMIT("vaddps          0x100 + %[L2C], %%ymm3, %%ymm3")    /* ymm3 = C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
             __ASM_EMIT("vaddps          0x100 + %[L2C], %%ymm7, %%ymm7")    \
-            __ASM_EMIT("vmulps          %%ymm2, %%ymm3, %%ymm3")            /* ymm3 = Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-            __ASM_EMIT("vmulps          %%ymm6, %%ymm7, %%ymm7")            \
-            __ASM_EMIT("vaddps          0x120 + %[L2C], %%ymm3, %%ymm3")    /* ymm3 = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-            __ASM_EMIT("vaddps          0x120 + %[L2C], %%ymm7, %%ymm7")    \
-            __ASM_EMIT("vmulps          %%ymm2, %%ymm3, %%ymm3")            /* ymm3 = Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-            __ASM_EMIT("vmulps          %%ymm6, %%ymm7, %%ymm7")            \
-            __ASM_EMIT("vaddps          0x140 + %[L2C], %%ymm3, %%ymm3")    /* ymm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-            __ASM_EMIT("vaddps          0x140 + %[L2C], %%ymm7, %%ymm7")    \
-            __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+            __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
             __ASM_EMIT("vmulps          %%ymm4, %%ymm7, %%ymm4")            \
 
         #define LOGN_CORE_X8 \
@@ -235,11 +209,7 @@ namespace lsp
             __ASM_EMIT("vaddps          0x0e0 + %[L2C], %%ymm3, %%ymm3")    /* ymm3 = C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))) */ \
             __ASM_EMIT("vmulps          %%ymm2, %%ymm3, %%ymm3")            /* ymm3 = Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
             __ASM_EMIT("vaddps          0x100 + %[L2C], %%ymm3, %%ymm3")    /* ymm3 = C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
-            __ASM_EMIT("vmulps          %%ymm2, %%ymm3, %%ymm3")            /* ymm3 = Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-            __ASM_EMIT("vaddps          0x120 + %[L2C], %%ymm3, %%ymm3")    /* ymm3 = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-            __ASM_EMIT("vmulps          %%ymm2, %%ymm3, %%ymm3")            /* ymm3 = Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-            __ASM_EMIT("vaddps          0x140 + %[L2C], %%ymm3, %%ymm3")    /* ymm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-            __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+            __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
 
         #define LOGN_CORE_X4 \
             __ASM_EMIT("vpsrld          $23, %%xmm0, %%xmm1")               /* xmm1 = ilog2(x) + 127 */ \
@@ -262,11 +232,7 @@ namespace lsp
             __ASM_EMIT("vaddps          0x0e0 + %[L2C], %%xmm3, %%xmm3")    /* xmm3 = C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))) */ \
             __ASM_EMIT("vmulps          %%xmm2, %%xmm3, %%xmm3")            /* xmm3 = Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
             __ASM_EMIT("vaddps          0x100 + %[L2C], %%xmm3, %%xmm3")    /* xmm3 = C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
-            __ASM_EMIT("vmulps          %%xmm2, %%xmm3, %%xmm3")            /* xmm3 = Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-            __ASM_EMIT("vaddps          0x120 + %[L2C], %%xmm3, %%xmm3")    /* xmm3 = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-            __ASM_EMIT("vmulps          %%xmm2, %%xmm3, %%xmm3")            /* xmm3 = Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-            __ASM_EMIT("vaddps          0x140 + %[L2C], %%xmm3, %%xmm3")    /* xmm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-            __ASM_EMIT("vmulps          %%xmm0, %%xmm3, %%xmm0")            /* xmm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+            __ASM_EMIT("vmulps          %%xmm0, %%xmm3, %%xmm0")            /* xmm0 = y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
 
         #define LOGB_CORE_X32 \
             LOGN_CORE_X32 \
@@ -1364,15 +1330,7 @@ namespace lsp
             __ASM_EMIT("vfmadd213ps     0x100 + %[L2C], %%ymm6, %%ymm7")    \
             __ASM_EMIT("vfmadd213ps     0x100 + %[L2C], %%ymm10, %%ymm11")  \
             __ASM_EMIT("vfmadd213ps     0x100 + %[L2C], %%ymm14, %%ymm15")  \
-            __ASM_EMIT("vfmadd213ps     0x120 + %[L2C], %%ymm2, %%ymm3")    /* ymm3 = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-            __ASM_EMIT("vfmadd213ps     0x120 + %[L2C], %%ymm6, %%ymm7")    \
-            __ASM_EMIT("vfmadd213ps     0x120 + %[L2C], %%ymm10, %%ymm11")  \
-            __ASM_EMIT("vfmadd213ps     0x120 + %[L2C], %%ymm14, %%ymm15")  \
-            __ASM_EMIT("vfmadd213ps     0x140 + %[L2C], %%ymm2, %%ymm3")    /* ymm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-            __ASM_EMIT("vfmadd213ps     0x140 + %[L2C], %%ymm6, %%ymm7")    \
-            __ASM_EMIT("vfmadd213ps     0x140 + %[L2C], %%ymm10, %%ymm11")  \
-            __ASM_EMIT("vfmadd213ps     0x140 + %[L2C], %%ymm14, %%ymm15")  \
-            __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+            __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
             __ASM_EMIT("vmulps          %%ymm4, %%ymm7, %%ymm4")            \
             __ASM_EMIT("vmulps          %%ymm8, %%ymm11, %%ymm8")           \
             __ASM_EMIT("vmulps          %%ymm12, %%ymm15, %%ymm12")         \
@@ -1409,11 +1367,7 @@ namespace lsp
             __ASM_EMIT("vfmadd213ps     0x0e0 + %[L2C], %%ymm6, %%ymm7")    \
             __ASM_EMIT("vfmadd213ps     0x100 + %[L2C], %%ymm2, %%ymm3")    /* ymm3 = C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
             __ASM_EMIT("vfmadd213ps     0x100 + %[L2C], %%ymm6, %%ymm7")    \
-            __ASM_EMIT("vfmadd213ps     0x120 + %[L2C], %%ymm2, %%ymm3")    /* ymm3 = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-            __ASM_EMIT("vfmadd213ps     0x120 + %[L2C], %%ymm6, %%ymm7")    \
-            __ASM_EMIT("vfmadd213ps     0x140 + %[L2C], %%ymm2, %%ymm3")    /* ymm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-            __ASM_EMIT("vfmadd213ps     0x140 + %[L2C], %%ymm6, %%ymm7")    \
-            __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+            __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
             __ASM_EMIT("vmulps          %%ymm4, %%ymm7, %%ymm4")            \
 
         #define LOGN_CORE_X8_FMA3 \
@@ -1433,9 +1387,7 @@ namespace lsp
             __ASM_EMIT("vfmadd213ps     0x0c0 + %[L2C], %%ymm2, %%ymm3")    /* ymm3 = C3+Y*(C2+Y*(C1+C0*Y)) */ \
             __ASM_EMIT("vfmadd213ps     0x0e0 + %[L2C], %%ymm2, %%ymm3")    /* ymm3 = C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))) */ \
             __ASM_EMIT("vfmadd213ps     0x100 + %[L2C], %%ymm2, %%ymm3")    /* ymm3 = C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
-            __ASM_EMIT("vfmadd213ps     0x120 + %[L2C], %%ymm2, %%ymm3")    /* ymm3 = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-            __ASM_EMIT("vfmadd213ps     0x140 + %[L2C], %%ymm2, %%ymm3")    /* ymm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-            __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+            __ASM_EMIT("vmulps          %%ymm0, %%ymm3, %%ymm0")            /* ymm0 = y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
 
         #define LOGN_CORE_X4_FMA3 \
             __ASM_EMIT("vpsrld          $23, %%xmm0, %%xmm1")               /* xmm1 = ilog2(x) + 127 */ \
@@ -1454,9 +1406,7 @@ namespace lsp
             __ASM_EMIT("vfmadd213ps     0x0c0 + %[L2C], %%xmm2, %%xmm3")    /* xmm3 = C3+Y*(C2+Y*(C1+C0*Y)) */ \
             __ASM_EMIT("vfmadd213ps     0x0e0 + %[L2C], %%xmm2, %%xmm3")    /* xmm3 = C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))) */ \
             __ASM_EMIT("vfmadd213ps     0x100 + %[L2C], %%xmm2, %%xmm3")    /* xmm3 = C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))) */ \
-            __ASM_EMIT("vfmadd213ps     0x120 + %[L2C], %%xmm2, %%xmm3")    /* xmm3 = C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
-            __ASM_EMIT("vfmadd213ps     0x140 + %[L2C], %%xmm2, %%xmm3")    /* xmm3 = C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y)))))) */ \
-            __ASM_EMIT("vmulps          %%xmm0, %%xmm3, %%xmm0")            /* xmm0 = y*(C7+Y*(C6+Y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))))) */ \
+            __ASM_EMIT("vmulps          %%xmm0, %%xmm3, %%xmm0")            /* xmm0 = y*(C5+Y*(C4+Y*(C3+Y*(C2+Y*(C1+C0*Y))))) */ \
 
 
         #define LOGB_CORE_X32_FMA3 \

@@ -85,6 +85,41 @@ typedef struct LSP_DSP_LIB_TYPE(gate_knee_t)
     float       herm[4];        // Hermite interpolation of the knee with the 3rd-order polynom
 } LSP_DSP_LIB_TYPE(gate_knee_t);
 
+/**
+ * Gate knee is a curve that consists of three parts:
+ *   1. Part with constant gain amplification
+ *   2. Soft compression knee
+ *   3. Gain reduction part
+ *
+ * The order of these parts can be direct for upward expander and reverse for downward expander.
+ *
+ * The typical algorithm of computing the expander's curve:
+ *   a. for upward expander:
+ *     1. Take absolute value of the sample: x = fabfs(in)
+ *     2. If x >= threshold then assume x = threshold
+ *     3. If x <= start then return x
+ *     4. Compute the natural logarithm of the x: lx = logf(x).
+ *     5. If x < end then compute the gain using the 2nd-order polynom: gain = (herm[0]*lx + herm[1])*lx + herm[2]
+ *     6. Otherwise compute the gain using the 1st-order polynom: gain = tilt[0]*lx + tilt[1]
+ *     7. return expf(gain)
+ *   b. for downward expander:
+ *     1. Take absolute value of the sample: x = fabfs(in)
+ *     2. If x < threshold then return 0.
+ *     3. If x >= end then return x
+ *     4. Compute the natural logarithm of the x: lx = logf(x).
+ *     5. If x > start then compute the gain using the 2nd-order polynom: gain = (herm[0]*lx + herm[1])*lx + herm[2]
+ *     6. Otherwise compute the gain using the 1st-order polynom: gain = tilt[0]*lx + tilt[1]
+ *     7. return expf(gain)
+ */
+typedef struct LSP_DSP_LIB_TYPE(expander_knee_t)
+{
+    float       start;          // The start of the knee, in gain units
+    float       end;            // The end of the knee, in gain units
+    float       threshold;      // The threshold to limit the expander effect and prevent from +Inf/-Inf values
+    float       herm[3];        // Hermite interpolation of the knee with the 2nd-order polynom
+    float       tilt[2];        // Tilt interpolation
+} LSP_DSP_LIB_TYPE(expander_knee_t);
+
 #pragma pack(pop)
 
 LSP_DSP_LIB_END_NAMESPACE
