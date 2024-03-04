@@ -4,6 +4,7 @@
 
 === 1.0.21 ===
 * Updated build scripts.
+* Updated module versions in dependencies.
 
 === 1.0.20 ===
 * Optimization of compressor and gate functions using AVX-512 instruction set.
