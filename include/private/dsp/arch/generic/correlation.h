@@ -33,33 +33,7 @@ namespace lsp
     {
         void correlation(dsp::correlation_t *corr, float *dst, const float *a, const float *b, size_t tail, size_t count)
         {
-            float vv    = corr->v;
-            float va    = corr->a;
-            float vb    = corr->b;
-
-            for (size_t i=0; i<count; ++i)
-            {
-                float ah    = a[i];
-                float bh    = b[i];
-                float at    = a[i + tail];
-                float bt    = b[i + tail];
-
-                vv         += at*bt - ah*bh;
-                va         += at*at - ah*ah;
-                vb         += bt*bt - bh*bh;
-                float d     = va * vb;
-
-                dst[i]      = (d >= 1e-10f) ? vv / sqrtf(d) : 0.0f;
-            }
-
-            corr->v     = vv;
-            corr->a     = va;
-            corr->b     = vb;
-        }
-
-        void correlation_v2(dsp::correlation_t *corr, float *dst, const float *a, const float *b, size_t tail, size_t count)
-        {
-            float T[4], BA[4], BB[4], B[4], P[4], DV[4], DA[4], DB[4], DD[4];
+            float T[4], BA[4], BB[4], B[4], DV[4], DA[4], DB[4];
 
             float vv    = corr->v;
             float va    = corr->a;

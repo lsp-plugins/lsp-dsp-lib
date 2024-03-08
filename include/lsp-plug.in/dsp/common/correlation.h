@@ -38,6 +38,8 @@ typedef struct LSP_DSP_LIB_TYPE(correlation_t)
 } LSP_DSP_LIB_TYPE(correlation_t);
 #pragma pack(pop)
 
+LSP_DSP_LIB_END_NAMESPACE
+
 /** Compute normalized correlation between two signals
  *
  * @param dst destination buffer to store result
@@ -47,6 +49,6 @@ typedef struct LSP_DSP_LIB_TYPE(correlation_t)
  * @param tail the offset of the last element relative to the first one in correlation (length of the window minus one)
  * @param count number of samples to process
  */
-LSP_DSP_LIB_SYMBOL(void, correlation, correlation_t *corr, float *dst, const float *a, const float *b, size_t tail, size_t count);
+LSP_DSP_LIB_SYMBOL(void, correlation, LSP_DSP_LIB_TYPE(correlation_t) *corr, float *dst, const float *a, const float *b, size_t tail, size_t count);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_CORRELATION_H_ */

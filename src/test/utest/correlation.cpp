@@ -1,0 +1,137 @@
+/*
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ *
+ * This file is part of lsp-dsp-lib
+ * Created on: 8 мар. 2024 г.
+ *
+ * lsp-dsp-lib is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * lsp-dsp-lib is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#include <lsp-plug.in/dsp/dsp.h>
+#include <lsp-plug.in/stdlib/math.h>
+#include <lsp-plug.in/test-fw/FloatBuffer.h>
+#include <lsp-plug.in/test-fw/helpers.h>
+#include <lsp-plug.in/test-fw/utest.h>
+
+namespace lsp
+{
+    namespace generic
+    {
+        void correlation(dsp::correlation_t *corr, float *dst, const float *a, const float *b, size_t tail, size_t count);
+    }
+
+    static void correlation(dsp::correlation_t *corr, float *dst, const float *a, const float *b, size_t tail, size_t count)
+    {
+        float vv    = corr->v;
+        float va    = corr->a;
+        float vb    = corr->b;
+
+        for (size_t i=0; i<count; ++i)
+        {
+            float ah    = a[i];
+            float bh    = b[i];
+            float at    = a[i + tail];
+            float bt    = b[i + tail];
+
+            vv         += at*bt - ah*bh;
+            va         += at*at - ah*ah;
+            vb         += bt*bt - bh*bh;
+            float d     = va * vb;
+
+            dst[i]      = (d >= 1e-10f) ? vv / sqrtf(d) : 0.0f;
+        }
+
+        corr->v     = vv;
+        corr->a     = va;
+        corr->b     = vb;
+    }
+
+    typedef void (* corr_t)(dsp::correlation_t *corr, float *dst, const float *a, const float *b, size_t tail, size_t count);
+}
+
+UTEST_BEGIN("dsp", correlation)
+    void call(const char *label, size_t align, corr_t func)
+    {
+        if (!UTEST_SUPPORTED(func))
+            return;
+
+        for (size_t mask=0; mask <= 0x07; ++mask)
+        {
+            UTEST_FOREACH(tail, 0, 1, 2, 3, 4, 5, 8, 16, 24, 32, 33, 64, 47, 0x80, 0x1ff)
+            {
+                UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 8, 16, 24, 32, 33, 64, 47, 0x80, 0x1ff)
+                {
+                    if ((tail == 0x80) && (count == 0x80))
+                        printf("Break\n");
+
+                    FloatBuffer a(tail + count + 1, align, mask & 0x01);
+                    FloatBuffer b(tail + count + 1, align, mask & 0x02);
+                    FloatBuffer dst1(count, align, mask & 0x04);
+                    FloatBuffer dst2(count, align, mask & 0x04);
+
+                    dsp::correlation_t corr_a, corr_b;
+                    corr_a.v = randf(-1.0f, 1.0f);
+                    corr_a.a = randf(0.0f, 1.0f);
+                    corr_a.b = randf(0.0f, 1.0f);
+                    corr_a.pad = 0.0f;
+                    corr_b = corr_a;
+
+
+                    printf("Tesing %s correlation tail=%d on buffer count=%d mask=0x%x\n", label, int(tail), int(count), int(mask));
+
+                    correlation(&corr_a, dst1, a, b, tail, count);
+                    func(&corr_b, dst2, a, b, tail, count);
+
+                    UTEST_ASSERT_MSG(a.valid(), "Buffer A corrupted");
+                    UTEST_ASSERT_MSG(b.valid(), "Buffer B corrupted");
+                    UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");
+                    UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
+
+                    // Compare buffers
+                    if (!dst1.equals_relative(dst2, 1e-5))
+                    {
+                        a.dump("a   ");
+                        b.dump("b   ");
+                        dst1.dump("dst1");
+                        dst2.dump("dst2");
+                        UTEST_FAIL_MSG("Output of functions for test '%s' differs", label);
+                    }
+
+                    // Compare state
+                    if ((!float_equals_adaptive(corr_a.v, corr_b.v)) ||
+                        (!float_equals_adaptive(corr_a.a, corr_b.a)) ||
+                        (!float_equals_adaptive(corr_a.b, corr_b.b)))
+                    {
+                        UTEST_FAIL_MSG("Correlation state differs a={%f, %f, %f}, b={%f, %f, %f}",
+                            corr_a.v, corr_a.a, corr_a.b,
+                            corr_b.v, corr_b.a, corr_b.b);
+                    }
+                }
+            }
+        }
+    }
+
+    UTEST_MAIN
+    {
+        #define CALL(func, align) \
+            call(#func, align, func)
+
+        CALL(generic::correlation, 16);
+    }
+
+UTEST_END;
+
+
+
