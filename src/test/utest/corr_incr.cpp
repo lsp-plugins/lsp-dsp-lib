@@ -51,9 +51,9 @@ namespace lsp
             float at    = a_tail[i];
             float bt    = b_tail[i];
 
-            vv         += at*bt - ah*bh;
-            va         += at*at - ah*ah;
-            vb         += bt*bt - bh*bh;
+            vv         += ah*bh - at*bt;
+            va         += ah*ah - at*at;
+            vb         += bh*bh - bt*bt;
             float d     = va * vb;
 
             dst[i]      = (d >= 1e-10f) ? vv / sqrtf(d) : 0.0f;
@@ -93,7 +93,6 @@ UTEST_BEGIN("dsp", corr_incr)
                     corr_a.b = randf(0.0f, 1.0f);
                     corr_b = corr_a;
 
-
                     printf("Tesing %s correlation tail=%d on buffer count=%d mask=0x%x\n", label, int(tail), int(count), int(mask));
 
                     const float *a_tail = a;
@@ -102,7 +101,7 @@ UTEST_BEGIN("dsp", corr_incr)
                     const float *b_head = &b_tail[tail];
 
                     corr_incr(&corr_a, dst1, a_head, b_head, a_tail, b_tail, count);
-                    func(&corr_b, dst1, a_head, b_head, a_tail, b_tail, count);
+                    func(&corr_b, dst2, a_head, b_head, a_tail, b_tail, count);
 
                     UTEST_ASSERT_MSG(a.valid(), "Buffer A corrupted");
                     UTEST_ASSERT_MSG(b.valid(), "Buffer B corrupted");
