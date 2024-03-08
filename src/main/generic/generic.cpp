@@ -599,7 +599,8 @@ namespace lsp
             EXPORT1(unit_vector_p1pv);
 
             EXPORT1(convolve);
-            EXPORT1(correlation);
+            EXPORT1(corr_init);
+            EXPORT1(corr_incr);
 
             EXPORT1(base64_enc);
             EXPORT1(base64_dec);

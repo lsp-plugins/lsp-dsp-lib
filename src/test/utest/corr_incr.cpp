@@ -29,10 +29,16 @@ namespace lsp
 {
     namespace generic
     {
-        void correlation(dsp::correlation_t *corr, float *dst, const float *a, const float *b, size_t tail, size_t count);
+        void corr_incr(dsp::correlation_t *corr, float *dst,
+            const float *a_head, const float *b_head,
+            const float *a_tail, const float *b_tail,
+            size_t count);
     }
 
-    static void correlation(dsp::correlation_t *corr, float *dst, const float *a, const float *b, size_t tail, size_t count)
+    static void corr_incr(dsp::correlation_t *corr, float *dst,
+        const float *a_head, const float *b_head,
+        const float *a_tail, const float *b_tail,
+        size_t count)
     {
         float vv    = corr->v;
         float va    = corr->a;
@@ -40,10 +46,10 @@ namespace lsp
 
         for (size_t i=0; i<count; ++i)
         {
-            float ah    = a[i];
-            float bh    = b[i];
-            float at    = a[i + tail];
-            float bt    = b[i + tail];
+            float ah    = a_head[i];
+            float bh    = b_head[i];
+            float at    = a_tail[i];
+            float bt    = b_tail[i];
 
             vv         += at*bt - ah*bh;
             va         += at*at - ah*ah;
@@ -58,11 +64,14 @@ namespace lsp
         corr->b     = vb;
     }
 
-    typedef void (* corr_t)(dsp::correlation_t *corr, float *dst, const float *a, const float *b, size_t tail, size_t count);
+    typedef void (* corr_incr_t)(dsp::correlation_t *corr, float *dst,
+        const float *a_head, const float *b_head,
+        const float *a_tail, const float *b_tail,
+        size_t count);
 }
 
-UTEST_BEGIN("dsp", correlation)
-    void call(const char *label, size_t align, corr_t func)
+UTEST_BEGIN("dsp", corr_incr)
+    void call(const char *label, size_t align, corr_incr_t func)
     {
         if (!UTEST_SUPPORTED(func))
             return;
@@ -73,9 +82,6 @@ UTEST_BEGIN("dsp", correlation)
             {
                 UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 8, 16, 24, 32, 33, 64, 47, 0x80, 0x1ff)
                 {
-                    if ((tail == 0x80) && (count == 0x80))
-                        printf("Break\n");
-
                     FloatBuffer a(tail + count + 1, align, mask & 0x01);
                     FloatBuffer b(tail + count + 1, align, mask & 0x02);
                     FloatBuffer dst1(count, align, mask & 0x04);
@@ -85,14 +91,18 @@ UTEST_BEGIN("dsp", correlation)
                     corr_a.v = randf(-1.0f, 1.0f);
                     corr_a.a = randf(0.0f, 1.0f);
                     corr_a.b = randf(0.0f, 1.0f);
-                    corr_a.pad = 0.0f;
                     corr_b = corr_a;
 
 
                     printf("Tesing %s correlation tail=%d on buffer count=%d mask=0x%x\n", label, int(tail), int(count), int(mask));
 
-                    correlation(&corr_a, dst1, a, b, tail, count);
-                    func(&corr_b, dst2, a, b, tail, count);
+                    const float *a_tail = a;
+                    const float *b_tail = b;
+                    const float *a_head = &a_tail[tail];
+                    const float *b_head = &b_tail[tail];
+
+                    corr_incr(&corr_a, dst1, a_head, b_head, a_tail, b_tail, count);
+                    func(&corr_b, dst1, a_head, b_head, a_tail, b_tail, count);
 
                     UTEST_ASSERT_MSG(a.valid(), "Buffer A corrupted");
                     UTEST_ASSERT_MSG(b.valid(), "Buffer B corrupted");
@@ -128,7 +138,7 @@ UTEST_BEGIN("dsp", correlation)
         #define CALL(func, align) \
             call(#func, align, func)
 
-        CALL(generic::correlation, 16);
+        CALL(generic::corr_incr, 16);
     }
 
 UTEST_END;
