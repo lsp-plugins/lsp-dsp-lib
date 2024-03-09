@@ -40,6 +40,12 @@ namespace lsp
         void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
     }
 
+    namespace avx
+    {
+        void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
+        void corr_init_fma3(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
+    }
+
     namespace test
     {
         static void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count)
@@ -112,7 +118,9 @@ PTEST_BEGIN("dsp", corr_init, 5, 1000)
 
             CALL(test::corr_init, count);
             CALL(generic::corr_init, count);
-            CALL(sse::corr_init, count);
+            IF_ARCH_X86(CALL(sse::corr_init, count));
+            IF_ARCH_X86(CALL(avx::corr_init, count));
+            IF_ARCH_X86(CALL(avx::corr_init_fma3, count));
 
             PTEST_SEPARATOR;
         }
