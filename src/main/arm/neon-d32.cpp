@@ -50,6 +50,7 @@
     #define PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL
         #include <private/dsp/arch/arm/neon-d32/complex.h>
         #include <private/dsp/arch/arm/neon-d32/convolution.h>
+        #include <private/dsp/arch/arm/neon-d32/correlation.h>
         #include <private/dsp/arch/arm/neon-d32/copy.h>
         #include <private/dsp/arch/arm/neon-d32/dynamics.h>
         #include <private/dsp/arch/arm/neon-d32/fastconv.h>
@@ -141,6 +142,7 @@
                 EXPORT1(pcomplex_r2c_rdiv2);
 
                 EXPORT1(convolve);
+                EXPORT1(corr_init);
 
                 EXPORT1(axis_apply_lin1);
                 EXPORT1(axis_apply_log1);

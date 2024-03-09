@@ -51,6 +51,13 @@ namespace lsp
         }
     )
 
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
+        }
+    )
+
     static void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count)
     {
         float vv    = 0.0f;
@@ -125,6 +132,7 @@ UTEST_BEGIN("dsp", corr_init)
         IF_ARCH_X86(CALL(avx::corr_init_fma3, 32));
         IF_ARCH_X86(CALL(avx512::corr_init, 64));
         IF_ARCH_X86(CALL(avx512::corr_init_fma3, 64));
+        IF_ARCH_ARM(CALL(neon_d32::corr_init, 16));
     }
 
 UTEST_END;

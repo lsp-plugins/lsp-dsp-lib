@@ -54,26 +54,12 @@ namespace lsp
         }
     )
 
-    namespace test
-    {
-        void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count)
+    IF_ARCH_ARM(
+        namespace neon_d32
         {
-            float vv    = 0.0f;
-            float va    = 0.0f;
-            float vb    = 0.0f;
-
-            for (size_t i=0; i<count; ++i)
-            {
-                vv         += a[i] * b[i];
-                va         += a[i] * a[i];
-                vb         += b[i] * b[i];
-            }
-
-            corr->v    += vv;
-            corr->a    += va;
-            corr->b    += vb;
+            void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
         }
-    }
+    )
 
     typedef void (* corr_init_t)(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
 }
@@ -118,19 +104,17 @@ PTEST_BEGIN("dsp", corr_init, 5, 10000)
         #define CALL(func, count) \
             call(#func, a, b, count, func)
 
-        TEST_EXPORT(test::corr_init);
-
         for (size_t i=MIN_RANK; i<=MAX_RANK; ++i)
         {
             const size_t count = 1 << i;
 
-            CALL(test::corr_init, count);
             CALL(generic::corr_init, count);
             IF_ARCH_X86(CALL(sse::corr_init, count));
             IF_ARCH_X86(CALL(avx::corr_init, count));
             IF_ARCH_X86(CALL(avx::corr_init_fma3, count));
             IF_ARCH_X86(CALL(avx512::corr_init, count));
             IF_ARCH_X86(CALL(avx512::corr_init_fma3, count));
+            IF_ARCH_ARM(CALL(neon_d32::corr_init, count));
 
             PTEST_SEPARATOR;
         }
