@@ -66,6 +66,7 @@
         #include <private/dsp/arch/x86/sse/pcomplex.h>
 
         #include <private/dsp/arch/x86/sse/convolution.h>
+        #include <private/dsp/arch/x86/sse/correlation.h>
 
         #include <private/dsp/arch/x86/sse/filters/static.h>
         #include <private/dsp/arch/x86/sse/filters/dynamic.h>
@@ -492,6 +493,7 @@
                 EXPORT1(cull_triangle_raw);
 
                 EXPORT1(convolve);
+                EXPORT1(corr_init);
 
                 EXPORT1(lin_inter_set);
                 EXPORT1(lin_inter_mul2);

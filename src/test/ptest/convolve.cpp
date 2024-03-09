@@ -109,6 +109,9 @@ PTEST_BEGIN("dsp", convolve, 5, 1000)
         float *in       = &out[buf_size*2];
         float *conv     = &in[buf_size];
         float *backup   = &conv[buf_size];
+        lsp_finally {
+            free_aligned(data);
+        };
 
         for (size_t i=0; i < buf_size*4; ++i)
             out[i]          = randf(-1.0f, 1.0f);

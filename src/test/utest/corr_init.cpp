@@ -32,6 +32,11 @@ namespace lsp
         void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
     }
 
+    namespace sse
+    {
+        void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
+    }
+
     static void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count)
     {
         float vv    = 0.0f;
@@ -67,12 +72,12 @@ UTEST_BEGIN("dsp", corr_init)
                 FloatBuffer b(count, align, mask & 0x02);
 
                 dsp::correlation_t corr_a, corr_b;
-                corr_a.v = 0.0f;
-                corr_a.a = 0.0f;
-                corr_a.b = 0.0f;
-                corr_b.v = 0.0f;
-                corr_b.a = 0.0f;
-                corr_b.b = 0.0f;
+                corr_a.v = 0.1f;
+                corr_a.a = 0.2f;
+                corr_a.b = 0.3f;
+                corr_b.v = 0.1f;
+                corr_b.a = 0.2f;
+                corr_b.b = 0.3f;
 
                 printf("Tesing %s corr_init on buffer count=%d mask=0x%x\n", label, int(count), int(mask));
 
@@ -83,9 +88,9 @@ UTEST_BEGIN("dsp", corr_init)
                 UTEST_ASSERT_MSG(b.valid(), "Buffer B corrupted");
 
                 // Compare state
-                if ((!float_equals_adaptive(corr_a.v, corr_b.v)) ||
-                    (!float_equals_adaptive(corr_a.a, corr_b.a)) ||
-                    (!float_equals_adaptive(corr_a.b, corr_b.b)))
+                if ((!float_equals_adaptive(corr_a.v, corr_b.v, 1e-5f)) ||
+                    (!float_equals_adaptive(corr_a.a, corr_b.a, 1e-5f)) ||
+                    (!float_equals_adaptive(corr_a.b, corr_b.b, 1e-5f)))
                 {
                     UTEST_FAIL_MSG("Correlation state differs a={%f, %f, %f}, b={%f, %f, %f}",
                         corr_a.v, corr_a.a, corr_a.b,
@@ -101,6 +106,7 @@ UTEST_BEGIN("dsp", corr_init)
             call(#func, align, func)
 
         CALL(generic::corr_init, 16);
+        IF_ARCH_X86(CALL(sse::corr_init, 16));
     }
 
 UTEST_END;
