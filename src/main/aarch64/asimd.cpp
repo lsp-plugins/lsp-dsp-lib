@@ -52,6 +52,7 @@
     #define PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL
         #include <private/dsp/arch/aarch64/asimd/complex.h>
         #include <private/dsp/arch/aarch64/asimd/convolution.h>
+        #include <private/dsp/arch/aarch64/asimd/correlation.h>
         #include <private/dsp/arch/aarch64/asimd/copy.h>
         #include <private/dsp/arch/aarch64/asimd/dynamics.h>
         #include <private/dsp/arch/aarch64/asimd/fastconv.h>
@@ -429,6 +430,7 @@
                 EXPORT1(downsample_8x);
 
                 EXPORT1(convolve);
+                EXPORT1(corr_init);
 
                 EXPORT1(abgr32_to_bgrff32);
                 EXPORT1(rgba32_to_bgra32);
