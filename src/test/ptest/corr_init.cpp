@@ -25,7 +25,7 @@
 #include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/test-fw/ptest.h>
 
-#define MIN_RANK        5
+#define MIN_RANK        8
 #define MAX_RANK        15
 
 namespace lsp
@@ -35,20 +35,28 @@ namespace lsp
         void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
     }
 
-    namespace sse
-    {
-        void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
-    }
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
+        }
 
-    namespace avx
-    {
-        void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
-        void corr_init_fma3(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
-    }
+        namespace avx
+        {
+            void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
+            void corr_init_fma3(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
+        }
+
+        namespace avx512
+        {
+            void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
+            void corr_init_fma3(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
+        }
+    )
 
     namespace test
     {
-        static void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count)
+        void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count)
         {
             float vv    = 0.0f;
             float va    = 0.0f;
@@ -72,7 +80,7 @@ namespace lsp
 
 //-----------------------------------------------------------------------------
 // Performance test for lanczos resampling
-PTEST_BEGIN("dsp", corr_init, 5, 1000)
+PTEST_BEGIN("dsp", corr_init, 5, 10000)
 
     void call(const char *label, const float *a, const float *b, size_t count, corr_init_t func)
     {
@@ -121,6 +129,8 @@ PTEST_BEGIN("dsp", corr_init, 5, 1000)
             IF_ARCH_X86(CALL(sse::corr_init, count));
             IF_ARCH_X86(CALL(avx::corr_init, count));
             IF_ARCH_X86(CALL(avx::corr_init_fma3, count));
+            IF_ARCH_X86(CALL(avx512::corr_init, count));
+            IF_ARCH_X86(CALL(avx512::corr_init_fma3, count));
 
             PTEST_SEPARATOR;
         }
