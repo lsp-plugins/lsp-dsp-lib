@@ -47,7 +47,6 @@ namespace lsp
         namespace avx512
         {
             void corr_init(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
-            void corr_init_fma3(dsp::correlation_t *corr, const float *a, const float *b, size_t count);
         }
     )
 
@@ -138,7 +137,6 @@ UTEST_BEGIN("dsp", corr_init)
         IF_ARCH_X86(CALL(avx::corr_init, 32));
         IF_ARCH_X86(CALL(avx::corr_init_fma3, 32));
         IF_ARCH_X86(CALL(avx512::corr_init, 64));
-        IF_ARCH_X86(CALL(avx512::corr_init_fma3, 64));
         IF_ARCH_ARM(CALL(neon_d32::corr_init, 16));
         IF_ARCH_AARCH64(CALL(asimd::corr_init, 16));
     }

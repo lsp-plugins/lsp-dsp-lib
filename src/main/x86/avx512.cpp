@@ -279,7 +279,7 @@
                 CEXPORT1(vl, dexpander_x1_curve);
 
                 CEXPORT1(vl, corr_init);
-                CEXPORT2(vl, corr_init, corr_init_fma3);
+                CEXPORT1(vl, corr_incr);
             }
         } /* namespace avx2 */
     } /* namespace lsp */
