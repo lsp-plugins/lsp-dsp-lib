@@ -134,7 +134,7 @@ namespace lsp
                 __ASM_EMIT("addss       %%xmm1, %%xmm10")               /* xmm10 = BB = xb+DB */
                 __ASM_EMIT("movaps      %%xmm9, %%xmm3")                /* xmm3 = BA */
                 __ASM_EMIT("addss       %%xmm2, %%xmm8")                /* xmm8 = T = xv+DV */
-                __ASM_EMIT("mulss       %%xmm1, %%xmm3")                /* xmm3 = B = BA*BB */
+                __ASM_EMIT("mulss       %%xmm10, %%xmm3")               /* xmm3 = B = BA*BB */
                 __ASM_EMIT("movaps      %%xmm8, %%xmm0")                /* xmm0 = T */
 
                 __ASM_EMIT("sqrtss      %%xmm3, %%xmm7")                /* xmm7 = sqrtf(B) */

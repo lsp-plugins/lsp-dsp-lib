@@ -393,6 +393,7 @@
 
                 CEXPORT1(favx, convolve);
                 CEXPORT1(favx, corr_init);
+                CEXPORT1(favx, corr_incr);
 
                 CEXPORT1(favx, lin_inter_set);
                 CEXPORT1(favx, lin_inter_mul2);
@@ -486,6 +487,7 @@
 
                     CEXPORT2(favx, convolve, convolve_fma3);
                     CEXPORT2(favx, corr_init, corr_init_fma3);
+                    CEXPORT2(favx, corr_incr, corr_incr_fma3);
 
                     CEXPORT2(favx, axis_apply_lin1, axis_apply_lin1_fma3);
 

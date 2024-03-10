@@ -43,6 +43,19 @@ namespace lsp
                 const float *a_tail, const float *b_tail,
                 size_t count);
         }
+
+        namespace avx
+        {
+            void corr_incr(dsp::correlation_t *corr, float *dst,
+                const float *a_head, const float *b_head,
+                const float *a_tail, const float *b_tail,
+                size_t count);
+
+            void corr_incr_fma3(dsp::correlation_t *corr, float *dst,
+                const float *a_head, const float *b_head,
+                const float *a_tail, const float *b_tail,
+                size_t count);
+        }
     )
 
     IF_ARCH_X86_64(
@@ -108,6 +121,9 @@ UTEST_BEGIN("dsp", corr_incr)
                     FloatBuffer dst2(count, align, mask & 0x04);
 
                     dsp::correlation_t corr_a, corr_b;
+                    corr_a.v = 0.0f;
+                    corr_a.a = 0.0f;
+                    corr_a.b = 0.0f;
                     dsp::corr_init(&corr_a, a, b, tail);
                     corr_b = corr_a;
 
@@ -133,8 +149,11 @@ UTEST_BEGIN("dsp", corr_incr)
                         b.dump("b   ");
                         dst1.dump("dst1");
                         dst2.dump("dst2");
-                        UTEST_FAIL_MSG("Output of functions for test '%s' differs at index %d, value=%f vs %f",
-                            label, int(dst1.last_diff()), dst1.get(dst1.last_diff()), dst2.get(dst1.last_diff()));
+                        UTEST_FAIL_MSG("Output of functions for test '%s' differs at index %d, value=%f vs %f\n"
+                                "correlation state a={%f, %f, %f}, b={%f, %f, %f}",
+                            label, int(dst1.last_diff()), dst1.get(dst1.last_diff()), dst2.get(dst1.last_diff()),
+                            corr_a.v, corr_a.a, corr_a.b,
+                            corr_b.v, corr_b.a, corr_b.b);
                     }
 
                     // Compare state
@@ -159,6 +178,8 @@ UTEST_BEGIN("dsp", corr_incr)
         CALL(generic::corr_incr, 16);
         IF_ARCH_X86(CALL(sse::corr_incr, 16));
         IF_ARCH_X86_64(CALL(sse3::x64_corr_incr, 16));
+        IF_ARCH_X86(CALL(avx::corr_incr, 32));
+        IF_ARCH_X86(CALL(avx::corr_incr_fma3, 32));
     }
 
 UTEST_END;
