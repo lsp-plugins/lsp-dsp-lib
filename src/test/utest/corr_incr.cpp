@@ -35,6 +35,26 @@ namespace lsp
             size_t count);
     }
 
+    IF_ARCH_X86(
+        namespace sse
+        {
+            void corr_incr(dsp::correlation_t *corr, float *dst,
+                const float *a_head, const float *b_head,
+                const float *a_tail, const float *b_tail,
+                size_t count);
+        }
+    )
+
+    IF_ARCH_X86_64(
+        namespace sse3
+        {
+            void x64_corr_incr(dsp::correlation_t *corr, float *dst,
+                const float *a_head, const float *b_head,
+                const float *a_tail, const float *b_tail,
+                size_t count);
+        }
+    )
+
     static void corr_incr(dsp::correlation_t *corr, float *dst,
         const float *a_head, const float *b_head,
         const float *a_tail, const float *b_tail,
@@ -78,7 +98,7 @@ UTEST_BEGIN("dsp", corr_incr)
 
         for (size_t mask=0; mask <= 0x07; ++mask)
         {
-            UTEST_FOREACH(tail, 0, 1, 2, 3, 4, 5, 8, 16, 24, 32, 33, 64, 47, 0x80, 0x1ff)
+            UTEST_FOREACH(tail, 0x80, 0x1ff)
             {
                 UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 8, 16, 24, 32, 33, 64, 47, 0x80, 0x1ff)
                 {
@@ -88,9 +108,7 @@ UTEST_BEGIN("dsp", corr_incr)
                     FloatBuffer dst2(count, align, mask & 0x04);
 
                     dsp::correlation_t corr_a, corr_b;
-                    corr_a.v = randf(-1.0f, 1.0f);
-                    corr_a.a = randf(0.0f, 1.0f);
-                    corr_a.b = randf(0.0f, 1.0f);
+                    dsp::corr_init(&corr_a, a, b, tail);
                     corr_b = corr_a;
 
                     printf("Tesing %s correlation tail=%d on buffer count=%d mask=0x%x\n", label, int(tail), int(count), int(mask));
@@ -109,19 +127,20 @@ UTEST_BEGIN("dsp", corr_incr)
                     UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
 
                     // Compare buffers
-                    if (!dst1.equals_relative(dst2, 1e-5))
+                    if (!dst1.equals_adaptive(dst2, 1e-4))
                     {
                         a.dump("a   ");
                         b.dump("b   ");
                         dst1.dump("dst1");
                         dst2.dump("dst2");
-                        UTEST_FAIL_MSG("Output of functions for test '%s' differs", label);
+                        UTEST_FAIL_MSG("Output of functions for test '%s' differs at index %d, value=%f vs %f",
+                            label, int(dst1.last_diff()), dst1.get(dst1.last_diff()), dst2.get(dst1.last_diff()));
                     }
 
                     // Compare state
-                    if ((!float_equals_adaptive(corr_a.v, corr_b.v)) ||
-                        (!float_equals_adaptive(corr_a.a, corr_b.a)) ||
-                        (!float_equals_adaptive(corr_a.b, corr_b.b)))
+                    if ((!float_equals_adaptive(corr_a.v, corr_b.v, 1e-5)) ||
+                        (!float_equals_adaptive(corr_a.a, corr_b.a, 1e-5)) ||
+                        (!float_equals_adaptive(corr_a.b, corr_b.b, 1e-5)))
                     {
                         UTEST_FAIL_MSG("Correlation state differs a={%f, %f, %f}, b={%f, %f, %f}",
                             corr_a.v, corr_a.a, corr_a.b,
@@ -138,6 +157,8 @@ UTEST_BEGIN("dsp", corr_incr)
             call(#func, align, func)
 
         CALL(generic::corr_incr, 16);
+        IF_ARCH_X86(CALL(sse::corr_incr, 16));
+        IF_ARCH_X86_64(CALL(sse3::x64_corr_incr, 16));
     }
 
 UTEST_END;

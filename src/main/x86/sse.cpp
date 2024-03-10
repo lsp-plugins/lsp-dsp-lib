@@ -494,6 +494,7 @@
 
                 EXPORT1(convolve);
                 EXPORT1(corr_init);
+                EXPORT1(corr_incr);
 
                 EXPORT1(lin_inter_set);
                 EXPORT1(lin_inter_mul2);
