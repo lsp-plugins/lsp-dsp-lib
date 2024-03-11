@@ -79,6 +79,16 @@ namespace lsp
         }
     )
 
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void corr_incr(dsp::correlation_t *corr, float *dst,
+                const float *a_head, const float *b_head,
+                const float *a_tail, const float *b_tail,
+                size_t count);
+        }
+    )
+
     typedef void (* corr_incr_t)(dsp::correlation_t *corr, float *dst,
         const float *a_head, const float *b_head,
         const float *a_tail, const float *b_tail,
@@ -142,6 +152,7 @@ PTEST_BEGIN("dsp", corr_incr, 5, 10000)
             IF_ARCH_X86(CALL(avx::corr_incr, count));
             IF_ARCH_X86(CALL(avx::corr_incr_fma3, count));
             IF_ARCH_X86(CALL(avx512::corr_incr, count));
+            IF_ARCH_ARM(CALL(neon_d32::corr_incr, count));
 
             PTEST_SEPARATOR;
         }

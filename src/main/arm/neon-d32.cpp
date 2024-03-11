@@ -143,6 +143,7 @@
 
                 EXPORT1(convolve);
                 EXPORT1(corr_init);
+                EXPORT1(corr_incr);
 
                 EXPORT1(axis_apply_lin1);
                 EXPORT1(axis_apply_log1);
