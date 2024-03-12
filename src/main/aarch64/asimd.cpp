@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -431,6 +431,7 @@
 
                 EXPORT1(convolve);
                 EXPORT1(corr_init);
+                EXPORT1(corr_incr);
 
                 EXPORT1(abgr32_to_bgrff32);
                 EXPORT1(rgba32_to_bgra32);
