@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -52,6 +52,7 @@
     #define PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL
         #include <private/dsp/arch/aarch64/asimd/complex.h>
         #include <private/dsp/arch/aarch64/asimd/convolution.h>
+        #include <private/dsp/arch/aarch64/asimd/correlation.h>
         #include <private/dsp/arch/aarch64/asimd/copy.h>
         #include <private/dsp/arch/aarch64/asimd/dynamics.h>
         #include <private/dsp/arch/aarch64/asimd/fastconv.h>
@@ -429,6 +430,8 @@
                 EXPORT1(downsample_8x);
 
                 EXPORT1(convolve);
+                EXPORT1(corr_init);
+                EXPORT1(corr_incr);
 
                 EXPORT1(abgr32_to_bgrff32);
                 EXPORT1(rgba32_to_bgra32);

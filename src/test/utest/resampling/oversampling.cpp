@@ -23,6 +23,7 @@
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
+#include <lsp-plug.in/stdlib/math.h>
 
 namespace lsp
 {

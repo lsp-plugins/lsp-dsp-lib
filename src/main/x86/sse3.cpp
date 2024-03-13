@@ -48,6 +48,7 @@
         #include <private/dsp/arch/x86/sse3/filters/transform.h>
         #include <private/dsp/arch/x86/sse3/pcomplex.h>
         #include <private/dsp/arch/x86/sse3/3dmath.h>
+        #include <private/dsp/arch/x86/sse3/correlation.h>
     #undef PRIVATE_DSP_ARCH_X86_SSE3_IMPL
 
     namespace lsp
@@ -115,6 +116,8 @@
 
                 EXPORT1(split_triangle_raw);
                 EXPORT1(cull_triangle_raw);
+
+                EXPORT2_X64(corr_incr, x64_corr_incr);
             }
 
             #undef EXPORT2

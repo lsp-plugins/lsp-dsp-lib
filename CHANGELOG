@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.22 ===
-
+* Implemented functions for computing correlation between two signals.
 
 === 1.0.21 ===
 * Updated build scripts.

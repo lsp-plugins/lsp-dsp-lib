@@ -69,6 +69,7 @@
         #include <private/dsp/arch/x86/avx/msmatrix.h>
         #include <private/dsp/arch/x86/avx/resampling.h>
         #include <private/dsp/arch/x86/avx/convolution.h>
+        #include <private/dsp/arch/x86/avx/correlation.h>
 
         #include <private/dsp/arch/x86/avx/interpolation/linear.h>
 
@@ -391,6 +392,8 @@
                 CEXPORT1(favx, downsample_8x);
 
                 CEXPORT1(favx, convolve);
+                CEXPORT1(favx, corr_init);
+                CEXPORT1(favx, corr_incr);
 
                 CEXPORT1(favx, lin_inter_set);
                 CEXPORT1(favx, lin_inter_mul2);
@@ -483,6 +486,8 @@
                     CEXPORT2(favx, filter_transfer_apply_pc, filter_transfer_apply_pc_fma3);
 
                     CEXPORT2(favx, convolve, convolve_fma3);
+                    CEXPORT2(favx, corr_init, corr_init_fma3);
+                    CEXPORT2(favx, corr_incr, corr_incr_fma3);
 
                     CEXPORT2(favx, axis_apply_lin1, axis_apply_lin1_fma3);
 
