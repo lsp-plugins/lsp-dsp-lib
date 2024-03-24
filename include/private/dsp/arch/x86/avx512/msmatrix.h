@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 9 сент. 2023 г.
@@ -107,8 +107,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[mid], %[off])")
                 __ASM_EMIT("vmovups         %%xmm2, 0x00(%[side], %[off])")
                 __ASM_EMIT("add             $0x10, %[off]")
-                __ASM_EMIT32("subl          $8, %[count]")
-                __ASM_EMIT64("sub           $8, %[count]")
+                __ASM_EMIT32("subl          $4, %[count]")
+                __ASM_EMIT64("sub           $4, %[count]")
                 __ASM_EMIT("8:")
                 // 1x blocks
                 __ASM_EMIT32("addl          $3, %[count]")

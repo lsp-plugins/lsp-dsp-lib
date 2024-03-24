@@ -4,6 +4,7 @@
 
 === 1.0.22 ===
 * Implemented functions for computing correlation between two signals.
+* Fixed error in AVX and AVX-512 implementation of lr_to_ms functions.
 * Updated build scripts.
 
 === 1.0.21 ===
