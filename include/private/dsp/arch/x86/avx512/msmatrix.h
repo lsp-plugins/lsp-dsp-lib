@@ -273,8 +273,8 @@ namespace lsp
             ARCH_X86_ASM(
                 __ASM_EMIT("xor             %[off], %[off]")
                 // 64x blocks
-                __ASM_EMIT32("subl          $32, %[count]")
-                __ASM_EMIT64("sub           $32, %[count]")
+                __ASM_EMIT32("subl          $64, %[count]")
+                __ASM_EMIT64("sub           $64, %[count]")
                 __ASM_EMIT("jb              2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vmovups         0x00(%[mid], %[off]), %%zmm0")              // zmm0 = m
