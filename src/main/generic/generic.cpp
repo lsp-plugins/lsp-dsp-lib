@@ -47,6 +47,7 @@ namespace lsp
     #include <private/dsp/arch/generic/complex.h>
     #include <private/dsp/arch/generic/pcomplex.h>
     #include <private/dsp/arch/generic/convolution.h>
+    #include <private/dsp/arch/generic/correlation.h>
 
     #include <private/dsp/arch/generic/dynamics.h>
 
@@ -598,6 +599,8 @@ namespace lsp
             EXPORT1(unit_vector_p1pv);
 
             EXPORT1(convolve);
+            EXPORT1(corr_init);
+            EXPORT1(corr_incr);
 
             EXPORT1(base64_enc);
             EXPORT1(base64_dec);

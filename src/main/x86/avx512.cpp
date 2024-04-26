@@ -49,6 +49,8 @@
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
         #include <private/dsp/arch/x86/avx512/pcomplex.h>
         #include <private/dsp/arch/x86/avx512/pmath.h>
+
+        #include <private/dsp/arch/x86/avx512/correlation.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX512_IMPL
 
     namespace lsp
@@ -275,6 +277,9 @@
                 CEXPORT1(vl, uexpander_x1_curve);
                 CEXPORT1(vl, dexpander_x1_gain);
                 CEXPORT1(vl, dexpander_x1_curve);
+
+                CEXPORT1(vl, corr_init);
+                CEXPORT1(vl, corr_incr);
             }
         } /* namespace avx2 */
     } /* namespace lsp */
