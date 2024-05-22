@@ -353,7 +353,8 @@ namespace lsp
                 __ASM_EMIT64("sub           $8, %[count]")
                 __ASM_EMIT("4:")
                 /* 4x block */
-                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT32("addl          $4, %[count]")
+                __ASM_EMIT64("add           $4, %[count]")
                 __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmovups         0x00(%[a_head]), %%xmm0")           /* xmm0 = ah */
                 __ASM_EMIT("vmovups         0x00(%[b_head]), %%xmm1")           /* xmm1 = bh */
@@ -422,7 +423,8 @@ namespace lsp
                 __ASM_EMIT("6:")
 
                 /* 1x blocks */
-                __ASM_EMIT("add             $3, %[count]")
+                __ASM_EMIT32("addl          $3, %[count]")
+                __ASM_EMIT64("add           $3, %[count]")
                 __ASM_EMIT("jl              8f")
                 __ASM_EMIT("7:")
                 __ASM_EMIT("vmovss          0x00(%[a_head]), %%xmm0")           /* xmm0 = ah */
@@ -480,7 +482,7 @@ namespace lsp
                     [corr] "+m" (corr), [dst] "+m" (dst),
                     [a_head] "+r" (a_head), [b_head] "+r" (b_head),
                     [a_tail] "+r" (a_tail), [b_tail] "+r" (b_tail),
-                    [count] "+g" (count)
+                    [count] "+m" (count)
                   )
                   __IF_64(
                     [dst] "+r" (dst),
