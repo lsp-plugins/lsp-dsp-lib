@@ -236,7 +236,8 @@ namespace lsp
                 __ASM_EMIT("jae         1b")
                 __ASM_EMIT("2:")
                 /* 1x blocks */
-                __ASM_EMIT("add         $3, %[count]")
+                __ASM_EMIT32("addl      $3, %[count]")
+                __ASM_EMIT64("add       $3, %[count]")
                 __ASM_EMIT("jl          4f")
                 __ASM_EMIT("3:")
                 __ASM_EMIT("movss       0x00(%[a_head]), %%xmm0")       /* xmm0 = ah */
@@ -300,7 +301,7 @@ namespace lsp
                     [corr] "+m" (corr), [dst] "+m" (dst),
                     [a_head] "+r" (a_head), [b_head] "+r" (b_head),
                     [a_tail] "+r" (a_tail), [b_tail] "+r" (b_tail),
-                    [count] "+g" (count)
+                    [count] "+m" (count)
                   )
                   __IF_64(
                     [dst] "+r" (dst),
