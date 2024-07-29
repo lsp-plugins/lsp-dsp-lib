@@ -42,6 +42,7 @@
 
     #define PRIVATE_DSP_ARCH_X86_AVX512_IMPL
         #include <private/dsp/arch/x86/avx512/complex.h>
+        #include <private/dsp/arch/x86/avx512/convolution.h>
         #include <private/dsp/arch/x86/avx512/copy.h>
         #include <private/dsp/arch/x86/avx512/dynamics.h>
         #include <private/dsp/arch/x86/avx512/float.h>
@@ -265,6 +266,8 @@
                 CEXPORT1(vl, ms_to_lr);
                 CEXPORT1(vl, ms_to_left);
                 CEXPORT1(vl, ms_to_right);
+
+                CEXPORT1(vl, convolve);
 
                 CEXPORT1(vl, axis_apply_lin1);
 
