@@ -41,6 +41,11 @@ namespace lsp
         {
             size_t  abs_min_index(const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            size_t  abs_min_index(const float *src, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -70,7 +75,7 @@ UTEST_BEGIN("dsp.search", abs_min_index)
             return;
 
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                32, 33, 34, 35, 36, 37, 64, 65, 66, 67, 68, 69, 100, 768, 999, 1024)
+                16, 32, 33, 34, 35, 36, 37, 64, 65, 66, 67, 68, 69, 100, 768, 999, 1024)
         {
             for (size_t mask=0; mask <= 0x01; ++mask)
             {
@@ -102,6 +107,7 @@ UTEST_BEGIN("dsp.search", abs_min_index)
 
         IF_ARCH_X86(CALL(generic::abs_min_index, sse2::abs_min_index, 16));
         IF_ARCH_X86(CALL(generic::abs_min_index, avx2::abs_min_index, 32));
+        IF_ARCH_X86(CALL(generic::abs_min_index, avx512::abs_min_index, 64));
         IF_ARCH_ARM(CALL(generic::abs_min_index, neon_d32::abs_min_index, 16));
         IF_ARCH_AARCH64(CALL(generic::abs_min_index, asimd::abs_min_index, 16));
     }

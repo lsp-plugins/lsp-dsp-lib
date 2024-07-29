@@ -25,5 +25,6 @@
 #include <lsp-plug.in/dsp/common/types.h>
 
 #include <private/dsp/arch/x86/avx512/search/minmax.h>
+#include <private/dsp/arch/x86/avx512/search/iminmax.h>
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX512_SEARCH_H_ */

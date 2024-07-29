@@ -41,6 +41,11 @@ namespace lsp
         {
             void    abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max);
         }
+
+        namespace avx512
+        {
+            void    abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+        }
     )
 
     IF_ARCH_ARM(
@@ -70,7 +75,7 @@ UTEST_BEGIN("dsp.search", abs_minmax_index)
             return;
 
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                32, 33, 34, 35, 36, 37, 64, 65, 66, 67, 68, 69, 100, 768, 999, 1024)
+                16, 32, 33, 34, 35, 36, 37, 64, 65, 66, 67, 68, 69, 100, 768, 999, 1024)
         {
             for (size_t mask=0; mask <= 0x01; ++mask)
             {
@@ -107,11 +112,9 @@ UTEST_BEGIN("dsp.search", abs_minmax_index)
             call(#func, align, generic, func)
 
         IF_ARCH_X86(CALL(generic::abs_minmax_index, sse2::abs_minmax_index, 16));
-
         IF_ARCH_X86(CALL(generic::abs_minmax_index, avx2::abs_minmax_index, 32));
-
+        IF_ARCH_X86(CALL(generic::abs_minmax_index, avx512::abs_minmax_index, 64));
         IF_ARCH_ARM(CALL(generic::abs_minmax_index, neon_d32::abs_minmax_index, 16));
-
         IF_ARCH_AARCH64(CALL(generic::abs_minmax_index, asimd::abs_minmax_index, 16));
     }
 UTEST_END
