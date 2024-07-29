@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -53,6 +53,17 @@ namespace lsp
         }
 
         namespace avx
+        {
+            float   min(const float *src, size_t count);
+            float   max(const float *src, size_t count);
+            void    minmax(const float *src, size_t count, float *min, float *max);
+
+            float   abs_min(const float *src, size_t count);
+            float   abs_max(const float *src, size_t count);
+            void    abs_minmax(const float *src, size_t count, float *min, float *max);
+        }
+
+        namespace avx512
         {
             float   min(const float *src, size_t count);
             float   max(const float *src, size_t count);
@@ -147,12 +158,14 @@ PTEST_BEGIN("dsp.search", minmax, 5, 1000)
             CALL(generic::min);
             IF_ARCH_X86(CALL(sse::min));
             IF_ARCH_X86(CALL(avx::min));
+            IF_ARCH_X86(CALL(avx512::min));
             IF_ARCH_ARM(CALL(neon_d32::min));
             IF_ARCH_AARCH64(CALL(asimd::min));
 
             CALL(generic::abs_min);
             IF_ARCH_X86(CALL(sse::abs_min));
             IF_ARCH_X86(CALL(avx::abs_min));
+            IF_ARCH_X86(CALL(avx512::abs_min));
             IF_ARCH_ARM(CALL(neon_d32::abs_min));
             IF_ARCH_AARCH64(CALL(asimd::abs_min));
             PTEST_SEPARATOR;
@@ -161,12 +174,14 @@ PTEST_BEGIN("dsp.search", minmax, 5, 1000)
             CALL(generic::max);
             IF_ARCH_X86(CALL(sse::max));
             IF_ARCH_X86(CALL(avx::max));
+            IF_ARCH_X86(CALL(avx512::max));
             IF_ARCH_ARM(CALL(neon_d32::max));
             IF_ARCH_AARCH64(CALL(asimd::max));
 
             CALL(generic::abs_max);
             IF_ARCH_X86(CALL(sse::abs_max));
             IF_ARCH_X86(CALL(avx::abs_max));
+            IF_ARCH_X86(CALL(avx512::abs_max));
             IF_ARCH_ARM(CALL(neon_d32::abs_max));
             IF_ARCH_AARCH64(CALL(asimd::abs_max));
             PTEST_SEPARATOR;
@@ -175,12 +190,14 @@ PTEST_BEGIN("dsp.search", minmax, 5, 1000)
             CALL(generic::minmax);
             IF_ARCH_X86(CALL(sse::minmax));
             IF_ARCH_X86(CALL(avx::minmax));
+            IF_ARCH_X86(CALL(avx512::minmax));
             IF_ARCH_ARM(CALL(neon_d32::minmax));
             IF_ARCH_AARCH64(CALL(asimd::minmax));
 
             CALL(generic::abs_minmax);
             IF_ARCH_X86(CALL(sse::abs_minmax));
             IF_ARCH_X86(CALL(avx::abs_minmax));
+            IF_ARCH_X86(CALL(avx512::abs_minmax));
             IF_ARCH_ARM(CALL(neon_d32::abs_minmax));
             IF_ARCH_AARCH64(CALL(asimd::abs_minmax));
             PTEST_SEPARATOR2;
