@@ -44,6 +44,11 @@ namespace lsp
         {
             size_t  max_index(const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            size_t  max_index(const float *src, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -101,6 +106,7 @@ PTEST_BEGIN("dsp.search", max_index, 5, 1000)
             CALL(generic::max_index);
             IF_ARCH_X86(CALL(sse2::max_index));
             IF_ARCH_X86(CALL(avx2::max_index));
+            IF_ARCH_X86(CALL(avx512::max_index));
             IF_ARCH_ARM(CALL(neon_d32::max_index));
             IF_ARCH_AARCH64(CALL(asimd::max_index));
             PTEST_SEPARATOR;

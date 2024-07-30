@@ -50,6 +50,7 @@
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
         #include <private/dsp/arch/x86/avx512/pcomplex.h>
         #include <private/dsp/arch/x86/avx512/pmath.h>
+        #include <private/dsp/arch/x86/avx512/search.h>
 
         #include <private/dsp/arch/x86/avx512/correlation.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX512_IMPL
@@ -259,6 +260,20 @@
                 CEXPORT1(vl, pcomplex_r2c_mul2);
                 CEXPORT1(vl, pcomplex_r2c_div2);
                 CEXPORT1(vl, pcomplex_c2r);
+
+                CEXPORT1(vl, min);
+                CEXPORT1(vl, max);
+                CEXPORT1(vl, minmax);
+                CEXPORT1(vl, abs_min);
+                CEXPORT1(vl, abs_max);
+                CEXPORT1(vl, abs_minmax);
+
+                CEXPORT1(vl, min_index);
+                CEXPORT1(vl, max_index);
+                CEXPORT1(vl, minmax_index);
+                CEXPORT1(vl, abs_min_index);
+                CEXPORT1(vl, abs_max_index);
+                CEXPORT1(vl, abs_minmax_index);
 
                 CEXPORT1(vl, lr_to_ms);
                 CEXPORT1(vl, lr_to_mid);

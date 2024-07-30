@@ -44,6 +44,11 @@ namespace lsp
         {
             void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
         }
+
+        namespace avx512
+        {
+            void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
+        }
     )
 
     IF_ARCH_ARM(
@@ -102,6 +107,7 @@ PTEST_BEGIN("dsp.search", minmax_index, 5, 1000)
             CALL(generic::minmax_index);
             IF_ARCH_X86(CALL(sse2::minmax_index));
             IF_ARCH_X86(CALL(avx2::minmax_index));
+            IF_ARCH_X86(CALL(avx512::minmax_index));
             IF_ARCH_ARM(CALL(neon_d32::minmax_index));
             IF_ARCH_AARCH64(CALL(asimd::minmax_index));
             PTEST_SEPARATOR;

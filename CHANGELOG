@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 1.0.25 ===
+* Implemented AVX-512 optimized minimum and maximum search functions.
 * Implemented AVX-512 optimized direct convolution function.
 * Updated build scripts.
 
