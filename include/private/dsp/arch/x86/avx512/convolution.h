@@ -265,7 +265,7 @@ namespace lsp
                 __ASM_EMIT("jge         300b")
 
                 __ASM_EMIT("400:")
-                : [dst] __IF32("+m") __IF64("+r") (dst),
+                : [dst] __IF_32("+m") __IF_64("+r") (dst),
                   [k] "+r" (src), [count] "+r" (count),
                   [c] "=&r" (c), [d] "=&r" (d), [clen] "=&r" (clen)
                 : [conv] "m" (conv), [length] "m" (length),
