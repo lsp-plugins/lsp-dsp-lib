@@ -6,6 +6,7 @@
 * Implemented AVX-512 optimized minimum and maximum search functions.
 * Implemented AVX-512 optimized direct convolution function.
 * Updated build scripts.
+* Updated module versions in dependencies.
 
 === 1.0.24 ===
 * Fixed build for x86 Clang.
