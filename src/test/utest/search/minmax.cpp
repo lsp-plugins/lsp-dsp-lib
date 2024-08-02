@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -50,6 +50,17 @@ namespace lsp
         }
 
         namespace avx
+        {
+            float   min(const float *src, size_t count);
+            float   max(const float *src, size_t count);
+            void    minmax(const float *src, size_t count, float *min, float *max);
+
+            float   abs_min(const float *src, size_t count);
+            float   abs_max(const float *src, size_t count);
+            void    abs_minmax(const float *src, size_t count, float *min, float *max);
+        }
+
+        namespace avx512
         {
             float   min(const float *src, size_t count);
             float   max(const float *src, size_t count);
@@ -178,6 +189,13 @@ UTEST_BEGIN("dsp.search", minmax)
         IF_ARCH_X86(CALL(generic::abs_min, avx::abs_min, 32));
         IF_ARCH_X86(CALL(generic::abs_max, avx::abs_max, 32));
         IF_ARCH_X86(CALL(generic::abs_minmax, avx::abs_minmax, 32));
+
+        IF_ARCH_X86(CALL(generic::min, avx512::min, 64));
+        IF_ARCH_X86(CALL(generic::max, avx512::max, 64));
+        IF_ARCH_X86(CALL(generic::minmax, avx512::minmax, 64));
+        IF_ARCH_X86(CALL(generic::abs_min, avx512::abs_min, 64));
+        IF_ARCH_X86(CALL(generic::abs_max, avx512::abs_max, 64));
+        IF_ARCH_X86(CALL(generic::abs_minmax, avx512::abs_minmax, 64));
 
         IF_ARCH_ARM(CALL(generic::min, neon_d32::min, 16));
         IF_ARCH_ARM(CALL(generic::max, neon_d32::max, 16));

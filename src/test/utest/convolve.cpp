@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -40,6 +40,11 @@ namespace lsp
         {
             void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
             void convolve_fma3(float *dst, const float *src, const float *conv, size_t length, size_t count);
+        }
+
+        namespace avx512
+        {
+            void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
         }
     )
 
@@ -135,6 +140,7 @@ UTEST_BEGIN("dsp", convolve)
         IF_ARCH_X86(CALL(sse::convolve, 16));
         IF_ARCH_X86(CALL(avx::convolve, 32));
         IF_ARCH_X86(CALL(avx::convolve_fma3, 32));
+        IF_ARCH_X86(CALL(avx512::convolve, 64));
         IF_ARCH_ARM(CALL(neon_d32::convolve, 16));
         IF_ARCH_AARCH64(CALL(asimd::convolve, 16));
     }

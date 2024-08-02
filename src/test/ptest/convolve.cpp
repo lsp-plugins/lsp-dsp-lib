@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -45,6 +45,11 @@ namespace lsp
         {
             void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
             void convolve_fma3(float *dst, const float *src, const float *conv, size_t length, size_t count);
+        }
+
+        namespace avx512
+        {
+            void convolve(float *dst, const float *src, const float *conv, size_t length, size_t count);
         }
     )
 
@@ -133,6 +138,7 @@ PTEST_BEGIN("dsp", convolve, 5, 1000)
                 IF_ARCH_X86(CALL((1 << j), (1 << i), sse::convolve));
                 IF_ARCH_X86(CALL((1 << j), (1 << i), avx::convolve));
                 IF_ARCH_X86(CALL((1 << j), (1 << i), avx::convolve_fma3));
+                IF_ARCH_X86(CALL((1 << j), (1 << i), avx512::convolve));
                 IF_ARCH_ARM(CALL((1 << j), (1 << i), neon_d32::convolve));
                 IF_ARCH_AARCH64(CALL((1 << j), (1 << i), asimd::convolve));
 
@@ -145,6 +151,7 @@ PTEST_BEGIN("dsp", convolve, 5, 1000)
         IF_ARCH_X86(CALL((1 << MAX_RANK) - 1, (1 << MAX_RANK) - 1, sse::convolve));
         IF_ARCH_X86(CALL((1 << MAX_RANK) - 1, (1 << MAX_RANK) - 1, avx::convolve));
         IF_ARCH_X86(CALL((1 << MAX_RANK) - 1, (1 << MAX_RANK) - 1, avx::convolve_fma3));
+        IF_ARCH_X86(CALL((1 << MAX_RANK) - 1, (1 << MAX_RANK) - 1, avx512::convolve));
         IF_ARCH_ARM(CALL((1 << MAX_RANK) - 1, (1 << MAX_RANK) - 1, neon_d32::convolve));
         IF_ARCH_AARCH64(CALL((1 << MAX_RANK) - 1, (1 << MAX_RANK) - 1, asimd::convolve));
 

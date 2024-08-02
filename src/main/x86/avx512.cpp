@@ -42,6 +42,7 @@
 
     #define PRIVATE_DSP_ARCH_X86_AVX512_IMPL
         #include <private/dsp/arch/x86/avx512/complex.h>
+        #include <private/dsp/arch/x86/avx512/convolution.h>
         #include <private/dsp/arch/x86/avx512/copy.h>
         #include <private/dsp/arch/x86/avx512/dynamics.h>
         #include <private/dsp/arch/x86/avx512/float.h>
@@ -49,6 +50,7 @@
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
         #include <private/dsp/arch/x86/avx512/pcomplex.h>
         #include <private/dsp/arch/x86/avx512/pmath.h>
+        #include <private/dsp/arch/x86/avx512/search.h>
 
         #include <private/dsp/arch/x86/avx512/correlation.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX512_IMPL
@@ -259,12 +261,28 @@
                 CEXPORT1(vl, pcomplex_r2c_div2);
                 CEXPORT1(vl, pcomplex_c2r);
 
+                CEXPORT1(vl, min);
+                CEXPORT1(vl, max);
+                CEXPORT1(vl, minmax);
+                CEXPORT1(vl, abs_min);
+                CEXPORT1(vl, abs_max);
+                CEXPORT1(vl, abs_minmax);
+
+                CEXPORT1(vl, min_index);
+                CEXPORT1(vl, max_index);
+                CEXPORT1(vl, minmax_index);
+                CEXPORT1(vl, abs_min_index);
+                CEXPORT1(vl, abs_max_index);
+                CEXPORT1(vl, abs_minmax_index);
+
                 CEXPORT1(vl, lr_to_ms);
                 CEXPORT1(vl, lr_to_mid);
                 CEXPORT1(vl, lr_to_side);
                 CEXPORT1(vl, ms_to_lr);
                 CEXPORT1(vl, ms_to_left);
                 CEXPORT1(vl, ms_to_right);
+
+                CEXPORT1(vl, convolve);
 
                 CEXPORT1(vl, axis_apply_lin1);
 
