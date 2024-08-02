@@ -265,10 +265,10 @@ namespace lsp
                 __ASM_EMIT("jge         300b")
 
                 __ASM_EMIT("400:")
-                : [dst] __ASM_ARG_RW(dst),
+                : [dst] __IF32("+m") __IF64("+r") (dst),
                   [k] "+r" (src), [count] "+r" (count),
                   [c] "=&r" (c), [d] "=&r" (d), [clen] "=&r" (clen)
-                : [conv] X86_GREG (conv), [length] X86_GREG (length),
+                : [conv] "m" (conv), [length] "m" (length),
                   [CC] "m" (convolve_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
