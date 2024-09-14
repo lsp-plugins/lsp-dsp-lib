@@ -49,7 +49,7 @@ MERGED_DEPENDENCIES        := \
   $(TEST_DEPENDENCIES)
 UNIQ_MERGED_DEPENDENCIES   := $(call uniq, $(MERGED_DEPENDENCIES))
 DEPENDENCIES                = $(UNIQ_MERGED_DEPENDENCIES)
-FEATURES                   := $(call uniq, $(call subtraction,$(SUB_FEATURES),$(DEFAULT_FEATURES) $(ADD_FEATURES)))
+FEATURES                   := $(sort $(call subtraction,$(SUB_FEATURES),$(DEFAULT_FEATURES) $(ADD_FEATURES)))
 
 # Determine versions
 ifeq ($(findstring -devel,$(ARTIFACT_VERSION)),-devel)
@@ -123,6 +123,10 @@ define _modconfig =
   $(if $($(name)_OBJ_TEST),,     $(eval $(name)_OBJ_TEST     := "$($(name)_BIN)/$($(name)_NAME)-test.o"))
   $(if $($(name)_MFLAGS),,       $(eval $(name)_MFLAGS       := $(if $(publisher),,"-D$(name)_BUILTIN -fvisibility=hidden")))
   
+  $(if $(HOST_$(name)_NAME),,    $(eval HOST_$(name)_NAME    := $($(name)_NAME)))
+  $(if $(HOST_$(name)_DESC),,    $(eval HOST_$(name)_DESC    := $($(name)_DESC)))
+  $(if $(HOST_$(name)_URL),,     $(eval HOST_$(name)_URL     := $($(name)_URL$(X_URL_SUFFIX))))
+  
   $(if $(HOST_$(name)_PATH),,    $(eval HOST_$(name)_PATH    := $(MODULES)/$($(name)_NAME)))
   $(if $(HOST_$(name)_INC),,     $(eval HOST_$(name)_INC     := $(HOST_$(name)_PATH)/include))
   $(if $(HOST_$(name)_SRC),,     $(eval HOST_$(name)_SRC     := $(HOST_$(name)_PATH)/src))
@@ -160,6 +164,10 @@ define hdrconfig =
   $(if $($(name)_TESTING),,      $(eval $(name)_TESTING      := 0))
   $(if $($(name)_CFLAGS),,       $(eval $(name)_CFLAGS       := "$(if $($(name)_INC_OPT),$($(name)_INC_OPT) ,-I )\"$($(name)_INC)\""$(if $(publisher), "-D$(name)_PUBLISHER")))
   $(if $($(name)_MFLAGS),,       $(eval $(name)_MFLAGS       := "-D$(name)_BUILTIN -fvisibility=hidden"))
+
+  $(if $(HOST_$(name)_NAME),,    $(eval HOST_$(name)_NAME    := $($(name)_NAME)))
+  $(if $(HOST_$(name)_DESC),,    $(eval HOST_$(name)_DESC    := $($(name)_DESC)))
+  $(if $(HOST_$(name)_URL),,     $(eval HOST_$(name)_URL     := $($(name)_URL$(X_URL_SUFFIX))))
   
   $(if $(HOST_$(name)_PATH),,    $(eval HOST_$(name)_PATH    := $(MODULES)/$($(name)_NAME)))
   $(if $(HOST_$(name)_INC),,     $(eval HOST_$(name)_INC     := $(HOST_$(name)_PATH)/include))
@@ -233,6 +241,8 @@ CONFIG_VARS = \
     $(name)_OBJ \
     $(name)_OBJ_TEST \
     \
+    HOST_$(name)_NAME \
+    HOST_$(name)_DESC \
     HOST_$(name)_PATH \
     HOST_$(name)_INC \
     HOST_$(name)_SRC \

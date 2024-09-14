@@ -1,6 +1,6 @@
 #
-# Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
-#           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+# Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+#           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
 #
 # This file is part of lsp-dsp-lib
 #
@@ -42,7 +42,11 @@ SHAREDDIR                  := $(PREFIX)/share
 INCDIR                     := $(PREFIX)/include
 BUILDDIR                   := $(BASEDIR)/.build
 TARGET_BUILDDIR            := $(BUILDDIR)/target
-HOST_BUILDDIR              := $(BUILDDIR)/host
+ifeq ($(CROSS_COMPILE),1)
+  HOST_BUILDDIR              := $(BUILDDIR)/host
+else
+  HOST_BUILDDIR              := $(TARGET_BUILDDIR)
+endif
 MODULES                    := $(BASEDIR)/modules
 CONFIG                     := $(BASEDIR)/.config.mk
 
