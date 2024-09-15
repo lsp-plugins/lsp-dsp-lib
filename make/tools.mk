@@ -81,6 +81,12 @@ else ifeq ($(PLATFORM),Windows)
   EXE_FLAGS_EXT      += -static-libgcc -static-libstdc++
   SO_FLAGS_EXT       += -static-libgcc -static-libstdc++
   LDFLAGS_EXT        += -T $(CURDIR)/make/ld-windows.script
+else ifeq ($(PLATFORM),Haiku)
+  EXE_FLAGS_EXT      += -L/system/lib -L/system/develop/lib
+  SO_FLAGS_EXT       += -L/system/lib -L/system/develop/lib
+  CXXFLAGS_EXT       += -D_GNU_SOURCE -D_BSD_SOURCE
+  CFLAGS_EXT         += -D_GNU_SOURCE -D_BSD_SOURCE
+  LDFLAGS_EXT        += -L/system/develop/lib/
 else ifeq ($(PLATFORM),BSD)
   EXE_FLAGS_EXT      += -L/usr/local/lib
   SO_FLAGS_EXT       += -L/usr/local/lib
