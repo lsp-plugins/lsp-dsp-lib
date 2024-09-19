@@ -1,6 +1,6 @@
 #
-# Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
-#           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+# Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+#           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
 #
 # This file is part of lsp-dsp-lib
 #
@@ -63,6 +63,7 @@ INSTALL            ?= $(X_INSTALL_TOOL)
 
 # Patch flags and tools for (cross) build
 FLAG_RELRO          = -Wl,-z,relro,-z,now
+FLAG_GC_SECTIONS    = -Wl,--gc-sections
 FLAG_STDLIB         = 
 CFLAGS_EXT          = $(ARCHITECTURE_CFLAGS)
 CXXFLAGS_EXT        = $(ARCHITECTURE_CFLAGS)
@@ -81,6 +82,9 @@ else ifeq ($(PLATFORM),Windows)
   EXE_FLAGS_EXT      += -static-libgcc -static-libstdc++
   SO_FLAGS_EXT       += -static-libgcc -static-libstdc++
   LDFLAGS_EXT        += -T $(CURDIR)/make/ld-windows.script
+else ifeq ($(PLATFORM),MacOS)
+  FLAG_RELRO          =
+  FLAG_GC_SECTIONS    =
 else ifeq ($(PLATFORM),Haiku)
   EXE_FLAGS_EXT      += -L/system/lib -L/system/develop/lib
   SO_FLAGS_EXT       += -L/system/lib -L/system/develop/lib
@@ -170,8 +174,8 @@ CXXDEFS            += -DLSP_INSTALL_PREFIX=\\\"$(PREFIX)\\\"
 
 INCLUDE            :=
 LDFLAGS            := $(LDFLAGS_EXT) -r
-EXE_FLAGS          := $(EXE_FLAGS_EXT) $(FLAG_RELRO) -Wl,--gc-sections
-SO_FLAGS           := $(SO_FLAGS_EXT) $(FLAG_RELRO) -Wl,--gc-sections -shared $(FLAG_STDLIB) -fPIC 
+EXE_FLAGS          := $(EXE_FLAGS_EXT) $(FLAG_RELRO) $(FLAG_GC_SECTIONS)
+SO_FLAGS           := $(SO_FLAGS_EXT) $(FLAG_RELRO) $(FLAG_GC_SECTIONS) -shared $(FLAG_STDLIB) -fPIC 
 
 # Define flags for host build
 HOST_CFLAGS        := $(CFLAGS)

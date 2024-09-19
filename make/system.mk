@@ -38,6 +38,8 @@ ifndef PLATFORM
     PLATFORM       := Linux
   else ifeq ($(findstring SunOS,$(BUILD_SYSTEM)),SunOS)
     PLATFORM       := Solaris
+  else ifeq ($(findstring Darwin,$(BUILD_SYSTEM)),Darwin)
+    PLATFORM       := MacOS
   else ifeq ($(findstring Haiku,$(BUILD_SYSTEM)),Haiku)
     PLATFORM       := Haiku
   endif
@@ -142,6 +144,8 @@ endif
 ifndef LIBRARY_EXT
   ifeq ($(PLATFORM),Windows)
     LIBRARY_EXT              := .dll
+  else ifeq ($(PLATFORM),MacOS) 
+    LIBRARY_EXT              := .dylib
   else
     LIBRARY_EXT              := .so
   endif
