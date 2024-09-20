@@ -109,7 +109,7 @@ else ifeq ($(PLATFORM),Windows)
 else ifeq ($(PLATFORM),MacOS)
   FLAG_RELRO          =
   FLAG_GC_SECTIONS    =
-  CXXFLAGS_EXT       += -std=c++11
+  CXXFLAGS_EXT       += --std=c++11
 else ifeq ($(PLATFORM),Haiku)
   EXE_FLAGS_EXT      += -L/system/lib -L/system/develop/lib
   SO_FLAGS_EXT       += -L/system/lib -L/system/develop/lib
