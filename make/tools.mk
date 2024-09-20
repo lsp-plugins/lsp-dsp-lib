@@ -27,6 +27,20 @@ ifeq ($(PLATFORM),OpenBSD)
   X_AR_TOOL          := ar
   X_LD_TOOL          := ld
   X_PKG_CONFIG       := pkg-config
+else ifeq($(PLATFORM),BSD)
+  X_CC_TOOL          := clang
+  X_CXX_TOOL         := clang++
+  X_AS_TOOL          := as
+  X_AR_TOOL          := ar
+  X_LD_TOOL          := ld
+  X_PKG_CONFIG       := pkg-config
+else ifeq($(PLATFORM),MacOS)
+  X_CC_TOOL          := clang
+  X_CXX_TOOL         := clang++
+  X_AS_TOOL          := as
+  X_AR_TOOL          := ar
+  X_LD_TOOL          := ld
+  X_PKG_CONFIG       := pkg-config
 else
   X_CC_TOOL          := gcc
   X_CXX_TOOL         := g++
@@ -49,13 +63,23 @@ PHP                ?= $(X_PHP_TOOL)
 PKG_CONFIG         ?= $(X_PKG_CONFIG)
 
 # Define tool variables for host build
-HOST_CC            ?= $(CC)
-HOST_CXX           ?= $(CXX)
-HOST_AS            ?= $(AS)
-HOST_AR            ?= $(AR)
-HOST_LD            ?= $(LD)
-HOST_PHP           ?= $(PHP)
-HOST_PKG_CONFIG    ?= $(PKG_CONFIG)
+ifeq ($(CROSS_COMPILE),1)
+  HOST_CC            ?= $(X_CC_TOOL)
+  HOST_CXX           ?= $(X_CXX_TOOL)
+  HOST_AS            ?= $(X_AS_TOOL)
+  HOST_AR            ?= $(X_AR_TOOL)
+  HOST_LD            ?= $(X_LD_TOOL)
+  HOST_PHP           ?= $(X_PHP_TOOL)
+  HOST_PKG_CONFIG    ?= $(X_PKG_CONFIG)
+else
+  HOST_CC            ?= $(CC)
+  HOST_CXX           ?= $(CXX)
+  HOST_AS            ?= $(AS)
+  HOST_AR            ?= $(AR)
+  HOST_LD            ?= $(LD)
+  HOST_PHP           ?= $(PHP)
+  HOST_PKG_CONFIG    ?= $(PKG_CONFIG)
+endif
 
 # Miscellaneous tools
 GIT                ?= $(X_GIT_TOOL)
@@ -85,6 +109,7 @@ else ifeq ($(PLATFORM),Windows)
 else ifeq ($(PLATFORM),MacOS)
   FLAG_RELRO          =
   FLAG_GC_SECTIONS    =
+  CXXFLAGS_EXT       += -std=c++11
 else ifeq ($(PLATFORM),Haiku)
   EXE_FLAGS_EXT      += -L/system/lib -L/system/develop/lib
   SO_FLAGS_EXT       += -L/system/lib -L/system/develop/lib

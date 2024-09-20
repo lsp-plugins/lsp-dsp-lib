@@ -26,7 +26,9 @@
 
 #ifdef ARCH_AARCH64
 
-    #ifdef PLATFORM_POSIX
+    #if defined(PLATFORM_MACOSX)
+        // TODO: add another method to detect hardware features
+    #elif defined(PLATFORM_POSIX)
         #include <sys/auxv.h>
     #endif /* PLATFORM_POSIX */
 
