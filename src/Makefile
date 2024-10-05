@@ -97,14 +97,16 @@ CXX_OBJ_ALL             = \
   $(CXX_OBJ_TEST) \
   $(CXX_OBJ_NOTEST)
 
-ifeq ($(ARCHITECTURE_FAMILY),ia32)
-  CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2) $(CXX_OBJ_AVX512)
-else ifeq ($(ARCHITECTURE_FAMILY),x86_64)
-  CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2) $(CXX_OBJ_AVX512)
-else ifeq ($(ARCHITECTURE_FAMILY),arm32)
-  CXX_OBJ_EXT            += $(CXX_OBJ_ARM) $(CXX_OBJ_NEON_D32)
-else ifeq ($(ARCHITECTURE_FAMILY),aarch64)
-  CXX_OBJ_EXT            += $(CXX_OBJ_AARCH64) $(CXX_OBJ_ASIMD)
+ifneq ($(BUILD_HOST),1)
+  ifeq ($(ARCHITECTURE_FAMILY),ia32)
+    CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2) $(CXX_OBJ_AVX512)
+  else ifeq ($(ARCHITECTURE_FAMILY),x86_64)
+    CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2) $(CXX_OBJ_AVX512)
+  else ifeq ($(ARCHITECTURE_FAMILY),arm32)
+    CXX_OBJ_EXT            += $(CXX_OBJ_ARM) $(CXX_OBJ_NEON_D32)
+  else ifeq ($(ARCHITECTURE_FAMILY),aarch64)
+    CXX_OBJ_EXT            += $(CXX_OBJ_AARCH64) $(CXX_OBJ_ASIMD)
+  endif
 endif
 
 ALL_HEADERS             = $(call rwildcard, $(ARTIFACT_INC), *.h)
