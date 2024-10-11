@@ -1,6 +1,6 @@
 #
-# Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
-#           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+# Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+#           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
 #
 # This file is part of lsp-dsp-lib
 #
@@ -97,16 +97,14 @@ CXX_OBJ_ALL             = \
   $(CXX_OBJ_TEST) \
   $(CXX_OBJ_NOTEST)
 
-ifneq ($(BUILD_HOST),1)
-  ifeq ($(ARCHITECTURE_FAMILY),ia32)
-    CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2) $(CXX_OBJ_AVX512)
-  else ifeq ($(ARCHITECTURE_FAMILY),x86_64)
-    CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2) $(CXX_OBJ_AVX512)
-  else ifeq ($(ARCHITECTURE_FAMILY),arm32)
-    CXX_OBJ_EXT            += $(CXX_OBJ_ARM) $(CXX_OBJ_NEON_D32)
-  else ifeq ($(ARCHITECTURE_FAMILY),aarch64)
-    CXX_OBJ_EXT            += $(CXX_OBJ_AARCH64) $(CXX_OBJ_ASIMD)
-  endif
+ifeq ($($(HOST)ARCHITECTURE_FAMILY),ia32)
+  CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2) $(CXX_OBJ_AVX512)
+else ifeq ($($(HOST)ARCHITECTURE_FAMILY),x86_64)
+  CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2) $(CXX_OBJ_AVX512)
+else ifeq ($($(HOST)ARCHITECTURE_FAMILY),arm32)
+  CXX_OBJ_EXT            += $(CXX_OBJ_ARM) $(CXX_OBJ_NEON_D32)
+else ifeq ($($(HOST)ARCHITECTURE_FAMILY),aarch64)
+  CXX_OBJ_EXT            += $(CXX_OBJ_AARCH64) $(CXX_OBJ_ASIMD)
 endif
 
 ALL_HEADERS             = $(call rwildcard, $(ARTIFACT_INC), *.h)
@@ -151,7 +149,7 @@ compile: $(ARTIFACT_OBJ)
 $(CXX_OBJ_ALL):
 	echo "  $($(HOST)CXX)  [$(ARTIFACT_NAME)] $(CXX_FILE)"
 	mkdir -p $(dir $@)
-	$($(HOST)CXX) -o $(@) -c $(CXX_FILE) -fPIC $($(HOST)CXXFLAGS) $(ARTIFACT_MFLAGS) $($(HOST)EXT_FLAGS) $(INCLUDE) $(ARTIFACT_CFLAGS) -MMD -MP -MF $(DEP_FILE) -MT $(@)
+	$($(HOST)CXX) -o $(@) -c $(CXX_FILE) -fPIC $($(HOST)CXXFLAGS) $(ARTIFACT_MFLAGS) $(EXT_FLAGS) $(INCLUDE) $(ARTIFACT_CFLAGS) -MMD -MP -MF $(DEP_FILE) -MT $(@)
 	
 # Producing large object files
 $(ARTIFACT_OBJ): $(CXX_OBJ)

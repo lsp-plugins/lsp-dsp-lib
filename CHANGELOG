@@ -2,6 +2,10 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.27 ===
+* Updated build scripts.
+* Updated module versions in dependencies.
+
 === 1.0.26 ===
 * Updated build scripts.
 * Updated module versions in dependencies.
