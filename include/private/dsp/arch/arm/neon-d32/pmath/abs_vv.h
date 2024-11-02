@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -163,6 +163,34 @@ namespace lsp
             ARCH_ARM_ASM
             (
                 ABS_VV2_CORE("dst", "src", "vmul", OP_DSEL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+            );
+        }
+
+        void abs_max2(float *dst, const float *src, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                ABS_VV2_CORE("dst", "src", "vmax", OP_DSEL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+            );
+        }
+
+        void abs_min2(float *dst, const float *src, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                ABS_VV2_CORE("dst", "src", "vmin", OP_DSEL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 :
@@ -435,6 +463,35 @@ namespace lsp
                   "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
             );
         }
+
+        void abs_max3(float *dst, const float *src1, const float *src2, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                ABS_VV3_CORE("dst", "src1", "src2", "vmax", OP_DSEL)
+                : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+            );
+        }
+
+        void abs_min3(float *dst, const float *src1, const float *src2, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                ABS_VV3_CORE("dst", "src1", "src2", "vmin", OP_DSEL)
+                : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+            );
+        }
+
     #undef ABS_VV3_CORE
 
     #define ABS_DIV3_CORE(DST, SRC1, SRC2, SEL)   \
@@ -702,7 +759,7 @@ namespace lsp
                   "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7"
             );
         }
-    }
-}
+    } /* namespace neon_d32 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_PMATH_ABS_VV_H_ */
