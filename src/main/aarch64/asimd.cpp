@@ -264,6 +264,8 @@
                 EXPORT1(abs_mul2);
                 EXPORT1(abs_div2);
                 EXPORT1(abs_rdiv2);
+                EXPORT1(abs_max2);
+                EXPORT1(abs_min2);
 
                 EXPORT1(abs_add3);
                 EXPORT1(abs_sub3);
@@ -271,6 +273,8 @@
                 EXPORT1(abs_mul3);
                 EXPORT1(abs_div3);
                 EXPORT1(abs_rdiv3);
+                EXPORT1(abs_max3);
+                EXPORT1(abs_min3);
 
                 EXPORT1(h_sum);
                 EXPORT1(h_sqr_sum);

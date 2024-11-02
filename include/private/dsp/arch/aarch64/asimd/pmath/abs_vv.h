@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -324,59 +324,87 @@ namespace lsp
 
         void abs_add2(float *dst, const float *src, size_t count)
         {
-           ARCH_AARCH64_ASM
-           (
-               OP_ABS_VV2_CORE("dst", "src", "fadd", OP_DSEL)
-               : [dst] "+r" (dst), [src] "+r" (src),
-                 [count] "+r" (count)
-               :
-               : "cc", "memory",
-                 "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
-                 "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
-           );
-       }
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_VV2_CORE("dst", "src", "fadd", OP_DSEL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
+            );
+        }
 
-       void abs_sub2(float *dst, const float *src, size_t count)
-       {
-           ARCH_AARCH64_ASM
-           (
-               OP_ABS_VV2_CORE("dst", "src", "fsub", OP_DSEL)
-               : [dst] "+r" (dst), [src] "+r" (src),
-                 [count] "+r" (count)
-               :
-               : "cc", "memory",
-                 "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
-                 "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
-           );
-       }
+        void abs_sub2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_VV2_CORE("dst", "src", "fsub", OP_DSEL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
+            );
+        }
 
-       void abs_rsub2(float *dst, const float *src, size_t count)
-       {
-           ARCH_AARCH64_ASM
-           (
-               OP_ABS_VV2_CORE("dst", "src", "fsub", OP_RSEL)
-               : [dst] "+r" (dst), [src] "+r" (src),
-                 [count] "+r" (count)
-               :
-               : "cc", "memory",
-                 "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
-                 "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
-           );
-       }
+        void abs_rsub2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_VV2_CORE("dst", "src", "fsub", OP_RSEL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
+            );
+        }
 
-       void abs_mul2(float *dst, const float *src, size_t count)
-       {
-           ARCH_AARCH64_ASM
-           (
-               OP_ABS_VV2_CORE("dst", "src", "fmul", OP_DSEL)
-               : [dst] "+r" (dst), [src] "+r" (src),
-                 [count] "+r" (count)
-               :
-               : "cc", "memory",
-                 "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
-                 "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
-           );
-       }
+        void abs_mul2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_VV2_CORE("dst", "src", "fmul", OP_DSEL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
+            );
+        }
+
+        void abs_max2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_VV2_CORE("dst", "src", "fmax", OP_DSEL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
+            );
+        }
+
+        void abs_min2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_VV2_CORE("dst", "src", "fmin", OP_DSEL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
+            );
+        }
 
     #undef OP_ABS_VV2_CORE
 
@@ -485,35 +513,35 @@ namespace lsp
         __ASM_EMIT("bge         7b") \
         __ASM_EMIT("8:")
 
-       void abs_div2(float *dst, const float *src, size_t count)
-       {
-           ARCH_AARCH64_ASM
-           (
-               OP_ABS_DIV2_CORE("dst", "src", OP_DSEL)
-               : [dst] "+r" (dst), [src] "+r" (src),
-                 [count] "+r" (count)
-               :
-               : "cc", "memory",
-                 "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
-                 "v16", "v17", "v18", "v19",
-                 "v24", "v25", "v26", "v27"
-           );
-       }
+        void abs_div2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_DIV2_CORE("dst", "src", OP_DSEL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19",
+                  "v24", "v25", "v26", "v27"
+            );
+        }
 
-       void abs_rdiv2(float *dst, const float *src, size_t count)
-       {
-           ARCH_AARCH64_ASM
-           (
-               OP_ABS_DIV2_CORE("dst", "src", OP_RSEL)
-               : [dst] "+r" (dst), [src] "+r" (src),
-                 [count] "+r" (count)
-               :
-               : "cc", "memory",
-                 "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
-                 "v16", "v17", "v18", "v19",
-                 "v24", "v25", "v26", "v27"
-           );
-       }
+        void abs_rdiv2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_DIV2_CORE("dst", "src", OP_RSEL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19",
+                  "v24", "v25", "v26", "v27"
+            );
+        }
 
     #undef OP_ABS_DIV2_CORE
 
@@ -622,61 +650,89 @@ namespace lsp
         __ASM_EMIT("bge         9b") \
         __ASM_EMIT("10:")
 
-         void abs_add3(float *dst, const float *src1, const float *src2, size_t count)
-         {
-             ARCH_AARCH64_ASM
-             (
-                 OP_ABS_VV3_CORE("dst", "src1", "src2", "fadd", OP_DSEL)
-                 : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
-                   [count] "+r" (count)
-                 :
-                 : "cc", "memory",
-                   "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
-                   "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
-             );
-         }
+        void abs_add3(float *dst, const float *src1, const float *src2, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_VV3_CORE("dst", "src1", "src2", "fadd", OP_DSEL)
+                : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
+            );
+        }
 
-         void abs_sub3(float *dst, const float *src1, const float *src2, size_t count)
-         {
-             ARCH_AARCH64_ASM
-             (
-                 OP_ABS_VV3_CORE("dst", "src1", "src2", "fsub", OP_DSEL)
-                 : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
-                   [count] "+r" (count)
-                 :
-                 : "cc", "memory",
-                   "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
-                   "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
-             );
-         }
+        void abs_sub3(float *dst, const float *src1, const float *src2, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_VV3_CORE("dst", "src1", "src2", "fsub", OP_DSEL)
+                : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
+            );
+        }
 
-         void abs_rsub3(float *dst, const float *src1, const float *src2, size_t count)
-         {
-             ARCH_AARCH64_ASM
-             (
-                 OP_ABS_VV3_CORE("dst", "src1", "src2", "fsub", OP_RSEL)
-                 : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
-                   [count] "+r" (count)
-                 :
-                 : "cc", "memory",
-                   "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
-                   "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
-             );
-         }
+        void abs_rsub3(float *dst, const float *src1, const float *src2, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_VV3_CORE("dst", "src1", "src2", "fsub", OP_RSEL)
+                : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
+            );
+        }
 
-         void abs_mul3(float *dst, const float *src1, const float *src2, size_t count)
-         {
-             ARCH_AARCH64_ASM
-             (
-                 OP_ABS_VV3_CORE("dst", "src1", "src2", "fmul", OP_DSEL)
-                 : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
-                   [count] "+r" (count)
-                 :
-                 : "cc", "memory",
-                   "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
-                   "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
-             );
-         }
+        void abs_mul3(float *dst, const float *src1, const float *src2, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_VV3_CORE("dst", "src1", "src2", "fmul", OP_DSEL)
+                : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
+            );
+        }
+
+        void abs_max3(float *dst, const float *src1, const float *src2, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_VV3_CORE("dst", "src1", "src2", "fmax", OP_DSEL)
+                : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
+            );
+        }
+
+        void abs_min3(float *dst, const float *src1, const float *src2, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                OP_ABS_VV3_CORE("dst", "src1", "src2", "fmin", OP_DSEL)
+                : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
+                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
+            );
+        }
 
     #undef OP_ABS_VV3_CORE
 
@@ -823,7 +879,8 @@ namespace lsp
 
         #undef OP_DSEL
         #undef OP_RSEL
-    }
-}
+
+    } /* namespace asimd */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_PMATH_ABS_VV_H_ */
