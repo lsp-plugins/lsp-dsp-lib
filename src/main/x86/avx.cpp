@@ -258,6 +258,8 @@
                 CEXPORT2_X64(favx, abs_mul2, x64_abs_mul2);
                 CEXPORT2_X64(favx, abs_div2, x64_abs_div2);
                 CEXPORT2_X64(favx, abs_rdiv2, x64_abs_rdiv2);
+                CEXPORT2_X64(favx, abs_max2, x64_abs_max2);
+                CEXPORT2_X64(favx, abs_min2, x64_abs_min2);
 
                 CEXPORT2_X64(favx, abs_add3, x64_abs_add3);
                 CEXPORT2_X64(favx, abs_sub3, x64_abs_sub3);
@@ -265,6 +267,8 @@
                 CEXPORT2_X64(favx, abs_mul3, x64_abs_mul3);
                 CEXPORT2_X64(favx, abs_div3, x64_abs_div3);
                 CEXPORT2_X64(favx, abs_rdiv3, x64_abs_rdiv3);
+                CEXPORT2_X64(favx, abs_max3, x64_abs_max3);
+                CEXPORT2_X64(favx, abs_min3, x64_abs_min3);
 
                 CEXPORT2_X64(favx, abs1, x64_abs1);
                 CEXPORT2_X64(favx, abs2, x64_abs2);

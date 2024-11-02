@@ -38,6 +38,8 @@ namespace lsp
         void    abs_mul3(float *dst, const float *src1, const float *src2, size_t count);
         void    abs_div3(float *dst, const float *src1, const float *src2, size_t count);
         void    abs_rdiv3(float *dst, const float *src1, const float *src2, size_t count);
+        void    abs_max3(float *dst, const float *src1, const float *src2, size_t count);
+        void    abs_min3(float *dst, const float *src1, const float *src2, size_t count);
     }
 
     IF_ARCH_X86(
@@ -49,6 +51,8 @@ namespace lsp
             void    abs_mul3(float *dst, const float *src1, const float *src2, size_t count);
             void    abs_div3(float *dst, const float *src1, const float *src2, size_t count);
             void    abs_rdiv3(float *dst, const float *src1, const float *src2, size_t count);
+            void    abs_max3(float *dst, const float *src1, const float *src2, size_t count);
+            void    abs_min3(float *dst, const float *src1, const float *src2, size_t count);
         }
 
         namespace avx512
@@ -59,6 +63,8 @@ namespace lsp
             void    abs_mul3(float *dst, const float *src1, const float *src2, size_t count);
             void    abs_div3(float *dst, const float *src1, const float *src2, size_t count);
             void    abs_rdiv3(float *dst, const float *src1, const float *src2, size_t count);
+            void    abs_max3(float *dst, const float *src1, const float *src2, size_t count);
+            void    abs_min3(float *dst, const float *src1, const float *src2, size_t count);
         }
     )
 
@@ -71,6 +77,8 @@ namespace lsp
             void    x64_abs_mul3(float *dst, const float *src1, const float *src2, size_t count);
             void    x64_abs_div3(float *dst, const float *src1, const float *src2, size_t count);
             void    x64_abs_rdiv3(float *dst, const float *src1, const float *src2, size_t count);
+            void    x64_abs_max3(float *dst, const float *src1, const float *src2, size_t count);
+            void    x64_abs_min3(float *dst, const float *src1, const float *src2, size_t count);
         }
     )
 
@@ -83,6 +91,8 @@ namespace lsp
             void    abs_mul3(float *dst, const float *src1, const float *src2, size_t count);
             void    abs_div3(float *dst, const float *src1, const float *src2, size_t count);
             void    abs_rdiv3(float *dst, const float *src1, const float *src2, size_t count);
+            void    abs_max3(float *dst, const float *src1, const float *src2, size_t count);
+            void    abs_min3(float *dst, const float *src1, const float *src2, size_t count);
         }
     )
 
@@ -95,6 +105,8 @@ namespace lsp
             void    abs_mul3(float *dst, const float *src1, const float *src2, size_t count);
             void    abs_div3(float *dst, const float *src1, const float *src2, size_t count);
             void    abs_rdiv3(float *dst, const float *src1, const float *src2, size_t count);
+            void    abs_max3(float *dst, const float *src1, const float *src2, size_t count);
+            void    abs_min3(float *dst, const float *src1, const float *src2, size_t count);
         }
     )
 
@@ -183,6 +195,22 @@ PTEST_BEGIN("dsp.pmath", abs_op3, 5, 1000)
             IF_ARCH_X86(CALL(avx512::abs_rdiv3));
             IF_ARCH_ARM(CALL(neon_d32::abs_rdiv3));
             IF_ARCH_AARCH64(CALL(asimd::abs_rdiv3));
+            PTEST_SEPARATOR;
+
+            CALL(generic::abs_max3);
+            IF_ARCH_X86(CALL(sse::abs_max3));
+            IF_ARCH_X86_64(CALL(avx::x64_abs_max3));
+            IF_ARCH_X86(CALL(avx512::abs_max3));
+            IF_ARCH_ARM(CALL(neon_d32::abs_max3));
+            IF_ARCH_AARCH64(CALL(asimd::abs_max3));
+            PTEST_SEPARATOR;
+
+            CALL(generic::abs_min3);
+            IF_ARCH_X86(CALL(sse::abs_min3));
+            IF_ARCH_X86_64(CALL(avx::x64_abs_min3));
+            IF_ARCH_X86(CALL(avx512::abs_min3));
+            IF_ARCH_ARM(CALL(neon_d32::abs_min3));
+            IF_ARCH_AARCH64(CALL(asimd::abs_min3));
             PTEST_SEPARATOR2;
         }
 

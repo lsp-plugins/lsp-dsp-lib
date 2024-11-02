@@ -87,7 +87,7 @@ namespace lsp
         void abs_min2(float *dst, const float *src, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]      = lsp_max(dst[i], fabsf(src[i]));
+                dst[i]      = lsp_min(dst[i], fabsf(src[i]));
         }
 
         void abs_add3(float *dst, const float *src1, const float *src2, size_t count)

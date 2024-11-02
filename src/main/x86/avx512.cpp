@@ -95,6 +95,8 @@
                 CEXPORT1(vl, abs_mul2);
                 CEXPORT1(vl, abs_div2);
                 CEXPORT1(vl, abs_rdiv2);
+                CEXPORT1(vl, abs_max2);
+                CEXPORT1(vl, abs_min2);
 
                 CEXPORT1(vl, abs_add3);
                 CEXPORT1(vl, abs_sub3);
@@ -102,6 +104,8 @@
                 CEXPORT1(vl, abs_mul3);
                 CEXPORT1(vl, abs_div3);
                 CEXPORT1(vl, abs_rdiv3);
+                CEXPORT1(vl, abs_max3);
+                CEXPORT1(vl, abs_min3);
 
                 CEXPORT1(vl, exp1);
                 CEXPORT1(vl, exp2);
