@@ -347,6 +347,46 @@ namespace lsp
                 dst        += 2;
             }
         }
+
+        void pcomplex_corr(float *dst_corr, const float *src1, const float *src2, size_t count)
+        {
+            /*
+             * Complex correlation can be defined as:
+             *   corr = re(norm(S1) * conj(norm(S2)))
+             *
+             * if S1 = a + j*b, S2 = c + j*d, then:
+             *
+             *   corr = re((a + j*b) * (c - j*d)) / (sqrtf(a^2 + b^2) * sqrtf(c^2 + d^2))
+             *
+             * After simplifications:
+             *
+             *   corr = (a*c + b*d) / sqrtf((a^2 + b^2)*(c^2 + d^2))
+             *
+             * In programming terms:
+             *
+             *   den  = (a*a + b*b)*(c*c + d*d)
+             *   nom  = a*c + b*d
+             *   corr = (den > threshold) ? nom / sqrt(den) : 0.0
+             */
+
+            while (count--)
+            {
+                const float a   = src1[0];
+                const float b   = src1[1];
+                const float c   = src2[0];
+                const float d   = src2[1];
+
+                const float den = (a*a + b*b)*(c*c + d*d);
+                const float nom = a*c + b*d;
+
+                *dst_corr       = (den > 1e-20f) ? nom / sqrtf(den) : 0.0f;
+
+                src1           += 2;
+                src2           += 2;
+                ++dst_corr;
+            }
+        }
+
     } /* namespace generic */
 } /* namespace lsp */
 

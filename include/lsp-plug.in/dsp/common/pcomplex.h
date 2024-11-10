@@ -238,4 +238,13 @@ LSP_DSP_LIB_SYMBOL(void, pcomplex_r2c_div2, float *dst, const float *src, size_t
  */
 LSP_DSP_LIB_SYMBOL(void, pcomplex_r2c_rdiv2, float *dst, const float *src, size_t count);
 
+/** Compute complex correlation between two sources and store to the result array
+ *
+ * @param dst_corr array to store normalized correlation
+ * @param src1 set of complex numbers
+ * @param src2 set of complex numbers
+ * @param count count number of elements to process
+ */
+LSP_DSP_LIB_SYMBOL(void, pcomplex_corr, float *dst_corr, const float *src1, const float *src2, size_t count);
+
 #endif /* LSP_PLUG_IN_DSP_COMMON_PCOMPLEX_H_ */
