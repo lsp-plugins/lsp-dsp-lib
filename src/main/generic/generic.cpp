@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -74,6 +74,7 @@ namespace lsp
     #include <private/dsp/arch/generic/msmatrix.h>
     #include <private/dsp/arch/generic/smath.h>
     #include <private/dsp/arch/generic/mix.h>
+    #include <private/dsp/arch/generic/pan.h>
     #include <private/dsp/arch/generic/3dmath.h>
 
     #include <private/dsp/arch/generic/coding.h>
@@ -297,6 +298,9 @@ namespace lsp
             EXPORT1(mix4);
             EXPORT1(mix_copy4);
             EXPORT1(mix_add4);
+
+            EXPORT1(depan_lin);
+            EXPORT1(depan_panl);
 
             EXPORT1(reverse1);
             EXPORT1(reverse2);
