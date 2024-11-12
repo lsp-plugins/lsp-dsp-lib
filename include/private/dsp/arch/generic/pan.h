@@ -33,26 +33,25 @@ namespace lsp
 {
     namespace generic
     {
-
-        void depan_lin(float *dst, const float *l, const float *r, size_t count)
+        void depan_lin(float *dst, const float *l, const float *r, float dfl, size_t count)
         {
             for (size_t i=0; i<count; ++i)
             {
                 const float sl  = fabsf(l[i]);
                 const float sr  = fabsf(r[i]);
                 const float den = sl + sr;
-                dst[i]          = (den > 1e-5f) ? sr / den : 0.5f;
+                dst[i]          = (den > 1e-5f) ? sr / den : dfl;
             }
         }
 
-        void depan_panl(float *dst, const float *l, const float *r, size_t count)
+        void depan_eqpow(float *dst, const float *l, const float *r, float dfl, size_t count)
         {
             for (size_t i=0; i<count; ++i)
             {
                 const float sl  = l[i] * l[i];
                 const float sr  = r[i] * r[i];
                 const float den = sl + sr;
-                dst[i]          = (den > 1e-10f) ? sr / den : 0.5f;
+                dst[i]          = (den > 1e-10f) ? sr / den : dfl;
             }
         }
 

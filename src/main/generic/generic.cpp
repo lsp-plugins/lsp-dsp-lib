@@ -300,7 +300,7 @@ namespace lsp
             EXPORT1(mix_add4);
 
             EXPORT1(depan_lin);
-            EXPORT1(depan_panl);
+            EXPORT1(depan_eqpow);
 
             EXPORT1(reverse1);
             EXPORT1(reverse2);

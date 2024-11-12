@@ -25,25 +25,38 @@
 #include <lsp-plug.in/dsp/common/types.h>
 
 /**
- * Calculate the linear panorama position between left and right channels:
+ * Definition for the panorama calulation function
+ *
+ * @param dst destination buffer to store value
+ * @param l left channel data
+ * @param r right channel data
+ * @param dfl default value if it is not possible to compute panorama
+ * @param count number of samples to process
+ */
+typedef void (* LSP_DSP_LIB_TYPE(depan_t))(float *dst, const float *l, const float *r, float dfl, size_t count);
+
+/**
+ * Calculate the linear pan law panorama position between left and right channels:
  *   pan = abs(R) / (abs(L) + abs(R))
  *
  * @param dst destination buffer to store value
  * @param l left channel data
  * @param r right channel data
+ * @param dfl default value if it is not possible to compute panorama
  * @param count number of samples to process
  */
-LSP_DSP_LIB_SYMBOL(void, depan_lin, float *dst, const float *l, const float *r, size_t count);
+LSP_DSP_LIB_SYMBOL(void, depan_lin, float *dst, const float *l, const float *r, float dfl, size_t count);
 
 /**
- * Calculate the pan-law (quadratic) panorama position between left and right channels:
+ * Calculate the equal power pan law (quadratic) panorama position between left and right channels:
  *   pan = R^2 / (L^2 + R^2)
  *
  * @param dst destination buffer to store value
  * @param l left channel data
  * @param r right channel data
+ * @param dfl default value if it is not possible to compute panorama
  * @param count number of samples to process
  */
-LSP_DSP_LIB_SYMBOL(void, depan_panl, float *dst, const float *l, const float *r, size_t count);
+LSP_DSP_LIB_SYMBOL(void, depan_eqpow, float *dst, const float *l, const float *r, float dfl, size_t count);
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_PAN_H_ */
