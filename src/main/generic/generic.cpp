@@ -190,8 +190,11 @@ namespace lsp
             EXPORT1(max);
             EXPORT1(abs_max);
             EXPORT1(abs_min);
+            EXPORT1(sign_max);
+            EXPORT1(sign_min);
             EXPORT1(minmax);
             EXPORT1(abs_minmax);
+            EXPORT1(sign_minmax);
 
             EXPORT1(min_index);
             EXPORT1(max_index);

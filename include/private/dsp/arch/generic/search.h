@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -65,10 +65,10 @@ namespace lsp
             if (count == 0)
                 return 0.0f;
 
-            float min = fabs(src[0]);
+            float min = fabsf(src[0]);
             for (size_t i=1; i<count; ++i)
             {
-                float tmp = fabs(src[i]);
+                float tmp = fabsf(src[i]);
                 if (tmp < min)
                     min     = tmp;
             }
@@ -80,14 +80,54 @@ namespace lsp
             if (count == 0)
                 return 0.0f;
 
-            float max = fabs(src[0]);
+            float max = fabsf(src[0]);
             for (size_t i=1; i<count; ++i)
             {
-                float tmp = fabs(src[i]);
+                float tmp = fabsf(src[i]);
                 if (tmp > max)
                     max     = tmp;
             }
             return max;
+        }
+
+        float sign_min(const float *src, size_t count)
+        {
+            if (count == 0)
+                return 0.0f;
+
+            float vmin  = src[0];
+            float amin  = fabsf(vmin);
+            for (size_t i=1; i<count; ++i)
+            {
+                float vtmp  = src[i];
+                float atmp  = fabsf(vtmp);
+                if (atmp < amin)
+                {
+                    vmin        = vtmp;
+                    amin        = atmp;
+                }
+            }
+            return vmin;
+        }
+
+        float sign_max(const float *src, size_t count)
+        {
+            if (count == 0)
+                return 0.0f;
+
+            float vmax  = src[0];
+            float amax  = fabsf(vmax);
+            for (size_t i=1; i<count; ++i)
+            {
+                float vtmp  = src[i];
+                float atmp  = fabsf(vtmp);
+                if (atmp > amax)
+                {
+                    vmax        = vtmp;
+                    amax        = atmp;
+                }
+            }
+            return vmax;
         }
 
         void minmax(const float *src, size_t count, float *min, float *max)
@@ -121,11 +161,11 @@ namespace lsp
                 return;
             }
 
-            float a_min = fabs(src[0]), a_max = fabs(src[0]);
+            float a_min = fabsf(src[0]), a_max = fabsf(src[0]);
 
             for (size_t i=1; i<count; ++i)
             {
-                float tmp   = fabs(src[i]);
+                float tmp   = fabsf(src[i]);
                 if (tmp < a_min)
                     a_min       = tmp;
                 if (tmp > a_max)
@@ -133,6 +173,38 @@ namespace lsp
             }
             *min    = a_min;
             *max    = a_max;
+        }
+
+        void sign_minmax(const float *src, size_t count, float *min, float *max)
+        {
+            if (count == 0)
+            {
+                *min    = 0.0f;
+                *max    = 0.0f;
+                return;
+            }
+
+            float vmin = src[0], vmax = src[0];
+            float amin = fabsf(vmin), amax = fabsf(vmax);
+
+            for (size_t i=1; i<count; ++i)
+            {
+                float vtmp  = src[i];
+                float atmp  = fabsf(vtmp);
+
+                if (atmp < amin)
+                {
+                    vmin        = vtmp;
+                    amin        = atmp;
+                }
+                if (vtmp > amax)
+                {
+                    vmax        = vtmp;
+                    amax        = atmp;
+                }
+            }
+            *min    = vmin;
+            *max    = vmax;
         }
 
         size_t min_index(const float *src, size_t count)
@@ -179,10 +251,10 @@ namespace lsp
                 return 0;
 
             size_t index = 0;
-            float s = fabs(src[0]);
+            float s = fabsf(src[0]);
             for (size_t i=1; i<count; ++i)
             {
-                float d = fabs(src[i]);
+                float d = fabsf(src[i]);
                 if (d < s)
                 {
                     index   = i;
@@ -198,10 +270,10 @@ namespace lsp
                 return 0;
 
             size_t index = 0;
-            float s = fabs(src[0]);
+            float s = fabsf(src[0]);
             for (size_t i=1; i<count; ++i)
             {
-                float d = fabs(src[i]);
+                float d = fabsf(src[i]);
                 if (d > s)
                 {
                     index   = i;
@@ -244,12 +316,12 @@ namespace lsp
             size_t imin = 0, imax = 0;
             if (count > 0)
             {
-                float vmin = fabs(src[0]);
+                float vmin = fabsf(src[0]);
                 float vmax = vmin;
 
                 for (size_t i=1; i<count; ++i)
                 {
-                    float v = fabs(src[i]);
+                    float v = fabsf(src[i]);
                     if (v < vmin)
                     {
                         imin    = i;
@@ -266,7 +338,8 @@ namespace lsp
             *min = imin;
             *max = imax;
         }
-    }
-}
+
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_SEARCH_H_ */

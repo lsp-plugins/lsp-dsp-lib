@@ -4,6 +4,7 @@
 
 === 1.0.28 ===
 * Implemented abs_max2, abs_min2, abs_max3 and abs_min3 functions.
+* Implemented sign_min, sign_max, sign_minmax functions.
 
 === 1.0.27 ===
 * Updated build scripts.
