@@ -1349,7 +1349,7 @@ namespace lsp
                 __ASM_EMIT("jae             1b")
                 /* x4 block */
                 __ASM_EMIT("2:")
-                __ASM_EMIT("add             $4, %[count]")                          /* count += 8 */
+                __ASM_EMIT("add             $4, %[count]")                          /* count += 4 */
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[src1], %[off], 2), %%xmm0")      /* xmm0  = a0 b0 a1 b1 */
                 __ASM_EMIT("vmovups         0x10(%[src1], %[off], 2), %%xmm4")      /* xmm4  = a2 b2 a3 b3 */
@@ -1377,7 +1377,7 @@ namespace lsp
                 __ASM_EMIT("vandps          %%xmm4, %%xmm0, %%xmm0")                /* xmm0  = (den >= threshold) ? nom / sqrt(den) : 0.0f */
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst], %[off])")          /* dst[0]  = v0 v1 v2 v3 v4 v5 v6 v7 */
                 __ASM_EMIT("add             $0x10, %[off]")
-                __ASM_EMIT("sub             $4, %[count]")                          /* count -= 8 */
+                __ASM_EMIT("sub             $4, %[count]")                          /* count -= 4 */
                 /* x1 blocks */
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add             $3, %[count]")                          /* count += 3 */
@@ -1469,7 +1469,7 @@ namespace lsp
                 __ASM_EMIT("jae             1b")
                 /* x4 block */
                 __ASM_EMIT("2:")
-                __ASM_EMIT("add             $4, %[count]")                          /* count += 8 */
+                __ASM_EMIT("add             $4, %[count]")                          /* count += 4 */
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmovups         0x00(%[src1], %[off], 2), %%xmm0")      /* xmm0  = a0 b0 a1 b1 */
                 __ASM_EMIT("vmovups         0x10(%[src1], %[off], 2), %%xmm4")      /* xmm4  = a2 b2 a3 b3 */
@@ -1494,7 +1494,7 @@ namespace lsp
                 __ASM_EMIT("vandps          %%xmm4, %%xmm0, %%xmm0")                /* xmm0  = (den >= threshold) ? nom / sqrt(den) : 0.0f */
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst], %[off])")          /* dst[0]  = v0 v1 v2 v3 v4 v5 v6 v7 */
                 __ASM_EMIT("add             $0x10, %[off]")
-                __ASM_EMIT("sub             $4, %[count]")                          /* count -= 8 */
+                __ASM_EMIT("sub             $4, %[count]")                          /* count -= 4 */
                 /* x1 blocks */
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add             $3, %[count]")                          /* count += 3 */

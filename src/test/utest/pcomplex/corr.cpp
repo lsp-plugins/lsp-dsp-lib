@@ -44,7 +44,7 @@ namespace lsp
 
         namespace avx512
         {
-//            void pcomplex_corr(float *dst_corr, const float *src1, const float *src2, size_t count);
+            void pcomplex_corr(float *dst_corr, const float *src1, const float *src2, size_t count);
         }
     )
 
@@ -96,6 +96,15 @@ UTEST_BEGIN("dsp.pcomplex", corr)
                 FloatBuffer src2(count*2, align, mask & 0x02);
                 src2.randomize_sign();
 
+                // Special case: orthogonal values, correlation == 0
+                if (count >= 4)
+                {
+                    src1[0] = 1.0f;
+                    src1[1] = 0.0f;
+                    src2[0] = 0.0f;
+                    src2[1] = 1.0f;
+                }
+
                 // Call functions
                 func1(dst1, src1, src2, count);
                 func2(dst2, src1, src2, count);
@@ -125,7 +134,7 @@ UTEST_BEGIN("dsp.pcomplex", corr)
         IF_ARCH_X86_64(CALL(sse3::x64_pcomplex_corr, 16));
         IF_ARCH_X86(CALL(avx::pcomplex_corr, 32));
         IF_ARCH_X86(CALL(avx::pcomplex_corr_fma3, 32));
-//        IF_ARCH_X86(CALL(avx512::pcomplex_corr, 64));
+        IF_ARCH_X86(CALL(avx512::pcomplex_corr, 64));
 //        IF_ARCH_ARM(CALL(neon_d32::pcomplex_corr, 16));
 //        IF_ARCH_AARCH64(CALL(asimd::pcomplex_corr, 16));
     }

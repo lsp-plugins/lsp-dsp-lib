@@ -264,6 +264,7 @@
                 CEXPORT1(vl, pcomplex_r2c_mul2);
                 CEXPORT1(vl, pcomplex_r2c_div2);
                 CEXPORT1(vl, pcomplex_c2r);
+                CEXPORT1(vl, pcomplex_corr);
 
                 CEXPORT1(vl, min);
                 CEXPORT1(vl, max);
