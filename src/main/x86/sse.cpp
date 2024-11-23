@@ -318,6 +318,7 @@
                 EXPORT1(pcomplex_r2c);
                 EXPORT1(pcomplex_c2r);
                 EXPORT1(pcomplex_mod);
+                EXPORT1(pcomplex_corr);
         //            EXPORT1(complex_cvt2modarg);
         //            EXPORT1(complex_cvt2reim);
 
