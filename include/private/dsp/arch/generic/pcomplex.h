@@ -379,7 +379,7 @@ namespace lsp
                 const float den = (a*a + b*b)*(c*c + d*d);
                 const float nom = a*c + b*d;
 
-                *dst_corr       = (den > 1e-20f) ? nom / sqrtf(den) : 0.0f;
+                *dst_corr       = (den >= 1e-36f) ? nom / sqrtf(den) : 0.0f;
 
                 src1           += 2;
                 src2           += 2;

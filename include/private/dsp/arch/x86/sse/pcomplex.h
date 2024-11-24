@@ -1254,7 +1254,7 @@ namespace lsp
         IF_ARCH_X86(
             static const float pcomplex_corr_const[] __lsp_aligned16 =
             {
-                LSP_DSP_VEC4(1e-20f),
+                LSP_DSP_VEC4(1e-36f),
             };
         );
 

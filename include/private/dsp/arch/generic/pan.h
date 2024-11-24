@@ -40,7 +40,7 @@ namespace lsp
                 const float sl  = fabsf(l[i]);
                 const float sr  = fabsf(r[i]);
                 const float den = sl + sr;
-                dst[i]          = (den > 1e-5f) ? sr / den : dfl;
+                dst[i]          = (den > 1e-18f) ? sr / den : dfl;
             }
         }
 
@@ -51,7 +51,7 @@ namespace lsp
                 const float sl  = l[i] * l[i];
                 const float sr  = r[i] * r[i];
                 const float den = sl + sr;
-                dst[i]          = (den > 1e-10f) ? sr / den : dfl;
+                dst[i]          = (den > 1e-36f) ? sr / den : dfl;
             }
         }
 

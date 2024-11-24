@@ -1290,7 +1290,7 @@ namespace lsp
         IF_ARCH_X86(
             static const float pcomplex_corr_const[] __lsp_aligned32 =
             {
-                LSP_DSP_VEC8(1e-20f),
+                LSP_DSP_VEC8(1e-36f),
             };
         );
 
@@ -1308,7 +1308,7 @@ namespace lsp
                 __ASM_EMIT("xor             %[off], %[off]")
                 /* x8 blocks */
                 __ASM_EMIT("sub             $8, %[count]")                          /* count -= 8 */
-                __ASM_EMIT("movaps          %[CC], %%xmm7")                         /* xmm7  = threshold */
+                __ASM_EMIT("vmovaps         %[CC], %%ymm7")                         /* ymm7  = threshold */
                 __ASM_EMIT("jb              2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vmovups         0x00(%[src1], %[off], 2), %%xmm0")      /* xmm0  = a0 b0 a1 b1 */
@@ -1431,7 +1431,7 @@ namespace lsp
                 __ASM_EMIT("xor             %[off], %[off]")
                 /* x8 blocks */
                 __ASM_EMIT("sub             $8, %[count]")                          /* count -= 8 */
-                __ASM_EMIT("movaps          %[CC], %%xmm7")                         /* xmm7  = threshold */
+                __ASM_EMIT("vmovaps         %[CC], %%ymm7")                         /* ymm7  = threshold */
                 __ASM_EMIT("jb              2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vmovups         0x00(%[src1], %[off], 2), %%xmm0")      /* xmm0  = a0 b0 a1 b1 */
