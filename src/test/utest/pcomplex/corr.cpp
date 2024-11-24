@@ -65,7 +65,7 @@ namespace lsp
     IF_ARCH_AARCH64(
         namespace asimd
         {
-//            void pcomplex_corr(float *dst_corr, const float *src1, const float *src2, size_t count);
+            void pcomplex_corr(float *dst_corr, const float *src1, const float *src2, size_t count);
         }
     )
 
@@ -136,7 +136,7 @@ UTEST_BEGIN("dsp.pcomplex", corr)
         IF_ARCH_X86(CALL(avx::pcomplex_corr_fma3, 32));
         IF_ARCH_X86(CALL(avx512::pcomplex_corr, 64));
         IF_ARCH_ARM(CALL(neon_d32::pcomplex_corr, 16));
-//        IF_ARCH_AARCH64(CALL(asimd::pcomplex_corr, 16));
+        IF_ARCH_AARCH64(CALL(asimd::pcomplex_corr, 16));
     }
 
 UTEST_END;

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -1651,6 +1651,137 @@ namespace lsp
                   // "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", // Avoid usage if possible
                   "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
                   "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31"
+            );
+        }
+
+        IF_ARCH_AARCH64(
+            static float pcomplex_corr_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(1e-20f),
+                LSP_DSP_VEC4(1e-20f)
+            };
+        );
+
+        void pcomplex_corr(float *dst_corr, const float *src1, const float *src2, size_t count)
+        {
+            /*
+             * src1[i] = a + j*b, src2[i] = c + j*d
+             * den  = (a*a + b*b)*(c*c + d*d)
+             * nom  = a*c + b*d
+             * corr[i] = (den > threshold) ? nom / sqrt(den) : 0.0
+             */
+            ARCH_AARCH64_ASM
+            (
+                // x8 blocks
+                __ASM_EMIT("ldp             q14, q15, [%[CC]]")                 /* v14-v15 = threshold */
+                __ASM_EMIT("subs            %[count], %[count], #8")
+                __ASM_EMIT("b.lo            2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("ld2             {v0.4s, v1.4s}, [%[src1]], #0x20")  /* v0   = A0, v1 = B0 */
+                __ASM_EMIT("ld2             {v2.4s, v3.4s}, [%[src2]], #0x20")  /* v2   = C0, v3 = D0 */
+                __ASM_EMIT("ld2             {v4.4s, v5.4s}, [%[src1]], #0x20")  /* v4   = A1, v5 = B1 */
+                __ASM_EMIT("ld2             {v6.4s, v7.4s}, [%[src2]], #0x20")  /* v6   = C1, v7 = D1 */
+                __ASM_EMIT("fmul            v8.4s, v0.4s, v2.4s")               /* v8   = A0*C0 */
+                __ASM_EMIT("fmul            v9.4s, v4.4s, v6.4s")               /* v9   = A1*C1 */
+                __ASM_EMIT("fmul            v10.4s, v0.4s, v0.4s")              /* v10  = A0*A0 */
+                __ASM_EMIT("fmul            v11.4s, v4.4s, v4.4s")              /* v11  = A1*A1 */
+                __ASM_EMIT("fmul            v12.4s, v2.4s, v2.4s")              /* v12  = C0*C0 */
+                __ASM_EMIT("fmul            v13.4s, v6.4s, v6.4s")              /* v13  = C1*C1 */
+                __ASM_EMIT("fmla            v8.4s, v1.4s, v3.4s")               /* v8   = nom0 = A0*C0 + B0*D0 */
+                __ASM_EMIT("fmla            v9.4s, v5.4s, v7.4s")               /* v9   = nom1 = A1*C1 + B1*D1 */
+                __ASM_EMIT("fmla            v10.4s, v1.4s, v1.4s")              /* v10  = A0*A0 + B0*B0 */
+                __ASM_EMIT("fmla            v11.4s, v5.4s, v5.4s")              /* v11  = A1*A1 + B1*B1 */
+                __ASM_EMIT("fmla            v12.4s, v3.4s, v3.4s")              /* v12  = C0*C0 + D0*D0 */
+                __ASM_EMIT("fmla            v13.4s, v7.4s, v7.4s")              /* v13  = C1*C1 + D1*D1 */
+                __ASM_EMIT("fmul            v0.4s, v10.4s, v12.4s")             /* v0   = den0 = (A0*A0 + B0*B0)*(C0*C0 + D0*D0) */
+                __ASM_EMIT("fmul            v1.4s, v11.4s, v13.4s")             /* v1   = den1 = (A1*A1 + B1*B1)*(C1*C1 + D1*D1) */
+                __ASM_EMIT("frsqrte         v2.4s, v0.4s")                      /* v2   = x0 */
+                __ASM_EMIT("frsqrte         v3.4s, v1.4s")
+                __ASM_EMIT("fmul            v4.4s, v2.4s, v0.4s")               /* v4   = R * x0 */
+                __ASM_EMIT("fmul            v5.4s, v3.4s, v1.4s")
+                __ASM_EMIT("frsqrts         v6.4s, v4.4s, v2.4s")               /* v6   = (3 - R * x0 * x0) / 2 */
+                __ASM_EMIT("frsqrts         v7.4s, v5.4s, v3.4s")
+                __ASM_EMIT("fmul            v2.4s, v2.4s, v6.4s")               /* v2   = x1 = x0 * (3 - R * x0 * x0) / 2 */
+                __ASM_EMIT("fmul            v3.4s, v3.4s, v7.4s")
+                __ASM_EMIT("fmul            v4.4s, v2.4s, v0.4s")               /* v4   = R * x1 */
+                __ASM_EMIT("fmul            v5.4s, v3.4s, v1.4s")
+                __ASM_EMIT("frsqrts         v6.4s, v4.4s, v2.4s")               /* v6    = (3 - R * x1 * x1) / 2 */
+                __ASM_EMIT("frsqrts         v7.4s, v5.4s, v3.4s")
+                __ASM_EMIT("fmul            v2.4s, v2.4s, v6.4s")               /* v2    = 1/den0 = x1 * (3 - R * x1 * x1) / 2 */
+                __ASM_EMIT("fmul            v3.4s, v3.4s, v7.4s")               /* v3    = 1/den1 */
+                __ASM_EMIT("fcmge           v0.4s, v0.4s, v14.4s")              /* v0    = (den0 >= threshold) */
+                __ASM_EMIT("fcmge           v1.4s, v1.4s, v15.4s")              /* v1    = (den1 >= threshold) */
+                __ASM_EMIT("fmul            v2.4s, v2.4s, v8.4s")               /* v2    = nom0/den0 */
+                __ASM_EMIT("fmul            v3.4s, v3.4s, v9.4s")               /* v3    = nom1/den1 */
+                __ASM_EMIT("and             v0.16b, v0.16b, v2.16b")            /* v0    = (den0 >= threshold) ? nom0/den0 : 0.0f */
+                __ASM_EMIT("and             v1.16b, v1.16b, v3.16b")            /* v1    = (den1 >= threshold) ? nom1/den1 : 0.0f */
+                __ASM_EMIT("stp             q0, q1, [%[dst]]")
+                __ASM_EMIT("subs            %[count], %[count], #8")
+                __ASM_EMIT("add             %[dst], %[dst], #0x20")
+                __ASM_EMIT("b.hs            1b")
+                // x4 block
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds            %[count], %[count], #4")
+                __ASM_EMIT("b.lt            4f")
+                __ASM_EMIT("ld2             {v0.4s, v1.4s}, [%[src1]], #0x20")  /* v0   = A0, v1 = B0 */
+                __ASM_EMIT("ld2             {v2.4s, v3.4s}, [%[src2]], #0x20")  /* v2   = C0, v3 = D0 */
+                __ASM_EMIT("fmul            v8.4s, v0.4s, v2.4s")               /* v8   = A0*C0 */
+                __ASM_EMIT("fmul            v10.4s, v0.4s, v0.4s")              /* v10  = A0*A0 */
+                __ASM_EMIT("fmul            v12.4s, v2.4s, v2.4s")              /* v12  = C0*C0 */
+                __ASM_EMIT("fmla            v8.4s, v1.4s, v3.4s")               /* v8   = nom0 = A0*C0 + B0*D0 */
+                __ASM_EMIT("fmla            v10.4s, v1.4s, v1.4s")              /* v10  = A0*A0 + B0*B0 */
+                __ASM_EMIT("fmla            v12.4s, v3.4s, v3.4s")              /* v12  = C0*C0 + D0*D0 */
+                __ASM_EMIT("fmul            v0.4s, v10.4s, v12.4s")             /* v0   = den0 = (A0*A0 + B0*B0)*(C0*C0 + D0*D0) */
+                __ASM_EMIT("frsqrte         v2.4s, v0.4s")                      /* v2   = x0 */
+                __ASM_EMIT("fmul            v4.4s, v2.4s, v0.4s")               /* v4   = R * x0 */
+                __ASM_EMIT("frsqrts         v6.4s, v4.4s, v2.4s")               /* v6   = (3 - R * x0 * x0) / 2 */
+                __ASM_EMIT("fmul            v2.4s, v2.4s, v6.4s")               /* v2   = x1 = x0 * (3 - R * x0 * x0) / 2 */
+                __ASM_EMIT("fmul            v4.4s, v2.4s, v0.4s")               /* v4   = R * x1 */
+                __ASM_EMIT("frsqrts         v6.4s, v4.4s, v2.4s")               /* v6    = (3 - R * x1 * x1) / 2 */
+                __ASM_EMIT("fmul            v2.4s, v2.4s, v6.4s")               /* v2    = 1/den0 = x1 * (3 - R * x1 * x1) / 2 */
+                __ASM_EMIT("fcmge           v0.4s, v0.4s, v14.4s")              /* v0    = (den0 >= threshold) */
+                __ASM_EMIT("fmul            v2.4s, v2.4s, v8.4s")               /* v2    = nom0/den0 */
+                __ASM_EMIT("and             v0.16b, v0.16b, v2.16b")            /* v0    = (den0 >= threshold) ? nom0/den0 : 0.0f */
+                __ASM_EMIT("str             q0, [%[dst]]")
+                __ASM_EMIT("sub             %[count], %[count], #4")
+                __ASM_EMIT("add             %[dst], %[dst], #0x10")
+                // x1 blocks
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds            %[count], %[count], #3")
+                __ASM_EMIT("b.lt            6f")
+                __ASM_EMIT("5:")
+                __ASM_EMIT("ld2r            {v0.4s, v1.4s}, [%[src1]], #0x08")  /* v0   = A0, v1 = B0 */
+                __ASM_EMIT("ld2r            {v2.4s, v3.4s}, [%[src2]], #0x08")  /* v2   = C0, v3 = D0 */
+                __ASM_EMIT("fmul            v8.4s, v0.4s, v2.4s")               /* v8   = A0*C0 */
+                __ASM_EMIT("fmul            v10.4s, v0.4s, v0.4s")              /* v10  = A0*A0 */
+                __ASM_EMIT("fmul            v12.4s, v2.4s, v2.4s")              /* v12  = C0*C0 */
+                __ASM_EMIT("fmla            v8.4s, v1.4s, v3.4s")               /* v8   = nom0 = A0*C0 + B0*D0 */
+                __ASM_EMIT("fmla            v10.4s, v1.4s, v1.4s")              /* v10  = A0*A0 + B0*B0 */
+                __ASM_EMIT("fmla            v12.4s, v3.4s, v3.4s")              /* v12  = C0*C0 + D0*D0 */
+                __ASM_EMIT("fmul            v0.4s, v10.4s, v12.4s")             /* v0   = den0 = (A0*A0 + B0*B0)*(C0*C0 + D0*D0) */
+                __ASM_EMIT("frsqrte         v2.4s, v0.4s")                      /* v2   = x0 */
+                __ASM_EMIT("fmul            v4.4s, v2.4s, v0.4s")               /* v4   = R * x0 */
+                __ASM_EMIT("frsqrts         v6.4s, v4.4s, v2.4s")               /* v6   = (3 - R * x0 * x0) / 2 */
+                __ASM_EMIT("fmul            v2.4s, v2.4s, v6.4s")               /* v2   = x1 = x0 * (3 - R * x0 * x0) / 2 */
+                __ASM_EMIT("fmul            v4.4s, v2.4s, v0.4s")               /* v4   = R * x1 */
+                __ASM_EMIT("frsqrts         v6.4s, v4.4s, v2.4s")               /* v6    = (3 - R * x1 * x1) / 2 */
+                __ASM_EMIT("fmul            v2.4s, v2.4s, v6.4s")               /* v2    = 1/den0 = x1 * (3 - R * x1 * x1) / 2 */
+                __ASM_EMIT("fcmge           v0.4s, v0.4s, v14.4s")              /* v0    = (den0 >= threshold) */
+                __ASM_EMIT("fmul            v2.4s, v2.4s, v8.4s")               /* v2    = nom0/den0 */
+                __ASM_EMIT("and             v0.16b, v0.16b, v2.16b")            /* v0    = (den0 >= threshold) ? nom0/den0 : 0.0f */
+                __ASM_EMIT("subs            %[count], %[count], #1")
+                __ASM_EMIT("st1             {v0.s}[0], [%[dst]], #0x04")
+                __ASM_EMIT("b.ge            5b")
+                // End
+                __ASM_EMIT("6:")
+
+                : [dst] "+r" (dst_corr), [src1] "+r" (src1), [src2] "+r" (src2), [count] "+r" (count)
+                : [CC] "r" (&pcomplex_corr_const[0])
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15"
             );
         }
 

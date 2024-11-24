@@ -1551,8 +1551,8 @@ namespace lsp
                 __ASM_EMIT("vcge.f32        q1, q1, q15")               /* q1 = (den1 >= threshold) */
                 __ASM_EMIT("vmul.f32        q2, q2, q8")                /* q2 = nom0/den0 */
                 __ASM_EMIT("vmul.f32        q3, q3, q9")                /* q3 = nom1/den1 */
-                __ASM_EMIT("vand            q0, q0, q2")                /* q2 = (den0 >= threshold) ? nom0/den0 : 0.0f */
-                __ASM_EMIT("vand            q1, q1, q3")                /* q3 = (den1 >= threshold) ? nom1/den1 : 0.0f */
+                __ASM_EMIT("vand            q0, q0, q2")                /* q0 = (den0 >= threshold) ? nom0/den0 : 0.0f */
+                __ASM_EMIT("vand            q1, q1, q3")                /* q1 = (den1 >= threshold) ? nom1/den1 : 0.0f */
                 __ASM_EMIT("vstm            %[dst]!, {q0-q1}")
                 __ASM_EMIT("subs            %[count], #8")
                 __ASM_EMIT("bhs             1b")
@@ -1578,7 +1578,7 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        q2, q2, q6")                /* q2 = 1/den0 = x1 * (3 - R * x1 * x1) / 2 */
                 __ASM_EMIT("vcge.f32        q0, q0, q14")               /* q0 = (den0 >= threshold) */
                 __ASM_EMIT("vmul.f32        q2, q2, q8")                /* q2 = nom0/den0 */
-                __ASM_EMIT("vand            q0, q0, q2")                /* q2 = (den0 >= threshold) ? nom0/den0 : 0.0f */
+                __ASM_EMIT("vand            q0, q0, q2")                /* q0 = (den0 >= threshold) ? nom0/den0 : 0.0f */
                 __ASM_EMIT("vstm            %[dst]!, {q0}")
                 __ASM_EMIT("sub             %[count], #4")
                 // x1 blocks
@@ -1604,7 +1604,7 @@ namespace lsp
                 __ASM_EMIT("vmul.f32        d2, d2, d6")                /* d2 = 1/den0 = x1 * (3 - R * x1 * x1) / 2 */
                 __ASM_EMIT("vcge.f32        d0, d0, d28")               /* d0 = (den0 >= threshold) */
                 __ASM_EMIT("vmul.f32        d2, d2, d8")                /* d2 = nom0/den0 */
-                __ASM_EMIT("vand            d0, d0, d2")                /* d2 = (den0 >= threshold) ? nom0/den0 : 0.0f */
+                __ASM_EMIT("vand            d0, d0, d2")                /* d0 = (den0 >= threshold) ? nom0/den0 : 0.0f */
                 __ASM_EMIT("subs            %[count], #1")
                 __ASM_EMIT("vst1.32         {d0[0]}, [%[dst]]!")
                 __ASM_EMIT("bge             5b")
