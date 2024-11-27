@@ -51,6 +51,7 @@
         #include <private/dsp/arch/x86/sse/hmath/hdotp.h>
 
         #include <private/dsp/arch/x86/sse/mix.h>
+        #include <private/dsp/arch/x86/sse/pan.h>
 
         #include <private/dsp/arch/x86/sse/search/minmax.h>
 
@@ -281,6 +282,9 @@
                 EXPORT1(mix4);
                 EXPORT1(mix_copy4);
                 EXPORT1(mix_add4);
+
+                EXPORT1(depan_lin);
+                EXPORT1(depan_eqpow);
 
                 EXPORT1(reverse1);
                 EXPORT1(reverse2);

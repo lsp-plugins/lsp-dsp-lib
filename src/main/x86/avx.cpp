@@ -55,6 +55,7 @@
         #include <private/dsp/arch/x86/avx/hmath/hdotp.h>
 
         #include <private/dsp/arch/x86/avx/mix.h>
+        #include <private/dsp/arch/x86/avx/pan.h>
         #include <private/dsp/arch/x86/avx/search/minmax.h>
 
         #include <private/dsp/arch/x86/avx/fft.h>
@@ -333,6 +334,9 @@
                 CEXPORT1(favx, mix_copy4);
                 CEXPORT1(favx, mix_add4);
 
+                CEXPORT1(favx, depan_lin);
+                CEXPORT1(favx, depan_eqpow);
+
                 CEXPORT1(favx, min);
                 CEXPORT1(favx, max);
                 CEXPORT1(favx, minmax);
@@ -506,6 +510,8 @@
                     CEXPORT2(favx, dyn_biquad_process_x2, dyn_biquad_process_x2_fma3);
                     CEXPORT2(favx, dyn_biquad_process_x4, dyn_biquad_process_x4_fma3);
                     CEXPORT2(ffma, dyn_biquad_process_x8, dyn_biquad_process_x8_fma3);
+
+                    CEXPORT2(favx, depan_eqpow, depan_eqpow_fma3);
                 }
             }
 
