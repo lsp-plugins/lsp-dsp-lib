@@ -54,7 +54,7 @@ namespace lsp
     IF_ARCH_ARM(
         namespace neon_d32
         {
-//            void    sign_minmax(const float *src, size_t count, float *min, float *max);
+            void    sign_minmax(const float *src, size_t count, float *min, float *max);
         }
     )
 
@@ -106,7 +106,7 @@ PTEST_BEGIN("dsp.search", sign_minmax, 5, 1000)
             IF_ARCH_X86(CALL(sse::sign_minmax));
             IF_ARCH_X86(CALL(avx::sign_minmax));
             IF_ARCH_X86(CALL(avx512::sign_minmax));
-//            IF_ARCH_ARM(CALL(neon_d32::sign_minmax));
+            IF_ARCH_ARM(CALL(neon_d32::sign_minmax));
 //            IF_ARCH_AARCH64(CALL(asimd::sign_minmax));
             PTEST_SEPARATOR;
         }
