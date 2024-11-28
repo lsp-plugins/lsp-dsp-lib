@@ -343,6 +343,9 @@
                 CEXPORT1(favx, abs_min);
                 CEXPORT1(favx, abs_max);
                 CEXPORT1(favx, abs_minmax);
+                CEXPORT1(favx, sign_min);
+                CEXPORT1(favx, sign_max);
+                CEXPORT1(favx, sign_minmax);
 
                 CEXPORT1(favx, lr_to_ms);
                 CEXPORT1(favx, lr_to_mid);

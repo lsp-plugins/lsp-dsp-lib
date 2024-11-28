@@ -273,6 +273,9 @@
                 CEXPORT1(vl, abs_min);
                 CEXPORT1(vl, abs_max);
                 CEXPORT1(vl, abs_minmax);
+                CEXPORT1(vl, sign_min);
+                CEXPORT1(vl, sign_max);
+                CEXPORT1(vl, sign_minmax);
 
                 CEXPORT1(vl, min_index);
                 CEXPORT1(vl, max_index);
