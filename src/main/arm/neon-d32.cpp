@@ -68,6 +68,7 @@
         #include <private/dsp/arch/arm/neon-d32/hmath/hsum.h>
         #include <private/dsp/arch/arm/neon-d32/interpolation/linear.h>
         #include <private/dsp/arch/arm/neon-d32/mix.h>
+        #include <private/dsp/arch/arm/neon-d32/pan.h>
         #include <private/dsp/arch/arm/neon-d32/msmatrix.h>
         #include <private/dsp/arch/arm/neon-d32/pcomplex.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/abs_vv.h>
@@ -417,6 +418,9 @@
                 EXPORT1(mix_add2);
                 EXPORT1(mix_add3);
                 EXPORT1(mix_add4);
+
+                EXPORT1(depan_lin);
+                EXPORT1(depan_eqpow);
 
                 EXPORT1(lin_inter_set);
                 EXPORT1(lin_inter_mul2);

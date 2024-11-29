@@ -52,7 +52,7 @@ namespace lsp
     IF_ARCH_ARM(
         namespace neon_d32
         {
-//            void depan_eqpow(float *dst, const float *l, const float *r, float dfl, size_t count);
+            void depan_eqpow(float *dst, const float *l, const float *r, float dfl, size_t count);
         }
     )
 
@@ -118,7 +118,7 @@ UTEST_BEGIN("dsp.pan", depan_eqpow)
         IF_ARCH_X86(CALL(avx::depan_eqpow, 32));
         IF_ARCH_X86(CALL(avx::depan_eqpow_fma3, 32));
         IF_ARCH_X86(CALL(avx512::depan_eqpow, 64));
-//        IF_ARCH_ARM(CALL(neon_d32::depan_eqpow, 16));
+        IF_ARCH_ARM(CALL(neon_d32::depan_eqpow, 16));
 //        IF_ARCH_AARCH64(CALL(asimd::depan_eqpow, 16));
     }
 
