@@ -61,7 +61,7 @@ namespace lsp
     IF_ARCH_AARCH64(
         namespace asimd
         {
-//            float   sign_max(const float *src, size_t count);
+            float   sign_max(const float *src, size_t count);
         }
     )
 
@@ -106,7 +106,7 @@ PTEST_BEGIN("dsp.search", sign_max, 5, 1000)
             IF_ARCH_X86(CALL(avx::sign_max));
             IF_ARCH_X86(CALL(avx512::sign_max));
             IF_ARCH_ARM(CALL(neon_d32::sign_max));
-//            IF_ARCH_AARCH64(CALL(asimd::sign_max));
+            IF_ARCH_AARCH64(CALL(asimd::sign_max));
             PTEST_SEPARATOR;
         }
 

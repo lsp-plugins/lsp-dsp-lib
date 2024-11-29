@@ -58,7 +58,7 @@ namespace lsp
     IF_ARCH_AARCH64(
         namespace asimd
         {
-//            void    sign_minmax(const float *src, size_t count, float *min, float *max);
+            void    sign_minmax(const float *src, size_t count, float *min, float *max);
         }
     )
 
@@ -110,7 +110,7 @@ UTEST_BEGIN("dsp.search", sign_minmax)
         IF_ARCH_X86(CALL(avx::sign_minmax, 32));
         IF_ARCH_X86(CALL(avx512::sign_minmax, 64));
         IF_ARCH_ARM(CALL(neon_d32::sign_minmax, 16));
-//        IF_ARCH_AARCH64(CALL(asimd::sign_minmax, 16));
+        IF_ARCH_AARCH64(CALL(asimd::sign_minmax, 16));
     }
 UTEST_END
 
