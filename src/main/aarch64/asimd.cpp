@@ -70,6 +70,7 @@
         #include <private/dsp/arch/aarch64/asimd/hmath/hdotp.h>
         #include <private/dsp/arch/aarch64/asimd/interpolation/linear.h>
         #include <private/dsp/arch/aarch64/asimd/mix.h>
+        #include <private/dsp/arch/aarch64/asimd/pan.h>
         #include <private/dsp/arch/aarch64/asimd/msmatrix.h>
         #include <private/dsp/arch/aarch64/asimd/pcomplex.h>
         #include <private/dsp/arch/aarch64/asimd/pfft.h>
@@ -315,6 +316,9 @@
                 EXPORT1(mix_add2);
                 EXPORT1(mix_add3);
                 EXPORT1(mix_add4);
+
+                EXPORT1(depan_lin);
+                EXPORT1(depan_eqpow);
 
                 EXPORT1(lr_to_ms);
                 EXPORT1(lr_to_mid);

@@ -58,7 +58,7 @@ namespace lsp
     IF_ARCH_AARCH64(
         namespace asimd
         {
-//            void depan_lin(float *dst, const float *l, const float *r, float dfl, size_t count);
+            void depan_lin(float *dst, const float *l, const float *r, float dfl, size_t count);
         }
     )
 
@@ -117,7 +117,7 @@ UTEST_BEGIN("dsp.pan", depan_lin)
         IF_ARCH_X86(CALL(avx::depan_lin, 32));
         IF_ARCH_X86(CALL(avx512::depan_lin, 64));
         IF_ARCH_ARM(CALL(neon_d32::depan_lin, 16));
-//        IF_ARCH_AARCH64(CALL(asimd::depan_lin, 16));
+        IF_ARCH_AARCH64(CALL(asimd::depan_lin, 16));
     }
 
 UTEST_END
