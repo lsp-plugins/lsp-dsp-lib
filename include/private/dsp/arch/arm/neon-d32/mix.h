@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -38,7 +38,7 @@ namespace lsp
                 __ASM_EMIT("vmov        q14, q15")
                 __ASM_EMIT("vmov        q12, q13")
                 __ASM_EMIT("subs        %[count], #16")
-                __ASM_EMIT("bls         2f")
+                __ASM_EMIT("blo         2f")
                 /* 16x blocks */
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm        %[a], {q0-q3}")
@@ -110,7 +110,7 @@ namespace lsp
                 __ASM_EMIT("vmov        q14, q15")
                 __ASM_EMIT("vmov        q12, q13")
                 __ASM_EMIT("subs        %[count], #16")
-                __ASM_EMIT("bls         2f")
+                __ASM_EMIT("blo         2f")
                 /* 16x blocks */
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm        %[a]!, {q0-q3}")
@@ -182,7 +182,7 @@ namespace lsp
                 __ASM_EMIT("vmov        q14, q15")
                 __ASM_EMIT("vmov        q12, q13")
                 __ASM_EMIT("subs        %[count], #16")
-                __ASM_EMIT("bls         2f")
+                __ASM_EMIT("blo         2f")
                 /* 16x blocks */
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm        %[dst], {q8-q11}")
@@ -257,7 +257,7 @@ namespace lsp
                 __ASM_EMIT("vdup.32     q14, %y[k2]")
                 __ASM_EMIT("vdup.32     q15, %y[k3]")
                 __ASM_EMIT("subs        %[count], #16")
-                __ASM_EMIT("bls         2f")
+                __ASM_EMIT("blo         2f")
                 /* 16x blocks */
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm        %[a], {q0-q3}")
@@ -340,7 +340,7 @@ namespace lsp
                 __ASM_EMIT("vdup.32     q14, %y[k2]")
                 __ASM_EMIT("vdup.32     q15, %y[k3]")
                 __ASM_EMIT("subs        %[count], #16")
-                __ASM_EMIT("bls         2f")
+                __ASM_EMIT("blo         2f")
                 /* 16x blocks */
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm        %[a]!, {q0-q3}")
@@ -423,7 +423,7 @@ namespace lsp
                 __ASM_EMIT("vdup.32     q14, %y[k2]")
                 __ASM_EMIT("vdup.32     q15, %y[k3]")
                 __ASM_EMIT("subs        %[count], #16")
-                __ASM_EMIT("bls         2f")
+                __ASM_EMIT("blo         2f")
                 /* 16x blocks */
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm        %[dst], {q0-q3}")
@@ -509,7 +509,7 @@ namespace lsp
                 __ASM_EMIT("vdup.32     q14, %y[k3]")
                 __ASM_EMIT("vdup.32     q15, %y[k4]")
                 __ASM_EMIT("subs        %[count], #16")
-                __ASM_EMIT("bls         2f")
+                __ASM_EMIT("blo         2f")
                 /* 16x blocks */
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm        %[a], {q0-q3}")
@@ -605,7 +605,7 @@ namespace lsp
                 __ASM_EMIT("vdup.32     q14, %y[k3]")
                 __ASM_EMIT("vdup.32     q15, %y[k4]")
                 __ASM_EMIT("subs        %[count], #16")
-                __ASM_EMIT("bls         2f")
+                __ASM_EMIT("blo         2f")
                 /* 16x blocks */
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm        %[a]!, {q0-q3}")
@@ -701,7 +701,7 @@ namespace lsp
                 __ASM_EMIT("vdup.32     q14, %y[k3]")
                 __ASM_EMIT("vdup.32     q15, %y[k4]")
                 __ASM_EMIT("subs        %[count], #16")
-                __ASM_EMIT("bls         2f")
+                __ASM_EMIT("blo         2f")
                 /* 16x blocks */
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vldm        %[dst], {q0-q3}")
@@ -791,7 +791,7 @@ namespace lsp
                   "q12", "q13", "q14", "q15"
             );
         }
-    }
-}
+    } /* namespace neon_d32 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_MIX_H_ */
