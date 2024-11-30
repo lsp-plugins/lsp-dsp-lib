@@ -35,7 +35,7 @@ namespace lsp
 
     #define OP_SEARCH_CORE(DST, SRC, OP, MOD) \
         __ASM_EMIT("cmp         %[count], #0") \
-        __ASM_EMIT("b.lo        100f") \
+        __ASM_EMIT("b.ls        100f") \
         /* 32x blocks */ \
         __ASM_EMIT("ld1r        {v0.4s}, [%[" SRC "]]") \
         __ASM_EMIT(MOD("v0.4s", "v0.4s")) \
@@ -193,7 +193,7 @@ namespace lsp
         __ASM_EMIT("eor         v0.16b, v0.16b, v0.16b") \
         __ASM_EMIT("eor         v1.16b, v1.16b, v1.16b") \
         __ASM_EMIT("cmp         %[count], #0") \
-        __ASM_EMIT("b.lo        100f") \
+        __ASM_EMIT("b.ls        100f") \
         /* 32x blocks */ \
         __ASM_EMIT("ld1r        {v0.4s}, [%[" SRC "]]") \
         __ASM_EMIT(MOD("v0.4s", "v0.4s")) \
