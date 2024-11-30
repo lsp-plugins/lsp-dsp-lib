@@ -128,7 +128,7 @@ void call(const char *label, float **src, mix2_t func, size_t count)
         return;
 
     char buf[80];
-    sprintf(buf, "%s x %d", label, int(count));
+    snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
     printf("Testing %s numbers...\n", buf);
 
     PTEST_LOOP(buf,
@@ -147,7 +147,7 @@ void call(const char *label, float **src, mix3_t func, size_t count)
         return;
 
     char buf[80];
-    sprintf(buf, "%s x %d", label, int(count));
+    snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
     printf("Testing %s numbers...\n", buf);
 
     PTEST_LOOP(buf,
@@ -164,7 +164,7 @@ void call(const char *label, float **src, mix4_t func, size_t count)
         return;
 
     char buf[80];
-    sprintf(buf, "%s x %d", label, int(count));
+    snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
     printf("Testing %s numbers...\n", buf);
 
     PTEST_LOOP(buf,
@@ -180,7 +180,7 @@ void call(const char *label, float **src, mix_dst2_t func, size_t count)
         return;
 
     char buf[80];
-    sprintf(buf, "%s x %d", label, int(count));
+    snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
     printf("Testing %s numbers...\n", buf);
 
     PTEST_LOOP(buf,
@@ -199,7 +199,7 @@ void call(const char *label, float **src, mix_dst3_t func, size_t count)
         return;
 
     char buf[80];
-    sprintf(buf, "%s x %d", label, int(count));
+    snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
     printf("Testing %s numbers...\n", buf);
 
     PTEST_LOOP(buf,
@@ -216,7 +216,7 @@ void call(const char *label, float **src, mix_dst4_t func, size_t count)
         return;
 
     char buf[80];
-    sprintf(buf, "%s x %d", label, int(count));
+    snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
     printf("Testing %s numbers...\n", buf);
 
     PTEST_LOOP(buf,

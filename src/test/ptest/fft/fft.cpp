@@ -84,7 +84,7 @@ PTEST_BEGIN("dsp.fft", fft, 10, 1000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s x %d", label, int(1 << rank));
+        snprintf(buf, sizeof(buf), "%s x %d", label, int(1 << rank));
         printf("Testing %s samples (rank = %d) ...\n", buf, int(rank));
 
         PTEST_LOOP(buf,
@@ -98,7 +98,7 @@ PTEST_BEGIN("dsp.fft", fft, 10, 1000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s x %d", label, int(1 << rank));
+        snprintf(buf, sizeof(buf), "%s x %d", label, int(1 << rank));
         printf("Testing %s samples (rank = %d) ...\n", buf, int(rank));
 
         PTEST_LOOP(buf,

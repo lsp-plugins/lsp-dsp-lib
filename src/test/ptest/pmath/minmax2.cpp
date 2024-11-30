@@ -108,7 +108,7 @@ PTEST_BEGIN("dsp.pmath", minmax2, 5, 2000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s x %d", label, int(count));
+        snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
