@@ -38,6 +38,13 @@
     #include <errno.h>
     #include <stdlib.h>
 
+    // Platform-specific includes
+    #if defined(PLATFORM_FREEBSD)
+        #include <sys/sysctl.h>
+    #elif defined(PLATFORM_MACOSX)
+        #include <sys/sysctl.h>
+    #endif
+
     // Include common architectural definitions
     #define PRIVATE_DSP_ARCH_AARCH64_IMPL
         #include <private/dsp/arch/aarch64/features.h>
@@ -151,46 +158,36 @@ namespace lsp
                 else
                     return cpu_parts[mid].name;
             }
-            return "Generic ARM processor";
+            return "Generic AArch64 processor";
         }
 
-        void detect_cpu_features(cpu_features_t *f)  // must be at least 13 bytes
+    #ifdef PLATFORM_LINUX
+        static void read_cpu_info(cpu_features_t *f)
         {
-            f->implementer      = 0;
-            f->architecture     = 0;
-            IF_ARCH_ARM6(f->architecture = 6);
-            IF_ARCH_ARM7(f->architecture = 7);
-            IF_ARCH_ARM8(f->architecture = 8);
-            f->variant          = 0;
-            f->part             = 0;
-            f->revision         = 0;
-
-        #if defined(PLATFORM_LINUX)
-            f->hwcap            = getauxval(AT_HWCAP);
-        #elif defined(PLATFORM_BSD)
-            unsigned long __hwcap = 0;
-            if (elf_aux_info(AT_HWCAP, &__hwcap, sizeof(__hwcap)) == 0)
-                f->hwcap            = __hwcap;
-        #else
-            f->hwcap            = 0;
-        #endif
-
-    //        processor       : 0
-    //        BogoMIPS        : 38.40
-    //        Features        : fp asimd evtstrm crc32 cpuid
-    //        CPU implementer : 0x41
-    //        CPU architecture: 8
-    //        CPU variant     : 0x0
-    //        CPU part        : 0xd03
-    //        CPU revision    : 4
+            // Example contents:
+            // processor       : 0
+            // BogoMIPS        : 38.40
+            // Features        : fp asimd evtstrm crc32 cpuid
+            // CPU implementer : 0x41
+            // CPU architecture: 8
+            // CPU variant     : 0x0
+            // CPU part        : 0xd03
+            // CPU revision    : 4
 
             // Read /proc/cpuinfo
             FILE *cpuinfo = fopen("/proc/cpuinfo", "r");
             if (cpuinfo == NULL)
                 return;  // handle error
+            lsp_finally {
+                fclose(cpuinfo);
+            };
 
             size_t size = 0;
             char *line  = NULL;
+            lsp_finally {
+                if (line != NULL)
+                    free(line);
+            };
 
             while (getline(&line, &size, cpuinfo) >= 0)
             {
@@ -238,11 +235,69 @@ namespace lsp
                 // Store parsed value
                 *field      = value;
             }
+        }
+    #endif /* PLATFORM_LINUX */
 
-            // if we got here, handle error
-            if (line != NULL)
-                free(line);
-            fclose(cpuinfo);
+    #ifdef PLATFORM_MACOSX
+        static void read_hwcap(cpu_features_t *f)
+        {
+            int val = 0;
+            size_t len = sizeof(val);
+            if (sysctlbyname("hw.optional.AdvSIMD", &val, &len, NULL, 0) == 0)
+            {
+                if (val != 0)
+                    f->hwcap       |= HWCAP_AARCH64_ASIMD;
+            }
+        }
+
+        static void read_cpu_name(cpu_features_t *f)
+        {
+            size_t len = sizeof(f->cpu_name);
+            sysctlbyname("machdep.cpu.brand_string", f->cpu_name, &len, nullptr, 0);
+        }
+    #endif /* PLATFORM_MACOSX */
+
+    #ifdef PLATFORM_FREEBSD
+        static void read_cpu_name(cpu_features_t *f)
+        {
+            size_t len = sizeof(f->cpu_name);
+            sysctlbyname("hw.model", f->cpu_name, &len, nullptr, 0);
+        }
+    #endif /* PLATFORM_FREEBSD */
+
+        void detect_cpu_features(cpu_features_t *f)  // must be at least 13 bytes
+        {
+            f->implementer      = 0;
+            f->architecture     = 0;
+            IF_ARCH_ARM6(f->architecture = 6);
+            IF_ARCH_ARM7(f->architecture = 7);
+            IF_ARCH_ARM8(f->architecture = 8);
+            f->variant          = 0;
+            f->part             = 0;
+            f->revision         = 0;
+            f->hwcap            = 0;
+            strncpy(f->cpu_name, "Generic AArch64 processor", sizeof(f->cpu_name) - 1);
+
+        #if defined(PLATFORM_LINUX)
+            f->hwcap            = getauxval(AT_HWCAP);
+            read_cpu_info(f);
+            const char *cpu_name = find_cpu_name(f->part);
+            if (cpu_name != NULL)
+                strncpy(f->cpu_name, cpu_name, sizeof(f->cpu_name));
+
+        #elif defined(PLATFORM_BSD)
+            unsigned long __hwcap = 0;
+            if (elf_aux_info(AT_HWCAP, &__hwcap, sizeof(__hwcap)) == 0)
+                f->hwcap            = __hwcap;
+            read_cpu_name(f);
+
+        #elif defined(PLATFORM_MACOSX)
+            read_hwcap(f);
+            read_cpu_name(f);
+
+        #endif
+
+            f->cpu_name[sizeof(f->cpu_name) - 1] = '\0';
         }
 
         static size_t estimate_features_size(const cpu_features_t *f)
@@ -284,7 +339,6 @@ namespace lsp
             cpu_features_t f;
             detect_cpu_features(&f);
 
-            const char *cpu = find_cpu_name(f.part);
             char *model     = NULL;
             int n = asprintf(&model, "vendor=0x%x, architecture=%d, variant=%d, part=0x%x, revision=%d",
                     int(f.implementer), int(f.architecture), int(f.variant), int(f.part), int(f.revision));
@@ -293,7 +347,7 @@ namespace lsp
 
             size_t size     = sizeof(dsp::info_t);
             size           += strlen(ARCH_STRING) + 1;
-            size           += strlen(cpu) + 1;
+            size           += strlen(f.cpu_name) + 1;
             size           += strlen(model) + 1;
             size           += estimate_features_size(&f);
 
@@ -308,7 +362,7 @@ namespace lsp
             res->arch       = text;
             text            = stpcpy(text, ARCH_STRING) + 1;
             res->cpu        = text;
-            text            = stpcpy(text, cpu) + 1;
+            text            = stpcpy(text, f.cpu_name) + 1;
             res->model      = text;
             text            = stpcpy(text, model) + 1;
             res->features   = text;

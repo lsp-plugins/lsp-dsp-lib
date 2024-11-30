@@ -113,6 +113,7 @@
                 size_t      part;
                 size_t      revision;
                 uint64_t    hwcap;
+                char        cpu_name[64];
             } cpu_features_t;
 
             void detect_cpu_features(cpu_features_t *f);
