@@ -26,7 +26,10 @@
 
 #if defined(ARCH_ARM6) || defined(ARCH_ARM7)
 
-    #ifdef PLATFORM_POSIX
+    #if defined(PLATFORM_MACOSX)
+        #define HWCAP_NEON              (1 << 0)
+        #define HWCAP_ARM_VFPD32        (1 << 1)
+    #elif defined(PLATFORM_POSIX)
         #include <sys/auxv.h>
     #endif /* PLATFORM_POSIX */
 
