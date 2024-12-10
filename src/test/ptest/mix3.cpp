@@ -54,9 +54,9 @@ namespace lsp
 
         namespace avx512
         {
-//            void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
-//            void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-//            void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+            void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
+            void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+            void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
         }
     )
 
@@ -143,7 +143,7 @@ PTEST_MAIN
         CALL(generic::mix3);
         IF_ARCH_X86(CALL(sse::mix3));
         IF_ARCH_X86(CALL(avx::mix3));
-//        IF_ARCH_X86(CALL(avx512::mix3));
+        IF_ARCH_X86(CALL(avx512::mix3));
         IF_ARCH_ARM(CALL(neon_d32::mix3));
         IF_ARCH_AARCH64(CALL(asimd::mix3));
         PTEST_SEPARATOR;
@@ -151,7 +151,7 @@ PTEST_MAIN
         CALL(generic::mix_copy3);
         IF_ARCH_X86(CALL(sse::mix_copy3));
         IF_ARCH_X86(CALL(avx::mix_copy3));
-//        IF_ARCH_X86(CALL(avx512::mix_copy3));
+        IF_ARCH_X86(CALL(avx512::mix_copy3));
         IF_ARCH_ARM(CALL(neon_d32::mix_copy3));
         IF_ARCH_AARCH64(CALL(asimd::mix_copy3));
         PTEST_SEPARATOR;
@@ -159,7 +159,7 @@ PTEST_MAIN
         CALL(generic::mix_add3);
         IF_ARCH_X86(CALL(sse::mix_add3));
         IF_ARCH_X86(CALL(avx::mix_add3));
-//        IF_ARCH_X86(CALL(avx512::mix_add3));
+        IF_ARCH_X86(CALL(avx512::mix_add3));
         IF_ARCH_ARM(CALL(neon_d32::mix_add3));
         IF_ARCH_AARCH64(CALL(asimd::mix_add3));
         PTEST_SEPARATOR2;

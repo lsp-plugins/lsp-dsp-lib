@@ -49,9 +49,9 @@ namespace lsp
 
         namespace avx512
         {
-//            void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
-//            void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
-//            void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+            void mix3(float *dst, const float *src1, const float *src2, float k1, float k2, float k3, size_t count);
+            void mix_copy3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
+            void mix_add3(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, size_t count);
         }
     )
 
@@ -175,9 +175,9 @@ UTEST_BEGIN("dsp", mix3)
         IF_ARCH_X86(CALL(generic::mix_copy3, avx::mix_copy3, 32));
         IF_ARCH_X86(CALL(generic::mix_add3, avx::mix_add3, 32));
 
-//        IF_ARCH_X86(CALL(generic::mix3, avx512::mix3, 64));
-//        IF_ARCH_X86(CALL(generic::mix_copy3, avx512::mix_copy3, 64));
-//        IF_ARCH_X86(CALL(generic::mix_add3, avx512::mix_add3, 64));
+        IF_ARCH_X86(CALL(generic::mix3, avx512::mix3, 64));
+        IF_ARCH_X86(CALL(generic::mix_copy3, avx512::mix_copy3, 64));
+        IF_ARCH_X86(CALL(generic::mix_add3, avx512::mix_add3, 64));
 
         IF_ARCH_ARM(CALL(generic::mix3, neon_d32::mix3, 16));
         IF_ARCH_ARM(CALL(generic::mix_copy3, neon_d32::mix_copy3, 16));
