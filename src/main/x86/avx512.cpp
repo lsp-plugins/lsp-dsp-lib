@@ -319,6 +319,10 @@
                 CEXPORT1(vl, mix3);
                 CEXPORT1(vl, mix_copy3);
                 CEXPORT1(vl, mix_add3);
+
+                CEXPORT1(vl, mix4);
+                CEXPORT1(vl, mix_copy4);
+                CEXPORT1(vl, mix_add4);
             }
         } /* namespace avx2 */
     } /* namespace lsp */

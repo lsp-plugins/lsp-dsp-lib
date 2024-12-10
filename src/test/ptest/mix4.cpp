@@ -54,9 +54,9 @@ namespace lsp
 
         namespace avx512
         {
-//            void mix4(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
-//            void mix_copy4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
-//            void mix_add4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+            void mix4(float *dst, const float *src1, const float *src2, const float *src3, float k1, float k2, float k3, float k4, size_t count);
+            void mix_copy4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
+            void mix_add4(float *dst, const float *src1, const float *src2, const float *src3, const float *src4, float k1, float k2, float k3, float k4, size_t count);
         }
     )
 
@@ -141,7 +141,7 @@ PTEST_MAIN
         CALL(generic::mix4);
         IF_ARCH_X86(CALL(sse::mix4));
         IF_ARCH_X86(CALL(avx::mix4));
-//        IF_ARCH_X86(CALL(avx512::mix4));
+        IF_ARCH_X86(CALL(avx512::mix4));
         IF_ARCH_ARM(CALL(neon_d32::mix4));
         IF_ARCH_AARCH64(CALL(asimd::mix4));
         PTEST_SEPARATOR;
@@ -149,7 +149,7 @@ PTEST_MAIN
         CALL(generic::mix_copy4);
         IF_ARCH_X86(CALL(sse::mix_copy4));
         IF_ARCH_X86(CALL(avx::mix_copy4));
-//        IF_ARCH_X86(CALL(avx512::mix_copy4));
+        IF_ARCH_X86(CALL(avx512::mix_copy4));
         IF_ARCH_ARM(CALL(neon_d32::mix_copy4));
         IF_ARCH_AARCH64(CALL(asimd::mix_copy4));
         PTEST_SEPARATOR;
@@ -157,7 +157,7 @@ PTEST_MAIN
         CALL(generic::mix_add4);
         IF_ARCH_X86(CALL(sse::mix_add4));
         IF_ARCH_X86(CALL(avx::mix_add4));
-//        IF_ARCH_X86(CALL(avx512::mix_add4));
+        IF_ARCH_X86(CALL(avx512::mix_add4));
         IF_ARCH_ARM(CALL(neon_d32::mix_add4));
         IF_ARCH_AARCH64(CALL(asimd::mix_add4));
         PTEST_SEPARATOR2;
