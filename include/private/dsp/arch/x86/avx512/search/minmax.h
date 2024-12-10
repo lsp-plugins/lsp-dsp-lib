@@ -497,7 +497,7 @@ namespace lsp
     #define SMINMAX_CORE(OP) \
         __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0")            /* zmm0 = 0 */ \
         __ASM_EMIT("test            %[count], %[count]") \
-        __ASM_EMIT("jz              12f") \
+        __ASM_EMIT("jz              10f") \
         __ASM_EMIT("vbroadcastss    0x00(%[src]), %%zmm0")              /* zmm0 = result */ \
         __ASM_EMIT("vmovaps         %[CC], %%zmm7")                     /* zmm7 = mask */ \
         __ASM_EMIT("vandps          %%zmm7, %%zmm0, %%zmm1")            /* zmm1 = abs(result) */ \
@@ -587,7 +587,7 @@ namespace lsp
         __ASM_EMIT("dec             %[count]") \
         __ASM_EMIT("jge             9b") \
         /* end */ \
-        __ASM_EMIT("12:")
+        __ASM_EMIT("10:")
 
         float sign_min(const float *src, size_t count)
         {
