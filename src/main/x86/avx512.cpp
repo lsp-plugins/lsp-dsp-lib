@@ -51,6 +51,7 @@
         #include <private/dsp/arch/x86/avx512/pcomplex.h>
         #include <private/dsp/arch/x86/avx512/pmath.h>
         #include <private/dsp/arch/x86/avx512/search.h>
+        #include <private/dsp/arch/x86/avx512/mix.h>
         #include <private/dsp/arch/x86/avx512/pan.h>
 
         #include <private/dsp/arch/x86/avx512/correlation.h>
@@ -310,6 +311,10 @@
 
                 CEXPORT1(vl, depan_lin);
                 CEXPORT1(vl, depan_eqpow);
+
+                CEXPORT1(vl, mix2);
+                CEXPORT1(vl, mix_copy2);
+                CEXPORT1(vl, mix_add2);
             }
         } /* namespace avx2 */
     } /* namespace lsp */
