@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 24 мая 2023 г.
@@ -326,6 +326,10 @@
                 CEXPORT1(vl, h_sum);
                 CEXPORT1(vl, h_sqr_sum);
                 CEXPORT1(vl, h_abs_sum);
+
+                CEXPORT1(vl, h_dotp);
+                CEXPORT1(vl, h_sqr_dotp);
+                CEXPORT1(vl, h_abs_dotp);
             }
         } /* namespace avx2 */
     } /* namespace lsp */

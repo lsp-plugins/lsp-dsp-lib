@@ -24,7 +24,7 @@
 #include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/common/alloc.h>
 
-#define MIN_RANK 8
+#define MIN_RANK 5
 #define MAX_RANK 16
 
 namespace lsp
@@ -68,7 +68,7 @@ namespace lsp
     typedef float (* h_sum_t)(const float *src, size_t count);
 }
 
-PTEST_BEGIN("dsp.hmath", h_abs_sum, 5, 10000)
+PTEST_BEGIN("dsp.hmath", h_abs_sum, 5, 5000)
 
     void call(const char *label, float *src, size_t count, h_sum_t func)
     {

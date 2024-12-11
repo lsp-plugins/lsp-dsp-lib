@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -33,23 +33,22 @@ namespace lsp
     namespace generic
     {
         float h_dotp(const float *a, const float *b, size_t count);
-        float h_sqr_dotp(const float *a, const float *b, size_t count);
-        float h_abs_dotp(const float *a, const float *b, size_t count);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
             float h_dotp(const float *a, const float *b, size_t count);
-            float h_sqr_dotp(const float *a, const float *b, size_t count);
-            float h_abs_dotp(const float *a, const float *b, size_t count);
         }
 
         namespace avx
         {
             float h_dotp(const float *a, const float *b, size_t count);
-            float h_sqr_dotp(const float *a, const float *b, size_t count);
-            float h_abs_dotp(const float *a, const float *b, size_t count);
+        }
+
+        namespace avx512
+        {
+            float h_dotp(const float *a, const float *b, size_t count);
         }
     )
 
@@ -57,8 +56,6 @@ namespace lsp
         namespace neon_d32
         {
             float h_dotp(const float *a, const float *b, size_t count);
-            float h_sqr_dotp(const float *a, const float *b, size_t count);
-            float h_abs_dotp(const float *a, const float *b, size_t count);
         }
     )
 
@@ -66,15 +63,13 @@ namespace lsp
         namespace asimd
         {
             float h_dotp(const float *a, const float *b, size_t count);
-            float h_sqr_dotp(const float *a, const float *b, size_t count);
-            float h_abs_dotp(const float *a, const float *b, size_t count);
         }
     )
 
     typedef float (* h_dotp_t)(const float *a, const float *b, size_t count);
 }
 
-UTEST_BEGIN("dsp.hmath", hdotp)
+UTEST_BEGIN("dsp.hmath", h_dotp)
 
     void call(const char *label, size_t align, h_dotp_t func1, h_dotp_t func2)
     {
@@ -120,19 +115,9 @@ UTEST_BEGIN("dsp.hmath", hdotp)
             call(#func, align, generic, func);
 
         IF_ARCH_X86(CALL(generic::h_dotp, sse::h_dotp, 16));
-        IF_ARCH_X86(CALL(generic::h_sqr_dotp, sse::h_sqr_dotp, 16));
-        IF_ARCH_X86(CALL(generic::h_abs_dotp, sse::h_abs_dotp, 16));
-
         IF_ARCH_X86(CALL(generic::h_dotp, avx::h_dotp, 32));
-        IF_ARCH_X86(CALL(generic::h_sqr_dotp, avx::h_sqr_dotp, 32));
-        IF_ARCH_X86(CALL(generic::h_abs_dotp, avx::h_abs_dotp, 32));
-
+        IF_ARCH_X86(CALL(generic::h_dotp, avx512::h_dotp, 64));
         IF_ARCH_ARM(CALL(generic::h_dotp, neon_d32::h_dotp, 16));
-        IF_ARCH_ARM(CALL(generic::h_sqr_dotp, neon_d32::h_sqr_dotp, 16));
-        IF_ARCH_ARM(CALL(generic::h_abs_dotp, neon_d32::h_abs_dotp, 16));
-
         IF_ARCH_AARCH64(CALL(generic::h_dotp, asimd::h_dotp, 16));
-        IF_ARCH_AARCH64(CALL(generic::h_sqr_dotp, asimd::h_sqr_dotp, 16));
-        IF_ARCH_AARCH64(CALL(generic::h_abs_dotp, asimd::h_abs_dotp, 16));
     }
 UTEST_END
