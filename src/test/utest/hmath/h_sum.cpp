@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -46,6 +46,11 @@ namespace lsp
         }
 
         namespace avx
+        {
+            float h_sum(const float *src, size_t count);
+        }
+
+        namespace avx512
         {
             float h_sum(const float *src, size_t count);
         }
@@ -110,6 +115,7 @@ UTEST_BEGIN("dsp.hmath", h_sum)
 
         IF_ARCH_X86(CALL(generic::h_sum, sse::h_sum, 16));
         IF_ARCH_X86(CALL(generic::h_sum, avx::h_sum, 32));
+        IF_ARCH_X86(CALL(generic::h_sum, avx512::h_sum, 64));
         IF_ARCH_ARM(CALL(generic::h_sum, neon_d32::h_sum, 16));
         IF_ARCH_AARCH64(CALL(generic::h_sum, asimd::h_sum, 16));
     }

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -44,6 +44,11 @@ namespace lsp
         {
             float h_abs_sum(const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            float h_abs_sum(const float *src, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -63,7 +68,7 @@ namespace lsp
     typedef float (* h_sum_t)(const float *src, size_t count);
 }
 
-PTEST_BEGIN("dsp.hmath", hsum, 5, 10000)
+PTEST_BEGIN("dsp.hmath", h_abs_sum, 5, 10000)
 
     void call(const char *label, float *src, size_t count, h_sum_t func)
     {
@@ -98,6 +103,7 @@ PTEST_BEGIN("dsp.hmath", hsum, 5, 10000)
             CALL(generic::h_abs_sum);
             IF_ARCH_X86(CALL(sse::h_abs_sum));
             IF_ARCH_X86(CALL(avx::h_abs_sum));
+            IF_ARCH_X86(CALL(avx512::h_abs_sum));
             IF_ARCH_ARM(CALL(neon_d32::h_abs_sum));
             IF_ARCH_AARCH64(CALL(asimd::h_abs_sum));
             PTEST_SEPARATOR;

@@ -47,6 +47,7 @@
         #include <private/dsp/arch/x86/avx512/dynamics.h>
         #include <private/dsp/arch/x86/avx512/float.h>
         #include <private/dsp/arch/x86/avx512/graphics/axis.h>
+        #include <private/dsp/arch/x86/avx512/hmath.h>
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
         #include <private/dsp/arch/x86/avx512/pcomplex.h>
         #include <private/dsp/arch/x86/avx512/pmath.h>
@@ -315,14 +316,16 @@
                 CEXPORT1(vl, mix2);
                 CEXPORT1(vl, mix_copy2);
                 CEXPORT1(vl, mix_add2);
-
                 CEXPORT1(vl, mix3);
                 CEXPORT1(vl, mix_copy3);
                 CEXPORT1(vl, mix_add3);
-
                 CEXPORT1(vl, mix4);
                 CEXPORT1(vl, mix_copy4);
                 CEXPORT1(vl, mix_add4);
+
+                CEXPORT1(vl, h_sum);
+                CEXPORT1(vl, h_sqr_sum);
+                CEXPORT1(vl, h_abs_sum);
             }
         } /* namespace avx2 */
     } /* namespace lsp */
