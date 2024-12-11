@@ -68,7 +68,7 @@ namespace lsp
     typedef float (* h_sum_t)(const float *src, size_t count);
 }
 
-PTEST_BEGIN("dsp.hmath", h_abs_sum, 5, 5000)
+PTEST_BEGIN("dsp.hmath", h_abs_sum, 2, 10000)
 
     void call(const char *label, float *src, size_t count, h_sum_t func)
     {

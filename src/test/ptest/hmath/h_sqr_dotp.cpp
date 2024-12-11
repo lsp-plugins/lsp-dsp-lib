@@ -69,7 +69,7 @@ namespace lsp
     typedef float (* h_dotp_t)(const float *a, const float *b, size_t count);
 }
 
-PTEST_BEGIN("dsp.hmath", h_sqr_dotp, 5, 5000)
+PTEST_BEGIN("dsp.hmath", h_sqr_dotp, 2, 10000)
 
     void call(const char *label, float *a, float *b, size_t count, h_dotp_t func)
     {
