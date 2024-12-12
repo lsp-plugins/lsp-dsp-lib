@@ -84,6 +84,11 @@
 
             void dsp_init(const cpu_features_t *f)
             {
+                // Enable AVX-512 only for CPUs that really support it well
+                const bool favx512  = feature_check(f, FEAT_FAST_AVX512);
+                if (!favx512)
+                    return;
+
                 const bool vl = (f->features & (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL)) ==
                                 (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL);
 
