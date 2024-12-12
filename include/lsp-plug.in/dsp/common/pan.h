@@ -24,8 +24,12 @@
 
 #include <lsp-plug.in/dsp/common/types.h>
 
+LSP_DSP_LIB_BEGIN_NAMESPACE
+
+#pragma pack(push, 1)
+
 /**
- * Definition for the panorama calulation function
+ * Definition for the panorama calulation function (parallel form)
  *
  * @param dst destination buffer to store value
  * @param l left channel data
@@ -35,8 +39,12 @@
  */
 typedef void (* LSP_DSP_LIB_TYPE(depan_t))(float *dst, const float *l, const float *r, float dfl, size_t count);
 
+#pragma pack(pop)
+
+LSP_DSP_LIB_END_NAMESPACE
+
 /**
- * Calculate the linear pan law panorama position between left and right channels:
+ * Calculate the linear pan law panorama position between left and right channels (parallel form):
  *   pan = abs(R) / (abs(L) + abs(R))
  *
  * @param dst destination buffer to store value
@@ -48,7 +56,7 @@ typedef void (* LSP_DSP_LIB_TYPE(depan_t))(float *dst, const float *l, const flo
 LSP_DSP_LIB_SYMBOL(void, depan_lin, float *dst, const float *l, const float *r, float dfl, size_t count);
 
 /**
- * Calculate the equal power pan law (quadratic) panorama position between left and right channels:
+ * Calculate the equal power pan law (quadratic) panorama position between left and right channels (parallel form):
  *   pan = R^2 / (L^2 + R^2)
  *
  * @param dst destination buffer to store value
