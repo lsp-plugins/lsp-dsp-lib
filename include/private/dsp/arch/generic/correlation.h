@@ -145,10 +145,10 @@ namespace lsp
                 B[2]        = BA[2] * BB[2];
                 B[3]        = BA[3] * BB[3];
 
-                dst[0]      = (B[0] >= 1e-10f) ? T[0] / sqrtf(B[0]) : 0.0f;
-                dst[1]      = (B[1] >= 1e-10f) ? T[1] / sqrtf(B[1]) : 0.0f;
-                dst[2]      = (B[2] >= 1e-10f) ? T[2] / sqrtf(B[2]) : 0.0f;
-                dst[3]      = (B[3] >= 1e-10f) ? T[3] / sqrtf(B[3]) : 0.0f;
+                dst[0]      = (B[0] >= 1e-18f) ? T[0] / sqrtf(B[0]) : 0.0f;
+                dst[1]      = (B[1] >= 1e-18f) ? T[1] / sqrtf(B[1]) : 0.0f;
+                dst[2]      = (B[2] >= 1e-18f) ? T[2] / sqrtf(B[2]) : 0.0f;
+                dst[3]      = (B[3] >= 1e-18f) ? T[3] / sqrtf(B[3]) : 0.0f;
 
                 vv          = T[3];
                 va          = BA[3];
@@ -172,7 +172,7 @@ namespace lsp
                 BB[0]       = vb + DB[0];
                 B[0]        = BA[0] * BB[0];
 
-                dst[0]      = (B[0] >= 1e-10f) ? T[0] / sqrtf(B[0]) : 0.0f;
+                dst[0]      = (B[0] >= 1e-18f) ? T[0] / sqrtf(B[0]) : 0.0f;
 
                 vv          = T[0];
                 va          = BA[0];
