@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.29 ===
+
+
 === 1.0.28 ===
 * The DSP library now builds for Apple M1 chips and above on MacOS.
 * Implemented abs_max2, abs_min2, abs_max3 and abs_min3 functions.
