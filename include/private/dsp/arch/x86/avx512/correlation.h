@@ -153,7 +153,7 @@ namespace lsp
 
         static const float corr_const[] __lsp_aligned64 =
         {
-            LSP_DSP_VEC16(1e-10f)
+            LSP_DSP_VEC16(1e-18f)
         };
 
         static const uint32_t corr_idx[] __lsp_aligned64 =
@@ -251,10 +251,10 @@ namespace lsp
                 __ASM_EMIT64("vmovss        %%xmm5, 0x08(%[corr])")
 
                 __ASM_EMIT("vsqrtps         %%zmm7, %%zmm6")                    /* zmm6 = sqrtf(B) */
-                __ASM_EMIT("vcmpps          $1, %[CORR_CC], %%zmm7, %%k3")      /* k3   = B < 1e-10f */
+                __ASM_EMIT("vcmpps          $1, %[CORR_CC], %%zmm7, %%k3")      /* k3   = B < threshold */
                 __ASM_EMIT("vdivps          %%zmm6, %%zmm0, %%zmm0")            /* zmm0 = T/sqrtf(B) */
                 __ASM_EMIT32("mov           %[dst], %[ptr]")
-                __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0 %{%%k3%}")   /* zmm0 = (B < 1e-10f) ? 0 : T/sqrtf(B) */
+                __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0 %{%%k3%}")   /* zmm0 = (B < threshold) ? 0 : T/sqrtf(B) */
                 __ASM_EMIT("add             $0x40, %[a_head]")                  /* ++a_head */
                 __ASM_EMIT("add             $0x40, %[b_head]")                  /* ++b_head */
                 __ASM_EMIT32("vmovups       %%zmm0, 0x00(%[ptr])")
@@ -336,10 +336,10 @@ namespace lsp
                 __ASM_EMIT64("vmovss        %%xmm5, 0x08(%[corr])")
 
                 __ASM_EMIT("vsqrtps         %%ymm7, %%ymm6")                    /* ymm6 = sqrtf(B) */
-                __ASM_EMIT("vcmpps          $5, %[CORR_CC], %%ymm7, %%ymm1")    /* ymm1 = B >= 1e-10f */
+                __ASM_EMIT("vcmpps          $5, %[CORR_CC], %%ymm7, %%ymm1")    /* ymm1 = B >= threshold */
                 __ASM_EMIT("vdivps          %%ymm6, %%ymm0, %%ymm0")            /* ymm0 = T/sqrtf(B) */
                 __ASM_EMIT32("mov           %[dst], %[ptr]")
-                __ASM_EMIT("vandps          %%ymm1, %%ymm0, %%ymm0")            /* ymm0 = (B >= 1e-10f) ? T/sqrtf(B) : 0 */
+                __ASM_EMIT("vandps          %%ymm1, %%ymm0, %%ymm0")            /* ymm0 = (B >= threshold) ? T/sqrtf(B) : 0 */
                 __ASM_EMIT("add             $0x20, %[a_head]")                  /* ++a_head */
                 __ASM_EMIT("add             $0x20, %[b_head]")                  /* ++b_head */
                 __ASM_EMIT32("vmovups       %%ymm0, 0x00(%[ptr])")
@@ -405,10 +405,10 @@ namespace lsp
                 __ASM_EMIT64("vmovss        %%xmm5, 0x08(%[corr])")
 
                 __ASM_EMIT("vsqrtps         %%xmm7, %%xmm6")                    /* xmm6 = sqrtf(B) */
-                __ASM_EMIT("vcmpps          $5, %[CORR_CC], %%xmm7, %%xmm1")    /* xmm1 = B >= 1e-10f */
+                __ASM_EMIT("vcmpps          $5, %[CORR_CC], %%xmm7, %%xmm1")    /* xmm1 = B >= threshold */
                 __ASM_EMIT("vdivps          %%xmm6, %%xmm0, %%xmm0")            /* xmm0 = T/sqrtf(B) */
                 __ASM_EMIT32("mov           %[dst], %[ptr]")
-                __ASM_EMIT("vandps          %%xmm1, %%xmm0, %%xmm0")            /* xmm0 = (B >= 1e-10f) ? T/sqrtf(B) : 0 */
+                __ASM_EMIT("vandps          %%xmm1, %%xmm0, %%xmm0")            /* xmm0 = (B >= threshold) ? T/sqrtf(B) : 0 */
                 __ASM_EMIT("add             $0x10, %[a_head]")                  /* ++a_head */
                 __ASM_EMIT("add             $0x10, %[b_head]")                  /* ++b_head */
                 __ASM_EMIT32("vmovups       %%xmm0, 0x00(%[ptr])")
@@ -459,10 +459,10 @@ namespace lsp
                 __ASM_EMIT64("vmovss        %%xmm1, 0x08(%[corr])")
 
                 __ASM_EMIT("vsqrtss         %%xmm7, %%xmm7, %%xmm6")            /* xmm6 = sqrtf(B) */
-                __ASM_EMIT("vcmpss          $5, %[CORR_CC], %%xmm7, %%xmm1")    /* xmm1 = B >= 1e-10f */
+                __ASM_EMIT("vcmpss          $5, %[CORR_CC], %%xmm7, %%xmm1")    /* xmm1 = B >= threshold */
                 __ASM_EMIT("vdivss          %%xmm6, %%xmm2, %%xmm0")            /* xmm0 = T/sqrtf(B) */
                 __ASM_EMIT32("mov           %[dst], %[ptr]")
-                __ASM_EMIT("vandps          %%xmm1, %%xmm0, %%xmm0")            /* xmm0 = (B >= 1e-10f) ? T/sqrtf(B) : 0 */
+                __ASM_EMIT("vandps          %%xmm1, %%xmm0, %%xmm0")            /* xmm0 = (B >= threshold) ? T/sqrtf(B) : 0 */
                 __ASM_EMIT("add             $0x04, %[a_head]")                  /* ++a_head */
                 __ASM_EMIT("add             $0x04, %[b_head]")                  /* ++b_head */
                 __ASM_EMIT32("vmovss        %%xmm0, 0x00(%[ptr])")

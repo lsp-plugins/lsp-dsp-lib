@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -68,6 +68,7 @@
         #include <private/dsp/arch/arm/neon-d32/hmath/hsum.h>
         #include <private/dsp/arch/arm/neon-d32/interpolation/linear.h>
         #include <private/dsp/arch/arm/neon-d32/mix.h>
+        #include <private/dsp/arch/arm/neon-d32/pan.h>
         #include <private/dsp/arch/arm/neon-d32/msmatrix.h>
         #include <private/dsp/arch/arm/neon-d32/pcomplex.h>
         #include <private/dsp/arch/arm/neon-d32/pmath/abs_vv.h>
@@ -133,6 +134,7 @@
                 EXPORT1(pcomplex_mod);
                 EXPORT1(pcomplex_rcp1);
                 EXPORT1(pcomplex_rcp2);
+                EXPORT1(pcomplex_corr);
 
                 EXPORT1(pcomplex_r2c_add2);
                 EXPORT1(pcomplex_r2c_sub2);
@@ -277,6 +279,8 @@
                 EXPORT1(abs_mul2);
                 EXPORT1(abs_div2);
                 EXPORT1(abs_rdiv2);
+                EXPORT1(abs_max2);
+                EXPORT1(abs_min2);
 
                 EXPORT1(abs_add3);
                 EXPORT1(abs_sub3);
@@ -284,6 +288,8 @@
                 EXPORT1(abs_mul3);
                 EXPORT1(abs_div3);
                 EXPORT1(abs_rdiv3);
+                EXPORT1(abs_max3);
+                EXPORT1(abs_min3);
 
                 EXPORT1(exp1);
                 EXPORT1(exp2);
@@ -360,6 +366,9 @@
                 EXPORT1(abs_min);
                 EXPORT1(abs_max);
                 EXPORT1(abs_minmax);
+                EXPORT1(sign_min);
+                EXPORT1(sign_max);
+                EXPORT1(sign_minmax);
 
                 EXPORT1(min_index);
                 EXPORT1(max_index);
@@ -409,6 +418,9 @@
                 EXPORT1(mix_add2);
                 EXPORT1(mix_add3);
                 EXPORT1(mix_add4);
+
+                EXPORT1(depan_lin);
+                EXPORT1(depan_eqpow);
 
                 EXPORT1(lin_inter_set);
                 EXPORT1(lin_inter_mul2);

@@ -73,7 +73,7 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s", label);
+        snprintf(buf, sizeof(buf), "%s", label);
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
@@ -93,7 +93,7 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s", label);
+        snprintf(buf, sizeof(buf), "%s", label);
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
@@ -113,7 +113,7 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s", label);
+        snprintf(buf, sizeof(buf), "%s", label);
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
@@ -133,7 +133,7 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s", label);
+        snprintf(buf, sizeof(buf), "%s", label);
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,

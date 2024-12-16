@@ -138,7 +138,7 @@ namespace lsp
 
         static const float corr_const[] __lsp_aligned16 =
         {
-            LSP_DSP_VEC4(1e-10f)
+            LSP_DSP_VEC4(1e-18f)
         };
 
         void corr_incr(dsp::correlation_t *corr, float *dst,
@@ -218,10 +218,10 @@ namespace lsp
                 __ASM_EMIT64("movss     %%xmm2, 0x08(%[corr])")
 
                 __ASM_EMIT("sqrtps      %%xmm1, %%xmm7")                /* xmm7 = sqrtf(B) */
-                __ASM_EMIT("cmpps       $5, %[CORR_CC], %%xmm1")        /* xmm1 = B >= 1e-10f */
+                __ASM_EMIT("cmpps       $5, %[CORR_CC], %%xmm1")        /* xmm1 = B >= threshold */
                 __ASM_EMIT("divps       %%xmm7, %%xmm0")                /* xmm0 = T/sqrtf(B) */
                 __ASM_EMIT32("mov       %[dst], %[ptr]")
-                __ASM_EMIT("andps       %%xmm1, %%xmm0")                /* xmm0 = (B >= 1e-10f) ? T/sqrtf(B) : 0 */
+                __ASM_EMIT("andps       %%xmm1, %%xmm0")                /* xmm0 = (B >= threshold) ? T/sqrtf(B) : 0 */
                 __ASM_EMIT("add         $0x10, %[a_head]")              /* ++a_head */
                 __ASM_EMIT("add         $0x10, %[b_head]")              /* ++b_head */
                 __ASM_EMIT32("movups    %%xmm0, 0x00(%[ptr])")
@@ -278,10 +278,10 @@ namespace lsp
                 __ASM_EMIT64("movss     %%xmm1, 0x08(%[corr])")
 
                 __ASM_EMIT("sqrtss      %%xmm3, %%xmm7")                /* xmm7 = sqrtf(B) */
-                __ASM_EMIT("cmpss       $5, %[CORR_CC], %%xmm3")        /* xmm3 = B >= 1e-10f */
+                __ASM_EMIT("cmpss       $5, %[CORR_CC], %%xmm3")        /* xmm3 = B >= threshold */
                 __ASM_EMIT("divss       %%xmm7, %%xmm2")                /* xmm2 = T/sqrtf(B) */
                 __ASM_EMIT32("mov       %[dst], %[ptr]")
-                __ASM_EMIT("andps       %%xmm3, %%xmm2")                /* xmm0 = (B >= 1e-10f) ? T/sqrtf(B) : 0 */
+                __ASM_EMIT("andps       %%xmm3, %%xmm2")                /* xmm0 = (B >= threshold) ? T/sqrtf(B) : 0 */
                 __ASM_EMIT("add         $0x04, %[a_head]")              /* ++a_head */
                 __ASM_EMIT("add         $0x04, %[b_head]")              /* ++b_head */
                 __ASM_EMIT32("movss     %%xmm2, 0x00(%[ptr])")

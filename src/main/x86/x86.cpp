@@ -299,6 +299,30 @@
                         if (info.ebx & X86_CPUID7_AMD_EBX_AVX2)
                             f->features     |= CPU_OPTION_AVX2;
                     }
+
+                    // Additional check for AVX512 support
+                    if ((xcr0 & XCR_FLAGS_AVX512) == XCR_FLAGS_AVX512)
+                    {
+                        if (info.ebx & X86_CPUID7_AMD_EBX_AVX512F)
+                            f->features     |= CPU_OPTION_AVX512F;
+                        if (info.ebx & X86_CPUID7_AMD_EBX_AVX512DQ)
+                            f->features     |= CPU_OPTION_AVX512DQ;
+                        if (info.ebx & X86_CPUID7_AMD_EBX_AVX512IFMA)
+                            f->features     |= CPU_OPTION_AVX512IFMA;
+                        if (info.ebx & X86_CPUID7_AMD_EBX_AVX512PF)
+                            f->features     |= CPU_OPTION_AVX512PF;
+                        if (info.ebx & X86_CPUID7_AMD_EBX_AVX512ER)
+                            f->features     |= CPU_OPTION_AVX512ER;
+                        if (info.ebx & X86_CPUID7_AMD_EBX_AVX512CD)
+                            f->features     |= CPU_OPTION_AVX512CD;
+                        if (info.ebx & X86_CPUID7_AMD_EBX_AVX512BW)
+                            f->features     |= CPU_OPTION_AVX512BW;
+                        if (info.ebx & X86_CPUID7_AMD_EBX_AVX512VL)
+                            f->features     |= CPU_OPTION_AVX512VL;
+
+                        if (info.ecx & X86_CPUID7_AMD_ECX_AVX512VBMI)
+                            f->features     |= CPU_OPTION_AVX512VBMI;
+                    }
                 }
 
                 // FUNCTION 0x80000001
@@ -535,6 +559,20 @@
                         if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON))
                         {
                             if (f->family < AMD_FAMILY_ZEN_1_2)
+                                return false;
+                            if (f->family == AMD_FAMILY_DHYANA)
+                                return false;
+                            return true;
+                        }
+                        break;
+
+                    case FEAT_FAST_AVX512:
+                        if (f->vendor == CPU_VENDOR_INTEL) // Any Intel CPU seems to be good enough with AVX-512
+                            return true;
+                        // Only starting with ZEN 1 architecture AMD's implementation of AVX is fast enough
+                        if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON))
+                        {
+                            if (f->family < AMD_FAMILY_ZEN_3_4)
                                 return false;
                             if (f->family == AMD_FAMILY_DHYANA)
                                 return false;

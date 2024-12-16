@@ -493,6 +493,269 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
+
+    #define SMINMAX_CORE(OP) \
+        __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0")            /* zmm0 = 0 */ \
+        __ASM_EMIT("test            %[count], %[count]") \
+        __ASM_EMIT("jz              10f") \
+        __ASM_EMIT("vbroadcastss    0x00(%[src]), %%zmm0")              /* zmm0 = result */ \
+        __ASM_EMIT("vmovaps         %[CC], %%zmm7")                     /* zmm7 = mask */ \
+        __ASM_EMIT("vandps          %%zmm7, %%zmm0, %%zmm1")            /* zmm1 = abs(result) */ \
+        /* 32x blocks */ \
+        __ASM_EMIT("sub             $32, %[count]") \
+        __ASM_EMIT("jb              2f") \
+        __ASM_EMIT("1:") \
+        __ASM_EMIT("vmovups         0x000(%[src]), %%zmm2")             /* zmm2 = x0 */ \
+        __ASM_EMIT("vmovups         0x040(%[src]), %%zmm4")             /* zmm4 = x1 */ \
+        __ASM_EMIT("vandps          %%zmm7, %%zmm2, %%zmm3")            /* zmm3 = abs(x0) */ \
+        __ASM_EMIT("vandps          %%zmm7, %%zmm4, %%zmm5")            /* zmm5 = abs(x1) */ \
+        __ASM_EMIT("vcmpps  " OP ", %%zmm1, %%zmm3, %%k2")              /* k2   = [abs(result) <=> abs(x0)] */ \
+        __ASM_EMIT("vmovaps         %%zmm3, %%zmm1 %{%%k2%}")           /* zmm1 = [abs(result) <=> abs(x0)] ? abs(result) : abs(x0) */ \
+        __ASM_EMIT("vmovaps         %%zmm2, %%zmm0 %{%%k2%}")           /* zmm0 = [abs(result) <=> abs(x0)] ? result : x0 */ \
+        __ASM_EMIT("vcmpps  " OP ", %%zmm1, %%zmm5, %%k3")              /* k3   = [abs(result) <=> abs(x1)] */ \
+        __ASM_EMIT("vmovaps         %%zmm5, %%zmm1 %{%%k3%}")           /* zmm1 = [abs(result) <=> abs(x1)] ? abs(result) : abs(x1) */ \
+        __ASM_EMIT("vmovaps         %%zmm4, %%zmm0 %{%%k3%}")           /* zmm0 = [abs(result) <=> abs(x1)] ? result : x1 */ \
+        __ASM_EMIT("add             $0x80, %[src]") \
+        __ASM_EMIT("sub             $32, %[count]") \
+        __ASM_EMIT("jae             1b") \
+        /* 16x block */ \
+        __ASM_EMIT("2:") \
+        __ASM_EMIT("add             $16, %[count]") \
+        __ASM_EMIT("jl              4f") \
+        __ASM_EMIT("vmovups         0x000(%[src]), %%zmm2")             /* zmm2 = x0 */ \
+        __ASM_EMIT("vandps          %%zmm7, %%zmm2, %%zmm3")            /* zmm3 = abs(x0) */ \
+        __ASM_EMIT("vcmpps  " OP ", %%zmm1, %%zmm3, %%k2")              /* k2   = [abs(result) <=> abs(x0)] */ \
+        __ASM_EMIT("vmovaps         %%zmm3, %%zmm1 %{%%k2%}")           /* zmm1 = [abs(result) <=> abs(x0)] ? abs(result) : abs(x0) */ \
+        __ASM_EMIT("vmovaps         %%zmm2, %%zmm0 %{%%k2%}")           /* zmm0 = [abs(result) <=> abs(x0)] ? result : x0 */ \
+        __ASM_EMIT("sub             $16, %[count]") \
+        __ASM_EMIT("add             $0x40, %[src]") \
+        __ASM_EMIT("4:") \
+        __ASM_EMIT("vextractf64x4   $1, %%zmm0, %%ymm2")                /* ymm2 = x0 */ \
+        __ASM_EMIT("vextractf64x4   $1, %%zmm1, %%ymm3")                /* ymm3 = abs(x0) */ \
+        __ASM_EMIT("vcmpps  " OP ", %%ymm1, %%ymm3, %%ymm6")            /* ymm6 = [abs(result) <=> abs(x0)] */ \
+        __ASM_EMIT("vblendvps       %%ymm6, %%ymm3, %%ymm1, %%ymm1")    /* ymm1 = [abs(result) <=> abs(x0)] ? abs(result) : abs(x0) */ \
+        __ASM_EMIT("vblendvps       %%ymm6, %%ymm2, %%ymm0, %%ymm0")    /* ymm0 = [abs(result) <=> abs(x0)] ? result : x0 */ \
+        /* 8x block */ \
+        __ASM_EMIT("add             $8, %[count]") \
+        __ASM_EMIT("jl              6f") \
+        __ASM_EMIT("vmovups         0x000(%[src]), %%ymm2")             /* ymm2 = x0 */ \
+        __ASM_EMIT("vandps          %%ymm7, %%ymm2, %%ymm3")            /* ymm3 = abs(x0) */ \
+        __ASM_EMIT("vcmpps  " OP ", %%ymm1, %%ymm3, %%ymm6")            /* ymm6 = [abs(result) <=> abs(x0)] */ \
+        __ASM_EMIT("vblendvps       %%ymm6, %%ymm3, %%ymm1, %%ymm1")    /* ymm1 = [abs(result) <=> abs(x0)] ? abs(result) : abs(x0) */ \
+        __ASM_EMIT("vblendvps       %%ymm6, %%ymm2, %%ymm0, %%ymm0")    /* ymm0 = [abs(result) <=> abs(x0)] ? result : x0 */ \
+        __ASM_EMIT("sub             $8, %[count]") \
+        __ASM_EMIT("add             $0x20, %[src]") \
+        __ASM_EMIT("6:") \
+        __ASM_EMIT("vextractf128    $1, %%ymm0, %%xmm2")                /* ymm2 = x0 */ \
+        __ASM_EMIT("vextractf128    $1, %%ymm1, %%xmm3")                /* ymm2 = abs(x0) */ \
+        __ASM_EMIT("vcmpps  " OP ", %%xmm1, %%xmm3, %%xmm6")            /* xmm6 = [abs(result) <=> abs(x0)] */ \
+        __ASM_EMIT("vblendvps       %%xmm6, %%xmm3, %%xmm1, %%xmm1")    /* xmm1 = [abs(result) <=> abs(x0)] ? abs(result) : abs(x0) */ \
+        __ASM_EMIT("vblendvps       %%xmm6, %%xmm2, %%xmm0, %%xmm0")    /* xmm0 = [abs(result) <=> abs(x0)] ? result : x0 */ \
+        /* 4x block */ \
+        __ASM_EMIT("add             $4, %[count]") \
+        __ASM_EMIT("jl              8f") \
+        __ASM_EMIT("vmovups         0x000(%[src]), %%xmm2")             /* xmm2 = x0 */ \
+        __ASM_EMIT("vandps          %%xmm7, %%xmm2, %%xmm3")            /* xmm3 = abs(x0) */ \
+        __ASM_EMIT("vcmpps  " OP ", %%xmm1, %%xmm3, %%xmm6")            /* xmm6 = [abs(result) <=> abs(x0)] */ \
+        __ASM_EMIT("vblendvps       %%xmm6, %%xmm3, %%xmm1, %%xmm1")    /* xmm1 = [abs(result) <=> abs(x0)] ? abs(result) : abs(x0) */ \
+        __ASM_EMIT("vblendvps       %%xmm6, %%xmm2, %%xmm0, %%xmm0")    /* xmm0 = [abs(result) <=> abs(x0)] ? result : x0 */ \
+        __ASM_EMIT("sub             $4, %[count]") \
+        __ASM_EMIT("add             $0x10, %[src]") \
+        __ASM_EMIT("8:") \
+        __ASM_EMIT("vmovhlps        %%xmm0, %%xmm0, %%xmm2")            /* ymm2 = x0 */ \
+        __ASM_EMIT("vmovhlps        %%xmm1, %%xmm1, %%xmm3")            /* ymm2 = abs(x0) */ \
+        __ASM_EMIT("vcmpps  " OP ", %%xmm1, %%xmm3, %%xmm6")            /* xmm6 = [abs(result) <=> abs(x0)] */ \
+        __ASM_EMIT("vblendvps       %%xmm6, %%xmm3, %%xmm1, %%xmm1")    /* xmm1 = [abs(result) <=> abs(x0)] ? abs(result) : abs(x0) */ \
+        __ASM_EMIT("vblendvps       %%xmm6, %%xmm2, %%xmm0, %%xmm0")    /* xmm0 = [abs(result) <=> abs(x0)] ? result : x0 */ \
+        __ASM_EMIT("vunpcklps       %%xmm0, %%xmm0, %%xmm0") \
+        __ASM_EMIT("vunpcklps       %%xmm1, %%xmm1, %%xmm1") \
+        __ASM_EMIT("vmovhlps        %%xmm0, %%xmm0, %%xmm2")            /* ymm2 = x0 */ \
+        __ASM_EMIT("vmovhlps        %%xmm1, %%xmm1, %%xmm3")            /* ymm2 = abs(x0) */ \
+        __ASM_EMIT("vcmpps  " OP ", %%xmm1, %%xmm3, %%xmm6")            /* xmm6 = [abs(result) <=> abs(x0)] */ \
+        __ASM_EMIT("vblendvps       %%xmm6, %%xmm3, %%xmm1, %%xmm1")    /* xmm1 = [abs(result) <=> abs(x0)] ? abs(result) : abs(x0) */ \
+        __ASM_EMIT("vblendvps       %%xmm6, %%xmm2, %%xmm0, %%xmm0")    /* xmm0 = [abs(result) <=> abs(x0)] ? result : x0 */ \
+        /* x1 blocks */ \
+        __ASM_EMIT("add             $3, %[count]") \
+        __ASM_EMIT("jl              10f") \
+        __ASM_EMIT("9:") \
+        __ASM_EMIT("vmovss          0x000(%[src]), %%xmm2") \
+        __ASM_EMIT("vandps          %%xmm7, %%xmm2, %%xmm3")            /* xmm3 = abs(x0) */ \
+        __ASM_EMIT("vcmpps  " OP ", %%xmm1, %%xmm3, %%xmm6")            /* xmm6 = [abs(result) <=> abs(x0)] */ \
+        __ASM_EMIT("vblendvps       %%xmm6, %%xmm3, %%xmm1, %%xmm1")    /* xmm1 = [abs(result) <=> abs(x0)] ? abs(result) : abs(x0) */ \
+        __ASM_EMIT("vblendvps       %%xmm6, %%xmm2, %%xmm0, %%xmm0")    /* xmm0 = [abs(result) <=> abs(x0)] ? result : x0 */ \
+        __ASM_EMIT("add             $0x04, %[src]") \
+        __ASM_EMIT("dec             %[count]") \
+        __ASM_EMIT("jge             9b") \
+        /* end */ \
+        __ASM_EMIT("10:")
+
+        float sign_min(const float *src, size_t count)
+        {
+            float res;
+            ARCH_X86_ASM(
+                SMINMAX_CORE("$1")
+                : [src] "+r" (src), [count] "+r" (count),
+                  [res] "=Yz" (res)
+                : [CC] "m" (minmax_const)
+                : "cc",
+                  "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+                  "%k2", "%k3"
+            );
+
+            return res;
+        }
+
+        float sign_max(const float *src, size_t count)
+        {
+            float res;
+            ARCH_X86_ASM(
+                SMINMAX_CORE("$6")
+                : [src] "+r" (src), [count] "+r" (count),
+                  [res] "=Yz" (res)
+                : [CC] "m" (minmax_const)
+                : "cc",
+                  "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+                  "%k2", "%k3"
+            );
+
+            return res;
+        }
+
+    #undef SMINMAX_CORE
+
+        void sign_minmax(const float *src, size_t count, float *min, float *max)
+        {
+            ARCH_X86_ASM(
+                __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0")
+                __ASM_EMIT("vxorps          %%zmm1, %%zmm1, %%zmm1")
+                __ASM_EMIT("test            %[count], %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("vmovaps         %[CC], %%zmm7")                     /* zmm7 = mask */
+                __ASM_EMIT("vbroadcastss    0x00(%[src]), %%zmm0")              /* zmm0 = min */
+                __ASM_EMIT("vandps          %%zmm7, %%zmm0, %%zmm1")            /* zmm1 = abs(min) */
+                __ASM_EMIT("vmovaps         %%zmm0, %%zmm2")                    /* zmm2 = max */
+                __ASM_EMIT("vmovaps         %%zmm1, %%zmm3")                    /* zmm3 = abs(max) */
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jb              2f")
+                /* 16x blocks */
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x000(%[src]), %%zmm4")             /* zmm4 = x */
+                __ASM_EMIT("vandps          %%zmm7, %%zmm4, %%zmm5")            /* zmm5 = abs(x) */
+                __ASM_EMIT("vcmpps          $1, %%zmm1, %%zmm5, %%k2")          /* k2   = [abs(x) < abs(min)] */
+                __ASM_EMIT("vcmpps          $6, %%zmm3, %%zmm5, %%k3")          /* k3   = [abs(x) > abs(max)] */
+                __ASM_EMIT("vmovaps         %%zmm4, %%zmm0 %{%%k2%}")           /* zmm0 = [abs(x) < abs(min)] ? x : min */
+                __ASM_EMIT("vmovaps         %%zmm4, %%zmm2 %{%%k3%}")           /* zmm2 = [abs(x) > abs(max)] ? x : max */
+                __ASM_EMIT("vmovaps         %%zmm5, %%zmm1 %{%%k2%}")           /* zmm1 = [abs(x) < abs(min)] ? abs(x) : abs(min) */
+                __ASM_EMIT("vmovaps         %%zmm5, %%zmm3 %{%%k3%}")           /* zmm3 = [abs(x) > abs(max)] ? abs(x) : abs(max) */
+                __ASM_EMIT("add             $0x40, %[src]")
+                __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("vextractf64x4   $1, %%zmm0, %%ymm4")                /* ymm4 = x */
+                __ASM_EMIT("vextractf64x4   $1, %%zmm1, %%ymm5")                /* ymm5 = abs(x) */
+                __ASM_EMIT("vcmpps          $1, %%ymm1, %%ymm5, %%ymm6")        /* ymm6 = [abs(x) < abs(min)] */
+                __ASM_EMIT("vblendvps       %%ymm6, %%ymm4, %%ymm0, %%ymm0")    /* ymm0 = [abs(x) < abs(min)] ? x : min */
+                __ASM_EMIT("vblendvps       %%ymm6, %%ymm5, %%ymm1, %%ymm1")    /* ymm1 = [abs(x) < abs(min)] ? abs(x) : abs(min) */
+                __ASM_EMIT("vextractf64x4   $1, %%zmm2, %%ymm4")                /* ymm4 = x */
+                __ASM_EMIT("vextractf64x4   $1, %%zmm3, %%ymm5")                /* ymm5 = abs(x) */
+                __ASM_EMIT("vcmpps          $6, %%ymm3, %%ymm5, %%ymm6")        /* ymm6 = [abs(x) > abs(max)] */
+                __ASM_EMIT("vblendvps       %%ymm6, %%ymm4, %%ymm2, %%ymm2")    /* ymm2 = [abs(x) > abs(max)] ? x : max */
+                __ASM_EMIT("vblendvps       %%ymm6, %%ymm5, %%ymm3, %%ymm3")    /* ymm3 = [abs(x) > abs(max)] ? abs(x) : abs(max) */
+                /* 8x block */
+                __ASM_EMIT("2:")
+                __ASM_EMIT("add             $8, %[count]")
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x000(%[src]), %%ymm4")             /* ymm4 = x */
+                __ASM_EMIT("vandps          %%ymm7, %%ymm4, %%ymm5")            /* ymm5 = abs(x) */
+                __ASM_EMIT("vcmpps          $1, %%ymm1, %%ymm5, %%ymm6")        /* ymm6 = [abs(x) < abs(min)] */
+                __ASM_EMIT("vblendvps       %%ymm6, %%ymm4, %%ymm0, %%ymm0")    /* ymm0 = [abs(x) < abs(min)] ? x : min */
+                __ASM_EMIT("vblendvps       %%ymm6, %%ymm5, %%ymm1, %%ymm1")    /* ymm1 = [abs(x) < abs(min)] ? abs(x) : abs(min) */
+                __ASM_EMIT("vcmpps          $6, %%ymm3, %%ymm5, %%ymm6")        /* ymm6 = [abs(x) > abs(max)] */
+                __ASM_EMIT("vblendvps       %%ymm6, %%ymm4, %%ymm2, %%ymm2")    /* ymm2 = [abs(x) > abs(max)] ? x : max */
+                __ASM_EMIT("vblendvps       %%ymm6, %%ymm5, %%ymm3, %%ymm3")    /* ymm3 = [abs(x) > abs(max)] ? abs(x) : abs(max) */
+                __ASM_EMIT("add             $0x20, %[src]")
+                __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("4:")
+                __ASM_EMIT("vextractf128    $1, %%ymm0, %%xmm4")                /* xmm4 = x */
+                __ASM_EMIT("vextractf128    $1, %%ymm1, %%xmm5")                /* xmm5 = abs(x) */
+                __ASM_EMIT("vcmpps          $1, %%xmm1, %%xmm5, %%xmm6")        /* xmm6 = [abs(x) < abs(min)] */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm4, %%xmm0, %%xmm0")    /* xmm0 = [abs(x) < abs(min)] ? x : min */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm5, %%xmm1, %%xmm1")    /* xmm1 = [abs(x) < abs(min)] ? abs(x) : abs(min) */
+                __ASM_EMIT("vextractf128    $1, %%ymm2, %%xmm4")                /* xmm4 = x */
+                __ASM_EMIT("vextractf128    $1, %%ymm3, %%xmm5")                /* xmm5 = abs(x) */
+                __ASM_EMIT("vcmpps          $6, %%xmm3, %%xmm5, %%xmm6")        /* xmm6 = [abs(x) > abs(max)] */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm4, %%xmm2, %%xmm2")    /* xmm2 = [abs(x) > abs(max)] ? x : max */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm5, %%xmm3, %%xmm3")    /* xmm3 = [abs(x) > abs(max)] ? abs(x) : abs(max) */
+                /* 4x block */
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("vmovups         0x000(%[src]), %%xmm4")             /* xmm4 = x */
+                __ASM_EMIT("vandps          %%xmm7, %%xmm4, %%xmm5")            /* xmm5 = abs(x) */
+                __ASM_EMIT("vcmpps          $1, %%xmm1, %%xmm5, %%xmm6")        /* xmm6 = [abs(x) < abs(min)] */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm4, %%xmm0, %%xmm0")    /* xmm0 = [abs(x) < abs(min)] ? x : min */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm5, %%xmm1, %%xmm1")    /* xmm1 = [abs(x) < abs(min)] ? abs(x) : abs(min) */
+                __ASM_EMIT("vcmpps          $6, %%xmm3, %%xmm5, %%xmm6")        /* xmm6 = [abs(x) > abs(max)] */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm4, %%xmm2, %%xmm2")    /* xmm2 = [abs(x) > abs(max)] ? x : max */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm5, %%xmm3, %%xmm3")    /* xmm3 = [abs(x) > abs(max)] ? abs(x) : abs(max) */
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("add             $0x10, %[src]")
+                __ASM_EMIT("6:")
+                /* Reduce to 1x block, step 1 */
+                __ASM_EMIT("vmovhlps        %%xmm0, %%xmm0, %%xmm4")            /* xmm4 = x */
+                __ASM_EMIT("vmovhlps        %%xmm1, %%xmm1, %%xmm5")            /* xmm5 = abs(x) */
+                __ASM_EMIT("vcmpps          $1, %%xmm1, %%xmm5, %%xmm6")        /* xmm6 = [abs(x) < abs(min)] */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm4, %%xmm0, %%xmm0")    /* xmm0 = [abs(x) < abs(min)] ? x : min */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm5, %%xmm1, %%xmm1")    /* xmm1 = [abs(x) < abs(min)] ? abs(x) : abs(min) */
+                __ASM_EMIT("vmovhlps        %%xmm2, %%xmm2, %%xmm4")            /* xmm4 = x */
+                __ASM_EMIT("vmovhlps        %%xmm3, %%xmm3, %%xmm5")            /* xmm5 = abs(x) */
+                __ASM_EMIT("vcmpps          $6, %%xmm3, %%xmm5, %%xmm6")        /* xmm6 = [abs(x) > abs(max)] */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm4, %%xmm2, %%xmm2")    /* xmm2 = [abs(x) > abs(max)] ? x : max */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm5, %%xmm3, %%xmm3")    /* xmm3 = [abs(x) > abs(max)] ? abs(x) : abs(max) */
+                /* Reduce to 1x block, step 2 */
+                __ASM_EMIT("vunpcklps       %%xmm0, %%xmm0, %%xmm0")
+                __ASM_EMIT("vunpcklps       %%xmm1, %%xmm1, %%xmm1")
+                __ASM_EMIT("vunpcklps       %%xmm2, %%xmm2, %%xmm2")
+                __ASM_EMIT("vunpcklps       %%xmm3, %%xmm3, %%xmm3")
+                __ASM_EMIT("vmovhlps        %%xmm0, %%xmm0, %%xmm4")            /* xmm4 = x */
+                __ASM_EMIT("vmovhlps        %%xmm1, %%xmm1, %%xmm5")            /* xmm5 = abs(x) */
+                __ASM_EMIT("vcmpps          $1, %%xmm1, %%xmm5, %%xmm6")        /* xmm6 = [abs(x) < abs(min)] */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm4, %%xmm0, %%xmm0")    /* xmm0 = [abs(x) < abs(min)] ? x : min */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm5, %%xmm1, %%xmm1")    /* xmm1 = [abs(x) < abs(min)] ? abs(x) : abs(min) */
+                __ASM_EMIT("vmovhlps        %%xmm2, %%xmm2, %%xmm4")            /* xmm4 = x */
+                __ASM_EMIT("vmovhlps        %%xmm3, %%xmm3, %%xmm5")            /* xmm5 = abs(x) */
+                __ASM_EMIT("vcmpps          $6, %%xmm3, %%xmm5, %%xmm6")        /* xmm6 = [abs(x) > abs(max)] */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm4, %%xmm2, %%xmm2")    /* xmm2 = [abs(x) > abs(max)] ? x : max */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm5, %%xmm3, %%xmm3")    /* xmm3 = [abs(x) > abs(max)] ? abs(x) : abs(max) */
+                /* 1x blocks */
+                __ASM_EMIT("add             $3, %[count]")
+                __ASM_EMIT("jl              8f")
+                __ASM_EMIT("7:")
+                __ASM_EMIT("vmovss          0x000(%[src]), %%xmm4")
+                __ASM_EMIT("vandps          %%xmm7, %%xmm4, %%xmm5")            /* xmm5 = abs(x) */
+                __ASM_EMIT("vcmpps          $1, %%xmm1, %%xmm5, %%xmm6")        /* xmm6 = [abs(x) < abs(min)] */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm4, %%xmm0, %%xmm0")    /* xmm0 = [abs(x) < abs(min)] ? x : min */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm5, %%xmm1, %%xmm1")    /* xmm1 = [abs(x) < abs(min)] ? abs(x) : abs(min) */
+                __ASM_EMIT("vcmpps          $6, %%xmm3, %%xmm5, %%xmm6")        /* xmm6 = [abs(x) > abs(max)] */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm4, %%xmm2, %%xmm2")    /* xmm2 = [abs(x) > abs(max)] ? x : max */
+                __ASM_EMIT("vblendvps       %%xmm6, %%xmm5, %%xmm3, %%xmm3")    /* xmm3 = [abs(x) > abs(max)] ? abs(x) : abs(max) */
+                __ASM_EMIT("add             $0x04, %[src]")
+                __ASM_EMIT("dec             %[count]")
+                __ASM_EMIT("jge             7b")
+                /* end */
+                __ASM_EMIT("8:")
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[min])")
+                __ASM_EMIT("vmovss          %%xmm1, 0x00(%[max])")
+                : [src] "+r" (src), [count] "+r" (count)
+                : [min] "r" (min), [max] "r" (max),
+                  [CC] "m" (minmax_const)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+                  "%k2", "%k3"
+            );
+        }
+
     } /* namespace avx512 */
 } /* namespace lsp */
 

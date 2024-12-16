@@ -92,7 +92,7 @@ PTEST_BEGIN("dsp.float", sanitize, 5, 10000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s x %d", label, int(count));
+        snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
         printf("Testing %s samples...\n", buf);
 
         PTEST_LOOP(buf,
@@ -106,7 +106,7 @@ PTEST_BEGIN("dsp.float", sanitize, 5, 10000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s x %d", label, int(count));
+        snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
         printf("Testing %s samples...\n", buf);
 
         PTEST_LOOP(buf,

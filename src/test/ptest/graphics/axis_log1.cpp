@@ -76,7 +76,7 @@ PTEST_BEGIN("dsp.graphics", axis_log1, 5, 1000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s x %d", label, int(count));
+        snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
         printf("Testing %s points...\n", buf);
 
         PTEST_LOOP(buf,

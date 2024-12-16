@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -55,6 +55,7 @@
         #include <private/dsp/arch/x86/avx/hmath/hdotp.h>
 
         #include <private/dsp/arch/x86/avx/mix.h>
+        #include <private/dsp/arch/x86/avx/pan.h>
         #include <private/dsp/arch/x86/avx/search/minmax.h>
 
         #include <private/dsp/arch/x86/avx/fft.h>
@@ -258,6 +259,8 @@
                 CEXPORT2_X64(favx, abs_mul2, x64_abs_mul2);
                 CEXPORT2_X64(favx, abs_div2, x64_abs_div2);
                 CEXPORT2_X64(favx, abs_rdiv2, x64_abs_rdiv2);
+                CEXPORT2_X64(favx, abs_max2, x64_abs_max2);
+                CEXPORT2_X64(favx, abs_min2, x64_abs_min2);
 
                 CEXPORT2_X64(favx, abs_add3, x64_abs_add3);
                 CEXPORT2_X64(favx, abs_sub3, x64_abs_sub3);
@@ -265,6 +268,8 @@
                 CEXPORT2_X64(favx, abs_mul3, x64_abs_mul3);
                 CEXPORT2_X64(favx, abs_div3, x64_abs_div3);
                 CEXPORT2_X64(favx, abs_rdiv3, x64_abs_rdiv3);
+                CEXPORT2_X64(favx, abs_max3, x64_abs_max3);
+                CEXPORT2_X64(favx, abs_min3, x64_abs_min3);
 
                 CEXPORT2_X64(favx, abs1, x64_abs1);
                 CEXPORT2_X64(favx, abs2, x64_abs2);
@@ -294,6 +299,7 @@
                 CEXPORT1(favx, pcomplex_r2c_mul2);
                 CEXPORT1(favx, pcomplex_r2c_div2);
                 CEXPORT1(favx, pcomplex_r2c_rdiv2);
+                CEXPORT1(favx, pcomplex_corr);
 
                 CEXPORT1(favx, biquad_process_x1);
                 CEXPORT1(favx, biquad_process_x2);
@@ -328,12 +334,18 @@
                 CEXPORT1(favx, mix_copy4);
                 CEXPORT1(favx, mix_add4);
 
+                CEXPORT1(favx, depan_lin);
+                CEXPORT1(favx, depan_eqpow);
+
                 CEXPORT1(favx, min);
                 CEXPORT1(favx, max);
                 CEXPORT1(favx, minmax);
                 CEXPORT1(favx, abs_min);
                 CEXPORT1(favx, abs_max);
                 CEXPORT1(favx, abs_minmax);
+                CEXPORT1(favx, sign_min);
+                CEXPORT1(favx, sign_max);
+                CEXPORT1(favx, sign_minmax);
 
                 CEXPORT1(favx, lr_to_ms);
                 CEXPORT1(favx, lr_to_mid);
@@ -464,6 +476,7 @@
                     CEXPORT2(favx, pcomplex_div2, pcomplex_div2_fma3);
                     CEXPORT2(favx, pcomplex_rdiv2, pcomplex_rdiv2_fma3);
                     CEXPORT2(favx, pcomplex_div3, pcomplex_div3_fma3);
+                    CEXPORT2(favx, pcomplex_corr, pcomplex_corr_fma3);
 
                     if (!below_zen3)
                     {
@@ -500,6 +513,8 @@
                     CEXPORT2(favx, dyn_biquad_process_x2, dyn_biquad_process_x2_fma3);
                     CEXPORT2(favx, dyn_biquad_process_x4, dyn_biquad_process_x4_fma3);
                     CEXPORT2(ffma, dyn_biquad_process_x8, dyn_biquad_process_x8_fma3);
+
+                    CEXPORT2(favx, depan_eqpow, depan_eqpow_fma3);
                 }
             }
 

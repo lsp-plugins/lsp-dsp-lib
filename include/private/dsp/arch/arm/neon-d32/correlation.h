@@ -129,7 +129,7 @@ namespace lsp
 
         static const float corr_const[] __lsp_aligned16 =
         {
-            LSP_DSP_VEC8(1e-10f)
+            LSP_DSP_VEC8(1e-18f)
         };
 
         void corr_incr(dsp::correlation_t *corr, float *dst,
@@ -204,9 +204,9 @@ namespace lsp
                 __ASM_EMIT("vdup.32     q0, d19[1]")                    /* q4   = xv' = T[7] */
                 __ASM_EMIT("vdup.32     q1, d11[1]")                    /* q5   = xa' = BA[7] */
                 __ASM_EMIT("vdup.32     q2, d15[1]")                    /* q6   = xb' = BB[7] */
-                __ASM_EMIT("vldm        %[CORR_CC], {q14-q15}")         /* q14  = 1e-10, q15 = 1e-10 */
+                __ASM_EMIT("vldm        %[CORR_CC], {q14-q15}")         /* q14  = threshold, q15 = threshold */
 
-                __ASM_EMIT("vcge.f32    q14, q8, q14")                  /* q14  = T >= 1e-10 */
+                __ASM_EMIT("vcge.f32    q14, q8, q14")                  /* q14  = T >= threshold */
                 __ASM_EMIT("vcge.f32    q15, q9, q15")
                 __ASM_EMIT("vrsqrte.f32 q4, q10")                       /* q4   = x0 */
                 __ASM_EMIT("vrsqrte.f32 q5, q11")
@@ -224,7 +224,7 @@ namespace lsp
                 __ASM_EMIT("vmul.f32    q11, q5, q13")
                 __ASM_EMIT("vmul.f32    q10, q8, q10")                  /* q10  = T/sqrtf(B) */
                 __ASM_EMIT("vmul.f32    q11, q9, q11")
-                __ASM_EMIT("vand        q10, q10, q14")                 /* q10  = (T >= 1e-10) ? T/sqrt(B) : 0 */
+                __ASM_EMIT("vand        q10, q10, q14")                 /* q10  = (T >= threshold) ? T/sqrt(B) : 0 */
                 __ASM_EMIT("vand        q11, q11, q15")
                 __ASM_EMIT("subs        %[count], #8")
                 __ASM_EMIT("vstm        %[dst]!, {q10-q11}")
@@ -264,9 +264,9 @@ namespace lsp
                 __ASM_EMIT("vdup.32     q1, d9[1]")                     /* q1   = xa' = BA[3] */
                 __ASM_EMIT("vdup.32     q2, d13[1]")                    /* q2   = xb' = BB[3] */
                 __ASM_EMIT("vdup.32     q0, d17[1]")                    /* q0   = xv' = T[3] */
-                __ASM_EMIT("vldm        %[CORR_CC], {q14}")             /* q14  = 1e-10 */
+                __ASM_EMIT("vldm        %[CORR_CC], {q14}")             /* q14  = threshold */
 
-                __ASM_EMIT("vcge.f32    q14, q8, q14")                  /* q14  = T >= 1e-10 */
+                __ASM_EMIT("vcge.f32    q14, q8, q14")                  /* q14  = T >= threshold */
                 __ASM_EMIT("vrsqrte.f32 q4, q10")                       /* q4   = x0 */
                 __ASM_EMIT("vmul.f32    q6, q4, q10")                   /* q6   = R * x0 */
                 __ASM_EMIT("vrsqrts.f32 q12, q6, q4")                   /* q12  = (3 - R * x0 * x0) / 2 */
@@ -275,14 +275,14 @@ namespace lsp
                 __ASM_EMIT("vrsqrts.f32 q12, q6, q4")                   /* q12  = (3 - R * x1 * x1) / 2 */
                 __ASM_EMIT("vmul.f32    q10, q4, q12")                  /* q10  = 1/sqrtf(B) = x2 = x1 * (3 - R * x1 * x1) / 2 */
                 __ASM_EMIT("vmul.f32    q10, q8, q10")                  /* q10  = T/sqrtf(B) */
-                __ASM_EMIT("vand        q10, q10, q14")                 /* q10  = (T >= 1e-10) ? T/sqrt(B) : 0 */
+                __ASM_EMIT("vand        q10, q10, q14")                 /* q10  = (T >= threshold) ? T/sqrt(B) : 0 */
                 __ASM_EMIT("sub         %[count], #4")
                 __ASM_EMIT("vstm        %[dst]!, {q10}")
                 __ASM_EMIT("4:")
                 /* 1x blocks */
                 __ASM_EMIT("adds        %[count], #3")
                 __ASM_EMIT("blt         6f")
-                __ASM_EMIT("vldm        %[CORR_CC], {q3}")              /* q3   = 1e-10 */
+                __ASM_EMIT("vldm        %[CORR_CC], {q3}")              /* q3   = threshold */
                 __ASM_EMIT("5:")
                 __ASM_EMIT("vld1.32     {d8[], d9[]}, [%[a_head]]!")    /* q4   = ah0 */
                 __ASM_EMIT("vld1.32     {d12[], d13[]}, [%[b_head]]!")  /* q6   = bh0 */
@@ -300,7 +300,7 @@ namespace lsp
                 __ASM_EMIT("vadd.f32    q0, q12, q0")                   /* q0   = T = xv + DV */
                 __ASM_EMIT("vmul.f32    q10, q1, q2")                   /* q10  = B = BA * BB */
 
-                __ASM_EMIT("vcge.f32    q14, q0, q3")                   /* q14  = T >= 1e-10 */
+                __ASM_EMIT("vcge.f32    q14, q0, q3")                   /* q14  = T >= threshold */
                 __ASM_EMIT("vrsqrte.f32 q4, q10")                       /* q4   = x0 */
                 __ASM_EMIT("vmul.f32    q6, q4, q10")                   /* q6   = R * x0 */
                 __ASM_EMIT("vrsqrts.f32 q12, q6, q4")                   /* q12  = (3 - R * x0 * x0) / 2 */
@@ -309,7 +309,7 @@ namespace lsp
                 __ASM_EMIT("vrsqrts.f32 q12, q6, q4")                   /* q12  = (3 - R * x1 * x1) / 2 */
                 __ASM_EMIT("vmul.f32    q10, q4, q12")                  /* q10  = 1/sqrtf(B) = x2 = x1 * (3 - R * x1 * x1) / 2 */
                 __ASM_EMIT("vmul.f32    q10, q0, q10")                  /* q10  = T/sqrtf(B) */
-                __ASM_EMIT("vand        q10, q10, q14")                 /* q10  = (T >= 1e-10) ? T/sqrt(B) : 0 */
+                __ASM_EMIT("vand        q10, q10, q14")                 /* q10  = (T >= threshold) ? T/sqrt(B) : 0 */
                 __ASM_EMIT("subs        %[count], #1")
                 __ASM_EMIT("vst1.32     {d20[0]}, [%[dst]]!")
                 __ASM_EMIT("bge         5b")

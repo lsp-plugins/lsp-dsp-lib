@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -24,7 +24,7 @@
 #include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/common/alloc.h>
 
-#define MIN_RANK 8
+#define MIN_RANK 5
 #define MAX_RANK 16
 
 namespace lsp
@@ -41,6 +41,11 @@ namespace lsp
         }
 
         namespace avx
+        {
+            float h_sum(const float *src, size_t count);
+        }
+
+        namespace avx512
         {
             float h_sum(const float *src, size_t count);
         }
@@ -63,7 +68,7 @@ namespace lsp
     typedef float (* h_sum_t)(const float *src, size_t count);
 }
 
-PTEST_BEGIN("dsp.hmath", h_sum, 5, 10000)
+PTEST_BEGIN("dsp.hmath", h_sum, 2, 10000)
 
     void call(const char *label, float *src, size_t count, h_sum_t func)
     {
@@ -71,7 +76,7 @@ PTEST_BEGIN("dsp.hmath", h_sum, 5, 10000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s x %d", label, int(count));
+        snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
@@ -98,6 +103,7 @@ PTEST_BEGIN("dsp.hmath", h_sum, 5, 10000)
             CALL(generic::h_sum);
             IF_ARCH_X86(CALL(sse::h_sum));
             IF_ARCH_X86(CALL(avx::h_sum));
+            IF_ARCH_X86(CALL(avx512::h_sum));
             IF_ARCH_ARM(CALL(neon_d32::h_sum));
             IF_ARCH_AARCH64(CALL(asimd::h_sum));
             PTEST_SEPARATOR;

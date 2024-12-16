@@ -27,7 +27,7 @@
 #ifdef ARCH_AARCH64
 
     #if defined(PLATFORM_MACOSX)
-        // TODO: add another method to detect hardware features
+        #define HWCAP_ASIMD             (1 << 0)
     #elif defined(PLATFORM_POSIX)
         #include <sys/auxv.h>
     #endif /* PLATFORM_POSIX */
@@ -187,6 +187,7 @@
                 size_t      part;
                 size_t      revision;
                 uint64_t    hwcap;
+                char        cpu_name[64];
             } cpu_features_t;
 
             void detect_cpu_features(cpu_features_t *f);

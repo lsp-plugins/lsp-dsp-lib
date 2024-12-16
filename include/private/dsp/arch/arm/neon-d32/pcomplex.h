@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -1489,6 +1489,135 @@ namespace lsp
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3" , "q4", "q5", "q6", "q7",
                   "q8", "q9", "q10", "q11"
+            );
+        }
+
+        IF_ARCH_ARM(
+            static float pcomplex_corr_const[] __lsp_aligned16 =
+            {
+                LSP_DSP_VEC4(1e-36f),
+                LSP_DSP_VEC4(1e-36f)
+            };
+        );
+
+        void pcomplex_corr(float *dst_corr, const float *src1, const float *src2, size_t count)
+        {
+            /*
+             * src1[i] = a + j*b, src2[i] = c + j*d
+             * den  = (a*a + b*b)*(c*c + d*d)
+             * nom  = a*c + b*d
+             * corr[i] = (den > threshold) ? nom / sqrt(den) : 0.0
+             */
+            ARCH_ARM_ASM
+            (
+                // x8 blocks
+                __ASM_EMIT("vldm            %[CC], {d24-d31}")          // q14-q15 = threshold
+                __ASM_EMIT("subs            %[count], #8")
+                __ASM_EMIT("blo             2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vld2.32         {q0-q1}, [%[src1]]!")       /* q0   = A0, q1 = B0 */
+                __ASM_EMIT("vld2.32         {q2-q3}, [%[src2]]!")       /* q2   = C0, q3 = D0 */
+                __ASM_EMIT("vld2.32         {q4-q5}, [%[src1]]!")       /* q4   = A1, q5 = B1 */
+                __ASM_EMIT("vld2.32         {q6-q7}, [%[src2]]!")       /* q6   = C1, q7 = D1 */
+                __ASM_EMIT("vmul.f32        q8, q0, q2")                /* q8   = A0*C0 */
+                __ASM_EMIT("vmul.f32        q9, q4, q6")                /* q9   = A1*C1 */
+                __ASM_EMIT("vmul.f32        q10, q0, q0")               /* q10  = A0*A0 */
+                __ASM_EMIT("vmul.f32        q11, q4, q4")               /* q11  = A1*A1 */
+                __ASM_EMIT("vmul.f32        q12, q2, q2")               /* q12  = C0*C0 */
+                __ASM_EMIT("vmul.f32        q13, q6, q6")               /* q13  = C1*C1 */
+                __ASM_EMIT("vmla.f32        q8, q1, q3")                /* q8   = nom0 = A0*C0 + B0*D0 */
+                __ASM_EMIT("vmla.f32        q9, q5, q7")                /* q9   = nom1 = A1*C1 + B1*D1 */
+                __ASM_EMIT("vmla.f32        q10, q1, q1")               /* q10  = A0*A0 + B0*B0 */
+                __ASM_EMIT("vmla.f32        q11, q5, q5")               /* q11  = A1*A1 + B1*B1 */
+                __ASM_EMIT("vmla.f32        q12, q3, q3")               /* q12  = C0*C0 + D0*D0 */
+                __ASM_EMIT("vmla.f32        q13, q7, q7")               /* q13  = C1*C1 + D1*D1 */
+                __ASM_EMIT("vmul.f32        q0, q10, q12")              /* q0   = den0 = (A0*A0 + B0*B0)*(C0*C0 + D0*D0) */
+                __ASM_EMIT("vmul.f32        q1, q11, q13")              /* q1   = den1 = (A1*A1 + B1*B1)*(C1*C1 + D1*D1) */
+                __ASM_EMIT("vrsqrte.f32     q2, q0")                    /* q2 = x0 */
+                __ASM_EMIT("vrsqrte.f32     q3, q1")
+                __ASM_EMIT("vmul.f32        q4, q2, q0")                /* q4 = R * x0 */
+                __ASM_EMIT("vmul.f32        q5, q3, q1")
+                __ASM_EMIT("vrsqrts.f32     q6, q4, q2")                /* q6 = (3 - R * x0 * x0) / 2 */
+                __ASM_EMIT("vrsqrts.f32     q7, q5, q3")
+                __ASM_EMIT("vmul.f32        q2, q2, q6")                /* q2 = x1 = x0 * (3 - R * x0 * x0) / 2 */
+                __ASM_EMIT("vmul.f32        q3, q3, q7")
+                __ASM_EMIT("vmul.f32        q4, q2, q0")                /* q4 = R * x1 */
+                __ASM_EMIT("vmul.f32        q5, q3, q1")
+                __ASM_EMIT("vrsqrts.f32     q6, q4, q2")                /* q6 = (3 - R * x1 * x1) / 2 */
+                __ASM_EMIT("vrsqrts.f32     q7, q5, q3")
+                __ASM_EMIT("vmul.f32        q2, q2, q6")                /* q2 = 1/den0 = x1 * (3 - R * x1 * x1) / 2 */
+                __ASM_EMIT("vmul.f32        q3, q3, q7")                /* q3 = 1/den1 */
+                __ASM_EMIT("vcge.f32        q0, q0, q14")               /* q0 = (den0 >= threshold) */
+                __ASM_EMIT("vcge.f32        q1, q1, q15")               /* q1 = (den1 >= threshold) */
+                __ASM_EMIT("vmul.f32        q2, q2, q8")                /* q2 = nom0/den0 */
+                __ASM_EMIT("vmul.f32        q3, q3, q9")                /* q3 = nom1/den1 */
+                __ASM_EMIT("vand            q0, q0, q2")                /* q0 = (den0 >= threshold) ? nom0/den0 : 0.0f */
+                __ASM_EMIT("vand            q1, q1, q3")                /* q1 = (den1 >= threshold) ? nom1/den1 : 0.0f */
+                __ASM_EMIT("vstm            %[dst]!, {q0-q1}")
+                __ASM_EMIT("subs            %[count], #8")
+                __ASM_EMIT("bhs             1b")
+                // x4 block
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds            %[count], #4")
+                __ASM_EMIT("blt             4f")
+                __ASM_EMIT("vld2.32         {q0-q1}, [%[src1]]!")       /* q0   = A0, q1 = B0 */
+                __ASM_EMIT("vld2.32         {q2-q3}, [%[src2]]!")       /* q2   = C0, q3 = D0 */
+                __ASM_EMIT("vmul.f32        q8, q0, q2")                /* q8   = A0*C0 */
+                __ASM_EMIT("vmul.f32        q10, q0, q0")               /* q10  = A0*A0 */
+                __ASM_EMIT("vmul.f32        q12, q2, q2")               /* q12  = C0*C0 */
+                __ASM_EMIT("vmla.f32        q8, q1, q3")                /* q8   = nom0 = A0*C0 + B0*D0 */
+                __ASM_EMIT("vmla.f32        q10, q1, q1")               /* q10  = A0*A0 + B0*B0 */
+                __ASM_EMIT("vmla.f32        q12, q3, q3")               /* q12  = C0*C0 + D0*D0 */
+                __ASM_EMIT("vmul.f32        q0, q10, q12")              /* q0   = den0 = (A0*A0 + B0*B0)*(C0*C0 + D0*D0) */
+                __ASM_EMIT("vrsqrte.f32     q2, q0")                    /* q2 = x0 */
+                __ASM_EMIT("vmul.f32        q4, q2, q0")                /* q4 = R * x0 */
+                __ASM_EMIT("vrsqrts.f32     q6, q4, q2")                /* q6 = (3 - R * x0 * x0) / 2 */
+                __ASM_EMIT("vmul.f32        q2, q2, q6")                /* q2 = x1 = x0 * (3 - R * x0 * x0) / 2 */
+                __ASM_EMIT("vmul.f32        q4, q2, q0")                /* q4 = R * x1 */
+                __ASM_EMIT("vrsqrts.f32     q6, q4, q2")                /* q6 = (3 - R * x1 * x1) / 2 */
+                __ASM_EMIT("vmul.f32        q2, q2, q6")                /* q2 = 1/den0 = x1 * (3 - R * x1 * x1) / 2 */
+                __ASM_EMIT("vcge.f32        q0, q0, q14")               /* q0 = (den0 >= threshold) */
+                __ASM_EMIT("vmul.f32        q2, q2, q8")                /* q2 = nom0/den0 */
+                __ASM_EMIT("vand            q0, q0, q2")                /* q0 = (den0 >= threshold) ? nom0/den0 : 0.0f */
+                __ASM_EMIT("vstm            %[dst]!, {q0}")
+                __ASM_EMIT("sub             %[count], #4")
+                // x1 blocks
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds            %[count], #3")
+                __ASM_EMIT("blt             6f")
+                __ASM_EMIT("5:")
+                __ASM_EMIT("vld2.32         {d0[], d1[]}, [%[src1]]!")  /* d0 = A0, d1 = B0 */
+                __ASM_EMIT("vld2.32         {d2[], d3[]}, [%[src2]]!")  /* d2 = C0, d3 = D0 */
+                __ASM_EMIT("vmul.f32        d8, d0, d2")                /* d8   = A0*C0 */
+                __ASM_EMIT("vmul.f32        d10, d0, d0")               /* d10  = A0*A0 */
+                __ASM_EMIT("vmul.f32        d12, d2, d2")               /* d12  = C0*C0 */
+                __ASM_EMIT("vmla.f32        d8, d1, d3")                /* d8   = nom0 = A0*C0 + B0*D0 */
+                __ASM_EMIT("vmla.f32        d10, d1, d1")               /* d10  = A0*A0 + B0*B0 */
+                __ASM_EMIT("vmla.f32        d12, d3, d3")               /* d12  = C0*C0 + D0*D0 */
+                __ASM_EMIT("vmul.f32        d0, d10, d12")              /* d0   = den0 = (A0*A0 + B0*B0)*(C0*C0 + D0*D0) */
+                __ASM_EMIT("vrsqrte.f32     d2, d0")                    /* d2 = x0 */
+                __ASM_EMIT("vmul.f32        d4, d2, d0")                /* d4 = R * x0 */
+                __ASM_EMIT("vrsqrts.f32     d6, d4, d2")                /* d6 = (3 - R * x0 * x0) / 2 */
+                __ASM_EMIT("vmul.f32        d2, d2, d6")                /* d2 = x1 = x0 * (3 - R * x0 * x0) / 2 */
+                __ASM_EMIT("vmul.f32        d4, d2, d0")                /* d4 = R * x1 */
+                __ASM_EMIT("vrsqrts.f32     d6, d4, d2")                /* d6 = (3 - R * x1 * x1) / 2 */
+                __ASM_EMIT("vmul.f32        d2, d2, d6")                /* d2 = 1/den0 = x1 * (3 - R * x1 * x1) / 2 */
+                __ASM_EMIT("vcge.f32        d0, d0, d28")               /* d0 = (den0 >= threshold) */
+                __ASM_EMIT("vmul.f32        d2, d2, d8")                /* d2 = nom0/den0 */
+                __ASM_EMIT("vand            d0, d0, d2")                /* d0 = (den0 >= threshold) ? nom0/den0 : 0.0f */
+                __ASM_EMIT("subs            %[count], #1")
+                __ASM_EMIT("vst1.32         {d0[0]}, [%[dst]]!")
+                __ASM_EMIT("bge             5b")
+
+                __ASM_EMIT("6:")
+
+                : [dst] "+r" (dst_corr), [src1] "+r" (src1), [src2] "+r" (src2), [count] "+r" (count)
+                : [CC] "r" (&pcomplex_corr_const[0])
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
             );
         }
 

@@ -2,6 +2,13 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.28 ===
+* The DSP library now builds for Apple M1 chips and above on MacOS.
+* Implemented abs_max2, abs_min2, abs_max3 and abs_min3 functions.
+* Implemented sign_min, sign_max, sign_minmax functions.
+* Updated build scripts.
+* Updated module versions in dependencies.
+
 === 1.0.27 ===
 * Updated build scripts.
 * Updated module versions in dependencies.

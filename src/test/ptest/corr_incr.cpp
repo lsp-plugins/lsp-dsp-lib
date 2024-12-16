@@ -119,7 +119,7 @@ PTEST_BEGIN("dsp", corr_incr, 5, 10000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s x %d", label, int(count));
+        snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
         printf("Testing %s correlation ...\n", buf);
 
         dsp::correlation_t corr;

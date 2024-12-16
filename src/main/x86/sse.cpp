@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -51,6 +51,7 @@
         #include <private/dsp/arch/x86/sse/hmath/hdotp.h>
 
         #include <private/dsp/arch/x86/sse/mix.h>
+        #include <private/dsp/arch/x86/sse/pan.h>
 
         #include <private/dsp/arch/x86/sse/search/minmax.h>
 
@@ -157,6 +158,8 @@
                 EXPORT1(abs_mul2);
                 EXPORT1(abs_div2);
                 EXPORT1(abs_rdiv2);
+                EXPORT1(abs_max2);
+                EXPORT1(abs_min2);
 
                 EXPORT1(abs_add3);
                 EXPORT1(abs_sub3);
@@ -164,13 +167,18 @@
                 EXPORT1(abs_mul3);
                 EXPORT1(abs_div3);
                 EXPORT1(abs_rdiv3);
+                EXPORT1(abs_max3);
+                EXPORT1(abs_min3);
 
                 EXPORT1(min);
                 EXPORT1(max);
-                EXPORT1(abs_max);
                 EXPORT1(abs_min);
+                EXPORT1(abs_max);
+                EXPORT1(sign_min);
+                EXPORT1(sign_max);
                 EXPORT1(minmax);
                 EXPORT1(abs_minmax);
+                EXPORT1(sign_minmax);
 
                 EXPORT1(add2);
                 EXPORT1(sub2);
@@ -278,6 +286,9 @@
                 EXPORT1(mix_copy4);
                 EXPORT1(mix_add4);
 
+                EXPORT1(depan_lin);
+                EXPORT1(depan_eqpow);
+
                 EXPORT1(reverse1);
                 EXPORT1(reverse2);
 
@@ -314,6 +325,7 @@
                 EXPORT1(pcomplex_r2c);
                 EXPORT1(pcomplex_c2r);
                 EXPORT1(pcomplex_mod);
+                EXPORT1(pcomplex_corr);
         //            EXPORT1(complex_cvt2modarg);
         //            EXPORT1(complex_cvt2reim);
 

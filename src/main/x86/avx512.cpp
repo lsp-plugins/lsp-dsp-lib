@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 24 мая 2023 г.
@@ -47,10 +47,13 @@
         #include <private/dsp/arch/x86/avx512/dynamics.h>
         #include <private/dsp/arch/x86/avx512/float.h>
         #include <private/dsp/arch/x86/avx512/graphics/axis.h>
+        #include <private/dsp/arch/x86/avx512/hmath.h>
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
         #include <private/dsp/arch/x86/avx512/pcomplex.h>
         #include <private/dsp/arch/x86/avx512/pmath.h>
         #include <private/dsp/arch/x86/avx512/search.h>
+        #include <private/dsp/arch/x86/avx512/mix.h>
+        #include <private/dsp/arch/x86/avx512/pan.h>
 
         #include <private/dsp/arch/x86/avx512/correlation.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX512_IMPL
@@ -81,6 +84,11 @@
 
             void dsp_init(const cpu_features_t *f)
             {
+                // Enable AVX-512 only for CPUs that really support it well
+                const bool favx512  = feature_check(f, FEAT_FAST_AVX512);
+                if (!favx512)
+                    return;
+
                 const bool vl = (f->features & (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL)) ==
                                 (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL);
 
@@ -95,6 +103,8 @@
                 CEXPORT1(vl, abs_mul2);
                 CEXPORT1(vl, abs_div2);
                 CEXPORT1(vl, abs_rdiv2);
+                CEXPORT1(vl, abs_max2);
+                CEXPORT1(vl, abs_min2);
 
                 CEXPORT1(vl, abs_add3);
                 CEXPORT1(vl, abs_sub3);
@@ -102,6 +112,8 @@
                 CEXPORT1(vl, abs_mul3);
                 CEXPORT1(vl, abs_div3);
                 CEXPORT1(vl, abs_rdiv3);
+                CEXPORT1(vl, abs_max3);
+                CEXPORT1(vl, abs_min3);
 
                 CEXPORT1(vl, exp1);
                 CEXPORT1(vl, exp2);
@@ -260,6 +272,7 @@
                 CEXPORT1(vl, pcomplex_r2c_mul2);
                 CEXPORT1(vl, pcomplex_r2c_div2);
                 CEXPORT1(vl, pcomplex_c2r);
+                CEXPORT1(vl, pcomplex_corr);
 
                 CEXPORT1(vl, min);
                 CEXPORT1(vl, max);
@@ -267,6 +280,9 @@
                 CEXPORT1(vl, abs_min);
                 CEXPORT1(vl, abs_max);
                 CEXPORT1(vl, abs_minmax);
+                CEXPORT1(vl, sign_min);
+                CEXPORT1(vl, sign_max);
+                CEXPORT1(vl, sign_minmax);
 
                 CEXPORT1(vl, min_index);
                 CEXPORT1(vl, max_index);
@@ -298,6 +314,27 @@
 
                 CEXPORT1(vl, corr_init);
                 CEXPORT1(vl, corr_incr);
+
+                CEXPORT1(vl, depan_lin);
+                CEXPORT1(vl, depan_eqpow);
+
+                CEXPORT1(vl, mix2);
+                CEXPORT1(vl, mix_copy2);
+                CEXPORT1(vl, mix_add2);
+                CEXPORT1(vl, mix3);
+                CEXPORT1(vl, mix_copy3);
+                CEXPORT1(vl, mix_add3);
+                CEXPORT1(vl, mix4);
+                CEXPORT1(vl, mix_copy4);
+                CEXPORT1(vl, mix_add4);
+
+                CEXPORT1(vl, h_sum);
+                CEXPORT1(vl, h_sqr_sum);
+                CEXPORT1(vl, h_abs_sum);
+
+                CEXPORT1(vl, h_dotp);
+                CEXPORT1(vl, h_sqr_dotp);
+                CEXPORT1(vl, h_abs_dotp);
             }
         } /* namespace avx2 */
     } /* namespace lsp */

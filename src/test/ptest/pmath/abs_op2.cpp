@@ -38,6 +38,8 @@ namespace lsp
         void    abs_mul2(float *dst, const float *src, size_t count);
         void    abs_div2(float *dst, const float *src, size_t count);
         void    abs_rdiv2(float *dst, const float *src, size_t count);
+        void    abs_max2(float *dst, const float *src, size_t count);
+        void    abs_min2(float *dst, const float *src, size_t count);
     }
 
     IF_ARCH_X86(
@@ -49,6 +51,8 @@ namespace lsp
             void    abs_mul2(float *dst, const float *src, size_t count);
             void    abs_div2(float *dst, const float *src, size_t count);
             void    abs_rdiv2(float *dst, const float *src, size_t count);
+            void    abs_max2(float *dst, const float *src, size_t count);
+            void    abs_min2(float *dst, const float *src, size_t count);
         }
 
         namespace avx512
@@ -59,6 +63,8 @@ namespace lsp
             void    abs_mul2(float *dst, const float *src, size_t count);
             void    abs_div2(float *dst, const float *src, size_t count);
             void    abs_rdiv2(float *dst, const float *src, size_t count);
+            void    abs_max2(float *dst, const float *src, size_t count);
+            void    abs_min2(float *dst, const float *src, size_t count);
         }
     )
 
@@ -71,6 +77,8 @@ namespace lsp
             void    x64_abs_mul2(float *dst, const float *src, size_t count);
             void    x64_abs_div2(float *dst, const float *src, size_t count);
             void    x64_abs_rdiv2(float *dst, const float *src, size_t count);
+            void    x64_abs_max2(float *dst, const float *src, size_t count);
+            void    x64_abs_min2(float *dst, const float *src, size_t count);
         }
     )
 
@@ -83,6 +91,8 @@ namespace lsp
             void    abs_mul2(float *dst, const float *src, size_t count);
             void    abs_div2(float *dst, const float *src, size_t count);
             void    abs_rdiv2(float *dst, const float *src, size_t count);
+            void    abs_max2(float *dst, const float *src, size_t count);
+            void    abs_min2(float *dst, const float *src, size_t count);
         }
     )
 
@@ -95,6 +105,8 @@ namespace lsp
             void    abs_mul2(float *dst, const float *src, size_t count);
             void    abs_div2(float *dst, const float *src, size_t count);
             void    abs_rdiv2(float *dst, const float *src, size_t count);
+            void    abs_max2(float *dst, const float *src, size_t count);
+            void    abs_min2(float *dst, const float *src, size_t count);
         }
     )
 
@@ -111,7 +123,7 @@ PTEST_BEGIN("dsp.pmath", abs_op2, 5, 1000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s x %d", label, int(count));
+        snprintf(buf, sizeof(buf), "%s x %d", label, int(count));
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
@@ -183,6 +195,22 @@ PTEST_BEGIN("dsp.pmath", abs_op2, 5, 1000)
             IF_ARCH_X86(CALL(avx512::abs_rdiv2));
             IF_ARCH_ARM(CALL(neon_d32::abs_rdiv2));
             IF_ARCH_AARCH64(CALL(asimd::abs_rdiv2));
+            PTEST_SEPARATOR;
+
+            CALL(generic::abs_max2);
+            IF_ARCH_X86(CALL(sse::abs_max2));
+            IF_ARCH_X86_64(CALL(avx::x64_abs_max2));
+            IF_ARCH_X86(CALL(avx512::abs_max2));
+            IF_ARCH_ARM(CALL(neon_d32::abs_max2));
+            IF_ARCH_AARCH64(CALL(asimd::abs_max2));
+            PTEST_SEPARATOR;
+
+            CALL(generic::abs_min2);
+            IF_ARCH_X86(CALL(sse::abs_min2));
+            IF_ARCH_X86_64(CALL(avx::x64_abs_min2));
+            IF_ARCH_X86(CALL(avx512::abs_min2));
+            IF_ARCH_ARM(CALL(neon_d32::abs_min2));
+            IF_ARCH_AARCH64(CALL(asimd::abs_min2));
             PTEST_SEPARATOR2;
         }
 

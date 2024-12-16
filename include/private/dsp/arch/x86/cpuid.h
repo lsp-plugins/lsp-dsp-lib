@@ -83,6 +83,16 @@
 #define X86_CPUID7_INTEL_ECX_AVX512VBMI         (1 << 1)
 
 #define X86_CPUID7_AMD_EBX_AVX2                 (1 << 5)
+#define X86_CPUID7_AMD_EBX_AVX512F              (1 << 16)
+#define X86_CPUID7_AMD_EBX_AVX512DQ             (1 << 17)
+#define X86_CPUID7_AMD_EBX_AVX512IFMA           (1 << 21)
+#define X86_CPUID7_AMD_EBX_AVX512PF             (1 << 26)
+#define X86_CPUID7_AMD_EBX_AVX512ER             (1 << 27)
+#define X86_CPUID7_AMD_EBX_AVX512CD             (1 << 28)
+#define X86_CPUID7_AMD_EBX_AVX512BW             (1 << 30)
+#define X86_CPUID7_AMD_EBX_AVX512VL             (1 << 31)
+
+#define X86_CPUID7_AMD_ECX_AVX512VBMI           (1 << 1)
 
 //-------------------------------------------------------------------------
 // Function 80000001

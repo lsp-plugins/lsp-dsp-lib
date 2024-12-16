@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -90,6 +90,7 @@
                 }
                 EXPORT2(pcomplex_mod, pcomplex_mod);
                 EXPORT2_X64(pcomplex_mod, x64_pcomplex_mod);
+                EXPORT2_X64(pcomplex_corr, x64_pcomplex_corr);
 
                 EXPORT2_X64(biquad_process_x8, x64_biquad_process_x8);
                 EXPORT2_X64(dyn_biquad_process_x8, x64_dyn_biquad_process_x8);

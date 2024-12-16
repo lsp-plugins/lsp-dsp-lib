@@ -114,7 +114,7 @@ CXX_HEADERS             = $(foreach path,$(CXX_HDR_PATHS),$(call rwildcard, $(pa
 CXX_INSTHEADERS         = $(patsubst $(ARTIFACT_INC)/%,$(DESTDIR)$(INCDIR)/%,$(CXX_HEADERS))
 DEP_FILE                = $(patsubst %.o,%.d, $(@))
 
-CXX_SSE_CFLAGS          = -mmmx -m3dnow -msse
+CXX_SSE_CFLAGS          = -mmmx -msse
 CXX_SSE2_CFLAGS         = $(CXX_SSE_CFLAGS) -msse2
 CXX_SSE3_CFLAGS         = $(CXX_SSE2_CFLAGS) -msse3 -mssse3
 CXX_SSE4_CFLAGS         = $(CXX_SSE3_CFLAGS) -msse4 -msse4a -msse4.1 -msse4.2

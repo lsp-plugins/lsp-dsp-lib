@@ -98,7 +98,7 @@ PTEST_BEGIN("dsp", convolve, 5, 1000)
             return;
 
         char buf[80];
-        sprintf(buf, "%s %d x %d", label, int(count), int(length));
+        snprintf(buf, sizeof(buf), "%s %d x %d", label, int(count), int(length));
         printf("Testing %s convolution ...\n", buf);
 
         PTEST_LOOP(buf,

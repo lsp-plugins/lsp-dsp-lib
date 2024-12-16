@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -93,7 +93,8 @@ namespace lsp
                   [off] "=&r" (off)
                 : [a] "r" (a), [b] "r" (b),
                   [k1] "m" (k1), [k2] "m" (k2)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -161,7 +162,8 @@ namespace lsp
                   [off] "=&r" (off)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
                   [k1] "m" (k1), [k2] "m" (k2)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -234,7 +236,8 @@ namespace lsp
                   [off] "=&r" (off)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
                   [k1] "m" (k1), [k2] "m" (k2)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -314,7 +317,8 @@ namespace lsp
                   [off] "=&r" (off)
                 : [a] "r" (a), [b] "r" (b), [c] "r" (c),
                   [k1] "m" (k1), [k2] "m" (k2), [k3] "m" (k3)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -394,7 +398,8 @@ namespace lsp
                   [off] "=&r" (off)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b), [c] "r" (c),
                   [k1] "m" (k1), [k2] "m" (k2), [k3] "m" (k3)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -479,7 +484,8 @@ namespace lsp
                   [off] "=&r" (off)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b), [c] "r" (c),
                   [k1] "m" (k1), [k2] "m" (k2), [k3] "m" (k3)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -570,7 +576,8 @@ namespace lsp
                   [off] "=&r" (off)
                 : [a] "r" (a), [b] "r" (b), [c] "r" (c), [d] "r" (d),
                   [k1] "m" (k1), [k2] "m" (k2), [k3] "m" (k3), [k4] "m" (k4)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -675,7 +682,8 @@ namespace lsp
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c), [d] "+r" (d),
                   [count] "+r" (count)
                 : [k1] "m" (k1), [k2] "m" (k2), [k3] "m" (k3), [k4] "m" (k4)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -784,7 +792,8 @@ namespace lsp
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c), [d] "+r" (d),
                   [count] "+r" (count)
                 : [k1] "m" (k1), [k2] "m" (k2), [k3] "m" (k3), [k4] "m" (k4)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -875,7 +884,8 @@ namespace lsp
                   [off] "=&r" (off)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b), [c] "r" (c), [d] "r" (d),
                   [k1] "m" (k1), [k2] "m" (k2), [k3] "m" (k3), [k4] "m" (k4)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -971,12 +981,13 @@ namespace lsp
                   [off] "=&r" (off)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b), [c] "r" (c), [d] "r" (d),
                   [k1] "m" (k1), [k2] "m" (k2), [k3] "m" (k3), [k4] "m" (k4)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
     #endif
-    }
-}
+    } /* namespace avx */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX_MIX_H_ */

@@ -139,7 +139,7 @@ namespace lsp
 
         static const float corr_const[] __lsp_aligned16 =
         {
-            LSP_DSP_VEC8(1e-10f)
+            LSP_DSP_VEC8(1e-18f)
         };
 
         void corr_incr(dsp::correlation_t *corr, float *dst,
@@ -213,9 +213,9 @@ namespace lsp
                 __ASM_EMIT("dup         v0.4s, v9.s[3]")                    /* v0   = xv' = T[7] */
                 __ASM_EMIT("dup         v1.4s, v5.s[3]")                    /* v1   = xa' = BA[7] */
                 __ASM_EMIT("dup         v2.4s, v7.s[3]")                    /* v2   = xb' = BB[7] */
-                __ASM_EMIT("ldp         q14, q15, [%[CORR_CC]]")            /* v14  = 1e-10, v15 = 1e-10 */
+                __ASM_EMIT("ldp         q14, q15, [%[CORR_CC]]")            /* v14  = threshold, v15 = threshold */
 
-                __ASM_EMIT("fcmge       v14.4s, v8.4s, v14.4s")             /* v14  = T >= 1e-10 */
+                __ASM_EMIT("fcmge       v14.4s, v8.4s, v14.4s")             /* v14  = T >= threshold */
                 __ASM_EMIT("fcmge       v15.4s, v9.4s, v15.4s")
                 __ASM_EMIT("frsqrte     v4.4s, v10.4s")                     /* v4   = x0 */
                 __ASM_EMIT("frsqrte     v5.4s, v11.4s")
@@ -233,7 +233,7 @@ namespace lsp
                 __ASM_EMIT("fmul        v11.4s, v5.4s, v13.4s")
                 __ASM_EMIT("fmul        v10.4s, v8.4s, v10.4s")             /* v10  = T/svrtf(B) */
                 __ASM_EMIT("fmul        v11.4s, v9.4s, v11.4s")
-                __ASM_EMIT("and         v10.16b, v10.16b, v14.16b")         /* v10  = (T >= 1e-10) ? T/svrt(B) : 0 */
+                __ASM_EMIT("and         v10.16b, v10.16b, v14.16b")         /* v10  = (T >= threshold) ? T/svrt(B) : 0 */
                 __ASM_EMIT("and         v11.16b, v11.16b, v15.16b")
                 __ASM_EMIT("add         %[a_head], %[a_head], #0x20")
                 __ASM_EMIT("add         %[b_head], %[b_head], #0x20")
@@ -278,9 +278,9 @@ namespace lsp
                 __ASM_EMIT("dup         v1.4s, v4.s[3]")                    /* v1   = xa' = BA[7] */
                 __ASM_EMIT("dup         v2.4s, v6.s[3]")                    /* v2   = xb' = BB[7] */
                 __ASM_EMIT("dup         v0.4s, v8.s[3]")                    /* v0   = xv' = T[7] */
-                __ASM_EMIT("ldr         q14, [%[CORR_CC]]")                 /* v14  = 1e-10 */
+                __ASM_EMIT("ldr         q14, [%[CORR_CC]]")                 /* v14  = threshold */
 
-                __ASM_EMIT("fcmge       v14.4s, v8.4s, v14.4s")             /* v14  = T >= 1e-10 */
+                __ASM_EMIT("fcmge       v14.4s, v8.4s, v14.4s")             /* v14  = T >= threshold */
                 __ASM_EMIT("frsqrte     v4.4s, v10.4s")                     /* v4   = x0 */
                 __ASM_EMIT("fmul        v6.4s, v4.4s, v10.4s")              /* v6   = R * x0 */
                 __ASM_EMIT("frsqrts     v12.4s, v6.4s, v4.4s")              /* v12  = (3 - R * x0 * x0) / 2 */
@@ -289,7 +289,7 @@ namespace lsp
                 __ASM_EMIT("frsqrts     v12.4s, v6.4s, v4.4s")              /* v12  = (3 - R * x1 * x1) / 2 */
                 __ASM_EMIT("fmul        v10.4s, v4.4s, v12.4s")             /* v10  = 1/svrtf(B) = x2 = x1 * (3 - R * x1 * x1) / 2 */
                 __ASM_EMIT("fmul        v10.4s, v8.4s, v10.4s")             /* v10  = T/svrtf(B) */
-                __ASM_EMIT("and         v10.16b, v10.16b, v14.16b")         /* v10  = (T >= 1e-10) ? T/svrt(B) : 0 */
+                __ASM_EMIT("and         v10.16b, v10.16b, v14.16b")         /* v10  = (T >= threshold) ? T/svrt(B) : 0 */
                 __ASM_EMIT("add         %[a_head], %[a_head], #0x10")
                 __ASM_EMIT("add         %[b_head], %[b_head], #0x10")
                 __ASM_EMIT("sub         %[count], %[count], #4")
@@ -301,7 +301,7 @@ namespace lsp
                 /* 1x blocks */
                 __ASM_EMIT("adds        %[count], %[count], #3")
                 __ASM_EMIT("blt         6f")
-                __ASM_EMIT("ldr         q3, [%[CORR_CC]]")                  /* v3   = 1e-10 */
+                __ASM_EMIT("ldr         q3, [%[CORR_CC]]")                  /* v3   = threshold */
                 __ASM_EMIT("5:")
                 __ASM_EMIT("ld1r        {v4.4s}, [%[a_head]]")              /* v4   = ah0 */
                 __ASM_EMIT("ld1r        {v6.4s}, [%[b_head]]")              /* v6   = bh0 */
@@ -319,7 +319,7 @@ namespace lsp
                 __ASM_EMIT("fadd        v0.4s, v12.4s, v0.4s")              /* v0   = T = xv + DV */
                 __ASM_EMIT("fmul        v10.4s, v1.4s, v2.4s")              /* v10  = B = BA * BB */
 
-                __ASM_EMIT("fcmge       v14.4s, v0.4s, v3.4s")              /* v14  = T >= 1e-10 */
+                __ASM_EMIT("fcmge       v14.4s, v0.4s, v3.4s")              /* v14  = T >= threshold */
                 __ASM_EMIT("frsqrte     v4.4s, v10.4s")                     /* v4   = x0 */
                 __ASM_EMIT("fmul        v6.4s, v4.4s, v10.4s")              /* v6   = R * x0 */
                 __ASM_EMIT("frsqrts     v12.4s, v6.4s, v4.4s")              /* v12  = (3 - R * x0 * x0) / 2 */
@@ -328,7 +328,7 @@ namespace lsp
                 __ASM_EMIT("frsqrts     v12.4s, v6.4s, v4.4s")              /* v12  = (3 - R * x1 * x1) / 2 */
                 __ASM_EMIT("fmul        v10.4s, v4.4s, v12.4s")             /* v10  = 1/svrtf(B) = x2 = x1 * (3 - R * x1 * x1) / 2 */
                 __ASM_EMIT("fmul        v10.4s, v0.4s, v10.4s")             /* v10  = T/svrtf(B) */
-                __ASM_EMIT("and         v10.16b, v10.16b, v14.16b")         /* v10  = (T >= 1e-10) ? T/svrt(B) : 0 */
+                __ASM_EMIT("and         v10.16b, v10.16b, v14.16b")         /* v10  = (T >= threshold) ? T/svrt(B) : 0 */
                 __ASM_EMIT("add         %[a_head], %[a_head], #0x04")
                 __ASM_EMIT("add         %[b_head], %[b_head], #0x04")
                 __ASM_EMIT("subs        %[count], %[count], #1")

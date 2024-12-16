@@ -78,6 +78,18 @@ namespace lsp
                 dst[i]      = fabsf(src[i]) / dst[i];
         }
 
+        void abs_max2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+                dst[i]      = lsp_max(dst[i], fabsf(src[i]));
+        }
+
+        void abs_min2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+                dst[i]      = lsp_min(dst[i], fabsf(src[i]));
+        }
+
         void abs_add3(float *dst, const float *src1, const float *src2, size_t count)
         {
             for (size_t i=0; i<count; ++i)
@@ -113,6 +125,19 @@ namespace lsp
             for (size_t i=0; i<count; ++i)
                 dst[i]      = fabsf(src2[i]) / src1[i];
         }
+
+        void abs_max3(float *dst, const float *src1, const float *src2, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+                dst[i]      = lsp_max(src1[i], fabsf(src2[i]));
+        }
+
+        void abs_min3(float *dst, const float *src1, const float *src2, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+                dst[i]      = lsp_min(src1[i], fabsf(src2[i]));
+        }
+
     } /* namespace generic */
 } /* namespace lsp */
 

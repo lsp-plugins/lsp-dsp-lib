@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 24 окт. 2023 г.
@@ -207,6 +207,36 @@ namespace lsp
             );
         }
 
+        void abs_max2(float *dst, const float *src, size_t count)
+        {
+            IF_ARCH_X86_64(size_t off);
+            ARCH_X86_64_ASM
+            (
+                ABS_OP_CORE("dst", "dst", "src", "vmax", OP_DSEL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r"(dst), [src] "r"(src),
+                  [SIGN] "m" (abs_vv_const)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
+        void abs_min2(float *dst, const float *src, size_t count)
+        {
+            IF_ARCH_X86_64(size_t off);
+            ARCH_X86_64_ASM
+            (
+                ABS_OP_CORE("dst", "dst", "src", "vmin", OP_DSEL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r"(dst), [src] "r"(src),
+                  [SIGN] "m" (abs_vv_const)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
         void abs_add3(float *dst, const float *src1, const float *src2, size_t count)
         {
             IF_ARCH_X86_64(size_t off);
@@ -288,6 +318,36 @@ namespace lsp
             ARCH_X86_64_ASM
             (
                 ABS_OP_CORE("dst", "src1", "src2", "vdiv", OP_RSEL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
+                  [SIGN] "m" (abs_vv_const)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
+        void abs_max3(float *dst, const float *src1, const float *src2, size_t count)
+        {
+            IF_ARCH_X86_64(size_t off);
+            ARCH_X86_64_ASM
+            (
+                ABS_OP_CORE("dst", "src1", "src2", "vmax", OP_DSEL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
+                  [SIGN] "m" (abs_vv_const)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
+        void abs_min3(float *dst, const float *src1, const float *src2, size_t count)
+        {
+            IF_ARCH_X86_64(size_t off);
+            ARCH_X86_64_ASM
+            (
+                ABS_OP_CORE("dst", "src1", "src2", "vmin", OP_DSEL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
                   [SIGN] "m" (abs_vv_const)

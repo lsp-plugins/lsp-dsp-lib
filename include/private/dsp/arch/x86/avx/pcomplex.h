@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -1281,6 +1281,250 @@ namespace lsp
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
                 :
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
+        IF_ARCH_X86(
+            static const float pcomplex_corr_const[] __lsp_aligned32 =
+            {
+                LSP_DSP_VEC8(1e-36f),
+            };
+        );
+
+        void pcomplex_corr(float *dst_corr, const float *src1, const float *src2, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+
+            /*
+             * src1[i] = a + j*b, src2[i] = c + j*d
+             * den  = (a*a + b*b)*(c*c + d*d)
+             * nom  = a*c + b*d
+             * corr[i] = (den > threshold) ? nom / sqrt(den) : 0.0
+             */
+            ARCH_X86_ASM (
+                __ASM_EMIT("xor             %[off], %[off]")
+                /* x8 blocks */
+                __ASM_EMIT("sub             $8, %[count]")                          /* count -= 8 */
+                __ASM_EMIT("vmovaps         %[CC], %%ymm7")                         /* ymm7  = threshold */
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[src1], %[off], 2), %%xmm0")      /* xmm0  = a0 b0 a1 b1 */
+                __ASM_EMIT("vmovups         0x10(%[src1], %[off], 2), %%xmm4")      /* xmm4  = a2 b2 a3 b3 */
+                __ASM_EMIT("vmovups         0x20(%[src1], %[off], 2), %%xmm1")      /* xmm1  = a4 b4 a5 b5 */
+                __ASM_EMIT("vmovups         0x30(%[src1], %[off], 2), %%xmm5")      /* xmm5  = a6 b6 a7 b7 */
+                __ASM_EMIT("vinsertf128     $1, %%xmm1, %%ymm0, %%ymm0")            /* ymm0  = a0 b0 a1 b1 a4 b4 a5 b5 */
+                __ASM_EMIT("vinsertf128     $1, %%xmm5, %%ymm4, %%ymm4")            /* ymm4  = a2 b2 a3 b3 a6 b6 a7 b7 */
+                __ASM_EMIT("vmovups         0x00(%[src2], %[off], 2), %%xmm2")      /* xmm2  = c0 d0 c1 d1 */
+                __ASM_EMIT("vmovups         0x10(%[src2], %[off], 2), %%xmm6")      /* xmm6  = c2 d2 c3 d3 */
+                __ASM_EMIT("vmovups         0x20(%[src2], %[off], 2), %%xmm1")      /* xmm1  = c4 d4 c5 d5 */
+                __ASM_EMIT("vmovups         0x30(%[src2], %[off], 2), %%xmm5")      /* xmm5  = c6 d6 c7 d7 */
+                __ASM_EMIT("vinsertf128     $1, %%xmm1, %%ymm2, %%ymm2")            /* ymm2  = c0 d0 c1 d1 c4 d4 c5 d5 */
+                __ASM_EMIT("vinsertf128     $1, %%xmm5, %%ymm6, %%ymm6")            /* ymm6  = c2 d2 c3 d3 c6 d6 c7 d7 */
+                /* Do shuffle */
+                __ASM_EMIT("vshufps         $0xdd, %%ymm4, %%ymm0, %%ymm1")         /* ymm1  = b = b0 b1 b2 b3 b4 b5 b6 b7 */
+                __ASM_EMIT("vshufps         $0xdd, %%ymm6, %%ymm2, %%ymm3")         /* ymm3  = d = d0 d1 d2 d3 d4 d5 d6 d7 */
+                __ASM_EMIT("vshufps         $0x88, %%ymm4, %%ymm0, %%ymm0")         /* ymm0  = a = a0 a1 a2 a3 a4 a5 a6 a7 */
+                __ASM_EMIT("vshufps         $0x88, %%ymm6, %%ymm2, %%ymm2")         /* ymm2  = c = c0 c1 c2 c3 c4 c5 c6 c7 */
+                /* ymm0 = a, ymm1 = b, ymm2 = c, ymm3 = d */
+                __ASM_EMIT("vmulps          %%ymm0, %%ymm2, %%ymm4")                /* ymm4  = a*c */
+                __ASM_EMIT("vmulps          %%ymm1, %%ymm3, %%ymm5")                /* ymm5  = b*d */
+                __ASM_EMIT("vmulps          %%ymm0, %%ymm0, %%ymm0")                /* ymm0  = a*a */
+                __ASM_EMIT("vmulps          %%ymm1, %%ymm1, %%ymm1")                /* ymm1  = b*b */
+                __ASM_EMIT("vmulps          %%ymm2, %%ymm2, %%ymm2")                /* ymm2  = c*c */
+                __ASM_EMIT("vmulps          %%ymm3, %%ymm3, %%ymm3")                /* ymm3  = d*d */
+                __ASM_EMIT("vaddps          %%ymm1, %%ymm0, %%ymm0")                /* ymm0  = a*a + b*b */
+                __ASM_EMIT("vaddps          %%ymm3, %%ymm2, %%ymm2")                /* ymm2  = c*c + d*d */
+                __ASM_EMIT("vmulps          %%ymm2, %%ymm0, %%ymm0")                /* ymm0  = den = (a*a + b*b)*(c*c + d*d) */
+                __ASM_EMIT("vaddps          %%ymm5, %%ymm4, %%ymm4")                /* ymm4  = nom = a*c + b*d */
+                __ASM_EMIT("vsqrtps         %%ymm0, %%ymm1")                        /* ymm1  = sqrt(den) */
+                __ASM_EMIT("vdivps          %%ymm1, %%ymm4, %%ymm4")                /* ymm4  = nom / sqrt(den) */
+                __ASM_EMIT("vcmpps          $5, %%ymm7, %%ymm0, %%ymm0")            /* ymm0  = [den >= threshold] */
+                __ASM_EMIT("vandps          %%ymm4, %%ymm0, %%ymm0")                /* ymm0  = (den >= threshold) ? nom / sqrt(den) : 0.0f */
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst], %[off])")          /* dst[0]  = v0 v1 v2 v3 v4 v5 v6 v7 */
+                __ASM_EMIT("add             $0x20, %[off]")
+                __ASM_EMIT("sub             $8, %[count]")                          /* count -= 8 */
+                __ASM_EMIT("jae             1b")
+                /* x4 block */
+                __ASM_EMIT("2:")
+                __ASM_EMIT("add             $4, %[count]")                          /* count += 4 */
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[src1], %[off], 2), %%xmm0")      /* xmm0  = a0 b0 a1 b1 */
+                __ASM_EMIT("vmovups         0x10(%[src1], %[off], 2), %%xmm4")      /* xmm4  = a2 b2 a3 b3 */
+                __ASM_EMIT("vmovups         0x00(%[src2], %[off], 2), %%xmm2")      /* xmm2  = c0 d0 c1 d1 */
+                __ASM_EMIT("vmovups         0x10(%[src2], %[off], 2), %%xmm6")      /* xmm6  = c2 d2 c3 d3 */
+                /* Do shuffle */
+                __ASM_EMIT("vshufps         $0xdd, %%xmm4, %%xmm0, %%xmm1")         /* xmm1  = b = b0 b1 b2 b3 */
+                __ASM_EMIT("vshufps         $0xdd, %%xmm6, %%xmm2, %%xmm3")         /* xmm3  = d = d0 d1 d2 d3 */
+                __ASM_EMIT("vshufps         $0x88, %%xmm4, %%xmm0, %%xmm0")         /* xmm0  = a = a0 a1 a2 a3 */
+                __ASM_EMIT("vshufps         $0x88, %%xmm6, %%xmm2, %%xmm2")         /* xmm2  = c = c0 c1 c2 c3 */
+                /* xmm0 = a, xmm1 = b, xmm2 = c, xmm3 = d */
+                __ASM_EMIT("vmulps          %%xmm0, %%xmm2, %%xmm4")                /* xmm4  = a*c */
+                __ASM_EMIT("vmulps          %%xmm1, %%xmm3, %%xmm5")                /* xmm5  = b*d */
+                __ASM_EMIT("vmulps          %%xmm0, %%xmm0, %%xmm0")                /* xmm0  = a*a */
+                __ASM_EMIT("vmulps          %%xmm1, %%xmm1, %%xmm1")                /* xmm1  = b*b */
+                __ASM_EMIT("vmulps          %%xmm2, %%xmm2, %%xmm2")                /* xmm2  = c*c */
+                __ASM_EMIT("vmulps          %%xmm3, %%xmm3, %%xmm3")                /* xmm3  = d*d */
+                __ASM_EMIT("vaddps          %%xmm1, %%xmm0, %%xmm0")                /* xmm0  = a*a + b*b */
+                __ASM_EMIT("vaddps          %%xmm3, %%xmm2, %%xmm2")                /* xmm2  = c*c + d*d */
+                __ASM_EMIT("vmulps          %%xmm2, %%xmm0, %%xmm0")                /* xmm0  = den = (a*a + b*b)*(c*c + d*d) */
+                __ASM_EMIT("vaddps          %%xmm5, %%xmm4, %%xmm4")                /* xmm4  = nom = a*c + b*d */
+                __ASM_EMIT("vsqrtps         %%xmm0, %%xmm1")                        /* xmm1  = sqrt(den) */
+                __ASM_EMIT("vdivps          %%xmm1, %%xmm4, %%xmm4")                /* xmm4  = nom / sqrt(den) */
+                __ASM_EMIT("vcmpps          $5, %%xmm7, %%xmm0, %%xmm0")            /* xmm0  = [den >= threshold] */
+                __ASM_EMIT("vandps          %%xmm4, %%xmm0, %%xmm0")                /* xmm0  = (den >= threshold) ? nom / sqrt(den) : 0.0f */
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst], %[off])")          /* dst[0]  = v0 v1 v2 v3 v4 v5 v6 v7 */
+                __ASM_EMIT("add             $0x10, %[off]")
+                __ASM_EMIT("sub             $4, %[count]")                          /* count -= 4 */
+                /* x1 blocks */
+                __ASM_EMIT("4:")
+                __ASM_EMIT("add             $3, %[count]")                          /* count += 3 */
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("5:")
+                __ASM_EMIT("vmovss          0x00(%[src1], %[off], 2), %%xmm0")      /* xmm0  = a */
+                __ASM_EMIT("vmovss          0x04(%[src1], %[off], 2), %%xmm1")      /* xmm1  = b */
+                __ASM_EMIT("vmovss          0x00(%[src2], %[off], 2), %%xmm2")      /* xmm2  = c */
+                __ASM_EMIT("vmovss          0x04(%[src2], %[off], 2), %%xmm3")      /* xmm3  = d */
+                __ASM_EMIT("vmulss          %%xmm0, %%xmm2, %%xmm4")                /* xmm4  = a*c */
+                __ASM_EMIT("vmulss          %%xmm1, %%xmm3, %%xmm5")                /* xmm5  = b*d */
+                __ASM_EMIT("vmulss          %%xmm0, %%xmm0, %%xmm0")                /* xmm0  = a*a */
+                __ASM_EMIT("vmulss          %%xmm1, %%xmm1, %%xmm1")                /* xmm1  = b*b */
+                __ASM_EMIT("vmulss          %%xmm2, %%xmm2, %%xmm2")                /* xmm2  = c*c */
+                __ASM_EMIT("vmulss          %%xmm3, %%xmm3, %%xmm3")                /* xmm3  = d*d */
+                __ASM_EMIT("vaddss          %%xmm1, %%xmm0, %%xmm0")                /* xmm0  = a*a + b*b */
+                __ASM_EMIT("vaddss          %%xmm3, %%xmm2, %%xmm2")                /* xmm2  = c*c + d*d */
+                __ASM_EMIT("vmulss          %%xmm2, %%xmm0, %%xmm0")                /* xmm0  = den = (a*a + b*b)*(c*c + d*d) */
+                __ASM_EMIT("vaddss          %%xmm5, %%xmm4, %%xmm4")                /* xmm4  = nom = a*c + b*d */
+                __ASM_EMIT("vsqrtss         %%xmm0, %%xmm1, %%xmm1")                /* xmm1  = sqrt(den) */
+                __ASM_EMIT("vdivss          %%xmm1, %%xmm4, %%xmm4")                /* xmm4  = nom / sqrt(den) */
+                __ASM_EMIT("vcmpps          $5, %%xmm7, %%xmm0, %%xmm0")            /* xmm0  = [den >= threshold] */
+                __ASM_EMIT("vandps          %%xmm4, %%xmm0, %%xmm0")                /* xmm0  = (den >= threshold) ? nom / sqrt(den) : 0.0f */
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst], %[off])")          /* dst[0]  = v0 */
+                __ASM_EMIT("add             $0x04, %[off]")
+                __ASM_EMIT("dec             %[count]")
+                __ASM_EMIT("jge             5b")
+                /* End */
+                __ASM_EMIT("6:")
+
+                : [count] "+r" (count), [off] "=&r" (off)
+                : [dst] "r" (dst_corr), [src1] "r" (src1), [src2] "r" (src2),
+                  [CC] "m" (pcomplex_corr_const)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
+        void pcomplex_corr_fma3(float *dst_corr, const float *src1, const float *src2, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+
+            /*
+             * src1[i] = a + j*b, src2[i] = c + j*d
+             * den  = (a*a + b*b)*(c*c + d*d)
+             * nom  = a*c + b*d
+             * corr[i] = (den > threshold) ? nom / sqrt(den) : 0.0
+             */
+            ARCH_X86_ASM (
+                __ASM_EMIT("xor             %[off], %[off]")
+                /* x8 blocks */
+                __ASM_EMIT("sub             $8, %[count]")                          /* count -= 8 */
+                __ASM_EMIT("vmovaps         %[CC], %%ymm7")                         /* ymm7  = threshold */
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vmovups         0x00(%[src1], %[off], 2), %%xmm0")      /* xmm0  = a0 b0 a1 b1 */
+                __ASM_EMIT("vmovups         0x10(%[src1], %[off], 2), %%xmm4")      /* xmm4  = a2 b2 a3 b3 */
+                __ASM_EMIT("vmovups         0x20(%[src1], %[off], 2), %%xmm1")      /* xmm1  = a4 b4 a5 b5 */
+                __ASM_EMIT("vmovups         0x30(%[src1], %[off], 2), %%xmm5")      /* xmm5  = a6 b6 a7 b7 */
+                __ASM_EMIT("vinsertf128     $1, %%xmm1, %%ymm0, %%ymm0")            /* ymm0  = a0 b0 a1 b1 a4 b4 a5 b5 */
+                __ASM_EMIT("vinsertf128     $1, %%xmm5, %%ymm4, %%ymm4")            /* ymm4  = a2 b2 a3 b3 a6 b6 a7 b7 */
+                __ASM_EMIT("vmovups         0x00(%[src2], %[off], 2), %%xmm2")      /* xmm2  = c0 d0 c1 d1 */
+                __ASM_EMIT("vmovups         0x10(%[src2], %[off], 2), %%xmm6")      /* xmm6  = c2 d2 c3 d3 */
+                __ASM_EMIT("vmovups         0x20(%[src2], %[off], 2), %%xmm1")      /* xmm1  = c4 d4 c5 d5 */
+                __ASM_EMIT("vmovups         0x30(%[src2], %[off], 2), %%xmm5")      /* xmm5  = c6 d6 c7 d7 */
+                __ASM_EMIT("vinsertf128     $1, %%xmm1, %%ymm2, %%ymm2")            /* ymm2  = c0 d0 c1 d1 c4 d4 c5 d5 */
+                __ASM_EMIT("vinsertf128     $1, %%xmm5, %%ymm6, %%ymm6")            /* ymm6  = c2 d2 c3 d3 c6 d6 c7 d7 */
+                /* Do shuffle */
+                __ASM_EMIT("vshufps         $0xdd, %%ymm4, %%ymm0, %%ymm1")         /* ymm1  = b = b0 b1 b2 b3 b4 b5 b6 b7 */
+                __ASM_EMIT("vshufps         $0xdd, %%ymm6, %%ymm2, %%ymm3")         /* ymm3  = d = d0 d1 d2 d3 d4 d5 d6 d7 */
+                __ASM_EMIT("vshufps         $0x88, %%ymm4, %%ymm0, %%ymm0")         /* ymm0  = a = a0 a1 a2 a3 a4 a5 a6 a7 */
+                __ASM_EMIT("vshufps         $0x88, %%ymm6, %%ymm2, %%ymm2")         /* ymm2  = c = c0 c1 c2 c3 c4 c5 c6 c7 */
+                /* ymm0 = a, ymm1 = b, ymm2 = c, ymm3 = d */
+                __ASM_EMIT("vmulps          %%ymm0, %%ymm2, %%ymm4")                /* ymm4  = a*c */
+                __ASM_EMIT("vmulps          %%ymm0, %%ymm0, %%ymm0")                /* ymm0  = a*a */
+                __ASM_EMIT("vmulps          %%ymm2, %%ymm2, %%ymm2")                /* ymm2  = c*c */
+                __ASM_EMIT("vfmadd231ps     %%ymm1, %%ymm3, %%ymm4")                /* ymm4  = nom = a*c + b*d */
+                __ASM_EMIT("vfmadd231ps     %%ymm1, %%ymm1, %%ymm0")                /* ymm0  = a*a + b*b */
+                __ASM_EMIT("vfmadd231ps     %%ymm3, %%ymm3, %%ymm2")                /* ymm2  = c*c + d*d */
+                __ASM_EMIT("vmulps          %%ymm2, %%ymm0, %%ymm0")                /* ymm0  = den = (a*a + b*b)*(c*c + d*d) */
+                __ASM_EMIT("vsqrtps         %%ymm0, %%ymm1")                        /* ymm1  = sqrt(den) */
+                __ASM_EMIT("vdivps          %%ymm1, %%ymm4, %%ymm4")                /* ymm4  = nom / sqrt(den) */
+                __ASM_EMIT("vcmpps          $5, %%ymm7, %%ymm0, %%ymm0")            /* ymm0  = [den >= threshold] */
+                __ASM_EMIT("vandps          %%ymm4, %%ymm0, %%ymm0")                /* ymm0  = (den >= threshold) ? nom / sqrt(den) : 0.0f */
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst], %[off])")          /* dst[0]  = v0 v1 v2 v3 v4 v5 v6 v7 */
+                __ASM_EMIT("add             $0x20, %[off]")
+                __ASM_EMIT("sub             $8, %[count]")                          /* count -= 8 */
+                __ASM_EMIT("jae             1b")
+                /* x4 block */
+                __ASM_EMIT("2:")
+                __ASM_EMIT("add             $4, %[count]")                          /* count += 4 */
+                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("vmovups         0x00(%[src1], %[off], 2), %%xmm0")      /* xmm0  = a0 b0 a1 b1 */
+                __ASM_EMIT("vmovups         0x10(%[src1], %[off], 2), %%xmm4")      /* xmm4  = a2 b2 a3 b3 */
+                __ASM_EMIT("vmovups         0x00(%[src2], %[off], 2), %%xmm2")      /* xmm2  = c0 d0 c1 d1 */
+                __ASM_EMIT("vmovups         0x10(%[src2], %[off], 2), %%xmm6")      /* xmm6  = c2 d2 c3 d3 */
+                /* Do shuffle */
+                __ASM_EMIT("vshufps         $0xdd, %%xmm4, %%xmm0, %%xmm1")         /* xmm1  = b = b0 b1 b2 b3 */
+                __ASM_EMIT("vshufps         $0xdd, %%xmm6, %%xmm2, %%xmm3")         /* xmm3  = d = d0 d1 d2 d3 */
+                __ASM_EMIT("vshufps         $0x88, %%xmm4, %%xmm0, %%xmm0")         /* xmm0  = a = a0 a1 a2 a3 */
+                __ASM_EMIT("vshufps         $0x88, %%xmm6, %%xmm2, %%xmm2")         /* xmm2  = c = c0 c1 c2 c3 */
+                /* xmm0 = a, xmm1 = b, xmm2 = c, xmm3 = d */
+                __ASM_EMIT("vmulps          %%xmm0, %%xmm2, %%xmm4")                /* xmm4  = a*c */
+                __ASM_EMIT("vmulps          %%xmm0, %%xmm0, %%xmm0")                /* xmm0  = a*a */
+                __ASM_EMIT("vmulps          %%xmm2, %%xmm2, %%xmm2")                /* xmm2  = c*c */
+                __ASM_EMIT("vfmadd231ps     %%xmm1, %%xmm3, %%xmm4")                /* xmm4  = nom = a*c + b*d */
+                __ASM_EMIT("vfmadd231ps     %%xmm1, %%xmm1, %%xmm0")                /* xmm0  = a*a + b*b */
+                __ASM_EMIT("vfmadd231ps     %%xmm3, %%xmm3, %%xmm2")                /* xmm2  = c*c + d*d */
+                __ASM_EMIT("vmulps          %%xmm2, %%xmm0, %%xmm0")                /* xmm0  = den = (a*a + b*b)*(c*c + d*d) */
+                __ASM_EMIT("vsqrtps         %%xmm0, %%xmm1")                        /* xmm1  = sqrt(den) */
+                __ASM_EMIT("vdivps          %%xmm1, %%xmm4, %%xmm4")                /* xmm4  = nom / sqrt(den) */
+                __ASM_EMIT("vcmpps          $5, %%xmm7, %%xmm0, %%xmm0")            /* xmm0  = [den >= threshold] */
+                __ASM_EMIT("vandps          %%xmm4, %%xmm0, %%xmm0")                /* xmm0  = (den >= threshold) ? nom / sqrt(den) : 0.0f */
+                __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst], %[off])")          /* dst[0]  = v0 v1 v2 v3 v4 v5 v6 v7 */
+                __ASM_EMIT("add             $0x10, %[off]")
+                __ASM_EMIT("sub             $4, %[count]")                          /* count -= 4 */
+                /* x1 blocks */
+                __ASM_EMIT("4:")
+                __ASM_EMIT("add             $3, %[count]")                          /* count += 3 */
+                __ASM_EMIT("jl              6f")
+                __ASM_EMIT("5:")
+                __ASM_EMIT("vmovss          0x00(%[src1], %[off], 2), %%xmm0")      /* xmm0  = a */
+                __ASM_EMIT("vmovss          0x04(%[src1], %[off], 2), %%xmm1")      /* xmm1  = b */
+                __ASM_EMIT("vmovss          0x00(%[src2], %[off], 2), %%xmm2")      /* xmm2  = c */
+                __ASM_EMIT("vmovss          0x04(%[src2], %[off], 2), %%xmm3")      /* xmm3  = d */
+                __ASM_EMIT("vmulss          %%xmm0, %%xmm2, %%xmm4")                /* xmm4  = a*c */
+                __ASM_EMIT("vmulss          %%xmm0, %%xmm0, %%xmm0")                /* xmm0  = a*a */
+                __ASM_EMIT("vmulss          %%xmm2, %%xmm2, %%xmm2")                /* xmm2  = c*c */
+                __ASM_EMIT("vfmadd231ss     %%xmm1, %%xmm3, %%xmm4")                /* xmm4  = nom = a*c + b*d */
+                __ASM_EMIT("vfmadd231ss     %%xmm1, %%xmm1, %%xmm0")                /* xmm0  = a*a + b*b */
+                __ASM_EMIT("vfmadd231ss     %%xmm3, %%xmm3, %%xmm2")                /* xmm2  = c*c + d*d */
+                __ASM_EMIT("vmulss          %%xmm2, %%xmm0, %%xmm0")                /* xmm0  = den = (a*a + b*b)*(c*c + d*d) */
+                __ASM_EMIT("vsqrtss         %%xmm0, %%xmm1, %%xmm1")                /* xmm1  = sqrt(den) */
+                __ASM_EMIT("vdivss          %%xmm1, %%xmm4, %%xmm4")                /* xmm4  = nom / sqrt(den) */
+                __ASM_EMIT("vcmpps          $5, %%xmm7, %%xmm0, %%xmm0")            /* xmm0  = [den >= threshold] */
+                __ASM_EMIT("vandps          %%xmm4, %%xmm0, %%xmm0")                /* xmm0  = (den >= threshold) ? nom / sqrt(den) : 0.0f */
+                __ASM_EMIT("vmovss          %%xmm0, 0x00(%[dst], %[off])")          /* dst[0]  = v0 */
+                __ASM_EMIT("add             $0x04, %[off]")
+                __ASM_EMIT("dec             %[count]")
+                __ASM_EMIT("jge             5b")
+                /* End */
+                __ASM_EMIT("6:")
+
+                : [count] "+r" (count), [off] "=&r" (off)
+                : [dst] "r" (dst_corr), [src1] "r" (src1), [src2] "r" (src2),
+                  [CC] "m" (pcomplex_corr_const)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
