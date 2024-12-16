@@ -754,7 +754,7 @@ namespace lsp
              * nom  = a*c + b*d
              * corr[i] = (den > threshold) ? nom / sqrt(den) : 0.0
              */
-            ARCH_X86_ASM (
+            ARCH_X86_64_ASM (
                 __ASM_EMIT("xor         %[off], %[off]")
                 /* x8 blocks */
                 __ASM_EMIT("sub         $8, %[count]")                          /* count -= 8 */
