@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.29 ===
-
+* Added definition of MacOS dependencies in build scripts.
 
 === 1.0.28 ===
 * The DSP library now builds for Apple M1 chips and above on MacOS.
