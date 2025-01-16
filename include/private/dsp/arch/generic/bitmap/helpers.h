@@ -46,8 +46,8 @@ namespace lsp
         {
             bitmap_part_t rect;
 
-            rect.dst_x      = lsp_max(0, x);
-            rect.dst_y      = lsp_max(0, y);
+            rect.dst_x      = lsp_max(ssize_t(0), x);
+            rect.dst_y      = lsp_max(ssize_t(0), y);
             rect.src_x      = rect.dst_x - x;
             rect.src_y      = rect.dst_y - y;
             rect.count_y    = lsp_min(dst->height - rect.dst_y, src->height - rect.src_y);

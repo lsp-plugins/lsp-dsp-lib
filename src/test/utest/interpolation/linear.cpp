@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 13 дек. 2020 г.
@@ -107,8 +107,8 @@ UTEST_BEGIN("dsp.interpolation", linear)
                 FloatBuffer dst2(dst1);
 
                 // Call functions
-                func1(dst1, -1, 0.0f, 3, 0.1f, 1, count);
-                func2(dst2, -1, 0.0f, 3, 0.1f, 1, count);
+                func1(dst1, -1, 0.0f, 3, 0.1f, 1, uint32_t(count));
+                func2(dst2, -1, 0.0f, 3, 0.1f, 1, uint32_t(count));
 
                 UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");
                 UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
@@ -146,8 +146,8 @@ UTEST_BEGIN("dsp.interpolation", linear)
                 FloatBuffer dst2(dst1);
 
                 // Call functions
-                func1(dst1, src, -1, 0.0f, 3, 0.1f, 1, count);
-                func2(dst2, src, -1, 0.0f, 3, 0.1f, 1, count);
+                func1(dst1, src, -1, 0.0f, 3, 0.1f, 1, uint32_t(count));
+                func2(dst2, src, -1, 0.0f, 3, 0.1f, 1, uint32_t(count));
 
                 UTEST_ASSERT_MSG(src.valid(), "Source buffer corrupted");
                 UTEST_ASSERT_MSG(dst1.valid(), "Destination buffer 1 corrupted");
@@ -188,8 +188,8 @@ UTEST_BEGIN("dsp.interpolation", linear)
                 FloatBuffer dst2(count, align, mask & 0x04);
 
                 // Call functions
-                func1(dst1, src1, src2, -1, 0.0f, 3, 0.1f, 1, count);
-                func2(dst2, src1, src2, -1, 0.0f, 3, 0.1f, 1, count);
+                func1(dst1, src1, src2, -1, 0.0f, 3, 0.1f, 1, uint32_t(count));
+                func2(dst2, src1, src2, -1, 0.0f, 3, 0.1f, 1, uint32_t(count));
 
                 UTEST_ASSERT_MSG(src1.valid(), "Source buffer 1 corrupted");
                 UTEST_ASSERT_MSG(src2.valid(), "Source buffer 2 corrupted");
