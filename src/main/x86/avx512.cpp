@@ -46,6 +46,7 @@
         #include <private/dsp/arch/x86/avx512/copy.h>
         #include <private/dsp/arch/x86/avx512/dynamics.h>
         #include <private/dsp/arch/x86/avx512/float.h>
+        #include <private/dsp/arch/x86/avx512/fft.h>
         #include <private/dsp/arch/x86/avx512/graphics/axis.h>
         #include <private/dsp/arch/x86/avx512/hmath.h>
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
