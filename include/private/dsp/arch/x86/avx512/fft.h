@@ -51,15 +51,15 @@ namespace lsp
         {
             if (rank == 2)
             {
-                float s0_re     = src_re[0] + src_re[1];
-                float s1_re     = src_re[0] - src_re[1];
-                float s2_re     = src_re[2] + src_re[3];
-                float s3_re     = src_re[2] - src_re[3];
+                float s0_re     = src_re[0] + src_re[2];
+                float s1_re     = src_re[0] - src_re[2];
+                float s2_re     = src_re[1] + src_re[3];
+                float s3_re     = src_re[1] - src_re[3];
 
-                float s0_im     = src_im[0] + src_im[1];
-                float s1_im     = src_im[0] - src_im[1];
-                float s2_im     = src_im[2] + src_im[3];
-                float s3_im     = src_im[2] - src_im[3];
+                float s0_im     = src_im[0] + src_im[2];
+                float s1_im     = src_im[0] - src_im[2];
+                float s2_im     = src_im[1] + src_im[3];
+                float s3_im     = src_im[1] - src_im[3];
 
                 dst_re[0]       = s0_re + s2_re;
                 dst_re[1]       = s1_re + s3_im;
@@ -140,7 +140,7 @@ namespace lsp
                 return;
             }
 
-            if ((dst_re == src_re) || (dst_im == src_im) || (rank < 4))
+            if ((dst_re == src_re) || (dst_im == src_im) || (rank < 5))
             {
                 dsp::move(dst_re, src_re, 1 << rank);
                 dsp::move(dst_im, src_im, 1 << rank);
@@ -152,9 +152,9 @@ namespace lsp
             else
             {
                 if (rank <= 12)
-                    scramble_copy_direct8(dst_re, dst_im, src_re, src_im, rank-4);
+                    scramble_copy_direct8(dst_re, dst_im, src_re, src_im, rank-5);
                 else
-                    scramble_copy_direct16(dst_re, dst_im, src_re, src_im, rank-4);
+                    scramble_copy_direct16(dst_re, dst_im, src_re, src_im, rank-5);
             }
 
 //            for (size_t i=3; i < rank; ++i)
