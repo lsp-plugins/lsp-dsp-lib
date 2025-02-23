@@ -340,6 +340,8 @@
 
                 CEXPORT1(vl, direct_fft);
                 CEXPORT1(vl, reverse_fft);
+                CEXPORT1(vl, normalize_fft2);
+                CEXPORT1(vl, normalize_fft3);
             }
         } /* namespace avx2 */
     } /* namespace lsp */

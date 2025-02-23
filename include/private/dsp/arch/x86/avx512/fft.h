@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_X86_AVX512_IMPL */
 
 #include <private/dsp/arch/x86/avx512/fft/const.h>
+#include <private/dsp/arch/x86/avx512/fft/normalize.h>
 #include <private/dsp/arch/x86/avx512/fft/butterfly.h>
 
 #define FFT_SCRAMBLE_SELF_DIRECT_NAME   scramble_self_direct8
