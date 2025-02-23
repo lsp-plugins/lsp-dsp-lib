@@ -127,7 +127,6 @@ namespace lsp
             0xf0f0f0f0,             // step3
             0xcccccccc,             // step4
             0xaaaaaaaa,             // step5
-            0xffffffff,             // mask
             32,                     // increment
         };
 

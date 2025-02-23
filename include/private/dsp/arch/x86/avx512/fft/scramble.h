@@ -23,6 +23,16 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_X86_AVX512_IMPL */
 
+#define FFT_GATHER_LOOP(ptr, dst, k) \
+    __ASM_EMIT("100:") \
+    __ASM_EMIT("vgatherdps      " ptr ", " dst " %{" k "%}") \
+    __ASM_EMIT("ktestw          " k ", " k) \
+    __ASM_EMIT("jz              101f") \
+    __ASM_EMIT("vgatherdps      " ptr ", " dst " %{" k "%}") \
+    __ASM_EMIT("ktestw          " k ", " k) \
+    __ASM_EMIT("jnz             100b") \
+    __ASM_EMIT("101:")
+
 namespace lsp
 {
     namespace avx512
@@ -528,22 +538,22 @@ namespace lsp
                     __IF_32(
                         __ASM_EMIT("vmovdqu32       %[IND], %%zmm7")                                /* zmm7 = indices */
                         FFT_REVERSE_BITS("%%zmm4", "%%zmm5", "%%xmm6", "%%zmm7")                    /* zmm4 = ind_a, zmm5 = ind_b */
-                        __ASM_EMIT("vpaddd          0x14 + %[CMD]%{1to16%}, %%zmm7, %%zmm7")        /* zmm7 = indices + 32 */
+                        __ASM_EMIT("vpaddd          0x10 + %[CMD]%{1to16%}, %%zmm7, %%zmm7")        /* zmm7 = indices + 32 */
                         __ASM_EMIT("vmovdqu32       %%zmm7, %[IND]")                                /* store */
                     )
                     __IF_64(
                         FFT_REVERSE_BITS("%%zmm4", "%%zmm5", "%%xmm6", "%%zmm8")                    /* zmm4 = ind_a, zmm5 = ind_b */
-                        __ASM_EMIT("vpaddd          0x14 + %[CMD]%{1to16%}, %%zmm8, %%zmm8")        /* zmm8 = indices + 32 */
+                        __ASM_EMIT("vpaddd          0x10 + %[CMD]%{1to16%}, %%zmm8, %%zmm8")        /* zmm8 = indices + 32 */
                     )
 
-                    __ASM_EMIT("kmovw           0x10 + %[CMD], %%k4")
-                    __ASM_EMIT("kmovw           %%k4, %%k5")
-                    __ASM_EMIT("kmovw           %%k4, %%k6")
-                    __ASM_EMIT("kmovw           %%k5, %%k7")
-                    __ASM_EMIT("vgatherdps      0x00(%[src_re], %%zmm4, 4), %%zmm0 %{%%k4%}")       /* zmm0 = r0 r2 r4 r6 r8 r10 r12 r14 r16 r18 r20 r22 r24 r26 r28 r30 */
-                    __ASM_EMIT("vgatherdps      0x00(%[src_im], %%zmm4, 4), %%zmm2 %{%%k6%}")       /* zmm0 = i0 i2 i4 i6 i8 i10 i12 i14 i16 i18 i20 i22 i24 i26 i28 i30 */
-                    __ASM_EMIT("vgatherdps      0x00(%[src_re], %%zmm5, 4), %%zmm1 %{%%k5%}")       /* zmm1 = r1 r3 r5 r7 r9 r11 r13 r15 r17 r19 r21 r23 r25 r27 r29 r31 */
-                    __ASM_EMIT("vgatherdps      0x00(%[src_im], %%zmm5, 4), %%zmm3 %{%%k7%}")       /* zmm1 = i1 i3 i5 i7 i9 i11 i13 i15 i17 i19 i21 i23 i25 i27 i29 i31 */
+                    __ASM_EMIT("kxnorw          %%k4, %%k4, %%k4")
+                    __ASM_EMIT("kxnorw          %%k5, %%k5, %%k5")
+                    __ASM_EMIT("kxnorw          %%k6, %%k6, %%k6")
+                    __ASM_EMIT("kxnorw          %%k7, %%k7, %%k7")
+                    FFT_GATHER_LOOP("0x00(%[src_re], %%zmm4, 4)", "%%zmm0", "%%k4")                 /* zmm0 = r0 r2 r4 r6 r8 r10 r12 r14 r16 r18 r20 r22 r24 r26 r28 r30 */
+                    FFT_GATHER_LOOP("0x00(%[src_re], %%zmm5, 4)", "%%zmm1", "%%k5")                 /* zmm1 = r1 r3 r5 r7 r9 r11 r13 r15 r17 r19 r21 r23 r25 r27 r29 r31 */
+                    FFT_GATHER_LOOP("0x00(%[src_im], %%zmm4, 4)", "%%zmm2", "%%k6")                 /* zmm2 = i0 i2 i4 i6 i8 i10 i12 i14 i16 i18 i20 i22 i24 i26 i28 i30 */
+                    FFT_GATHER_LOOP("0x00(%[src_im], %%zmm5, 4)", "%%zmm3", "%%k7")                 /* zmm3 = i1 i3 i5 i7 i9 i11 i13 i15 i17 i19 i21 i23 i25 i27 i29 i31 */
 
                     /* 1st-order 16x butterfly */
                     /* zmm0 = r0 r2 r4 r6 r8 r10 r12 r14 r16 r18 r20 r22 r24 r26 r28 r30 */
@@ -661,22 +671,22 @@ namespace lsp
                     __IF_32(
                         __ASM_EMIT("vmovdqu32       %[IND], %%zmm7")                                /* zmm7 = indices */
                         FFT_REVERSE_BITS("%%zmm4", "%%zmm5", "%%xmm6", "%%zmm7")                    /* zmm4 = ind_a, zmm5 = ind_b */
-                        __ASM_EMIT("vpaddd          0x14 + %[CMD]%{1to16%}, %%zmm7, %%zmm7")        /* zmm7 = indices + 32 */
+                        __ASM_EMIT("vpaddd          0x10 + %[CMD]%{1to16%}, %%zmm7, %%zmm7")        /* zmm7 = indices + 32 */
                         __ASM_EMIT("vmovdqu32       %%zmm7, %[IND]")                                /* store */
                     )
                     __IF_64(
                         FFT_REVERSE_BITS("%%zmm4", "%%zmm5", "%%xmm6", "%%zmm8")                    /* zmm4 = ind_a, zmm5 = ind_b */
-                        __ASM_EMIT("vpaddd          0x14 + %[CMD]%{1to16%}, %%zmm8, %%zmm8")        /* zmm8 = indices + 32 */
+                        __ASM_EMIT("vpaddd          0x10 + %[CMD]%{1to16%}, %%zmm8, %%zmm8")        /* zmm8 = indices + 32 */
                     )
 
-                    __ASM_EMIT("kmovw           0x10 + %[CMD], %%k4")
-                    __ASM_EMIT("kmovw           %%k4, %%k5")
-                    __ASM_EMIT("kmovw           %%k4, %%k6")
-                    __ASM_EMIT("kmovw           %%k5, %%k7")
-                    __ASM_EMIT("vgatherdps      0x00(%[src_re], %%zmm4, 4), %%zmm0 %{%%k4%}")       /* zmm0 = r0 r2 r4 r6 r8 r10 r12 r14 r16 r18 r20 r22 r24 r26 r28 r30 */
-                    __ASM_EMIT("vgatherdps      0x00(%[src_im], %%zmm4, 4), %%zmm2 %{%%k6%}")       /* zmm0 = i0 i2 i4 i6 i8 i10 i12 i14 i16 i18 i20 i22 i24 i26 i28 i30 */
-                    __ASM_EMIT("vgatherdps      0x00(%[src_re], %%zmm5, 4), %%zmm1 %{%%k5%}")       /* zmm1 = r1 r3 r5 r7 r9 r11 r13 r15 r17 r19 r21 r23 r25 r27 r29 r31 */
-                    __ASM_EMIT("vgatherdps      0x00(%[src_im], %%zmm5, 4), %%zmm3 %{%%k7%}")       /* zmm1 = i1 i3 i5 i7 i9 i11 i13 i15 i17 i19 i21 i23 i25 i27 i29 i31 */
+                    __ASM_EMIT("kxnorw          %%k4, %%k4, %%k4")
+                    __ASM_EMIT("kxnorw          %%k5, %%k5, %%k5")
+                    __ASM_EMIT("kxnorw          %%k6, %%k6, %%k6")
+                    __ASM_EMIT("kxnorw          %%k7, %%k7, %%k7")
+                    FFT_GATHER_LOOP("0x00(%[src_re], %%zmm4, 4)", "%%zmm0", "%%k4")                 /* zmm0 = r0 r2 r4 r6 r8 r10 r12 r14 r16 r18 r20 r22 r24 r26 r28 r30 */
+                    FFT_GATHER_LOOP("0x00(%[src_re], %%zmm5, 4)", "%%zmm1", "%%k5")                 /* zmm1 = r1 r3 r5 r7 r9 r11 r13 r15 r17 r19 r21 r23 r25 r27 r29 r31 */
+                    FFT_GATHER_LOOP("0x00(%[src_im], %%zmm4, 4)", "%%zmm2", "%%k6")                 /* zmm2 = i0 i2 i4 i6 i8 i10 i12 i14 i16 i18 i20 i22 i24 i26 i28 i30 */
+                    FFT_GATHER_LOOP("0x00(%[src_im], %%zmm5, 4)", "%%zmm3", "%%k7")                 /* zmm3 = i1 i3 i5 i7 i9 i11 i13 i15 i17 i19 i21 i23 i25 i27 i29 i31 */
 
                     /* 1st-order 16x butterfly */
                     /* zmm0 = r0 r2 r4 r6 r8 r10 r12 r14 r16 r18 r20 r22 r24 r26 r28 r30 */
@@ -774,4 +784,4 @@ namespace lsp
 #undef FFT_SCRAMBLE_COPY_REVERSE_NAME
 #undef FFT_TYPE
 #undef FFT_REVERSE_BITS
-
+#undef FFT_GATHER_LOOP
