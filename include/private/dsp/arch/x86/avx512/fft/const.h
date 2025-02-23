@@ -121,6 +121,16 @@ namespace lsp
             4,  5,  6,  7, 20, 21, 22, 23, 12, 13, 14, 15, 28, 29, 30, 31,          // + 0x240
         };
 
+        static const uint32_t FFT_RBITS[] __lsp_aligned64 =
+        {
+            0xff00ff00,             // step2
+            0xf0f0f0f0,             // step3
+            0xcccccccc,             // step4
+            0xaaaaaaaa,             // step5
+            0xffffffff,             // mask
+            32,                     // increment
+        };
+
     } /* namespace avx512 */
 } /* namespace lsp */
 

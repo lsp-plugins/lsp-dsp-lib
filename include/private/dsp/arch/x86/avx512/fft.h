@@ -152,10 +152,10 @@ namespace lsp
             }
             else
             {
-                if (rank <= 12)
-                    scramble_copy_direct8(dst_re, dst_im, src_re, src_im, rank-5);
+                if (rank <= 8)
+                    scramble_copy_direct8(dst_re, dst_im, src_re, src_im, rank);
                 else
-                    scramble_copy_direct16(dst_re, dst_im, src_re, src_im, rank-5);
+                    scramble_copy_direct16(dst_re, dst_im, src_re, src_im, rank);
             }
 
             for (size_t i=4; i < rank; ++i)
@@ -171,7 +171,7 @@ namespace lsp
                 return;
             }
 
-            if ((dst_re == src_re) || (dst_im == src_im) || (rank < 4))
+            if ((dst_re == src_re) || (dst_im == src_im) || (rank < 5))
             {
                 dsp::move(dst_re, src_re, 1 << rank);
                 dsp::move(dst_im, src_im, 1 << rank);
@@ -182,14 +182,14 @@ namespace lsp
             }
             else
             {
-                if (rank <= 12)
-                    scramble_copy_reverse8(dst_re, dst_im, src_re, src_im, rank-4);
+                if (rank <= 8)
+                    scramble_copy_reverse8(dst_re, dst_im, src_re, src_im, rank);
                 else
-                    scramble_copy_reverse16(dst_re, dst_im, src_re, src_im, rank-4);
+                    scramble_copy_reverse16(dst_re, dst_im, src_re, src_im, rank);
             }
 
-//            for (size_t i=3; i < rank; ++i)
-//                butterfly_reverse8p(dst_re, dst_im, i, 1 << (rank - i - 1));
+            for (size_t i=4; i < rank; ++i)
+                butterfly_direct16p(dst_re, dst_im, i, 1 << (rank - i - 1));
 
             dsp::normalize_fft2(dst_re, dst_im, rank);
         }
