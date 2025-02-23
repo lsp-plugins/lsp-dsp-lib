@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_X86_AVX512_IMPL */
 
 #include <private/dsp/arch/x86/avx512/fft/const.h>
+#include <private/dsp/arch/x86/avx512/fft/butterfly.h>
 
 #define FFT_SCRAMBLE_SELF_DIRECT_NAME   scramble_self_direct8
 #define FFT_SCRAMBLE_SELF_REVERSE_NAME  scramble_self_reverse8
@@ -157,8 +158,8 @@ namespace lsp
                     scramble_copy_direct16(dst_re, dst_im, src_re, src_im, rank-5);
             }
 
-//            for (size_t i=3; i < rank; ++i)
-//                butterfly_direct8p(dst_re, dst_im, i, 1 << (rank - i - 1));
+            for (size_t i=4; i < rank; ++i)
+                butterfly_direct16p(dst_re, dst_im, i, 1 << (rank - i - 1));
         }
 
         void reverse_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank)
