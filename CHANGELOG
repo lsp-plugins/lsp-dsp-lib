@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 1.0.29 ===
+* Implemented AVX-512 optimized direct_fft and reverse_fft functions.
 * Added definition of MacOS dependencies in build scripts.
 
 === 1.0.28 ===

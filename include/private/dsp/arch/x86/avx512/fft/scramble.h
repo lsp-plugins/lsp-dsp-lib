@@ -27,40 +27,6 @@ namespace lsp
 {
     namespace avx512
     {
-        #define FFT_REVERSE_BITS(VA, VB, SHIFT, SRC)  \
-            /* Round 1 */ \
-            __ASM_EMIT("vpslld          $16, " SRC ", " VB)                         /* VB   = v << 16 */ \
-            __ASM_EMIT("vpsrld          $16, " SRC ", " VA)                         /* VA   = v >> 16 */ \
-            __ASM_EMIT("vpord           " VB ", " VA ", " VA "")                    /* VA   = v = (v << 16) | (v >> 16) */ \
-            /* Round 2 */ \
-            __ASM_EMIT("vpslld          $8, " VA ", " VB "")                        /* VB   = v << 8 */ \
-            __ASM_EMIT("vpandd          0x00 + %[CMD]%{1to16%}, " VA ", " VA "")    /* VA   = (v & 0xff00ff00) */ \
-            __ASM_EMIT("vpandd          0x00 + %[CMD]%{1to16%}, " VB ", " VB "")    /* VB   = (v & 0x00ff00ff) << 8 */ \
-            __ASM_EMIT("vpsrld          $8, " VA ", " VA "")                        /* VA   = (v & 0xff00ff00) >> 8 */ \
-            __ASM_EMIT("vpord           " VB ", " VA ", " VA "")                    /* VA   = ((v & 0x00ff00ff) << 8) | ((v & 0xff00ff00) >> 8) */ \
-            /* Round 3 */ \
-            __ASM_EMIT("vpslld          $4, " VA ", " VB "")                        /* VB   = v << 4 */ \
-            __ASM_EMIT("vpandd          0x04 + %[CMD]%{1to16%}, " VA ", " VA "")    /* VA   = (v & 0xf0f0f0f0) */ \
-            __ASM_EMIT("vpandd          0x04 + %[CMD]%{1to16%}, " VB ", " VB "")    /* VB   = (v & 0x0f0f0f0f) << 4 */ \
-            __ASM_EMIT("vpsrld          $4, " VA ", " VA "")                        /* VA   = (v & 0xff00ff00) >> 4 */ \
-            __ASM_EMIT("vpord           " VB ", " VA ", " VA "")                    /* VA   = ((v & 0x0f0f0f0f) << 4) | ((v & 0xf0f0f0f0) >> 4) */ \
-            /* Round 4 */ \
-            __ASM_EMIT("vpslld          $2, " VA ", " VB "")                        /* VB   = v << 2 */ \
-            __ASM_EMIT("vpandd          0x08 + %[CMD]%{1to16%}, " VA ", " VA "")    /* VA   = (v & 0xcccccccc) */ \
-            __ASM_EMIT("vpandd          0x08 + %[CMD]%{1to16%}, " VB ", " VB "")    /* VB   = (v & 0x33333333) << 2 */ \
-            __ASM_EMIT("vpsrld          $2, " VA ", " VA "")                        /* VA   = (v & 0xcccccccc) >> 2 */ \
-            __ASM_EMIT("vpord           " VB ", " VA ", " VA "")                    /* VA   = ((v & 0x33333333) << 2) | ((v & 0xcccccccc) >> 2) */ \
-            /* Round 4 */ \
-            __ASM_EMIT("vpslld          $1, " VA ", " VB "")                        /* VB   = v << 1 */ \
-            __ASM_EMIT("vpandd          0x0c + %[CMD]%{1to16%}, " VA ", " VA "")    /* VA   = (v & 0xaaaaaaaa) */ \
-            __ASM_EMIT("vpandd          0x0c + %[CMD]%{1to16%}, " VB ", " VB "")    /* VB   = (v & 0x55555555) << 1 */ \
-            __ASM_EMIT("vpsrld          $1, " VA ", " VA "")                        /* VA   = (v & 0xaaaaaaaa) >> 1 */ \
-            __ASM_EMIT("vpord           " VB ", " VA ", " VA "")                    /* VA   = ((v & 0x55555555) << 1) | ((v & 0xaaaaaaaa) >> 1) */ \
-            /* Final round */ \
-            __ASM_EMIT("vmovss          %[shift], " SHIFT) \
-            __ASM_EMIT("vpsrld          " SHIFT " , " VA ", " VA)                   /* VA   = va = v >> shift */ \
-            __ASM_EMIT("vpord           %[mask]%{1to16%}, " VA ", " VB)             /* VB   = vb = va | mask */
-
         static inline void FFT_SCRAMBLE_SELF_DIRECT_NAME(float *dst_re, float *dst_im, size_t rank)
         {
             // Calculate number of items
@@ -540,12 +506,12 @@ namespace lsp
             );
 
             const size_t count      = 1 << (rank - 5);
-            const uint32_t shift    = 32 - rank;
+            const uint32_t shift    = sizeof(FFT_TYPE)*8 - rank;
             const uint32_t mask     = 1 << (rank - 1);
 
             ARCH_X86_ASM(
                 __ASM_EMIT32("vmovdqa32       0x00 + %[FFT_I], %%zmm0")
-                __ASM_EMIT32("vmovdqu32       %%zmm0, %[indices]")
+                __ASM_EMIT32("vmovdqu32       %%zmm0, %[IND]")
                 __ASM_EMIT64("vmovdqa32       0x00 + %[FFT_I], %%zmm8")
                 :
                 : __IF_32([IND] "m" (indices), )
@@ -560,10 +526,10 @@ namespace lsp
             {
                 ARCH_X86_ASM(
                     __IF_32(
-                        __ASM_EMIT("vmovdqu32       %[indices], %%zmm7")                            /* zmm7 = indices */
+                        __ASM_EMIT("vmovdqu32       %[IND], %%zmm7")                                /* zmm7 = indices */
                         FFT_REVERSE_BITS("%%zmm4", "%%zmm5", "%%xmm6", "%%zmm7")                    /* zmm4 = ind_a, zmm5 = ind_b */
                         __ASM_EMIT("vpaddd          0x14 + %[CMD]%{1to16%}, %%zmm7, %%zmm7")        /* zmm7 = indices + 32 */
-                        __ASM_EMIT("vmovdqu         %%zmm7, %[indices]")                            /* store */
+                        __ASM_EMIT("vmovdqu32       %%zmm7, %[IND]")                                /* store */
                     )
                     __IF_64(
                         FFT_REVERSE_BITS("%%zmm4", "%%zmm5", "%%xmm6", "%%zmm8")                    /* zmm4 = ind_a, zmm5 = ind_b */
@@ -575,8 +541,8 @@ namespace lsp
                     __ASM_EMIT("kmovw           %%k4, %%k6")
                     __ASM_EMIT("kmovw           %%k5, %%k7")
                     __ASM_EMIT("vgatherdps      0x00(%[src_re], %%zmm4, 4), %%zmm0 %{%%k4%}")       /* zmm0 = r0 r2 r4 r6 r8 r10 r12 r14 r16 r18 r20 r22 r24 r26 r28 r30 */
-                    __ASM_EMIT("vgatherdps      0x00(%[src_re], %%zmm5, 4), %%zmm1 %{%%k5%}")       /* zmm1 = r1 r3 r5 r7 r9 r11 r13 r15 r17 r19 r21 r23 r25 r27 r29 r31 */
                     __ASM_EMIT("vgatherdps      0x00(%[src_im], %%zmm4, 4), %%zmm2 %{%%k6%}")       /* zmm0 = i0 i2 i4 i6 i8 i10 i12 i14 i16 i18 i20 i22 i24 i26 i28 i30 */
+                    __ASM_EMIT("vgatherdps      0x00(%[src_re], %%zmm5, 4), %%zmm1 %{%%k5%}")       /* zmm1 = r1 r3 r5 r7 r9 r11 r13 r15 r17 r19 r21 r23 r25 r27 r29 r31 */
                     __ASM_EMIT("vgatherdps      0x00(%[src_im], %%zmm5, 4), %%zmm3 %{%%k7%}")       /* zmm1 = i1 i3 i5 i7 i9 i11 i13 i15 i17 i19 i21 i23 i25 i27 i29 i31 */
 
                     /* 1st-order 16x butterfly */
@@ -653,7 +619,7 @@ namespace lsp
                     : [src_re] "r" (src_re), [src_im] "r" (src_im),
                       [shift] "m" (shift),
                       [mask] "m" (mask),
-                      __IF_32([indices] "m" (indices), )
+                      __IF_32([IND] "m" (indices), )
                       [FFT_A] "o" (FFT_A),
                       [FFT_I] "o" (FFT_SCRAMBLE_DIRECT_INDICES),
                       [CMD] "o" (FFT_RBITS)
@@ -673,12 +639,12 @@ namespace lsp
             );
 
             const size_t count      = 1 << (rank - 5);
-            const uint32_t shift    = 32 - rank;
+            const uint32_t shift    = sizeof(FFT_TYPE)*8 - rank;
             const uint32_t mask     = 1 << (rank - 1);
 
             ARCH_X86_ASM(
                 __ASM_EMIT32("vmovdqa32       0x00 + %[FFT_I], %%zmm0")
-                __ASM_EMIT32("vmovdqu32       %%zmm0, %[indices]")
+                __ASM_EMIT32("vmovdqu32       %%zmm0, %[IND]")
                 __ASM_EMIT64("vmovdqa32       0x00 + %[FFT_I], %%zmm8")
                 :
                 : __IF_32([IND] "m" (indices), )
@@ -693,10 +659,10 @@ namespace lsp
             {
                 ARCH_X86_ASM(
                     __IF_32(
-                        __ASM_EMIT("vmovdqu32       %[indices], %%zmm7")                            /* zmm7 = indices */
+                        __ASM_EMIT("vmovdqu32       %[IND], %%zmm7")                                /* zmm7 = indices */
                         FFT_REVERSE_BITS("%%zmm4", "%%zmm5", "%%xmm6", "%%zmm7")                    /* zmm4 = ind_a, zmm5 = ind_b */
                         __ASM_EMIT("vpaddd          0x14 + %[CMD]%{1to16%}, %%zmm7, %%zmm7")        /* zmm7 = indices + 32 */
-                        __ASM_EMIT("vmovdqu         %%zmm7, %[indices]")                            /* store */
+                        __ASM_EMIT("vmovdqu32       %%zmm7, %[IND]")                                /* store */
                     )
                     __IF_64(
                         FFT_REVERSE_BITS("%%zmm4", "%%zmm5", "%%xmm6", "%%zmm8")                    /* zmm4 = ind_a, zmm5 = ind_b */
@@ -708,8 +674,8 @@ namespace lsp
                     __ASM_EMIT("kmovw           %%k4, %%k6")
                     __ASM_EMIT("kmovw           %%k5, %%k7")
                     __ASM_EMIT("vgatherdps      0x00(%[src_re], %%zmm4, 4), %%zmm0 %{%%k4%}")       /* zmm0 = r0 r2 r4 r6 r8 r10 r12 r14 r16 r18 r20 r22 r24 r26 r28 r30 */
-                    __ASM_EMIT("vgatherdps      0x00(%[src_re], %%zmm5, 4), %%zmm1 %{%%k5%}")       /* zmm1 = r1 r3 r5 r7 r9 r11 r13 r15 r17 r19 r21 r23 r25 r27 r29 r31 */
                     __ASM_EMIT("vgatherdps      0x00(%[src_im], %%zmm4, 4), %%zmm2 %{%%k6%}")       /* zmm0 = i0 i2 i4 i6 i8 i10 i12 i14 i16 i18 i20 i22 i24 i26 i28 i30 */
+                    __ASM_EMIT("vgatherdps      0x00(%[src_re], %%zmm5, 4), %%zmm1 %{%%k5%}")       /* zmm1 = r1 r3 r5 r7 r9 r11 r13 r15 r17 r19 r21 r23 r25 r27 r29 r31 */
                     __ASM_EMIT("vgatherdps      0x00(%[src_im], %%zmm5, 4), %%zmm3 %{%%k7%}")       /* zmm1 = i1 i3 i5 i7 i9 i11 i13 i15 i17 i19 i21 i23 i25 i27 i29 i31 */
 
                     /* 1st-order 16x butterfly */
@@ -786,7 +752,7 @@ namespace lsp
                     : [src_re] "r" (src_re), [src_im] "r" (src_im),
                       [shift] "m" (shift),
                       [mask] "m" (mask),
-                      __IF_32([indices] "m" (indices), )
+                      __IF_32([IND] "m" (indices), )
                       [FFT_A] "o" (FFT_A),
                       [FFT_I] "o" (FFT_SCRAMBLE_DIRECT_INDICES),
                       [CMD] "o" (FFT_RBITS)
