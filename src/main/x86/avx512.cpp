@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 24 мая 2023 г.
@@ -24,6 +24,7 @@
 #ifdef ARCH_X86
     #include <private/dsp/exports.h>
     #include <lsp-plug.in/dsp/dsp.h>
+    #include <lsp-plug.in/common/debug.h>
     #include <lsp-plug.in/common/bits.h>
     #include <lsp-plug.in/stdlib/math.h>
 
@@ -336,6 +337,9 @@
                 CEXPORT1(vl, h_dotp);
                 CEXPORT1(vl, h_sqr_dotp);
                 CEXPORT1(vl, h_abs_dotp);
+
+                CEXPORT1(vl, direct_fft);
+                CEXPORT1(vl, reverse_fft);
             }
         } /* namespace avx2 */
     } /* namespace lsp */

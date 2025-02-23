@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -48,6 +48,12 @@ namespace lsp
 
             void direct_fft_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
             void reverse_fft_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+        }
+
+        namespace avx512
+        {
+            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void reverse_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
         }
     )
 
@@ -160,6 +166,8 @@ UTEST_BEGIN("dsp.fft", fft)
         IF_ARCH_X86(CALL(generic::reverse_fft, avx::reverse_fft, 32));
         IF_ARCH_X86(CALL(generic::direct_fft, avx::direct_fft_fma3, 32));
         IF_ARCH_X86(CALL(generic::reverse_fft, avx::reverse_fft_fma3, 32));
+        IF_ARCH_X86(CALL(generic::direct_fft, avx512::direct_fft, 64));
+		IF_ARCH_X86(CALL(generic::reverse_fft, avx512::reverse_fft, 64));
 
         IF_ARCH_ARM(CALL(generic::direct_fft, neon_d32::direct_fft, 16));
         IF_ARCH_ARM(CALL(generic::reverse_fft, neon_d32::reverse_fft, 16));

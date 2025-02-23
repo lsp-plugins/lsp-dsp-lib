@@ -3,7 +3,7 @@
  *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
- * Created on: 31 мар. 2020 г.
+ * Created on: 23 фев. 2025 г.
  *
  * lsp-dsp-lib is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,49 +32,44 @@ namespace lsp
 {
     namespace generic
     {
-        void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+        void packed_direct_fft(float *dst, const float *src, size_t rank);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
-            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
         }
 
         namespace avx
         {
-            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-            void direct_fft_fma3(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
-        }
-
-        namespace avx512
-        {
-            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
+            void packed_direct_fft_fma3(float *dst, const float *src, size_t rank);
         }
     )
 
     IF_ARCH_ARM(
         namespace neon_d32
         {
-            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
         }
     )
 
     IF_ARCH_AARCH64(
         namespace asimd
         {
-            void direct_fft(float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
         }
     )
 
-    typedef void (* direct_fft_t) (float *dst_re, float *dst_im, const float *src_re, const float *src_im, size_t rank);
+    typedef void (* packed_direct_fft_t) (float *dst, const float *src, size_t rank);
 }
 
 //-----------------------------------------------------------------------------
 // Performance test for complex multiplication
-PTEST_BEGIN("dsp.fft", fft, 10, 1000)
+PTEST_BEGIN("dsp.pfft", fft, 10, 1000)
 
-    void call(const char *label, float *fft_re, float *fft_im, const float *sig_re, const float *sig_im, size_t rank, direct_fft_t fft)
+    void call(const char *label, float *dst, const float *src, size_t rank, packed_direct_fft_t fft)
     {
         if (!PTEST_SUPPORTED(fft))
             return;
@@ -84,7 +79,7 @@ PTEST_BEGIN("dsp.fft", fft, 10, 1000)
         printf("Testing %s samples (rank = %d) ...\n", buf, int(rank));
 
         PTEST_LOOP(buf,
-            fft(fft_re, fft_im, sig_re, sig_im, rank);
+            fft(dst, src, rank);
         )
     }
 
@@ -97,7 +92,6 @@ PTEST_BEGIN("dsp.fft", fft, 10, 1000)
         float *sig_re   = alloc_aligned<float>(data, fft_size * 4, 64);
         float *sig_im   = &sig_re[fft_size];
         float *fft_re   = &sig_im[fft_size];
-        float *fft_im   = &fft_re[fft_size];
 
         for (size_t i=0; i < (1 << MAX_RANK); ++i)
         {
@@ -106,17 +100,16 @@ PTEST_BEGIN("dsp.fft", fft, 10, 1000)
         }
 
         #define CALL(func) \
-            call(#func, fft_re, fft_im, sig_re, sig_im, i, func)
+            call(#func, fft_re, sig_re, i, func)
 
         for (size_t i=MIN_RANK; i <= MAX_RANK; ++i)
         {
-            CALL(generic::direct_fft);
-            IF_ARCH_X86(CALL(sse::direct_fft));
-            IF_ARCH_X86(CALL(avx::direct_fft));
-            IF_ARCH_X86(CALL(avx::direct_fft_fma3));
-            IF_ARCH_X86(CALL(avx512::direct_fft));
-            IF_ARCH_ARM(CALL(neon_d32::direct_fft));
-            IF_ARCH_AARCH64(CALL(asimd::direct_fft));
+            CALL(generic::packed_direct_fft);
+            IF_ARCH_X86(CALL(sse::packed_direct_fft));
+            IF_ARCH_X86(CALL(avx::packed_direct_fft));
+            IF_ARCH_X86(CALL(avx::packed_direct_fft_fma3));
+            IF_ARCH_ARM(CALL(neon_d32::packed_direct_fft));
+            IF_ARCH_AARCH64(CALL(asimd::packed_direct_fft));
             PTEST_SEPARATOR;
         }
 
