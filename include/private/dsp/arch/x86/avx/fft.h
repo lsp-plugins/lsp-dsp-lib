@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -270,5 +270,6 @@ namespace lsp
 
             dsp::normalize_fft2(dst_re, dst_im, rank);
         }
-    }
-}
+
+    } /* namespace avx */
+} /* namespace lsp */

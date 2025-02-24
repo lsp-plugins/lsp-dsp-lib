@@ -89,7 +89,7 @@ UTEST_BEGIN("dsp.fft", fft)
 
         for (int same=0; same<2; ++same)
         {
-            for (size_t rank=6; rank<=16; ++rank)
+            for (size_t rank=2; rank<=16; ++rank)
             {
                 size_t count = 1 << rank;
                 for (size_t mask=0; mask <= 0x0f; ++mask)

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -44,15 +44,15 @@ namespace lsp
             {
                 if (rank == 2)
                 {
-                    float s0_re     = src_re[0] + src_re[1];
-                    float s1_re     = src_re[0] - src_re[1];
-                    float s2_re     = src_re[2] + src_re[3];
-                    float s3_re     = src_re[2] - src_re[3];
+                    float s0_re     = src_re[0] + src_re[2];
+                    float s1_re     = src_re[0] - src_re[2];
+                    float s2_re     = src_re[1] + src_re[3];
+                    float s3_re     = src_re[1] - src_re[3];
 
-                    float s0_im     = src_im[0] + src_im[1];
-                    float s1_im     = src_im[0] - src_im[1];
-                    float s2_im     = src_im[2] + src_im[3];
-                    float s3_im     = src_im[2] - src_im[3];
+                    float s0_im     = src_im[0] + src_im[2];
+                    float s1_im     = src_im[0] - src_im[2];
+                    float s2_im     = src_im[1] + src_im[3];
+                    float s3_im     = src_im[1] - src_im[3];
 
                     dst_re[0]       = s0_re + s2_re;
                     dst_re[1]       = s1_re + s3_im;
@@ -98,25 +98,25 @@ namespace lsp
             {
                 if (rank == 2)
                 {
-                    float s0_re     = src_re[0] + src_re[1];
-                    float s1_re     = src_re[0] - src_re[1];
-                    float s2_re     = src_re[2] + src_re[3];
-                    float s3_re     = src_re[2] - src_re[3];
+                    float s0_re     = src_re[0] + src_re[2];
+                    float s1_re     = src_re[0] - src_re[2];
+                    float s2_re     = src_re[1] + src_re[3];
+                    float s3_re     = src_re[1] - src_re[3];
 
-                    float s0_im     = src_im[0] + src_im[1];
-                    float s1_im     = src_im[0] - src_im[1];
-                    float s2_im     = src_im[2] + src_im[3];
-                    float s3_im     = src_im[2] - src_im[3];
+                    float s0_im     = src_im[0] + src_im[2];
+                    float s1_im     = src_im[0] - src_im[2];
+                    float s2_im     = src_im[1] + src_im[3];
+                    float s3_im     = src_im[1] - src_im[3];
 
-                    dst_re[0]       = (s0_re + s2_re)*0.25f;
-                    dst_re[1]       = (s1_re - s3_im)*0.25f;
-                    dst_re[2]       = (s0_re - s2_re)*0.25f;
-                    dst_re[3]       = (s1_re + s3_im)*0.25f;
+                    dst_re[0]       = (s0_re + s2_re) * 0.25f;
+                    dst_re[1]       = (s1_re - s3_im) * 0.25f;
+                    dst_re[2]       = (s0_re - s2_re) * 0.25f;
+                    dst_re[3]       = (s1_re + s3_im) * 0.25f;
 
-                    dst_im[0]       = (s0_im + s2_im)*0.25f;
-                    dst_im[1]       = (s1_im + s3_re)*0.25f;
-                    dst_im[2]       = (s0_im - s2_im)*0.25f;
-                    dst_im[3]       = (s1_im - s3_re)*0.25f;
+                    dst_im[0]       = (s0_im + s2_im) * 0.25f;
+                    dst_im[1]       = (s1_im + s3_re) * 0.25f;
+                    dst_im[2]       = (s0_im - s2_im) * 0.25f;
+                    dst_im[3]       = (s1_im - s3_re) * 0.25f;
                 }
                 else if (rank == 1)
                 {
@@ -256,7 +256,8 @@ namespace lsp
 
             packed_unscramble_reverse(dst, rank);
         }
-    }
-}
+
+    } /* namespace neon_d32 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_FFT_H_ */
