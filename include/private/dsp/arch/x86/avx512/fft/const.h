@@ -103,7 +103,7 @@ namespace lsp
             LSP_DSP_VEC16(0.9999999954041073), LSP_DSP_VEC16(0.0000958737990960),   // rank = 18
         };
 
-        static const uint32_t FFT_SCRAMBLE_DIRECT_INDICES[] __lsp_aligned64 =
+        static const uint32_t FFT_SCRAMBLE_INDICES[] __lsp_aligned64 =
         {
             // butterfly 1
             0,  2,  4,  6,  8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30,          // + 0x000
@@ -119,15 +119,8 @@ namespace lsp
             // butterfly 4
             0,  1,  2,  3, 16, 17, 18, 19,  8,  9, 10, 11, 24, 25, 26, 27,          // + 0x200
             4,  5,  6,  7, 20, 21, 22, 23, 12, 13, 14, 15, 28, 29, 30, 31,          // + 0x240
-        };
-
-        static const uint32_t FFT_RBITS[] __lsp_aligned64 =
-        {
-            0xff00ff00,             // step2
-            0xf0f0f0f0,             // step3
-            0xcccccccc,             // step4
-            0xaaaaaaaa,             // step5
-            32,                     // increment
+            // permute 16x
+            0,  8,  4, 12,  2, 10,  6, 14,  1,  9,  5, 13,  3, 11,  7, 15,          // + 0x280
         };
 
     } /* namespace avx512 */

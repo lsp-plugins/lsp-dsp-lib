@@ -29,14 +29,12 @@
 #include <private/dsp/arch/x86/avx512/fft/const.h>
 #include <private/dsp/arch/x86/avx512/fft/normalize.h>
 #include <private/dsp/arch/x86/avx512/fft/butterfly.h>
-#include <private/dsp/arch/x86/avx512/fft/rbits.h>
 
 #define FFT_SCRAMBLE_SELF_DIRECT_NAME   scramble_self_direct8
 #define FFT_SCRAMBLE_SELF_REVERSE_NAME  scramble_self_reverse8
 #define FFT_SCRAMBLE_COPY_DIRECT_NAME   scramble_copy_direct8
 #define FFT_SCRAMBLE_COPY_REVERSE_NAME  scramble_copy_reverse8
 #define FFT_TYPE                        uint8_t
-#define FFT_REVERSE_BITS                FFT_REVERSE_BITS8
 #include <private/dsp/arch/x86/avx512/fft/scramble.h>
 
 #define FFT_SCRAMBLE_SELF_DIRECT_NAME   scramble_self_direct16
@@ -44,7 +42,6 @@
 #define FFT_SCRAMBLE_COPY_DIRECT_NAME   scramble_copy_direct16
 #define FFT_SCRAMBLE_COPY_REVERSE_NAME  scramble_copy_reverse16
 #define FFT_TYPE                        uint16_t
-#define FFT_REVERSE_BITS                FFT_REVERSE_BITS16
 #include <private/dsp/arch/x86/avx512/fft/scramble.h>
 
 namespace lsp
@@ -156,10 +153,10 @@ namespace lsp
             }
             else
             {
-                if (rank <= 8)
-                    scramble_copy_direct8(dst_re, dst_im, src_re, src_im, rank);
+                if (rank <= 13)
+                    scramble_copy_direct8(dst_re, dst_im, src_re, src_im, rank - 5);
                 else
-                    scramble_copy_direct16(dst_re, dst_im, src_re, src_im, rank);
+                    scramble_copy_direct16(dst_re, dst_im, src_re, src_im, rank - 5);
             }
 
             for (size_t i=4; i < rank; ++i)
@@ -186,10 +183,10 @@ namespace lsp
             }
             else
             {
-                if (rank <= 8)
-                    scramble_copy_reverse8(dst_re, dst_im, src_re, src_im, rank);
+                if (rank <= 13)
+                    scramble_copy_reverse8(dst_re, dst_im, src_re, src_im, rank - 5);
                 else
-                    scramble_copy_reverse16(dst_re, dst_im, src_re, src_im, rank);
+                    scramble_copy_reverse16(dst_re, dst_im, src_re, src_im, rank - 5);
             }
 
             for (size_t i=4; i < rank; ++i)
