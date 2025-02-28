@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 13 дек. 2020 г.
@@ -103,7 +103,7 @@ PTEST_BEGIN("dsp.interpolation", linear, 5, 10000)
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
-            func(a, -1, 0.0f, 3, 0.1f, 1, count);
+            func(a, -1, 0.0f, 3, 0.1f, 1, uint32_t(count));
         );
     }
 
@@ -117,7 +117,7 @@ PTEST_BEGIN("dsp.interpolation", linear, 5, 10000)
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
-            func(a, b, -1, 0.0f, 3, 0.1f, 1, count);
+            func(a, b, -1, 0.0f, 3, 0.1f, 1, uint32_t(count));
         );
     }
 
@@ -131,7 +131,7 @@ PTEST_BEGIN("dsp.interpolation", linear, 5, 10000)
         printf("Testing %s numbers...\n", buf);
 
         PTEST_LOOP(buf,
-            func(a, b, c, -1, 0.0f, 3, 0.1f, 1, count);
+            func(a, b, c, -1, 0.0f, 3, 0.1f, 1, uint32_t(count));
         );
     }
 

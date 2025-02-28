@@ -441,7 +441,7 @@ namespace lsp
     #define SMINMAX_CORE(OP) \
         __ASM_EMIT("vxorps          %%ymm0, %%ymm0, %%ymm0")            /* ymm0 = 0 */ \
         __ASM_EMIT("test            %[count], %[count]") \
-        __ASM_EMIT("jz              10f") \
+        __ASM_EMIT("jz              8f") \
         __ASM_EMIT("vbroadcastss    0x00(%[src]), %%ymm0")              /* ymm0 = result */ \
         __ASM_EMIT("vmovaps         %[CC], %%ymm7")                     /* ymm7 = mask */ \
         __ASM_EMIT("vandps          %%ymm7, %%ymm0, %%ymm1")            /* ymm1 = abs(result) */ \
