@@ -572,9 +572,9 @@
                         // Only starting with ZEN 1 architecture AMD's implementation of AVX is fast enough
                         if ((f->vendor == CPU_VENDOR_AMD) || (f->vendor == CPU_VENDOR_HYGON))
                         {
-                            if (f->family < AMD_FAMILY_ZEN_3_4)
-                                return false;
                             if (f->family == AMD_FAMILY_DHYANA)
+                                return false;
+                            if (f->family < AMD_FAMILY_ZEN_3_4)
                                 return false;
                             return true;
                         }
