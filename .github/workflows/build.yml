@@ -119,7 +119,7 @@ jobs:
       image: opensuse/tumbleweed:latest
     steps:
       - name: Install dependencies
-        run: zypper --non-interactive --no-gpg-checks in tar gzip git make valgrind gcc gcc-c++ glibc-locale libstdc++-devel clang
+        run: zypper --non-interactive --no-gpg-checks in tar gzip git make valgrind gcc gcc-c++ glibc-locale glibc-gconv-modules-extra libstdc++-devel clang
       - uses: actions/checkout@v3
       - name: Configure project
         run: make config TEST=1 STRICT=1 CC=clang CXX=clang++
