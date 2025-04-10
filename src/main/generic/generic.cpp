@@ -165,6 +165,14 @@ namespace lsp
             EXPORT1(ssqrt1);
             EXPORT1(ssqrt2);
 
+            EXPORT1(sinf1);
+            EXPORT1(sinf2);
+            EXPORT1(sinf1_kp);
+            EXPORT1(cosf1);
+            EXPORT1(cosf2);
+            EXPORT1(cosf1_kp);
+            EXPORT1(lanczos);
+
             EXPORT1(lramp_set1);
             EXPORT1(lramp1);
             EXPORT1(lramp2);
