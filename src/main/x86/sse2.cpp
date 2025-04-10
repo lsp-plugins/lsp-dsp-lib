@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -60,6 +60,7 @@
         #include <private/dsp/arch/x86/sse2/pmath/exp.h>
         #include <private/dsp/arch/x86/sse2/pmath/log.h>
         #include <private/dsp/arch/x86/sse2/pmath/pow.h>
+        #include <private/dsp/arch/x86/sse2/pmath/sin.h>
     #undef PRIVATE_DSP_ARCH_X86_SSE2_IMPL
 
     namespace lsp
@@ -122,6 +123,9 @@
                 EXPORT1(powvc2);
                 EXPORT1(powvx1);
                 EXPORT1(powvx2);
+
+                EXPORT1(sinf1);
+                EXPORT1(sinf2);
 
                 EXPORT1(min_index);
                 EXPORT1(max_index);
