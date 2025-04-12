@@ -51,6 +51,12 @@ namespace lsp
             void x64_sinf_kp1(float *dst, float k, float p, size_t count);
             void x64_sinf_kp1_fma3(float *dst, float k, float p, size_t count);
         }
+
+        namespace avx512
+        {
+            void sinf_kp1(float *dst, float k, float p, size_t count);
+            void x64_sinf_kp1(float *dst, float k, float p, size_t count);
+        }
     )
 
     typedef void (* sinf_kp1_t)(float *dst, float k, float p, size_t count);
@@ -93,6 +99,8 @@ PTEST_BEGIN("dsp.pmath", sinf_kp1, 5, 1000)
             IF_ARCH_X86(CALL(avx2::sinf_kp1_fma3));
             IF_ARCH_X86(CALL(avx2::x64_sinf_kp1));
             IF_ARCH_X86(CALL(avx2::x64_sinf_kp1_fma3));
+            IF_ARCH_X86(CALL(avx512::sinf_kp1));
+            IF_ARCH_X86(CALL(avx512::x64_sinf_kp1));
             PTEST_SEPARATOR;
         }
 

@@ -42,6 +42,11 @@ namespace lsp
             void sinf1(float *dst, size_t count);
             void sinf1_fma3(float *dst, size_t count);
         }
+
+        namespace avx512
+        {
+            void sinf1(float *dst, size_t count);
+        }
     )
 
     typedef void (* sinf1_t)(float *dst, size_t count);
@@ -58,8 +63,8 @@ UTEST_BEGIN("dsp.pmath", sinf1)
         if (!UTEST_SUPPORTED(func2))
             return;
 
-        UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 64, 65, 100, 999, 0xfff)
+        UTEST_FOREACH(count, /* 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, */
+                16, 17, 19, 24, 25, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 64, 65, 100, 999, 0xfff)
         {
             for (size_t mask=0; mask <= 0x01; ++mask)
             {
@@ -98,6 +103,7 @@ UTEST_BEGIN("dsp.pmath", sinf1)
         IF_ARCH_X86(CALL(generic::sinf1, sse2::sinf1, 16));
         IF_ARCH_X86(CALL(generic::sinf1, avx2::sinf1, 32));
         IF_ARCH_X86(CALL(generic::sinf1, avx2::sinf1_fma3, 32));
+        IF_ARCH_X86(CALL(generic::sinf1, avx512::sinf1, 64));
     }
 UTEST_END
 

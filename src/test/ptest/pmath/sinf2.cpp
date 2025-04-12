@@ -47,6 +47,11 @@ namespace lsp
             void sinf2(float *dst, const float *src, size_t count);
             void sinf2_fma3(float *dst, const float *src, size_t count);
         }
+
+        namespace avx512
+        {
+            void sinf2(float *dst, const float *src, size_t count);
+        }
     )
 
     typedef void (* sinf2_t)(float *dst, const float *src, size_t count);
@@ -95,6 +100,7 @@ PTEST_BEGIN("dsp.pmath", sinf2, 5, 1000)
             IF_ARCH_X86(CALL(sse2::sinf2));
             IF_ARCH_X86(CALL(avx2::sinf2));
             IF_ARCH_X86(CALL(avx2::sinf2_fma3));
+            IF_ARCH_X86(CALL(avx512::sinf2));
             PTEST_SEPARATOR;
         }
 

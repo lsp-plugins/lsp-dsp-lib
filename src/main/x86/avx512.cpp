@@ -158,12 +158,12 @@
                 CEXPORT1(vl, fmmod4);
                 CEXPORT1(vl, fmrmod4);
 
-                CEXPORT2(vl, logb1, logb1);
-                CEXPORT2(vl, logb2, logb2);
-                CEXPORT2(vl, loge1, loge1);
-                CEXPORT2(vl, loge2, loge2);
-                CEXPORT2(vl, logd1, logd1);
-                CEXPORT2(vl, logd2, logd2);
+                CEXPORT1(vl, logb1);
+                CEXPORT1(vl, logb2);
+                CEXPORT1(vl, loge1);
+                CEXPORT1(vl, loge2);
+                CEXPORT1(vl, logd1);
+                CEXPORT1(vl, logd2);
 
                 CEXPORT2_X64(vl, logb1, x64_logb1);
                 CEXPORT2_X64(vl, logb2, x64_logb2);
@@ -171,6 +171,11 @@
                 CEXPORT2_X64(vl, loge2, x64_loge2);
                 CEXPORT2_X64(vl, logd1, x64_logd1);
                 CEXPORT2_X64(vl, logd2, x64_logd2);
+
+                CEXPORT1(vl, sinf1);
+                CEXPORT1(vl, sinf2);
+                CEXPORT1(vl, sinf_kp1);
+                CEXPORT2_X64(vl, sinf_kp1, x64_sinf_kp1);
 
                 CEXPORT1(vl, lramp_set1);
                 CEXPORT1(vl, lramp1);
