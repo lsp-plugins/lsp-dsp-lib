@@ -42,7 +42,7 @@ namespace lsp
                 dst[i]      = cosf(src[i]);
         }
 
-        void cosf1_kp(float *dst, float k, float p, size_t count)
+        void cosf_kp1(float *dst, float k, float p, size_t count)
         {
             for (size_t i=0; i<count; ++i)
                 dst[i]      = cosf(k * float(i) + p);

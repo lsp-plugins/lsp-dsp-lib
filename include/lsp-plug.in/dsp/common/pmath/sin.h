@@ -47,7 +47,7 @@ LSP_DSP_LIB_SYMBOL(void, sinf2, float *dst, const float *src, size_t count);
  * @param p initial phase
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void, sinf1_kp, float *dst, float k, float p, size_t count);
+LSP_DSP_LIB_SYMBOL(void, sinf_kp1, float *dst, float k, float p, size_t count);
 
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_PMATH_SIN_H_ */

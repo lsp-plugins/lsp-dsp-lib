@@ -40,7 +40,7 @@ namespace lsp
                 const float x1  = k * float(i) + p;
                 if ((x1 >= na) && (x1 <= a))
                 {
-                    if ((x1 >= -1e-8) && (x1 <= 1e-8))
+                    if ((x1 >= -1e-8f) && (x1 <= 1e-8f))
                         dst[i]          = 1.0f;
                     else
                     {

@@ -42,7 +42,7 @@ namespace lsp
                 dst[i]      = sinf(src[i]);
         }
 
-        void sinf1_kp(float *dst, float k, float p, size_t count)
+        void sinf_kp1(float *dst, float k, float p, size_t count)
         {
             for (size_t i=0; i<count; ++i)
                 dst[i]      = sinf(k * float(i) + p);

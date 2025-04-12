@@ -47,6 +47,14 @@ namespace lsp
         */
 
         IF_ARCH_X86(
+            static const float kp_gen_const[] __lsp_aligned16 =
+            {
+                0.0f, 1.0f, 2.0f, 3.0f,         // +0x00: Initial values 0..3
+                4.0f, 4.0f, 4.0f, 4.0f          // +0x10: Step
+            };
+        )
+
+        IF_ARCH_X86(
             static const uint32_t sinf_const[] __lsp_aligned16 =
             {
                 LSP_DSP_VEC4(0x3fc90fdb),       // +0x00:   PI/2
@@ -290,6 +298,68 @@ namespace lsp
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
                 : [S2C] "o" (sinf_const)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
+        void sinf_kp1(float *dst, float k, float p, size_t count)
+        {
+            ARCH_X86_ASM(
+                // Prepare
+                __ASM_EMIT("movss           %[k], %%xmm6")                  // xmm6     = k
+                __ASM_EMIT("movss           %[p], %%xmm7")                  // xmm7     = p
+                __ASM_EMIT("shufps          $0x00, %%xmm6, %%xmm6")         // xmm6     = k k k k
+                __ASM_EMIT("shufps          $0x00, %%xmm7, %%xmm7")         // xmm7     = p p p p
+                __ASM_EMIT("movaps          0x00 + %[S2KP], %%xmm4")        // xmm4     = i = 0 1 2 3
+                __ASM_EMIT("movaps          0x10 + %[S2KP], %%xmm5")        // xmm5     = step = 4 4 4 4
+                __ASM_EMIT("addps           0x00 + %[S2C], %%xmm7")         // xmm7     = p+PI/2 p+PI/2 p+PI/2 p+PI/2
+                // x4 blocks
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("jb              2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("movaps          %%xmm4, %%xmm0")                // xmm0     = i
+                __ASM_EMIT("mulps           %%xmm6, %%xmm0")                // xmm0     = k*i
+                __ASM_EMIT("addps           %%xmm5, %%xmm4")                // xmm4     = i + step
+                __ASM_EMIT("addps           %%xmm7, %%xmm0")                // xmm0     = k*i + p + PI/2
+                SINF_X_PLUS_PI_2_CORE_X4
+                __ASM_EMIT("movups          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $0x10, %[dst]")
+                __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("2:")
+                // Tail: 1x-3x block
+                __ASM_EMIT("add             $4, %[count]")
+                __ASM_EMIT("jle             10f")
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              4f")
+                __ASM_EMIT("movss           %%xmm4, %%xmm0")
+                __ASM_EMIT("shufps          $0xf9, %%xmm4, %%xmm4")         // xmm4     = i1 i2 i3 i3
+                __ASM_EMIT("4:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              6f")
+                __ASM_EMIT("movlhps         %%xmm4, %%xmm0")
+                __ASM_EMIT("6:")
+                __ASM_EMIT("mulps           %%xmm6, %%xmm0")                // xmm0     = k*i
+                __ASM_EMIT("addps           %%xmm7, %%xmm0")                // xmm0     = k*i + p + PI/2
+                SINF_X_PLUS_PI_2_CORE_X4
+                __ASM_EMIT("test            $1, %[count]")
+                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("movss           %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("add             $4, %[dst]")
+                __ASM_EMIT("8:")
+                __ASM_EMIT("test            $2, %[count]")
+                __ASM_EMIT("jz              10f")
+                __ASM_EMIT("movhps          %%xmm0, 0x00(%[dst])")
+                // End
+                __ASM_EMIT("10:")
+
+                : [dst] "+r" (dst), [count] "+r" (count)
+                : [S2C] "o" (sinf_const),
+                  [S2KP] "o" (kp_gen_const),
+                  [k] "m" (k),
+                  [p] "m" (p)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

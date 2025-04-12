@@ -126,6 +126,7 @@
 
                 EXPORT1(sinf1);
                 EXPORT1(sinf2);
+                EXPORT1(sinf_kp1);
 
                 EXPORT1(min_index);
                 EXPORT1(max_index);
