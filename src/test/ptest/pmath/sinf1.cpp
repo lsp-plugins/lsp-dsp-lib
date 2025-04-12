@@ -45,6 +45,7 @@ namespace lsp
         namespace avx2
         {
             void sinf1(float *dst, size_t count);
+            void sinf1_fma3(float *dst, size_t count);
         }
     )
 
@@ -93,6 +94,7 @@ PTEST_BEGIN("dsp.pmath", sinf1, 5, 1000)
             CALL(generic::sinf1);
             IF_ARCH_X86(CALL(sse2::sinf1));
             IF_ARCH_X86(CALL(avx2::sinf1));
+            IF_ARCH_X86(CALL(avx2::sinf1_fma3));
             PTEST_SEPARATOR;
         }
 

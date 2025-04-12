@@ -40,6 +40,7 @@ namespace lsp
         namespace avx2
         {
             void sinf2(float *dst, const float *src, size_t count);
+            void sinf2_fma3(float *dst, const float *src, size_t count);
         }
     )
 
@@ -96,6 +97,7 @@ UTEST_BEGIN("dsp.pmath", sinf2)
 
         IF_ARCH_X86(CALL(generic::sinf2, sse2::sinf2, 16));
         IF_ARCH_X86(CALL(generic::sinf2, avx2::sinf2, 32));
+        IF_ARCH_X86(CALL(generic::sinf2, avx2::sinf2_fma3, 32));
     }
 UTEST_END
 
