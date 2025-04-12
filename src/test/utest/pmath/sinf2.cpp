@@ -36,6 +36,11 @@ namespace lsp
         {
             void sinf2(float *dst, const float *src, size_t count);
         }
+
+        namespace avx2
+        {
+            void sinf2(float *dst, const float *src, size_t count);
+        }
     )
 
     typedef void (* sinf2_t)(float *dst, const float *src, size_t count);
@@ -90,6 +95,7 @@ UTEST_BEGIN("dsp.pmath", sinf2)
             call(#func, align, generic, func)
 
         IF_ARCH_X86(CALL(generic::sinf2, sse2::sinf2, 16));
+        IF_ARCH_X86(CALL(generic::sinf2, avx2::sinf2, 32));
     }
 UTEST_END
 

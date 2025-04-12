@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -44,12 +44,7 @@
         #include <private/dsp/arch/x86/avx2/dynamics.h>
 
         #include <private/dsp/arch/x86/avx2/float.h>
-
-        #include <private/dsp/arch/x86/avx2/pmath/op_kx.h>
-        #include <private/dsp/arch/x86/avx2/pmath/fmop_kx.h>
-        #include <private/dsp/arch/x86/avx2/pmath/exp.h>
-        #include <private/dsp/arch/x86/avx2/pmath/log.h>
-        #include <private/dsp/arch/x86/avx2/pmath/pow.h>
+        #include <private/dsp/arch/x86/avx2/pmath.h>
 
         #include <private/dsp/arch/x86/avx2/fft/normalize.h>
 
@@ -189,6 +184,11 @@ namespace lsp
             CEXPORT2_X64(favx, powvc2, x64_powvc2);
             CEXPORT2_X64(favx, powvx1, x64_powvx1);
             CEXPORT2_X64(favx, powvx2, x64_powvx2);
+
+            CEXPORT1(favx, sinf1);
+            CEXPORT1(favx, sinf2);
+            CEXPORT1(favx, sinf_kp1);
+            CEXPORT2_X64(favx, sinf_kp1, x64_sinf_kp1);
 
             CEXPORT2_X64(favx, eff_hsla_hue, x64_eff_hsla_hue);
             CEXPORT2_X64(favx, eff_hsla_sat, x64_eff_hsla_sat);

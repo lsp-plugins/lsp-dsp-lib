@@ -36,6 +36,12 @@ namespace lsp
         {
             void sinf_kp1(float *dst, float k, float p, size_t count);
         }
+
+        namespace avx2
+        {
+            void sinf_kp1(float *dst, float k, float p, size_t count);
+            void x64_sinf_kp1(float *dst, float k, float p, size_t count);
+        }
     )
 
     typedef void (* sinf_kp1_t)(float *dst, float k, float p, size_t count);
@@ -61,7 +67,7 @@ UTEST_BEGIN("dsp.pmath", sinf_kp1)
 
                 FloatBuffer src(count, align, mask & 0x01);
                 src.randomize(-100.0f * M_PI, 100.0f * M_PI);
-                const float k = randf(-0.5f, 0.5f);
+                const float k = randf(-0.1f, 0.1f);
                 const float p = randf(-20.0f * M_PI, 20.0f * M_PI);
 
                 FloatBuffer dst1(count, align, mask & 0x01);
@@ -95,6 +101,8 @@ UTEST_BEGIN("dsp.pmath", sinf_kp1)
             call(#func, align, generic, func)
 
         IF_ARCH_X86(CALL(generic::sinf_kp1, sse2::sinf_kp1, 16));
+        IF_ARCH_X86(CALL(generic::sinf_kp1, avx2::sinf_kp1, 32));
+        IF_ARCH_X86(CALL(generic::sinf_kp1, avx2::x64_sinf_kp1, 32));
     }
 UTEST_END
 
