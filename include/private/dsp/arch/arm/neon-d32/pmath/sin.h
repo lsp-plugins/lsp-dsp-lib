@@ -278,28 +278,20 @@ namespace lsp
                 __ASM_EMIT("2:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("adds            %[count], #4")
-                __ASM_EMIT("bls             12f")
+                __ASM_EMIT("bls             6f")
                 __ASM_EMIT("vmul.f32        q0, q6, q4")                // q0   = k * i
-                __ASM_EMIT("vadd.f32        q4, q0, q5")                // q4   = X0 X1 X2 X3 = k*i + p + PI/2
-                __ASM_EMIT("tst             %[count], #1")
-                __ASM_EMIT("beq             6f")
-                __ASM_EMIT("vmov            q0, q4")                    // q0   = X0 X1 X2 X3
-                __ASM_EMIT("vext.32         q4, q4, q4, #1")            // q4   = X1 X2 X3 X0
-                __ASM_EMIT("6:")
-                __ASM_EMIT("tst             %[count], #2")
-                __ASM_EMIT("beq             8f")
-                __ASM_EMIT("vmov            d1, d8")                    // q0   = X0 X1 X1 X2
-                __ASM_EMIT("8:")
+                __ASM_EMIT("vadd.f32        q0, q0, q5")                // q0   = k*i + p + PI/2
                 SINF_X_PLUS_PI_2_CORE_X4
                 __ASM_EMIT("tst             %[count], #1")
-                __ASM_EMIT("beq             10f")
+                __ASM_EMIT("beq             4f")
                 __ASM_EMIT("vst1.32         {d0[0]}, [%[dst]]!")
-                __ASM_EMIT("10:")
+                __ASM_EMIT("vext.32         q0, q0, q0, #1")
+                __ASM_EMIT("4:")
                 __ASM_EMIT("tst             %[count], #2")
-                __ASM_EMIT("beq             12f")
-                __ASM_EMIT("vst1.32         {d1}, [%[dst]]")
+                __ASM_EMIT("beq             6f")
+                __ASM_EMIT("vst1.32         {d0}, [%[dst]]")
                 // End
-                __ASM_EMIT("12:")
+                __ASM_EMIT("6:")
 
                 : [dst] "+r" (dst), [count] "+r" (count)
                 : [k] "r" (&k),
