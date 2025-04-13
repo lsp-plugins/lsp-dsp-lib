@@ -34,7 +34,7 @@ namespace lsp
     namespace neon_d32
     {
         IF_ARCH_ARM(
-            static const float kp_gen_const[] __lsp_aligned32 =
+            static const float kp_gen_const[] __lsp_aligned16 =
             {
                 0.0f, 1.0f, 2.0f, 3.0f,         // +0x00: Initial values
                 LSP_DSP_VEC4(4.0),              // +0x10: Step x4
@@ -193,7 +193,7 @@ namespace lsp
                 : [S2C] "r" (&sinf_const[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
-                  "q2", "q5", "q3", "q7",
+                  "q4", "q5", "q6", "q7",
                   "q8", "q9", "q10", "q11",
                   "q12", "q13", "q14", "q15"
             );
@@ -250,7 +250,7 @@ namespace lsp
                 : [S2C] "r" (&sinf_const[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
-                  "q4", "q5", "q3", "q7",
+                  "q4", "q5", "q6", "q7",
                   "q8", "q9", "q10", "q11",
                   "q12", "q13", "q14", "q15"
             );
