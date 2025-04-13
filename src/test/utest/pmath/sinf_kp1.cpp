@@ -69,6 +69,13 @@ namespace lsp
         }
     )
 
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void sinf_kp1(float *dst, float k, float p, size_t count);
+        }
+    )
+
     typedef void (* sinf_kp1_t)(float *dst, float k, float p, size_t count);
 }
 
@@ -133,6 +140,7 @@ UTEST_BEGIN("dsp.pmath", sinf_kp1)
         IF_ARCH_X86(CALL(generic::sinf_kp1, avx512::sinf_kp1, 64));
         IF_ARCH_X86_64(CALL(generic::sinf_kp1, avx512::x64_sinf_kp1, 64));
         IF_ARCH_ARM(CALL(generic::sinf_kp1, neon_d32::sinf_kp1, 16));
+        IF_ARCH_AARCH64(CALL(generic::sinf_kp1, asimd::sinf_kp1, 16));
     }
 UTEST_END
 

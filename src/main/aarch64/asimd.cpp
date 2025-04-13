@@ -74,18 +74,7 @@
         #include <private/dsp/arch/aarch64/asimd/msmatrix.h>
         #include <private/dsp/arch/aarch64/asimd/pcomplex.h>
         #include <private/dsp/arch/aarch64/asimd/pfft.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/abs_vv.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/exp.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/fmop_kx.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/fmop_vv.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/log.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/lramp.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/minmax.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/op_kx.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/op_vv.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/pow.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/sqr.h>
-        #include <private/dsp/arch/aarch64/asimd/pmath/ssqrt.h>
+        #include <private/dsp/arch/aarch64/asimd/pmath.h>
         #include <private/dsp/arch/aarch64/asimd/resampling.h>
         #include <private/dsp/arch/aarch64/asimd/search/minmax.h>
         #include <private/dsp/arch/aarch64/asimd/search/iminmax.h>
@@ -301,6 +290,10 @@
                 EXPORT1(powvc2);
                 EXPORT1(powvx1);
                 EXPORT1(powvx2);
+
+                EXPORT1(sinf1);
+                EXPORT1(sinf2);
+                EXPORT1(sinf_kp1);
 
                 EXPORT1(sqr1);
                 EXPORT1(sqr2);
