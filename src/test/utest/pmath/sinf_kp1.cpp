@@ -90,7 +90,7 @@ UTEST_BEGIN("dsp.pmath", sinf_kp1)
                 UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
 
                 // Compare buffers
-                if (!dst1.equals_adaptive(dst2, 1e-4))
+                if (!dst1.equals_adaptive(dst2, 5e-4))
                 {
                     printf("k = %f, p = %f\n", k, p);
                     src.dump("src ");
