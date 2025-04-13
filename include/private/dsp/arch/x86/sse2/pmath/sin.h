@@ -329,29 +329,22 @@ namespace lsp
                 __ASM_EMIT("2:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
-                __ASM_EMIT("jle             10f")
-                __ASM_EMIT("test            $1, %[count]")
-                __ASM_EMIT("jz              4f")
-                __ASM_EMIT("movss           %%xmm4, %%xmm0")
-                __ASM_EMIT("shufps          $0xf9, %%xmm4, %%xmm4")         // xmm4     = i1 i2 i3 i3
-                __ASM_EMIT("4:")
-                __ASM_EMIT("test            $2, %[count]")
-                __ASM_EMIT("jz              6f")
-                __ASM_EMIT("movlhps         %%xmm4, %%xmm0")
-                __ASM_EMIT("6:")
+                __ASM_EMIT("jle             6f")
+                __ASM_EMIT("movaps          %%xmm4, %%xmm0")                // xmm0     = i
                 __ASM_EMIT("mulps           %%xmm6, %%xmm0")                // xmm0     = k*i
                 __ASM_EMIT("addps           %%xmm7, %%xmm0")                // xmm0     = k*i + p + PI/2
                 SINF_X_PLUS_PI_2_CORE_X4
                 __ASM_EMIT("test            $1, %[count]")
-                __ASM_EMIT("jz              8f")
+                __ASM_EMIT("jz              4f")
                 __ASM_EMIT("movss           %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("shufps          $0x39, %%xmm0, %%xmm0")         // xmm0     = S1 S2 S3 S0
                 __ASM_EMIT("add             $4, %[dst]")
-                __ASM_EMIT("8:")
+                __ASM_EMIT("4:")
                 __ASM_EMIT("test            $2, %[count]")
-                __ASM_EMIT("jz              10f")
-                __ASM_EMIT("movhps          %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("jz              6f")
+                __ASM_EMIT("movlps          %%xmm0, 0x00(%[dst])")
                 // End
-                __ASM_EMIT("10:")
+                __ASM_EMIT("6:")
 
                 : [dst] "+r" (dst), [count] "+r" (count)
                 : [S2C] "o" (sinf_const),
