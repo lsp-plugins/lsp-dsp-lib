@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -71,18 +71,7 @@
         #include <private/dsp/arch/arm/neon-d32/pan.h>
         #include <private/dsp/arch/arm/neon-d32/msmatrix.h>
         #include <private/dsp/arch/arm/neon-d32/pcomplex.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/abs_vv.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/exp.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/fmop_kx.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/fmop_vv.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/log.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/lramp.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/minmax.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/op_kx.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/op_vv.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/pow.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/sqr.h>
-        #include <private/dsp/arch/arm/neon-d32/pmath/ssqrt.h>
+        #include <private/dsp/arch/arm/neon-d32/pmath.h>
         #include <private/dsp/arch/arm/neon-d32/resampling.h>
         #include <private/dsp/arch/arm/neon-d32/search/iminmax.h>
         #include <private/dsp/arch/arm/neon-d32/search/minmax.h>
@@ -310,6 +299,9 @@
                 EXPORT1(sqr2);
                 EXPORT1(ssqrt1);
                 EXPORT1(ssqrt2);
+
+                EXPORT1(sinf1);
+                EXPORT1(sinf2);
 
                 EXPORT1(h_sum);
                 EXPORT1(h_abs_sum);

@@ -54,6 +54,13 @@ namespace lsp
         }
     )
 
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void sinf2(float *dst, const float *src, size_t count);
+        }
+    )
+
     typedef void (* sinf2_t)(float *dst, const float *src, size_t count);
 }
 
@@ -101,6 +108,7 @@ PTEST_BEGIN("dsp.pmath", sinf2, 5, 1000)
             IF_ARCH_X86(CALL(avx2::sinf2));
             IF_ARCH_X86(CALL(avx2::sinf2_fma3));
             IF_ARCH_X86(CALL(avx512::sinf2));
+            IF_ARCH_ARM(CALL(neon_d32::sinf2));
             PTEST_SEPARATOR;
         }
 
