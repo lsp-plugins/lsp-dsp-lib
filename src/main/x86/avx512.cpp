@@ -172,6 +172,11 @@
                 CEXPORT2_X64(vl, logd1, x64_logd1);
                 CEXPORT2_X64(vl, logd2, x64_logd2);
 
+                CEXPORT1(vl, cosf1);
+                CEXPORT1(vl, cosf2);
+                CEXPORT1(vl, cosf_kp1);
+                CEXPORT2_X64(vl, cosf_kp1, x64_cosf_kp1);
+
                 CEXPORT1(vl, sinf1);
                 CEXPORT1(vl, sinf2);
                 CEXPORT1(vl, sinf_kp1);

@@ -3,7 +3,7 @@
  *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
- * Created on: 12 апр. 2025 г.
+ * Created on: 14 апр. 2025 г.
  *
  * lsp-dsp-lib is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,19 +19,21 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PRIVATE_DSP_ARCH_X86_AVX2_PMATH_H_
-#define PRIVATE_DSP_ARCH_X86_AVX2_PMATH_H_
+#ifndef PRIVATE_DSP_ARCH_X86_SSE2_PMATH_H_
+#define PRIVATE_DSP_ARCH_X86_SSE2_PMATH_H_
 
-#ifndef PRIVATE_DSP_ARCH_X86_AVX2_IMPL
+#ifndef PRIVATE_DSP_ARCH_X86_SSE2_IMPL
     #error "This header should not be included directly"
-#endif /* PRIVATE_DSP_ARCH_X86_AVX2_IMPL */
+#endif /* PRIVATE_DSP_ARCH_X86_SSE2_IMPL */
 
-#include <private/dsp/arch/x86/avx2/pmath/cos.h>
-#include <private/dsp/arch/x86/avx2/pmath/op_kx.h>
-#include <private/dsp/arch/x86/avx2/pmath/fmop_kx.h>
-#include <private/dsp/arch/x86/avx2/pmath/exp.h>
-#include <private/dsp/arch/x86/avx2/pmath/log.h>
-#include <private/dsp/arch/x86/avx2/pmath/pow.h>
-#include <private/dsp/arch/x86/avx2/pmath/sin.h>
+#include <private/dsp/arch/x86/sse2/pmath/cos.h>
+#include <private/dsp/arch/x86/sse2/pmath/op_kx.h>
+#include <private/dsp/arch/x86/sse2/pmath/op_vv.h>
+#include <private/dsp/arch/x86/sse2/pmath/fmop_kx.h>
+#include <private/dsp/arch/x86/sse2/pmath/fmop_vv.h>
+#include <private/dsp/arch/x86/sse2/pmath/exp.h>
+#include <private/dsp/arch/x86/sse2/pmath/log.h>
+#include <private/dsp/arch/x86/sse2/pmath/pow.h>
+#include <private/dsp/arch/x86/sse2/pmath/sin.h>
 
-#endif /* PRIVATE_DSP_ARCH_X86_AVX2_PMATH_H_ */
+#endif /* PRIVATE_DSP_ARCH_X86_SSE2_PMATH_H_ */

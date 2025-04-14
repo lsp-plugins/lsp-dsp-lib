@@ -140,38 +140,38 @@ namespace lsp
 
         #define SINF_X_PLUS_PI_2_CORE_X4              \
             /* xmm0 = X = x + PI/2 */               \
-        __ASM_EMIT("movaps          %%xmm0, %%xmm1")                /* xmm1     = X */ \
-        __ASM_EMIT("movaps          %%xmm0, %%xmm3")                /* xmm3     = X */ \
-        __ASM_EMIT("mulps           0x20 + %[S2C], %%xmm1")         /* xmm1     = X / (2*PI) */ \
-        __ASM_EMIT("psrad           $31, %%xmm3")                   /* xmm3     = [ X < 0.0 ] ? -1 : 0 */ \
-        __ASM_EMIT("cvttps2dq       %%xmm1, %%xmm1")                /* xmm1     = int(X / (2*PI)) */ \
-        __ASM_EMIT("paddd           %%xmm3, %%xmm1")                /* xmm1     = int(X / (2*PI)) + [ X < 0.0 ] ? -1 : 0 */ \
-        __ASM_EMIT("cvtdq2ps        %%xmm1, %%xmm1")                /* xmm1     = period = int(X / (2*PI)) [ X < 0.0 ] ? -1 : 0 */ \
-        __ASM_EMIT("mulps           0x30 + %[S2C], %%xmm1")         /* xmm1     = period * 2 * PI */ \
-        __ASM_EMIT("subps           %%xmm1, %%xmm0")                /* xmm0     = Y = X - period * 2 * PI */ \
-        __ASM_EMIT("movaps          %%xmm0, %%xmm2")                /* xmm2     = Y */ \
-        __ASM_EMIT("movaps          0x40 + %[S2C], %%xmm1")         /* xmm1     = 3*PI/2 */ \
-        __ASM_EMIT("cmpps           $1, 0x10 + %[S2C], %%xmm2")     /* xmm2     = [ Y < PI ] */ \
-        __ASM_EMIT("subps           %%xmm0, %%xmm1")                /* xmm1     = 3*PI/2 - Y */ \
-        __ASM_EMIT("subps           0x00 + %[S2C], %%xmm0")         /* xmm0     = Y - PI/2 */ \
-        __ASM_EMIT("andps           %%xmm2, %%xmm0")                /* xmm0     = (Y - PI/2) & [ Y < PI ] */ \
-        __ASM_EMIT("andnps          %%xmm1, %%xmm2")                /* xmm2     = (3*PI/2 - Y) & [ Y >= PI ] */ \
-        __ASM_EMIT("orps            %%xmm2, %%xmm0")                /* xmm0     = XX = [ Y < PI ] ? (Y - PI/2) : (3*PI/2 - Y) */ \
-        /* xmm0     = XX1 */ \
-        __ASM_EMIT("movaps          %%xmm0, %%xmm1")                /* xmm1     = XX */ \
-        __ASM_EMIT("mulps           %%xmm0, %%xmm0")                /* xmm0     = X2 = XX*XX */ \
-        __ASM_EMIT("movaps          %%xmm0, %%xmm2")                /* xmm2     = X2 */ \
-        __ASM_EMIT("mulps           0x50 + %[S2C], %%xmm0")         /* xmm0     = X2*C0 */ \
-        __ASM_EMIT("addps           0x60 + %[S2C], %%xmm0")         /* xmm0     = C1 + X2*C0 */ \
-        __ASM_EMIT("mulps           %%xmm2, %%xmm0")                /* xmm0     = X2*(C1 + X2*C0) */ \
-        __ASM_EMIT("addps           0x70 + %[S2C], %%xmm0")         /* xmm0     = C2 + X2*(C1 + X2*C0) */ \
-        __ASM_EMIT("mulps           %%xmm2, %%xmm0")                /* xmm0     = X2*(C2 + X2*(C1 + X2*C0)) */ \
-        __ASM_EMIT("addps           0x80 + %[S2C], %%xmm0")         /* xmm0     = C3 + X2*(C2 + X2*(C1 + X2*C0)) */ \
-        __ASM_EMIT("mulps           %%xmm2, %%xmm0")                /* xmm0     = X2*(C3 + X2*(C2 + X2*(C1 + X2*C0))) */ \
-        __ASM_EMIT("addps           0x90 + %[S2C], %%xmm0")         /* xmm0     = C4 + X2*(C3 + X2*(C2 + X2*(C1 + X2*C0))) */ \
-        __ASM_EMIT("mulps           %%xmm2, %%xmm0")                /* xmm0     = X2*(C4 + X2*(C3 + X2*(C2 + X2*(C1 + X2*C0)))) */ \
-        __ASM_EMIT("addps           0xa0 + %[S2C], %%xmm0")         /* xmm0     = 1.0 + X2*(C4 + X2*(C3 + X2*(C2 + X2*(C1 + X2*C0)))) */ \
-        __ASM_EMIT("mulps           %%xmm1, %%xmm0")                /* xmm0     = sinf(x) = XX * (1.0 + X2*(C4 + X2*(C3 + X2*(C2 + X2*(C1 + X2*C0))))) */
+            __ASM_EMIT("movaps          %%xmm0, %%xmm1")                /* xmm1     = X */ \
+            __ASM_EMIT("movaps          %%xmm0, %%xmm3")                /* xmm3     = X */ \
+            __ASM_EMIT("mulps           0x20 + %[S2C], %%xmm1")         /* xmm1     = X / (2*PI) */ \
+            __ASM_EMIT("psrad           $31, %%xmm3")                   /* xmm3     = [ X < 0.0 ] ? -1 : 0 */ \
+            __ASM_EMIT("cvttps2dq       %%xmm1, %%xmm1")                /* xmm1     = int(X / (2*PI)) */ \
+            __ASM_EMIT("paddd           %%xmm3, %%xmm1")                /* xmm1     = int(X / (2*PI)) + [ X < 0.0 ] ? -1 : 0 */ \
+            __ASM_EMIT("cvtdq2ps        %%xmm1, %%xmm1")                /* xmm1     = period = int(X / (2*PI)) [ X < 0.0 ] ? -1 : 0 */ \
+            __ASM_EMIT("mulps           0x30 + %[S2C], %%xmm1")         /* xmm1     = period * 2 * PI */ \
+            __ASM_EMIT("subps           %%xmm1, %%xmm0")                /* xmm0     = Y = X - period * 2 * PI */ \
+            __ASM_EMIT("movaps          %%xmm0, %%xmm2")                /* xmm2     = Y */ \
+            __ASM_EMIT("movaps          0x40 + %[S2C], %%xmm1")         /* xmm1     = 3*PI/2 */ \
+            __ASM_EMIT("cmpps           $1, 0x10 + %[S2C], %%xmm2")     /* xmm2     = [ Y < PI ] */ \
+            __ASM_EMIT("subps           %%xmm0, %%xmm1")                /* xmm1     = 3*PI/2 - Y */ \
+            __ASM_EMIT("subps           0x00 + %[S2C], %%xmm0")         /* xmm0     = Y - PI/2 */ \
+            __ASM_EMIT("andps           %%xmm2, %%xmm0")                /* xmm0     = (Y - PI/2) & [ Y < PI ] */ \
+            __ASM_EMIT("andnps          %%xmm1, %%xmm2")                /* xmm2     = (3*PI/2 - Y) & [ Y >= PI ] */ \
+            __ASM_EMIT("orps            %%xmm2, %%xmm0")                /* xmm0     = XX = [ Y < PI ] ? (Y - PI/2) : (3*PI/2 - Y) */ \
+            /* xmm0     = XX1 */ \
+            __ASM_EMIT("movaps          %%xmm0, %%xmm1")                /* xmm1     = XX */ \
+            __ASM_EMIT("mulps           %%xmm0, %%xmm0")                /* xmm0     = X2 = XX*XX */ \
+            __ASM_EMIT("movaps          %%xmm0, %%xmm2")                /* xmm2     = X2 */ \
+            __ASM_EMIT("mulps           0x50 + %[S2C], %%xmm0")         /* xmm0     = X2*C0 */ \
+            __ASM_EMIT("addps           0x60 + %[S2C], %%xmm0")         /* xmm0     = C1 + X2*C0 */ \
+            __ASM_EMIT("mulps           %%xmm2, %%xmm0")                /* xmm0     = X2*(C1 + X2*C0) */ \
+            __ASM_EMIT("addps           0x70 + %[S2C], %%xmm0")         /* xmm0     = C2 + X2*(C1 + X2*C0) */ \
+            __ASM_EMIT("mulps           %%xmm2, %%xmm0")                /* xmm0     = X2*(C2 + X2*(C1 + X2*C0)) */ \
+            __ASM_EMIT("addps           0x80 + %[S2C], %%xmm0")         /* xmm0     = C3 + X2*(C2 + X2*(C1 + X2*C0)) */ \
+            __ASM_EMIT("mulps           %%xmm2, %%xmm0")                /* xmm0     = X2*(C3 + X2*(C2 + X2*(C1 + X2*C0))) */ \
+            __ASM_EMIT("addps           0x90 + %[S2C], %%xmm0")         /* xmm0     = C4 + X2*(C3 + X2*(C2 + X2*(C1 + X2*C0))) */ \
+            __ASM_EMIT("mulps           %%xmm2, %%xmm0")                /* xmm0     = X2*(C4 + X2*(C3 + X2*(C2 + X2*(C1 + X2*C0)))) */ \
+            __ASM_EMIT("addps           0xa0 + %[S2C], %%xmm0")         /* xmm0     = 1.0 + X2*(C4 + X2*(C3 + X2*(C2 + X2*(C1 + X2*C0)))) */ \
+            __ASM_EMIT("mulps           %%xmm1, %%xmm0")                /* xmm0     = sinf(x) = XX * (1.0 + X2*(C4 + X2*(C3 + X2*(C2 + X2*(C1 + X2*C0))))) */
 
         void sinf1(float *dst, size_t count)
         {

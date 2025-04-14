@@ -53,14 +53,7 @@
         #include <private/dsp/arch/x86/sse2/graphics/effects.h>
         #include <private/dsp/arch/x86/sse2/graphics/pixelfmt.h>
 
-        #include <private/dsp/arch/x86/sse2/pmath/op_kx.h>
-        #include <private/dsp/arch/x86/sse2/pmath/op_vv.h>
-        #include <private/dsp/arch/x86/sse2/pmath/fmop_kx.h>
-        #include <private/dsp/arch/x86/sse2/pmath/fmop_vv.h>
-        #include <private/dsp/arch/x86/sse2/pmath/exp.h>
-        #include <private/dsp/arch/x86/sse2/pmath/log.h>
-        #include <private/dsp/arch/x86/sse2/pmath/pow.h>
-        #include <private/dsp/arch/x86/sse2/pmath/sin.h>
+        #include <private/dsp/arch/x86/sse2/pmath.h>
     #undef PRIVATE_DSP_ARCH_X86_SSE2_IMPL
 
     namespace lsp
@@ -123,6 +116,10 @@
                 EXPORT1(powvc2);
                 EXPORT1(powvx1);
                 EXPORT1(powvx2);
+
+                EXPORT1(cosf1);
+                EXPORT1(cosf2);
+                EXPORT1(cosf_kp1);
 
                 EXPORT1(sinf1);
                 EXPORT1(sinf2);

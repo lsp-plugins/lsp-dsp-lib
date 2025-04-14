@@ -185,6 +185,11 @@ namespace lsp
             CEXPORT2_X64(favx, powvx1, x64_powvx1);
             CEXPORT2_X64(favx, powvx2, x64_powvx2);
 
+            CEXPORT1(favx, cosf1);
+            CEXPORT1(favx, cosf2);
+            CEXPORT1(favx, cosf_kp1);
+            CEXPORT2_X64(favx, cosf_kp1, x64_cosf_kp1);
+
             CEXPORT1(favx, sinf1);
             CEXPORT1(favx, sinf2);
             CEXPORT1(favx, sinf_kp1);
@@ -271,6 +276,11 @@ namespace lsp
                 CEXPORT2_X64(favx, powvc2, x64_powvc2_fma3);
                 CEXPORT2_X64(favx, powvx1, x64_powvx1_fma3);
                 CEXPORT2_X64(favx, powvx2, x64_powvx2_fma3);
+
+                CEXPORT2(favx, cosf1, cosf1_fma3);
+                CEXPORT2(favx, cosf2, cosf2_fma3);
+                CEXPORT2(favx, cosf_kp1, cosf_kp1_fma3);
+                CEXPORT2_X64(favx, cosf_kp1, x64_cosf_kp1_fma3);
 
                 CEXPORT2(favx, sinf1, sinf1_fma3);
                 CEXPORT2(favx, sinf2, sinf2_fma3);
