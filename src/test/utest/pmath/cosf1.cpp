@@ -119,7 +119,7 @@ UTEST_BEGIN("dsp.pmath", cosf1)
         IF_ARCH_X86(CALL(generic::cosf1, avx2::cosf1_fma3, 32));
         IF_ARCH_X86(CALL(generic::cosf1, avx512::cosf1, 64));
         IF_ARCH_ARM(CALL(generic::cosf1, neon_d32::cosf1, 16));
-//        IF_ARCH_AARCH64(CALL(generic::cosf1, asimd::cosf1, 16));
+        IF_ARCH_AARCH64(CALL(generic::cosf1, asimd::cosf1, 16));
     }
 UTEST_END
 

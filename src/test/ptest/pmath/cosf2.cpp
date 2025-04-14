@@ -116,7 +116,7 @@ PTEST_BEGIN("dsp.pmath", cosf2, 5, 1000)
             IF_ARCH_X86(CALL(avx2::cosf2_fma3));
             IF_ARCH_X86(CALL(avx512::cosf2));
             IF_ARCH_ARM(CALL(neon_d32::cosf2));
-//            IF_ARCH_AARCH64(CALL(asimd::cosf2));
+            IF_ARCH_AARCH64(CALL(asimd::cosf2));
             PTEST_SEPARATOR;
         }
 
