@@ -139,7 +139,7 @@ UTEST_BEGIN("dsp.pmath", cosf_kp1)
         IF_ARCH_X86_64(CALL(generic::cosf_kp1, avx2::x64_cosf_kp1_fma3, 32));
         IF_ARCH_X86(CALL(generic::cosf_kp1, avx512::cosf_kp1, 64));
         IF_ARCH_X86_64(CALL(generic::cosf_kp1, avx512::x64_cosf_kp1, 64));
-//        IF_ARCH_ARM(CALL(generic::cosf_kp1, neon_d32::cosf_kp1, 16));
+        IF_ARCH_ARM(CALL(generic::cosf_kp1, neon_d32::cosf_kp1, 16));
 //        IF_ARCH_AARCH64(CALL(generic::cosf_kp1, asimd::cosf_kp1, 16));
     }
 UTEST_END

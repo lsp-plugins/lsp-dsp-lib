@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL */
 
 #include <private/dsp/arch/arm/neon-d32/pmath/abs_vv.h>
+#include <private/dsp/arch/arm/neon-d32/pmath/cos.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/exp.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/fmop_kx.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/fmop_vv.h>

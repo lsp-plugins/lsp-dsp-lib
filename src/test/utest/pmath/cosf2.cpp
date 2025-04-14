@@ -118,7 +118,7 @@ UTEST_BEGIN("dsp.pmath", cosf2)
         IF_ARCH_X86(CALL(generic::cosf2, avx2::cosf2, 32));
         IF_ARCH_X86(CALL(generic::cosf2, avx2::cosf2_fma3, 32));
         IF_ARCH_X86(CALL(generic::cosf2, avx512::cosf2, 64));
-//        IF_ARCH_ARM(CALL(generic::cosf2, neon_d32::cosf2, 16));
+        IF_ARCH_ARM(CALL(generic::cosf2, neon_d32::cosf2, 16));
 //        IF_ARCH_AARCH64(CALL(generic::cosf2, asimd::cosf2, 16));
     }
 UTEST_END

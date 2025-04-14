@@ -26,9 +26,6 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL */
 
-#include <private/dsp/arch/arm/neon-d32/pmath/exp.h>
-#include <private/dsp/arch/arm/neon-d32/pmath/log.h>
-
 namespace lsp
 {
     namespace neon_d32
