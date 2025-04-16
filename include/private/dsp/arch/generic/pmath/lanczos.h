@@ -34,13 +34,13 @@ namespace lsp
         {
             for (size_t j=0; j<count; ++j)
             {
-                const float x1  = j*k - p;
+                const float x1  = float(j)*k - p;
                 const float ax  = fabsf(x1);
 
-                if (fabsf(x1) < t)
+                if (ax < t)
                 {
                     const float x2  = x1 * a;
-                    dst[j]          = (ax >= 1e-10f) ? sinf(x1) * sinf(x2) / (x1 * x2) : 1.0f;
+                    dst[j]          = (ax >= 1e-10f) ? (sinf(x1) * sinf(x2)) / (x1 * x2) : 1.0f;
                 }
                 else
                     dst[j]      = 0.0f;

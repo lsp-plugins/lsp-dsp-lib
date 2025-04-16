@@ -33,10 +33,10 @@
  *
  * @param dst destination vector
  * @param src source vector
- * @param k phase step
- * @param p initial phase shift
- * @param t the lanczos kernel range
- * @param a number of lobes
+ * @param k number of samples per lobe multiplied by PI
+ * @param p shift in lobes multiplied by PI
+ * @param t the number of lobes multiplied by PI
+ * @param a reverse number of lobes
  * @param count number of elements
  */
 LSP_DSP_LIB_SYMBOL(void, lanczos1, float *dst, float k, float p, float t, float a, size_t count);
