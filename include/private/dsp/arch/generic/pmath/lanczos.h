@@ -30,26 +30,20 @@ namespace lsp
 {
     namespace generic
     {
-        void lanczos(float *dst, float k, float p, float a, size_t count)
+        void lanczos1(float *dst, float k, float p, float t, float a, size_t count)
         {
-            const float ra = 1.0f / a;
-            const float na = -a;
-
-            for (size_t i=0; i<count; ++i)
+            for (size_t j=0; j<count; ++j)
             {
-                const float x1  = k * float(i) + p;
-                if ((x1 >= na) && (x1 <= a))
+                const float x1  = j*k - p;
+                const float ax  = fabsf(x1);
+
+                if (fabsf(x1) < t)
                 {
-                    if ((x1 >= -1e-8f) && (x1 <= 1e-8f))
-                        dst[i]          = 1.0f;
-                    else
-                    {
-                        const float x2  = x1 * ra;
-                        dst[i]          = sinf(x1) * sinf(x2) / (x1 * x2);
-                    }
+                    const float x2  = x1 * a;
+                    dst[j]          = (ax >= 1e-10f) ? sinf(x1) * sinf(x2) / (x1 * x2) : 1.0f;
                 }
                 else
-                    dst[i]          = 0.0f;
+                    dst[j]      = 0.0f;
             }
         }
 

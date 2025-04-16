@@ -23,18 +23,23 @@
 #define LSP_PLUG_IN_DSP_COMMON_PMATH_LANCZOS_H_
 
 /**
- * Calculate lanczos filter function with generated argument:
- *   dst[i] = sinc(k*i + p) * sinc((k * i + p) / a) if (k*i + p) in defined range [-a, a], 0 otherwise
+ * Calculate lanczos filter response function with generated argument:
+ *
+ *   for each x = PI * (k*i - p)
+ *
+ *            { 1.0                            if fabsf(x) <= 1e-10
+ *   dst[i] = { sinc(x) * sinc(x*a)/(a * x^2)  if fabsf(x) < t and  fabsf(x) >= 1e-10
+ *            { 0.0                            otherwise
  *
  * @param dst destination vector
  * @param src source vector
- * @param x0 start of the range
- * @param x1 end of the range
  * @param k phase step
- * @param p initial phase
+ * @param p initial phase shift
+ * @param t the lanczos kernel range
+ * @param a number of lobes
  * @param count number of elements
  */
-LSP_DSP_LIB_SYMBOL(void, lanczos, float *dst, float k, float p, float a, size_t count);
+LSP_DSP_LIB_SYMBOL(void, lanczos1, float *dst, float k, float p, float t, float a, size_t count);
 
 
 
