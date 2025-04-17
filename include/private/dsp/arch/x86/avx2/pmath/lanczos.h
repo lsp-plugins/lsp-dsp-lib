@@ -215,10 +215,10 @@ namespace lsp
                 __ASM_EMIT("vbroadcastss    %[t], %%ymm10")                             // ymm10    = t
                 __ASM_EMIT("vbroadcastss    %[a], %%ymm11")                             // ymm11    = a
                 __ASM_EMIT("vmovaps         0x00 + %[LGEN], %%ymm14")                   // ymm14    = i = 0 1 2 3 4 5 6 7
-                __ASM_EMIT("vmovaps         0x60 + %[LGEN], %%ymm15")                   // ymm15    = step
                 // x8 blocks
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("jb              2f")
+                __ASM_EMIT("vmovaps         0x60 + %[LGEN], %%ymm15")                   // ymm15    = step
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vmulps          %%ymm8, %%ymm14, %%ymm12")                  // ymm12    = k*i
                 __ASM_EMIT("vaddps          %%ymm15, %%ymm14, %%ymm14")                 // ymm14    = i' = i + step
@@ -230,11 +230,10 @@ namespace lsp
                 __ASM_EMIT("jae             1b")
                 __ASM_EMIT("2:")
                 // x4 block
-                __ASM_EMIT("vmovaps         0x80 + %[LGEN], %%ymm15")                   // ymm15    = step
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmulps          %%xmm8, %%xmm14, %%xmm12")                  // xmm12    = k*i
-                __ASM_EMIT("vaddps          %%xmm15, %%xmm14, %%xmm14")                 // xmm14    = i' = i + step
+                __ASM_EMIT("vaddps          0x80 + %[LGEN], %%xmm14, %%xmm14")          // xmm14    = i' = i + step
                 __ASM_EMIT("vsubps          %%xmm9, %%xmm12, %%xmm12")                  // xmm12    = x1 = k*i - p
                 LANCZOS_GEN_X64_FUNC_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
@@ -438,10 +437,10 @@ namespace lsp
                 __ASM_EMIT("vbroadcastss    %[t], %%ymm10")                             // ymm10    = t
                 __ASM_EMIT("vbroadcastss    %[a], %%ymm11")                             // ymm11    = a
                 __ASM_EMIT("vmovaps         0x00 + %[LGEN], %%ymm14")                   // ymm14    = i = 0 1 2 3 4 5 6 7
-                __ASM_EMIT("vmovaps         0x60 + %[LGEN], %%ymm15")                   // ymm15    = step
                 // x8 blocks
                 __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("jb              2f")
+                __ASM_EMIT("vmovaps         0x60 + %[LGEN], %%ymm15")                   // ymm15    = step
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vmulps          %%ymm8, %%ymm14, %%ymm12")                  // ymm12    = k*i
                 __ASM_EMIT("vaddps          %%ymm15, %%ymm14, %%ymm14")                 // ymm14    = i' = i + step
@@ -453,11 +452,10 @@ namespace lsp
                 __ASM_EMIT("jae             1b")
                 __ASM_EMIT("2:")
                 // x4 block
-                __ASM_EMIT("vmovaps         0x80 + %[LGEN], %%ymm15")                   // ymm15    = step
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vmulps          %%xmm8, %%xmm14, %%xmm12")                  // xmm12    = k*i
-                __ASM_EMIT("vaddps          %%xmm15, %%xmm14, %%xmm14")                 // xmm14    = i' = i + step
+                __ASM_EMIT("vaddps          0x80 + %[LGEN], %%xmm14, %%xmm14")          // xmm14    = i' = i + step
                 __ASM_EMIT("vsubps          %%xmm9, %%xmm12, %%xmm12")                  // xmm12    = x1 = k*i - p
                 LANCZOS_GEN_X64_FUNC_X4_FMA3
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")

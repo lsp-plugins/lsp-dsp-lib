@@ -31,6 +31,7 @@
 #include <private/dsp/arch/x86/avx512/pmath/exp.h>
 #include <private/dsp/arch/x86/avx512/pmath/fmop_kx.h>
 #include <private/dsp/arch/x86/avx512/pmath/fmop_vv.h>
+#include <private/dsp/arch/x86/avx512/pmath/lanczos.h>
 #include <private/dsp/arch/x86/avx512/pmath/log.h>
 #include <private/dsp/arch/x86/avx512/pmath/lramp.h>
 #include <private/dsp/arch/x86/avx512/pmath/minmax.h>

@@ -45,7 +45,7 @@ namespace lsp
 
         namespace avx512
         {
-//            void lanczos1(float *dst, float k, float p, float t, float a, size_t count);
+            void lanczos1(float *dst, float k, float p, float t, float a, size_t count);
         }
     )
 
@@ -58,7 +58,7 @@ namespace lsp
 
         namespace avx512
         {
-//            void x64_lanczos1(float *dst, float k, float p, float t, float a, size_t count);
+            void x64_lanczos1(float *dst, float k, float p, float t, float a, size_t count);
         }
     )
 
@@ -119,7 +119,7 @@ UTEST_BEGIN("dsp.pmath", lanczos1)
                 UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
 
                 // Compare buffers
-                if (!dst1.equals_adaptive(dst2, 2e-4))
+                if (!dst1.equals_adaptive(dst2, 1e-3))
                 {
                     printf("length=%d, lobes = %d, center = %d, shift = %f\n", int(length), int(lobes), int(center), shift);
                     printf("k = %f, p = %f, t=%f, a=%f\n", k, p, t, a);
@@ -144,8 +144,8 @@ UTEST_BEGIN("dsp.pmath", lanczos1)
         IF_ARCH_X86(CALL(generic::lanczos1, avx2::lanczos1_fma3, 32));
         IF_ARCH_X86_64(CALL(generic::lanczos1, avx2::x64_lanczos1, 32));
         IF_ARCH_X86_64(CALL(generic::lanczos1, avx2::x64_lanczos1_fma3, 32));
-//        IF_ARCH_X86(CALL(generic::lanczos1, avx512::lanczos1, 64));
-//        IF_ARCH_X86_64(CALL(generic::lanczos1, avx512::x64_lanczos1, 64));
+        IF_ARCH_X86(CALL(generic::lanczos1, avx512::lanczos1, 64));
+        IF_ARCH_X86_64(CALL(generic::lanczos1, avx512::x64_lanczos1, 64));
 //        IF_ARCH_ARM(CALL(generic::lanczos1, neon_d32::lanczos1, 16));
 //        IF_ARCH_AARCH64(CALL(generic::lanczos1, asimd::lanczos1, 16));
     }

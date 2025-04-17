@@ -182,6 +182,9 @@
                 CEXPORT1(vl, sinf_kp1);
                 CEXPORT2_X64(vl, sinf_kp1, x64_sinf_kp1);
 
+                CEXPORT1(vl, lanczos1);
+                CEXPORT2_X64(vl, lanczos1, x64_lanczos1);
+
                 CEXPORT1(vl, lramp_set1);
                 CEXPORT1(vl, lramp1);
                 CEXPORT1(vl, lramp2);
