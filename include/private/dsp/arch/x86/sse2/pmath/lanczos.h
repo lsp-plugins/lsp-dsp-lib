@@ -33,16 +33,10 @@ namespace lsp
     namespace sse2
     {
         IF_ARCH_X86(
-            static const float lanczos_gen_const[] __lsp_aligned16 =
-            {
-                0.0f, 1.0f, 2.0f, 3.0f,                     // +0x40: Initial values 0..3
-                LSP_DSP_VEC4(4.0f),                         // +0x50: Step
-            };
-
             static const uint32_t lanczos_const[] __lsp_aligned16 =
             {
                 LSP_DSP_VEC4(0x7fffffff),                   // +0x00: Mask for fabsf
-                LSP_DSP_VEC4(0x2edbe6ff),                   // +0x10: Sinc threshold = 1e-10
+                LSP_DSP_VEC4(0x358637bd),                   // +0x10: Sinc threshold = 1e-6
                 LSP_DSP_VEC4(0x3f800000),                   // +0x20: 1.0
             };
         )
@@ -74,12 +68,12 @@ namespace lsp
             __ASM_EMIT("andps           0x00 + %[LC], %%xmm1")          /* xmm1     = fabsf(x) */ \
             __ASM_EMIT("divps           0x50 + %[state], %%xmm0")       /* xmm0     = F = (sinf(x1)*sinf(x2)) / (x1 * x2) */ \
             __ASM_EMIT("movaps          %%xmm1, %%xmm2")                /* xmm2     = fabsf(x) */ \
-            __ASM_EMIT("cmpps           $5, 0x10 + %[LC], %%xmm1")      /* xmm1     = [ fabsf(x) >= 1e-10 ] */ \
-            __ASM_EMIT("andps           %%xmm1, %%xmm0")                /* xmm0     = [ fabsf(x) >= 1e-10 ] & f */ \
+            __ASM_EMIT("cmpps           $5, 0x10 + %[LC], %%xmm1")      /* xmm1     = [ fabsf(x) >= 1e-6 ] */ \
+            __ASM_EMIT("andps           %%xmm1, %%xmm0")                /* xmm0     = [ fabsf(x) >= 1e-6 ] & f */ \
             __ASM_EMIT("cmpps           $1, 0x60 + %[state], %%xmm2")   /* xmm2     = [ fabsf(x) < t ] */ \
-            __ASM_EMIT("andnps          0x20 + %[LC], %%xmm1")          /* xmm1     = [ fabsf(x) < 1e-10 ] & 1.0 */ \
-            __ASM_EMIT("orps            %%xmm1, %%xmm0")                /* xmm0     = [ fabsf(x) >= 1e-10 ] ? f : 1.0 */ \
-            __ASM_EMIT("andps           %%xmm2, %%xmm0")                /* xmm0     = [ fabsf(x) < t ] ? ([ fabsf(x) >= 1e-10 ] ? f : 1.0) : 0.0 */
+            __ASM_EMIT("andnps          0x20 + %[LC], %%xmm1")          /* xmm1     = [ fabsf(x) < 1e-6 ] & 1.0 */ \
+            __ASM_EMIT("orps            %%xmm1, %%xmm0")                /* xmm0     = [ fabsf(x) >= 1e-6 ] ? f : 1.0 */ \
+            __ASM_EMIT("andps           %%xmm2, %%xmm0")                /* xmm0     = [ fabsf(x) < t ] ? ([ fabsf(x) >= 1e-6 ] ? f : 1.0) : 0.0 */
 
         void lanczos1(float *dst,  float k, float p, float t, float a, size_t count)
         {
@@ -140,7 +134,7 @@ namespace lsp
                 : [dst] "+r" (dst), [count] "+r" (count)
                 : [state] "o" (state),
                   [S2C] "o" (sinf_const),
-                  [LGEN] "o" (lanczos_gen_const),
+                  [LGEN] "o" (kp_gen_const),
                   [LC] "o" (lanczos_const),
                   [k] "m" (k),
                   [p] "m" (p),

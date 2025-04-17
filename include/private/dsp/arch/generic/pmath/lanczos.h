@@ -40,7 +40,7 @@ namespace lsp
                 if (ax < t)
                 {
                     const float x2  = x1 * a;
-                    dst[j]          = (ax >= 1e-10f) ? (sinf(x1) * sinf(x2)) / (x1 * x2) : 1.0f;
+                    dst[j]          = (ax >= 1e-6f) ? (sinf(x1) * sinf(x2)) / (x1 * x2) : 1.0f;
                 }
                 else
                     dst[j]      = 0.0f;

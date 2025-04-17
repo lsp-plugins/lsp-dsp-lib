@@ -27,8 +27,8 @@
  *
  *   for each x = PI * (k*i - p)
  *
- *            { 1.0                            if fabsf(x) <= 1e-10
- *   dst[i] = { sinc(x) * sinc(x*a)/(a * x^2)  if fabsf(x) < t and  fabsf(x) >= 1e-10
+ *            { 1.0                            if fabsf(x) <= 1e-6
+ *   dst[i] = { sinc(x) * sinc(x*a)/(a * x^2)  if fabsf(x) < t and  fabsf(x) >= 1e-6
  *            { 0.0                            otherwise
  *
  * @param dst destination vector

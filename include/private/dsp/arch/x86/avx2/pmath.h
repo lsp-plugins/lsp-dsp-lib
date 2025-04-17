@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_X86_AVX2_IMPL */
 
 #include <private/dsp/arch/x86/avx2/pmath/cos.h>
+#include <private/dsp/arch/x86/avx2/pmath/lanczos.h>
 #include <private/dsp/arch/x86/avx2/pmath/op_kx.h>
 #include <private/dsp/arch/x86/avx2/pmath/fmop_kx.h>
 #include <private/dsp/arch/x86/avx2/pmath/exp.h>

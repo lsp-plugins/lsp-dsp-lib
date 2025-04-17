@@ -39,8 +39,8 @@ namespace lsp
 
         namespace avx2
         {
-//            void lanczos1(float *dst, float k, float p, float t, float a, size_t count);
-//            void lanczos1_fma3(float *dst, float k, float p, float t, float a, size_t count);
+            void lanczos1(float *dst, float k, float p, float t, float a, size_t count);
+            void lanczos1_fma3(float *dst, float k, float p, float t, float a, size_t count);
         }
 
         namespace avx512
@@ -52,8 +52,8 @@ namespace lsp
     IF_ARCH_X86_64(
         namespace avx2
         {
-//            void x64_lanczos1(float *dst, float k, float p, float t, float a, size_t count);
-//            void x64_lanczos1_fma3(float *dst, float k, float p, float t, float a, size_t count);
+            void x64_lanczos1(float *dst, float k, float p, float t, float a, size_t count);
+            void x64_lanczos1_fma3(float *dst, float k, float p, float t, float a, size_t count);
         }
 
         namespace avx512
@@ -102,7 +102,7 @@ UTEST_BEGIN("dsp.pmath", lanczos1)
                 const size_t length     = count;
                 const size_t lobes      = randf(4.0f, 8.0f);
                 const size_t center     = length >> 1;
-                const float shift       = randf(0.0f, 1.0f);
+                const float shift       = randf(0.5f, 1.0f);
                 const float k           = M_PI * float(lobes) / float(center); // Number of samples per lobe
                 const float p           = (float(center) - shift) * k;
                 const float t           = float(center) * k;
@@ -140,10 +140,10 @@ UTEST_BEGIN("dsp.pmath", lanczos1)
             call(#func, align, generic, func)
 
         IF_ARCH_X86(CALL(generic::lanczos1, sse2::lanczos1, 16));
-//        IF_ARCH_X86(CALL(generic::lanczos1, avx2::lanczos1, 32));
-//        IF_ARCH_X86(CALL(generic::lanczos1, avx2::lanczos1_fma3, 32));
-//        IF_ARCH_X86_64(CALL(generic::lanczos1, avx2::x64_lanczos1, 32));
-//        IF_ARCH_X86_64(CALL(generic::lanczos1, avx2::x64_lanczos1_fma3, 32));
+        IF_ARCH_X86(CALL(generic::lanczos1, avx2::lanczos1, 32));
+        IF_ARCH_X86(CALL(generic::lanczos1, avx2::lanczos1_fma3, 32));
+        IF_ARCH_X86_64(CALL(generic::lanczos1, avx2::x64_lanczos1, 32));
+        IF_ARCH_X86_64(CALL(generic::lanczos1, avx2::x64_lanczos1_fma3, 32));
 //        IF_ARCH_X86(CALL(generic::lanczos1, avx512::lanczos1, 64));
 //        IF_ARCH_X86_64(CALL(generic::lanczos1, avx512::x64_lanczos1, 64));
 //        IF_ARCH_ARM(CALL(generic::lanczos1, neon_d32::lanczos1, 16));

@@ -195,6 +195,9 @@ namespace lsp
             CEXPORT1(favx, sinf_kp1);
             CEXPORT2_X64(favx, sinf_kp1, x64_sinf_kp1);
 
+            CEXPORT1(favx, lanczos1);
+            CEXPORT2_X64(favx, lanczos1, x64_lanczos1);
+
             CEXPORT2_X64(favx, eff_hsla_hue, x64_eff_hsla_hue);
             CEXPORT2_X64(favx, eff_hsla_sat, x64_eff_hsla_sat);
             CEXPORT2_X64(favx, eff_hsla_light, x64_eff_hsla_light);
@@ -286,6 +289,9 @@ namespace lsp
                 CEXPORT2(favx, sinf2, sinf2_fma3);
                 CEXPORT2(favx, sinf_kp1, sinf_kp1_fma3);
                 CEXPORT2_X64(favx, sinf_kp1, x64_sinf_kp1_fma3);
+
+                CEXPORT2(favx, lanczos1, lanczos1_fma3);
+                CEXPORT2_X64(favx, lanczos1, x64_lanczos1_fma3);
 
                 CEXPORT2(favx, compressor_x2_gain, compressor_x2_gain_fma3);
                 CEXPORT2(favx, compressor_x2_curve, compressor_x2_curve_fma3);

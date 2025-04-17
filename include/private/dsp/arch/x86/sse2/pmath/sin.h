@@ -50,7 +50,7 @@ namespace lsp
             static const float kp_gen_const[] __lsp_aligned16 =
             {
                 0.0f, 1.0f, 2.0f, 3.0f,         // +0x00: Initial values 0..3
-                4.0f, 4.0f, 4.0f, 4.0f          // +0x10: Step
+                LSP_DSP_VEC4(4.0f)              // +0x10: Step
             };
         )
 
