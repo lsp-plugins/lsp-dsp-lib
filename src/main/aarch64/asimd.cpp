@@ -299,6 +299,8 @@
                 EXPORT1(sinf2);
                 EXPORT1(sinf_kp1);
 
+                EXPORT1(lanczos1);
+
                 EXPORT1(sqr1);
                 EXPORT1(sqr2);
                 EXPORT1(ssqrt1);

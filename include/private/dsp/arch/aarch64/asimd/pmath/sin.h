@@ -55,8 +55,8 @@ namespace lsp
         #define SINF_X_PLUS_PI_2_CORE_X16 \
             /* v0   = X0 = x0 + PI/2 */ \
             /* v1   = X1 = x1 + PI/2 */ \
-            /* v2   = X0 = x0 + PI/2 */ \
-            /* v3   = X1 = x1 + PI/2 */ \
+            /* v2   = X2 = x2 + PI/2 */ \
+            /* v3   = X3 = x3 + PI/2 */ \
             /* v16  = PI/2 */ \
             /* v17  = PI */ \
             /* v18  = 1/(2*PI) */ \
