@@ -308,6 +308,8 @@
                 EXPORT1(sinf2);
                 EXPORT1(sinf_kp1);
 
+                EXPORT1(lanczos1);
+
                 EXPORT1(h_sum);
                 EXPORT1(h_abs_sum);
                 EXPORT1(h_sqr_sum);

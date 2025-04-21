@@ -70,7 +70,7 @@ namespace lsp
     IF_ARCH_ARM(
         namespace neon_d32
         {
-//            void lanczos1(float *dst, float k, float p, float t, float a, size_t count);
+            void lanczos1(float *dst, float k, float p, float t, float a, size_t count);
         }
     )
 
@@ -132,7 +132,7 @@ PTEST_BEGIN("dsp.pmath", lanczos1, 5, 1000)
             IF_ARCH_X86_64(CALL(avx2::x64_lanczos1_fma3));
             IF_ARCH_X86(CALL(avx512::lanczos1));
             IF_ARCH_X86_64(CALL(avx512::x64_lanczos1));
-//            IF_ARCH_ARM(CALL(neon_d32::lanczos1));
+            IF_ARCH_ARM(CALL(neon_d32::lanczos1));
 //            IF_ARCH_AARCH64(CALL(asimd::lanczos1));
             PTEST_SEPARATOR;
         }
