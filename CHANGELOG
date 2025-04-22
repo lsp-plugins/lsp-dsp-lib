@@ -3,6 +3,8 @@
 *******************************************************************************
 
 === 1.0.30 ===
+* Implemented SIMD-optimized trigonometric functions sinf and cosf.
+* Implemented Lanczos filter kernel computation function.
 * Updated build scripts.
 
 === 1.0.29 ===
