@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 20 сент. 2023 г.
@@ -27,15 +27,18 @@
 #endif /* PRIVATE_DSP_ARCH_X86_AVX512_IMPL */
 
 #include <private/dsp/arch/x86/avx512/pmath/abs_vv.h>
+#include <private/dsp/arch/x86/avx512/pmath/cos.h>
 #include <private/dsp/arch/x86/avx512/pmath/exp.h>
 #include <private/dsp/arch/x86/avx512/pmath/fmop_kx.h>
 #include <private/dsp/arch/x86/avx512/pmath/fmop_vv.h>
+#include <private/dsp/arch/x86/avx512/pmath/lanczos.h>
 #include <private/dsp/arch/x86/avx512/pmath/log.h>
 #include <private/dsp/arch/x86/avx512/pmath/lramp.h>
 #include <private/dsp/arch/x86/avx512/pmath/minmax.h>
 #include <private/dsp/arch/x86/avx512/pmath/normalize.h>
 #include <private/dsp/arch/x86/avx512/pmath/op_kx.h>
 #include <private/dsp/arch/x86/avx512/pmath/op_vv.h>
+#include <private/dsp/arch/x86/avx512/pmath/sin.h>
 #include <private/dsp/arch/x86/avx512/pmath/sqr.h>
 #include <private/dsp/arch/x86/avx512/pmath/ssqrt.h>
 
