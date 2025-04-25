@@ -79,6 +79,7 @@ namespace lsp
         {
             IF_ARCH_X86(
                 lanczos_gen_t state __lsp_aligned16;
+                float stub[4] __lsp_aligned16;
             );
 
             ARCH_X86_ASM(
@@ -136,6 +137,7 @@ namespace lsp
                   [S2C] "o" (sinf_const),
                   [LGEN] "o" (kp_gen_const),
                   [LC] "o" (lanczos_const),
+                  [stub] "o" (stub),
                   [k] "m" (k),
                   [p] "m" (p),
                   [a] "m" (a),

@@ -94,6 +94,7 @@ namespace lsp
         {
             IF_ARCH_X86(
                 lanczos_gen_t state __lsp_aligned32;
+                float stub[8] __lsp_aligned16;
             );
 
             ARCH_X86_ASM(
@@ -158,6 +159,7 @@ namespace lsp
                   [S2C] "o" (sinf_const),
                   [LGEN] "o" (kp_gen_const),
                   [LC] "o" (lanczos_const),
+                  [stub] "o" (stub),
                   [k] "m" (k),
                   [p] "m" (p),
                   [a] "m" (a),
@@ -208,7 +210,7 @@ namespace lsp
 
         void x64_lanczos1(float *dst,  float k, float p, float t, float a, size_t count)
         {
-            ARCH_X86_ASM(
+            ARCH_X86_64_ASM(
                 // Prepare
                 __ASM_EMIT("vbroadcastss    %[k], %%ymm8")                              // ymm8     = k
                 __ASM_EMIT("vbroadcastss    %[p], %%ymm9")                              // ymm9     = p
@@ -316,6 +318,7 @@ namespace lsp
         {
             IF_ARCH_X86(
                 lanczos_gen_t state __lsp_aligned32;
+                float stub[8] __lsp_aligned16;
             );
 
             ARCH_X86_ASM(
@@ -380,6 +383,7 @@ namespace lsp
                   [S2C] "o" (sinf_const),
                   [LGEN] "o" (kp_gen_const),
                   [LC] "o" (lanczos_const),
+                  [stub] "o" (stub),
                   [k] "m" (k),
                   [p] "m" (p),
                   [a] "m" (a),
@@ -430,7 +434,7 @@ namespace lsp
 
         void x64_lanczos1_fma3(float *dst,  float k, float p, float t, float a, size_t count)
         {
-            ARCH_X86_ASM(
+            ARCH_X86_64_ASM(
                 // Prepare
                 __ASM_EMIT("vbroadcastss    %[k], %%ymm8")                              // ymm8     = k
                 __ASM_EMIT("vbroadcastss    %[p], %%ymm9")                              // ymm9     = p

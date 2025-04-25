@@ -112,6 +112,7 @@ namespace lsp
         {
             IF_ARCH_X86(
                 lanczos_gen_t state __lsp_aligned64;
+                float stub[16] __lsp_aligned64;
             );
 
             ARCH_X86_ASM(
@@ -189,6 +190,7 @@ namespace lsp
                   [S2C] "o" (sinf_const),
                   [LGEN] "o" (kp_gen_const),
                   [LC] "o" (lanczos_const),
+                  [stub] "o" (stub),
                   [k] "m" (k),
                   [p] "m" (p),
                   [a] "m" (a),
@@ -263,7 +265,7 @@ namespace lsp
 
         void x64_lanczos1(float *dst,  float k, float p, float t, float a, size_t count)
         {
-            ARCH_X86_ASM(
+            ARCH_X86_64_ASM(
                 // Prepare
                 __ASM_EMIT("vbroadcastss    %[k], %%zmm8")                              // zmm8     = k
                 __ASM_EMIT("vbroadcastss    %[p], %%zmm9")                              // zmm9     = p
