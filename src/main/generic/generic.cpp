@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -164,6 +164,14 @@ namespace lsp
             EXPORT1(sqr2);
             EXPORT1(ssqrt1);
             EXPORT1(ssqrt2);
+
+            EXPORT1(sinf1);
+            EXPORT1(sinf2);
+            EXPORT1(sinf_kp1);
+            EXPORT1(cosf1);
+            EXPORT1(cosf2);
+            EXPORT1(cosf_kp1);
+            EXPORT1(lanczos1);
 
             EXPORT1(lramp_set1);
             EXPORT1(lramp1);
