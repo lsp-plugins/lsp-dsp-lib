@@ -6,6 +6,7 @@
 * Implemented SIMD-optimized trigonometric functions sinf and cosf.
 * Implemented Lanczos filter kernel computation function.
 * Updated build scripts.
+* Updated module versions in dependencies.
 
 === 1.0.29 ===
 * Implemented AVX-512 optimized direct_fft and reverse_fft functions.
