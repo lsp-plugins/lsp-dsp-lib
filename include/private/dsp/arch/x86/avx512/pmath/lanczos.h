@@ -33,7 +33,7 @@ namespace lsp
     namespace avx512
     {
         IF_ARCH_X86(
-            static const uint32_t lanczos_const[] __lsp_aligned32 =
+            static const uint32_t lanczos_const[] __lsp_aligned64 =
             {
                 LSP_DSP_VEC16(0x7fffffff),                  // +0x00: Mask for fabsf
                 LSP_DSP_VEC16(0x358637bd),                  // +0x40: Sinc threshold = 1e-6
@@ -219,10 +219,10 @@ namespace lsp
             __ASM_EMIT("vmulps          %%zmm4, %%zmm0, %%zmm0")                    /* zmm0     = sinf(x1)*sinf(x2) */ \
             __ASM_EMIT("vandps          0x00 + %[LC], %%zmm12, %%zmm12")            /* zmm12    = fabsf(x1) */ \
             __ASM_EMIT("vdivps          %%zmm13, %%zmm0, %%zmm0")                   /* zmm0     = F = (sinf(x1)*sinf(x2)) / (x1 * x2) */ \
-            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%zmm1, %%k1")            /* k1       = [ fabsf(x) < 1e-6 ] */ \
-            __ASM_EMIT("vcmpps          $5, %%zmm10, %%zmm1, %%k2")                 /* k2       = [ fabsf(x) >= t ] */ \
-            __ASM_EMIT("vmovaps         0x80 + %[LC], %%zmm0 %{%%k1%}")             /* zmm0     = [ fabsf(x) >= 1e-6 ] ? f : 1.0 */ \
-            __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0 %{%%k2%}")           /* zmm0     = [ fabsf(x) < t ] ? ([ fabsf(x) >= 1e-6 ] ? f : 1.0) : 0.0 */
+            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%zmm12, %%k1")           /* k1       = [ fabsf(x1) < 1e-6 ] */ \
+            __ASM_EMIT("vcmpps          $5, %%zmm10, %%zmm1, %%k2")                 /* k2       = [ fabsf(x1) >= t ] */ \
+            __ASM_EMIT("vmovaps         0x80 + %[LC], %%zmm0 %{%%k1%}")             /* zmm0     = [ fabsf(x1) >= 1e-6 ] ? f : 1.0 */ \
+            __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0 %{%%k2%}")           /* zmm0     = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-6 ] ? f : 1.0) : 0.0 */
 
         #define LANCZOS_GEN_X64_FUNC_X8 \
             /* ymm8     = k */ \
