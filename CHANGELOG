@@ -4,6 +4,7 @@
 
 === 1.0.31 ===
 * Fixed improper AVX-512 optimization for lanczos kernel genration function.
+* Added MacOS CI builds.
 
 === 1.0.30 ===
 * Implemented SIMD-optimized trigonometric functions sinf and cosf.
