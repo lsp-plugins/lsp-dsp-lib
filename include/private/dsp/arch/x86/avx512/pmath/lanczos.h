@@ -36,7 +36,7 @@ namespace lsp
             static const uint32_t lanczos_const[] __lsp_aligned64 =
             {
                 LSP_DSP_VEC16(0x7fffffff),                  // +0x00: Mask for fabsf
-                LSP_DSP_VEC16(0x358637bd),                  // +0x40: Sinc threshold = 1e-6
+                LSP_DSP_VEC16(0x3727c5ac),                  // +0x40: Sinc threshold = 1e-5
                 LSP_DSP_VEC16(0x3f800000),                  // +0x80: 1.0
             };
         )
@@ -65,10 +65,10 @@ namespace lsp
             __ASM_EMIT("vmulps          %%zmm4, %%zmm0, %%zmm0")                    /* zmm0     = sinf(x1)*sinf(x2) */ \
             __ASM_EMIT("vandps          0x00 + %[LC], %%zmm1, %%zmm1")              /* zmm1     = fabsf(x) */ \
             __ASM_EMIT("vdivps          0x140 + %[state], %%zmm0, %%zmm0")          /* zmm0     = F = (sinf(x1)*sinf(x2)) / (x1 * x2) */ \
-            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%zmm1, %%k1")            /* k1       = [ fabsf(x) < 1e-6 ] */ \
+            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%zmm1, %%k1")            /* k1       = [ fabsf(x) < 1e-5 ] */ \
             __ASM_EMIT("vcmpps          $5, 0x180 + %[state], %%zmm1, %%k2")        /* k2       = [ fabsf(x) >= t ] */ \
-            __ASM_EMIT("vmovaps         0x80 + %[LC], %%zmm0 %{%%k1%}")             /* zmm0     = [ fabsf(x) >= 1e-6 ] ? f : 1.0 */ \
-            __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0 %{%%k2%}")           /* zmm0     = [ fabsf(x) < t ] ? ([ fabsf(x) >= 1e-6 ] ? f : 1.0) : 0.0 */
+            __ASM_EMIT("vmovaps         0x80 + %[LC], %%zmm0 %{%%k1%}")             /* zmm0     = [ fabsf(x) >= 1e-5 ] ? f : 1.0 */ \
+            __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0 %{%%k2%}")           /* zmm0     = [ fabsf(x) < t ] ? ([ fabsf(x) >= 1e-5 ] ? f : 1.0) : 0.0 */
 
         #define LANCZOS_GEN_FUNC_X8 \
             /* ymm0 = x1 */ \
@@ -84,10 +84,10 @@ namespace lsp
             __ASM_EMIT("vmulps          %%ymm4, %%ymm0, %%ymm0")                    /* ymm0     = sinf(x1)*sinf(x2) */ \
             __ASM_EMIT("vandps          0x00 + %[LC], %%ymm1, %%ymm1")              /* ymm1     = fabsf(x) */ \
             __ASM_EMIT("vdivps          0x140 + %[state], %%ymm0, %%ymm0")          /* ymm0     = F = (sinf(x1)*sinf(x2)) / (x1 * x2) */ \
-            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%ymm1, %%ymm2")          /* ymm2     = [ fabsf(x) < 1e-6 ] */ \
+            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%ymm1, %%ymm2")          /* ymm2     = [ fabsf(x) < 1e-5 ] */ \
             __ASM_EMIT("vcmpps          $1, 0x180 + %[state], %%ymm1, %%ymm1")      /* ymm1     = [ fabsf(x) < t ] */ \
-            __ASM_EMIT("vblendvps       %%ymm2, 0x80 + %[LC], %%ymm0, %%ymm0")      /* ymm0     = [ fabsf(x) >= 1e-6 ] ? f : 1.0 */ \
-            __ASM_EMIT("vandps          %%ymm1, %%ymm0, %%ymm0")                    /* ymm0     = [ fabsf(x) < t ] ? ([ fabsf(x) >= 1e-6 ] ? f : 1.0) : 0.0 */
+            __ASM_EMIT("vblendvps       %%ymm2, 0x80 + %[LC], %%ymm0, %%ymm0")      /* ymm0     = [ fabsf(x) >= 1e-5 ] ? f : 1.0 */ \
+            __ASM_EMIT("vandps          %%ymm1, %%ymm0, %%ymm0")                    /* ymm0     = [ fabsf(x) < t ] ? ([ fabsf(x) >= 1e-5 ] ? f : 1.0) : 0.0 */
 
         #define LANCZOS_GEN_FUNC_X4 \
             /* xmm0 = x1 */ \
@@ -103,10 +103,10 @@ namespace lsp
             __ASM_EMIT("vmulps          %%xmm4, %%xmm0, %%xmm0")                    /* xmm0     = sinf(x1)*sinf(x2) */ \
             __ASM_EMIT("vandps          0x00 + %[LC], %%xmm1, %%xmm1")              /* xmm1     = fabsf(x) */ \
             __ASM_EMIT("vdivps          0x140 + %[state], %%xmm0, %%xmm0")          /* xmm0     = F = (sinf(x1)*sinf(x2)) / (x1 * x2) */ \
-            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%xmm1, %%xmm2")          /* xmm2     = [ fabsf(x) < 1e-6 ] */ \
+            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%xmm1, %%xmm2")          /* xmm2     = [ fabsf(x) < 1e-5 ] */ \
             __ASM_EMIT("vcmpps          $1, 0x180 + %[state], %%xmm1, %%xmm1")      /* xmm1     = [ fabsf(x) < t ] */ \
-            __ASM_EMIT("vblendvps       %%xmm2, 0x80 + %[LC], %%xmm0, %%xmm0")      /* xmm0     = [ fabsf(x) >= 1e-6 ] ? f : 1.0 */ \
-            __ASM_EMIT("vandps          %%xmm1, %%xmm0, %%xmm0")                    /* xmm0     = [ fabsf(x) < t ] ? ([ fabsf(x) >= 1e-6 ] ? f : 1.0) : 0.0 */
+            __ASM_EMIT("vblendvps       %%xmm2, 0x80 + %[LC], %%xmm0, %%xmm0")      /* xmm0     = [ fabsf(x) >= 1e-5 ] ? f : 1.0 */ \
+            __ASM_EMIT("vandps          %%xmm1, %%xmm0, %%xmm0")                    /* xmm0     = [ fabsf(x) < t ] ? ([ fabsf(x) >= 1e-5 ] ? f : 1.0) : 0.0 */
 
         void lanczos1(float *dst,  float k, float p, float t, float a, size_t count)
         {
@@ -219,10 +219,10 @@ namespace lsp
             __ASM_EMIT("vmulps          %%zmm4, %%zmm0, %%zmm0")                    /* zmm0     = sinf(x1)*sinf(x2) */ \
             __ASM_EMIT("vandps          0x00 + %[LC], %%zmm12, %%zmm12")            /* zmm12    = fabsf(x1) */ \
             __ASM_EMIT("vdivps          %%zmm13, %%zmm0, %%zmm0")                   /* zmm0     = F = (sinf(x1)*sinf(x2)) / (x1 * x2) */ \
-            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%zmm12, %%k1")           /* k1       = [ fabsf(x1) < 1e-6 ] */ \
+            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%zmm12, %%k1")           /* k1       = [ fabsf(x1) < 1e-5 ] */ \
             __ASM_EMIT("vcmpps          $5, %%zmm10, %%zmm1, %%k2")                 /* k2       = [ fabsf(x1) >= t ] */ \
-            __ASM_EMIT("vmovaps         0x80 + %[LC], %%zmm0 %{%%k1%}")             /* zmm0     = [ fabsf(x1) >= 1e-6 ] ? f : 1.0 */ \
-            __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0 %{%%k2%}")           /* zmm0     = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-6 ] ? f : 1.0) : 0.0 */
+            __ASM_EMIT("vmovaps         0x80 + %[LC], %%zmm0 %{%%k1%}")             /* zmm0     = [ fabsf(x1) >= 1e-5 ] ? f : 1.0 */ \
+            __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0 %{%%k2%}")           /* zmm0     = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-5 ] ? f : 1.0) : 0.0 */
 
         #define LANCZOS_GEN_X64_FUNC_X8 \
             /* ymm8     = k */ \
@@ -242,10 +242,10 @@ namespace lsp
             __ASM_EMIT("vmulps          %%ymm4, %%ymm0, %%ymm0")                    /* ymm0     = sinf(x1)*sinf(x2) */ \
             __ASM_EMIT("vandps          0x00 + %[LC], %%ymm12, %%ymm12")            /* ymm12    = fabsf(x1) */ \
             __ASM_EMIT("vdivps          %%ymm13, %%ymm0, %%ymm0")                   /* ymm0     = F = (sinf(x1)*sinf(x2)) / (x1 * x2) */ \
-            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%ymm12, %%ymm2")         /* ymm2     = [ fabsf(x1) < 1e-6 ] */ \
+            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%ymm12, %%ymm2")         /* ymm2     = [ fabsf(x1) < 1e-5 ] */ \
             __ASM_EMIT("vcmpps          $1, %%ymm10, %%ymm12, %%ymm1")              /* ymm1     = [ fabsf(x1) < t ] */ \
-            __ASM_EMIT("vblendvps       %%ymm2, 0x80 + %[LC], %%ymm0, %%ymm0")      /* ymm0     = [ fabsf(x1) >= 1e-6 ] ? f : 1.0 */ \
-            __ASM_EMIT("vandps          %%ymm1, %%ymm0, %%ymm0")                    /* ymm0     = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-6 ] ? f : 1.0) : 0.0 */
+            __ASM_EMIT("vblendvps       %%ymm2, 0x80 + %[LC], %%ymm0, %%ymm0")      /* ymm0     = [ fabsf(x1) >= 1e-5 ] ? f : 1.0 */ \
+            __ASM_EMIT("vandps          %%ymm1, %%ymm0, %%ymm0")                    /* ymm0     = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-5 ] ? f : 1.0) : 0.0 */
 
         #define LANCZOS_GEN_X64_FUNC_X4 \
             /* xmm0 = x1 */ \
@@ -258,10 +258,10 @@ namespace lsp
             __ASM_EMIT("vmulps          %%ymm4, %%ymm0, %%ymm0")                    /* ymm0     = sinf(x1)*sinf(x2) */ \
             __ASM_EMIT("vandps          0x00 + %[LC], %%ymm12, %%ymm12")            /* ymm12    = fabsf(x1) */ \
             __ASM_EMIT("vdivps          %%ymm13, %%ymm0, %%ymm0")                   /* ymm0     = F = (sinf(x1)*sinf(x2)) / (x1 * x2) */ \
-            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%ymm12, %%ymm2")         /* ymm2     = [ fabsf(x1) < 1e-6 ] */ \
+            __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%ymm12, %%ymm2")         /* ymm2     = [ fabsf(x1) < 1e-5 ] */ \
             __ASM_EMIT("vcmpps          $1, %%ymm10, %%ymm12, %%ymm1")              /* ymm1     = [ fabsf(x1) < t ] */ \
-            __ASM_EMIT("vblendvps       %%ymm2, 0x80 + %[LC], %%ymm0, %%ymm0")      /* ymm0     = [ fabsf(x1) >= 1e-6 ] ? f : 1.0 */ \
-            __ASM_EMIT("vandps          %%ymm1, %%ymm0, %%ymm0")                    /* ymm0     = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-6 ] ? f : 1.0) : 0.0 */
+            __ASM_EMIT("vblendvps       %%ymm2, 0x80 + %[LC], %%ymm0, %%ymm0")      /* ymm0     = [ fabsf(x1) >= 1e-5 ] ? f : 1.0 */ \
+            __ASM_EMIT("vandps          %%ymm1, %%ymm0, %%ymm0")                    /* ymm0     = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-5 ] ? f : 1.0) : 0.0 */
 
         void x64_lanczos1(float *dst,  float k, float p, float t, float a, size_t count)
         {
