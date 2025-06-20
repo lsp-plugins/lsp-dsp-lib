@@ -35,7 +35,7 @@ namespace lsp
         IF_ARCH_AARCH64(
             static const uint32_t lanczos_const[] __lsp_aligned16 =
             {
-                LSP_DSP_VEC4(0x3727c5ac),                   // +0x00: Sinc threshold = 1e-5
+                LSP_DSP_VEC4(0x38d1b717),                   // +0x00: Sinc threshold = 1e-4
                 LSP_DSP_VEC4(0x3f800000),                   // +0x10: 1.0
             };
         )
@@ -76,18 +76,18 @@ namespace lsp
             /* v2   = sinf(x2[0]), v3 = sinf(x2[1]) */ \
             __ASM_EMIT("ldp             q4, q5, [%[state], 0x00]")      /* v4   = fabsf(x1) */ \
             __ASM_EMIT("ldp             q6, q7, [%[state], 0x20]")      /* v6   = n = 1/(x1*x2) */ \
-            __ASM_EMIT("ldp             q8, q9, [%[LC]]")               /* v8   = 1e-5, v9 = 1.0 */ \
+            __ASM_EMIT("ldp             q8, q9, [%[LC]]")               /* v8   = 1e-4, v9 = 1.0 */ \
             __ASM_EMIT("fmul            v0.4s, v0.4s, v2.4s")           /* v0   = sinf(x1)*sinf(x2) */ \
             __ASM_EMIT("fmul            v1.4s, v1.4s, v3.4s") \
-            __ASM_EMIT("fcmge           v2.4s, v4.4s, v8.4s")           /* v2   = [ fabsf(x1) >= 1e-5 ] */ \
+            __ASM_EMIT("fcmge           v2.4s, v4.4s, v8.4s")           /* v2   = [ fabsf(x1) >= 1e-4 ] */ \
             __ASM_EMIT("fcmge           v3.4s, v5.4s, v8.4s") \
             __ASM_EMIT("fmul            v0.4s, v0.4s, v6.4s")           /* v6   = sinf(x1)*sinf(x2)/(x1*x2) */ \
             __ASM_EMIT("fmul            v1.4s, v1.4s, v7.4s") \
             __ASM_EMIT("fcmgt           v4.4s, v26.4s, v4.4s")          /* v4   = [ fabsf(x1) < t ] */ \
             __ASM_EMIT("fcmgt           v5.4s, v26.4s, v5.4s") \
-            __ASM_EMIT("bif             v0.16b, v9.16b, v2.16b")        /* v0   = [ fabsf(x1) >= 1e-5 ] ? f : 1.0 */ \
+            __ASM_EMIT("bif             v0.16b, v9.16b, v2.16b")        /* v0   = [ fabsf(x1) >= 1e-4 ] ? f : 1.0 */ \
             __ASM_EMIT("bif             v1.16b, v9.16b, v3.16b") \
-            __ASM_EMIT("and             v0.16b, v0.16b, v4.16b")        /* v0   = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-5 ] ? f : 1.0) : 0.0 */ \
+            __ASM_EMIT("and             v0.16b, v0.16b, v4.16b")        /* v0   = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-4 ] ? f : 1.0) : 0.0 */ \
             __ASM_EMIT("and             v1.16b, v1.16b, v5.16b")
 
         #define LANCZOS_GEN_FUNC_X4 \
@@ -104,13 +104,13 @@ namespace lsp
             __ASM_EMIT("fadd            v1.4s, v1.4s, v16.4s")          /* v1   = x2 + PI/2 */ \
             SINF_X_PLUS_PI_2_CORE_X8 \
             /* v0   = sinf(x1), v1 = sinf(x2) */ \
-            __ASM_EMIT("ldp             q8, q9, [%[LC]]")               /* v8   = 1e-5, v9 = 1.0 */ \
+            __ASM_EMIT("ldp             q8, q9, [%[LC]]")               /* v8   = 1e-4, v9 = 1.0 */ \
             __ASM_EMIT("fmul            v0.4s, v0.4s, v1.4s")           /* v0   = sinf(x1)*sinf(x2) */ \
-            __ASM_EMIT("fcmge           v4.4s, v2.4s, v8.4s")           /* v4   = [ fabsf(x1) >= 1e-5 ] */ \
+            __ASM_EMIT("fcmge           v4.4s, v2.4s, v8.4s")           /* v4   = [ fabsf(x1) >= 1e-4 ] */ \
             __ASM_EMIT("fmul            v0.4s, v0.4s, v3.4s")           /* v0   = sinf(x1)*sinf(x2)/(x1*x2) */ \
             __ASM_EMIT("fcmgt           v5.4s, v26.4s, v2.4s")          /* v5   = [ fabsf(x1) < t ] */ \
-            __ASM_EMIT("bif             v0.16b, v9.16b, v4.16b")        /* v0   = [ fabsf(x1) >= 1e-5 ] ? f : 1.0 */ \
-            __ASM_EMIT("and             v0.16b, v0.16b, v5.16b")        /* v0   = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-5 ] ? f : 1.0) : 0.0 */
+            __ASM_EMIT("bif             v0.16b, v9.16b, v4.16b")        /* v0   = [ fabsf(x1) >= 1e-4 ] ? f : 1.0 */ \
+            __ASM_EMIT("and             v0.16b, v0.16b, v5.16b")        /* v0   = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-4 ] ? f : 1.0) : 0.0 */
 
 
         void lanczos1(float *dst, float k, float p, float t, float a, size_t count)
