@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -33,7 +33,7 @@ namespace lsp
         IF_ARCH_AARCH64(
             static const float msmatrix_const[] __lsp_aligned16 =
             {
-                LSP_DSP_VEC4(0.5f)
+                LSP_DSP_VEC8(0.5f)
             };
         );
 
@@ -429,7 +429,7 @@ namespace lsp
         }
 
         #undef MS_TO_PART
-    }
-}
+    } /* namespace asimd */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_MSMATRIX_H_ */
