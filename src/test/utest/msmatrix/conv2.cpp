@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -110,7 +110,7 @@ UTEST_BEGIN("dsp.msmatrix", conv2)
                 UTEST_ASSERT_MSG(dst2B.valid(), "Destination buffer 2B corrupted");
 
                 // Compare buffers
-                if ((!dst1A.equals_relative(dst2A, 1e-4)) || (!dst1B.equals_relative(dst2B, 1e-4)))
+                if ((!dst1A.equals_adaptive(dst2A, 1e-5)) || (!dst1B.equals_adaptive(dst2B, 1e-5)))
                 {
                     srcA.dump("srcA ");
                     srcB.dump("srcA ");
