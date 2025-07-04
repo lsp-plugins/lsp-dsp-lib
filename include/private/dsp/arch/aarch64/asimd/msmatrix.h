@@ -33,14 +33,14 @@ namespace lsp
         IF_ARCH_AARCH64(
             static const float msmatrix_const[] __lsp_aligned16 =
             {
-                LSP_DSP_VEC8(0.5f)
+                LSP_DSP_VEC4(0.5f)
             };
         );
 
         void lr_to_ms(float *m, float *s, const float *l, const float *r, size_t count)
         {
             ARCH_AARCH64_ASM(
-                __ASM_EMIT("ldp         q24, q25, [%[HALF]]")           // v24  = 0.5, v25 = 0.5
+                __ASM_EMIT("ldr         q24, [%[HALF]]")                // v24  = 0.5
                 // x16 blocks
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("b.lo        2f")
@@ -58,13 +58,13 @@ namespace lsp
                 __ASM_EMIT("fsub        v22.4s, v2.4s, v6.4s")
                 __ASM_EMIT("fsub        v23.4s, v3.4s, v7.4s")
                 __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")         // v0   = (l + r)/2
-                __ASM_EMIT("fmul        v1.4s, v17.4s, v25.4s")
+                __ASM_EMIT("fmul        v1.4s, v17.4s, v24.4s")
                 __ASM_EMIT("fmul        v2.4s, v18.4s, v24.4s")
-                __ASM_EMIT("fmul        v3.4s, v19.4s, v25.4s")
+                __ASM_EMIT("fmul        v3.4s, v19.4s, v24.4s")
                 __ASM_EMIT("fmul        v4.4s, v20.4s, v24.4s")         // v4   = (l - r)/2
-                __ASM_EMIT("fmul        v5.4s, v21.4s, v25.4s")
+                __ASM_EMIT("fmul        v5.4s, v21.4s, v24.4s")
                 __ASM_EMIT("fmul        v6.4s, v22.4s, v24.4s")
-                __ASM_EMIT("fmul        v7.4s, v23.4s, v25.4s")
+                __ASM_EMIT("fmul        v7.4s, v23.4s, v24.4s")
                 __ASM_EMIT("stp         q0, q1, [%[m], #0x00]")
                 __ASM_EMIT("stp         q2, q3, [%[m], #0x20]")
                 __ASM_EMIT("stp         q4, q5, [%[s], #0x00]")
@@ -86,9 +86,9 @@ namespace lsp
                 __ASM_EMIT("fsub        v20.4s, v0.4s, v4.4s")          // v20  = l - r
                 __ASM_EMIT("fsub        v21.4s, v1.4s, v5.4s")
                 __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")         // v0   = (l + r)/2
-                __ASM_EMIT("fmul        v1.4s, v17.4s, v25.4s")
+                __ASM_EMIT("fmul        v1.4s, v17.4s, v24.4s")
                 __ASM_EMIT("fmul        v4.4s, v20.4s, v24.4s")         // v4   = (l - r)/2
-                __ASM_EMIT("fmul        v5.4s, v21.4s, v25.4s")
+                __ASM_EMIT("fmul        v5.4s, v21.4s, v24.4s")
                 __ASM_EMIT("stp         q0, q1, [%[m], #0x00]")
                 __ASM_EMIT("stp         q4, q5, [%[s], #0x00]")
                 __ASM_EMIT("sub         %[count], %[count], #8")
@@ -142,7 +142,7 @@ namespace lsp
                   "v4", "v5", "v6", "v7",
                   "v16", "v17", "v18", "v19",
                   "v20", "v21", "v22", "v23",
-                  "v24", "v25"
+                  "v24"
             );
         }
 
@@ -238,7 +238,7 @@ namespace lsp
         }
 
         #define LR_TO_PART(OP) \
-                __ASM_EMIT("ldp         q24, q25, [%[HALF]]")           /* v24  = 0.5, v25 = 0.5 */ \
+                __ASM_EMIT("ldr         q24, [%[HALF]]")                /* v24  = 0.5 */ \
                 /* x16 blocks */ \
                 __ASM_EMIT("subs        %[count], %[count], #16") \
                 __ASM_EMIT("b.lo        2f") \
@@ -252,9 +252,9 @@ namespace lsp
                 __ASM_EMIT(OP "         v18.4s, v2.4s, v6.4s") \
                 __ASM_EMIT(OP "         v19.4s, v3.4s, v7.4s") \
                 __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")         /* v0   = (l op r)/2 */ \
-                __ASM_EMIT("fmul        v1.4s, v17.4s, v25.4s") \
+                __ASM_EMIT("fmul        v1.4s, v17.4s, v24.4s") \
                 __ASM_EMIT("fmul        v2.4s, v18.4s, v24.4s") \
-                __ASM_EMIT("fmul        v3.4s, v19.4s, v25.4s") \
+                __ASM_EMIT("fmul        v3.4s, v19.4s, v24.4s") \
                 __ASM_EMIT("stp         q0, q1, [%[dst], #0x00]") \
                 __ASM_EMIT("stp         q2, q3, [%[dst], #0x20]") \
                 __ASM_EMIT("subs        %[count], %[count], #16") \
@@ -271,7 +271,7 @@ namespace lsp
                 __ASM_EMIT(OP "         v16.4s, v0.4s, v4.4s")          /* v16  = l op r */ \
                 __ASM_EMIT(OP "         v17.4s, v1.4s, v5.4s") \
                 __ASM_EMIT("fmul        v0.4s, v16.4s, v24.4s")         /* v0   = (l op r)/2 */ \
-                __ASM_EMIT("fmul        v1.4s, v17.4s, v25.4s") \
+                __ASM_EMIT("fmul        v1.4s, v17.4s, v24.4s") \
                 __ASM_EMIT("stp         q0, q1, [%[dst], #0x00]") \
                 __ASM_EMIT("sub         %[count], %[count], #8") \
                 __ASM_EMIT("add         %[l], %[l], #0x20") \
@@ -318,7 +318,7 @@ namespace lsp
                   "v0", "v1", "v2", "v3",
                   "v4", "v5", "v6", "v7",
                   "v16", "v17", "v18", "v19",
-                  "v24", "v25"
+                  "v24"
             );
         }
 
@@ -333,7 +333,7 @@ namespace lsp
                   "v0", "v1", "v2", "v3",
                   "v4", "v5", "v6", "v7",
                   "v16", "v17", "v18", "v19",
-                  "v24", "v25"
+                  "v24"
             );
         }
 
