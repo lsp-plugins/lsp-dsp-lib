@@ -349,17 +349,14 @@ namespace lsp
         {
             ARCH_X86_ASM
             (
-                __ASM_EMIT64("andps     %[mask], %[x0]")        // xmm0 = x 0 0 0
-                __ASM_EMIT64("andps     %[mask], %[x2]")        // xmm2 = z 0 0 0
-                __ASM_EMIT("movlhps     %[x1], %[x0]")          // xmm0 = x 0 y ?
-                __ASM_EMIT("shufps      $0x88, %[x2], %[x0]")   // xmm0 = x y z 0
-                __ASM_EMIT("orps        %[omask], %[x0]")       // xmm0 = x y z 1
+                __ASM_EMIT("movlhps     %[x1], %[x0]")          // x0   = x ? y ?
+                __ASM_EMIT("movhps      %[id], %[x2]")          // x2   = z ? 1 0
+                __ASM_EMIT("shufps      $0x88, %[x2], %[x0]")   // x0   = x y z 1
                 __ASM_EMIT("movups      %[x0], (%[p])")
 
                 : [x0] "+x" (x), [x1] "+x" (y), [x2] "+x"(z)
                 : [p] "r" (p),
-                  [mask] "m" (X_MASK0001),
-                  [omask] "m" (X_3DPOINT)
+                  [id] "m" (IDENTITY0)
                 : "memory"
             );
         }

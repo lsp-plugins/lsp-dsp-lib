@@ -63,8 +63,8 @@ UTEST_BEGIN("dsp.3d", point)
 
         dsp::point3d_t   p1, p2, p3;
 
-        generic::init_point_xyz(&p1, 1.0f, 2.0f, 3.0f);
-        init_xyz(&p2, 1.0f, 2.0f, 3.0f);
+        generic::init_point_xyz(&p1, 2.0f, 3.0f, 4.0f);
+        init_xyz(&p2, 2.0f, 3.0f, 4.0f);
         UTEST_ASSERT_MSG(point3d_sck(&p1, &p2), "Failed init_point_xyz");
 
         generic::init_point(&p2, &p1);
