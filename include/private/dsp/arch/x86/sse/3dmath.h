@@ -599,12 +599,11 @@ namespace lsp
             ARCH_X86_ASM
             (
                 __ASM_EMIT("xorps       %%xmm0, %%xmm0")
-                __ASM_EMIT("xorps       %%xmm1, %%xmm1")
-                MATRIX_STORE("m", "%xmm0", "%xmm1", "%xmm0", "%xmm1")
+                MATRIX_STORE("m", "%xmm0", "%xmm0", "%xmm0", "%xmm0")
                 :
                 : [m] "r" (m)
                 : "memory",
-                    "%xmm0", "%xmm1"
+                  "%xmm0"
             );
         }
 
@@ -613,12 +612,11 @@ namespace lsp
             ARCH_X86_ASM
             (
                 __ASM_EMIT("movaps      %[one], %%xmm0")
-                __ASM_EMIT("movaps      %%xmm0, %%xmm1")
-                MATRIX_STORE("m", "%xmm0", "%xmm1", "%xmm0", "%xmm1")
+                MATRIX_STORE("m", "%xmm0", "%xmm0", "%xmm0", "%xmm0")
                 :
                 : [m] "r" (m), [one] "m" (ONE)
                 : "memory",
-                  "%xmm0", "%xmm1"
+                  "%xmm0"
             );
         }
 

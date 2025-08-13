@@ -435,6 +435,25 @@
                 EXPORT1(normalize_vector);
                 EXPORT1(normalize_vector2);
 
+                EXPORT1(init_matrix3d);
+                EXPORT1(init_matrix3d_zero);
+                EXPORT1(init_matrix3d_one);
+                EXPORT1(init_matrix3d_identity);
+//                EXPORT1(init_matrix3d_translate);
+//                EXPORT1(init_matrix3d_scale);
+//                EXPORT1(init_matrix3d_rotate_x);
+//                EXPORT1(init_matrix3d_rotate_y);
+//                EXPORT1(init_matrix3d_rotate_z);
+//                EXPORT1(init_matrix3d_rotate_xyz);
+//                EXPORT1(apply_matrix3d_mv2);
+//                EXPORT1(apply_matrix3d_mv1);
+//                EXPORT1(apply_matrix3d_mp2);
+//                EXPORT1(apply_matrix3d_mp1);
+//                EXPORT1(apply_matrix3d_mm2);
+//                EXPORT1(apply_matrix3d_mm1);
+                EXPORT1(transpose_matrix3d1);
+                EXPORT1(transpose_matrix3d2);
+
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)
                 {

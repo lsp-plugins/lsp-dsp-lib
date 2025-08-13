@@ -41,6 +41,47 @@
     __ASM_EMIT("vdivps          %" x1 ", %" x0 ", %" x0)    /* x0   = x/w y/w z/w w/w */ \
     __ASM_EMIT("1000000:")
 
+// Load matrix
+// ptr = address of matrix
+// x0 = row 0
+// x1 = row 1
+// x2 = row 2
+// x3 = row 3
+#define MATRIX_LOAD(ptr, x0, x1, x2, x3) \
+    __ASM_EMIT("vmovups         0x00(%[" ptr "]), %" x0 ) \
+    __ASM_EMIT("vmovups         0x10(%[" ptr "]), %" x1 ) \
+    __ASM_EMIT("vmovups         0x20(%[" ptr "]), %" x2 ) \
+    __ASM_EMIT("vmovups         0x30(%[" ptr "]), %" x3 )
+
+// Store matrix
+// ptr = address of matrix
+// x0 = row 0
+// x1 = row 1
+// x2 = row 2
+// x3 = row 3
+#define MATRIX_STORE(ptr, x0, x1, x2, x3) \
+    __ASM_EMIT("vmovups         %" x0 ", 0x00(%[" ptr "])") \
+    __ASM_EMIT("vmovups         %" x1 ", 0x10(%[" ptr "])") \
+    __ASM_EMIT("vmovups         %" x2 ", 0x20(%[" ptr "])") \
+    __ASM_EMIT("vmovups         %" x3 ", 0x30(%[" ptr "])")
+
+// Transpose matrix
+// x0 = row 0
+// x1 = row 1
+// x2 = row 2
+// x3 = row 3
+// x4 = temp
+#define MAT4_TRANSPOSE(x0, x1, x2, x3, x4)    \
+    __ASM_EMIT("vpunpckhdq      %" x3 ", %" x2 ", %" x4)    /* x4   = c3 d3 c4 d4 */   \
+    __ASM_EMIT("vpunpckldq      %" x3 ", %" x2 ", %" x2)    /* x2   = c1 d1 c2 d2 */   \
+    __ASM_EMIT("vpunpckhdq      %" x1 ", %" x0 ", %" x3)    /* x3   = a3 b3 a4 b4 */   \
+    __ASM_EMIT("vpunpckldq      %" x1 ", %" x0 ", %" x0)    /* x0   = a1 b1 a2 b2 */   \
+    __ASM_EMIT("vpunpckhqdq     %" x2 ", %" x0 ", %" x1)    /* x1   = a2 b2 c2 d2 */   \
+    __ASM_EMIT("vpunpcklqdq     %" x2 ", %" x0 ", %" x0)    /* x0   = a1 b1 c1 d1 */   \
+    __ASM_EMIT("vpunpcklqdq     %" x4 ", %" x3 ", %" x2)    /* x2   = a3 b3 c3 d3 */   \
+    __ASM_EMIT("vpunpckhqdq     %" x4 ", %" x3 ", %" x3)    /* x3   = a4 b4 c4 d4 */
+
+
 namespace lsp
 {
     namespace avx
@@ -48,15 +89,16 @@ namespace lsp
         using namespace dsp;
 
         IF_ARCH_X86(
-            static const float IDENTITY[16] __lsp_aligned16 =
+            static const float IDENTITY[16] __lsp_aligned32 =
             {
                 1.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 1.0f, 0.0f,
                 0.0f, 0.0f, 0.0f, 1.0f
             };
+            static const float ONE[] __lsp_aligned32            = { LSP_DSP_VEC8(1.0f) };
 
-            static const uint32_t X_MASK0111[] __lsp_aligned16  = { 0xffffffff, 0xffffffff, 0xffffffff, 0 };
+            static const uint32_t X_MASK0111[] __lsp_aligned32  = { 0xffffffff, 0xffffffff, 0xffffffff, 0 };
         )
 
         void init_point_xyz(point3d_t *p, float x, float y, float z)
@@ -175,6 +217,96 @@ namespace lsp
                   [id] "m" (IDENTITY),
                   [mask] "m" (X_MASK0111)
                 : "cc", "memory"
+            );
+        }
+
+        void init_matrix3d(matrix3d_t *dst, const matrix3d_t *src)
+        {
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         0x00(%[s]), %%ymm0")
+                __ASM_EMIT("vmovups         0x20(%[s]), %%ymm1")
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[d])")
+                __ASM_EMIT("vmovups         %%ymm1, 0x20(%[d])")
+                :
+                : [s] "r" (src), [d] "r" (dst)
+                : "memory",
+                  "%xmm0", "%xmm1"
+            );
+        }
+
+        void init_matrix3d_zero(matrix3d_t *m)
+        {
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vxorps          %%ymm0, %%ymm0, %%ymm0")
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[m])")
+                __ASM_EMIT("vmovups         %%ymm1, 0x20(%[m])")
+                :
+                : [m] "r" (m)
+                : "memory",
+                  "%xmm0"
+            );
+        }
+
+        void init_matrix3d_one(matrix3d_t *m)
+        {
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovaps         %[one], %%ymm0")
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[m])")
+                __ASM_EMIT("vmovups         %%ymm0, 0x20(%[m])")
+                :
+                : [m] "r" (m),
+                  [one] "m" (ONE)
+                : "memory",
+                  "%xmm0"
+            );
+        }
+
+        void init_matrix3d_identity(matrix3d_t *m)
+        {
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovaps         0x00 + %[id], %%ymm0")
+                __ASM_EMIT("vmovaps         0x20 + %[id], %%ymm1")
+                __ASM_EMIT("vmovups         %%ymm0, 0x00(%[m])")
+                __ASM_EMIT("vmovups         %%ymm1, 0x20(%[m])")
+                :
+                : [m] "r" (m),
+                  [id] "o" (IDENTITY)
+                : "memory",
+                  "%xmm0", "%xmm1"
+            );
+        }
+
+        void transpose_matrix3d1(matrix3d_t *r)
+        {
+            ARCH_X86_ASM
+            (
+                MATRIX_LOAD("m", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
+                MAT4_TRANSPOSE("%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4")
+                MATRIX_STORE("m", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
+                :
+                : [m] "r" (r)
+                : "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4"
+            );
+        }
+
+        void transpose_matrix3d2(matrix3d_t *r, const matrix3d_t *m)
+        {
+            ARCH_X86_ASM
+            (
+                MATRIX_LOAD("m", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
+                MAT4_TRANSPOSE("%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4")
+                MATRIX_STORE("r", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
+                :
+                : [r] "r" (r), [m] "r" (m)
+                : "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4"
             );
         }
 
