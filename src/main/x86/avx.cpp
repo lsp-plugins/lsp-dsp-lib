@@ -76,6 +76,8 @@
 
         #include <private/dsp/arch/x86/avx/graphics/axis.h>
         #include <private/dsp/arch/x86/avx/graphics/pixelfmt.h>
+
+        #include <private/dsp/arch/x86/avx/3dmath.h>
     #undef PRIVATE_DSP_ARCH_X86_AVX_IMPL
 
     namespace lsp
@@ -422,6 +424,11 @@
                 CEXPORT2(favx, normalize, normalize2);
                 CEXPORT1(favx, normalize1);
                 CEXPORT1(favx, normalize2);
+
+                // 3D math
+                EXPORT1(init_point_xyz);
+                EXPORT1(init_point);
+                EXPORT1(normalize_point);
 
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)

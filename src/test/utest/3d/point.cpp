@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -40,6 +40,13 @@ namespace lsp
             void init_point(dsp::point3d_t *p, const dsp::point3d_t *s);
             void normalize_point(dsp::point3d_t *p);
         }
+
+        namespace avx
+        {
+            void init_point_xyz(dsp::point3d_t *p, float x, float y, float z);
+            void init_point(dsp::point3d_t *p, const dsp::point3d_t *s);
+            void normalize_point(dsp::point3d_t *p);
+        }
     )
 
     typedef void (* init_point_xyz_t)(dsp::point3d_t *p, float x, float y, float z);
@@ -62,6 +69,14 @@ UTEST_BEGIN("dsp.3d", point)
         printf("Testing %s\n", label);
 
         dsp::point3d_t   p1, p2, p3;
+        p2.x = 0.1;
+        p2.y = 0.2;
+        p2.z = 0.3;
+        p2.w = 0.4;
+        p3.x = 0.1;
+        p3.y = 0.2;
+        p3.z = 0.3;
+        p3.w = 0.4;
 
         generic::init_point_xyz(&p1, 2.0f, 3.0f, 4.0f);
         init_xyz(&p2, 2.0f, 3.0f, 4.0f);
@@ -80,7 +95,8 @@ UTEST_BEGIN("dsp.3d", point)
 
     UTEST_MAIN
     {
-        IF_ARCH_X86(call("sse_point", sse::init_point_xyz, sse::init_point, sse::normalize_point));
+        IF_ARCH_X86(call("sse::point", sse::init_point_xyz, sse::init_point, sse::normalize_point));
+        IF_ARCH_X86(call("avx::point", avx::init_point_xyz, avx::init_point, avx::normalize_point));
     }
 UTEST_END;
 
