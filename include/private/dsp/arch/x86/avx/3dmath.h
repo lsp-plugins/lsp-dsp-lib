@@ -63,10 +63,10 @@ namespace lsp
         {
             ARCH_X86_ASM
             (
-                __ASM_EMIT("vmovlhps    %[x1], %[x0], %[x0]")           // x0   = x ? y ?
-                __ASM_EMIT("vmovhps     %[id], %[x2], %[x2]")           // x2   = z ? 1 0
-                __ASM_EMIT("vshufps     $0x88, %[x2], %[x0], %[x0]")    // x0   = x y z 1
-                __ASM_EMIT("vmovups     %[x0], (%[p])")
+                __ASM_EMIT("vmovlhps        %[x1], %[x0], %[x0]")           // x0   = x ? y ?
+                __ASM_EMIT("vmovhps         %[id], %[x2], %[x2]")           // x2   = z ? 1 0
+                __ASM_EMIT("vshufps         $0x88, %[x2], %[x0], %[x0]")    // x0   = x y z 1
+                __ASM_EMIT("vmovups         %[x0], (%[p])")
 
                 : [x0] "+x" (x), [x1] "+x" (y), [x2] "+x"(z)
                 : [p] "r" (p),
@@ -95,14 +95,83 @@ namespace lsp
 
             ARCH_X86_ASM
             (
-                __ASM_EMIT("vmovups     (%[p]), %[x0]")                 // x0   = x y z w
-                __ASM_EMIT("vandps      %[mask], %[x0], %[x0]")         // x0   = x y z 0
+                __ASM_EMIT("vmovups         (%[p]), %[x0]")                 // x0   = x y z w
+                __ASM_EMIT("vandps          %[mask], %[x0], %[x0]")         // x0   = x y z 0
                 NORMALIZE("[x0]", "[x1]", "[x2]")
-                __ASM_EMIT("vinsertps    $0x30, %[id], %[x0], %[x0]")   // x0   = x y z 1
-                __ASM_EMIT("vmovups      %[x0], (%[p])")
+                __ASM_EMIT("vinsertps       $0x30, %[id], %[x0], %[x0]")    // x0   = x y z 1
+                __ASM_EMIT("vmovups         %[x0], (%[p])")
 
                 : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2)
                 : [p] "r" (p),
+                  [id] "m" (IDENTITY),
+                  [mask] "m" (X_MASK0111)
+                : "cc", "memory"
+            );
+        }
+
+        void init_vector_dxyz(vector3d_t *p, float dx, float dy, float dz)
+        {
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovlhps        %[x1], %[x0], %[x0]")           // x0   = dx ? dy ?
+                __ASM_EMIT("vmovhps         %[id], %[x2], %[x2]")           // x2   = dz ? 1 0
+                __ASM_EMIT("vshufps         $0xc8, %[x2], %[x0], %[x0]")    // x0   = dx dy dz 0
+                __ASM_EMIT("vmovups         %[x0], (%[p])")
+
+                : [x0] "+x" (dx), [x1] "+x" (dy), [x2] "+x"(dz)
+                : [p] "r" (p),
+                  [id] "m" (IDENTITY)
+                : "memory"
+            );
+        }
+
+        void init_vector(vector3d_t *p, const vector3d_t *s)
+        {
+            float x0;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[s]), %[x0]")
+                __ASM_EMIT("vmovups         %[x0], (%[p])")
+                : [x0] "=&x" (x0)
+                : [s] "r" (s), [p] "r" (p)
+                : "memory"
+            );
+        }
+
+        void normalize_vector(vector3d_t *v)
+        {
+            float x0, x1, x2;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[v]), %[x0]")             // x0   = dx dy dz dw
+                __ASM_EMIT("vandps          %[mask], %[x0], %[x0]")     // x0   = dx dy dz 0
+                NORMALIZE("[x0]", "[x1]", "[x2]")
+                __ASM_EMIT("vmovups         %[x0], (%[v])")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2)
+                : [v] "r" (v),
+                  [id] "m" (IDENTITY),
+                  [mask] "m" (X_MASK0111)
+                : "cc", "memory"
+            );
+        }
+
+        void normalize_vector2(vector3d_t *v, const vector3d_t *sv)
+        {
+            float x0, x1, x2;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[sv]), %[x0]")            // x0   = dx dy dz dw
+                __ASM_EMIT("vandps          %[mask], %[x0], %[x0]")     // x0   = dx dy dz 0
+                NORMALIZE("[x0]", "[x1]", "[x2]")
+                __ASM_EMIT("vmovups         %[x0], (%[v])")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2)
+                : [v] "r" (v),
+                  [sv] "r" (sv),
                   [id] "m" (IDENTITY),
                   [mask] "m" (X_MASK0111)
                 : "cc", "memory"

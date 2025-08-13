@@ -430,6 +430,11 @@
                 EXPORT1(init_point);
                 EXPORT1(normalize_point);
 
+                EXPORT1(init_vector_dxyz);
+                EXPORT1(init_vector);
+                EXPORT1(normalize_vector);
+                EXPORT1(normalize_vector2);
+
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)
                 {

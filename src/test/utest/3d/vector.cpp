@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -31,6 +31,7 @@ namespace lsp
         void init_vector_dxyz(dsp::vector3d_t *v, float dx, float dy, float dz);
         void init_vector(dsp::vector3d_t *p, const dsp::vector3d_t *s);
         void normalize_vector(dsp::vector3d_t *v);
+        void normalize_vector2(dsp::vector3d_t *v, const dsp::vector3d_t *sv);
     }
 
     IF_ARCH_X86(
@@ -39,48 +40,78 @@ namespace lsp
             void init_vector_dxyz(dsp::vector3d_t *v, float dx, float dy, float dz);
             void init_vector(dsp::vector3d_t *p, const dsp::vector3d_t *s);
             void normalize_vector(dsp::vector3d_t *v);
+            void normalize_vector2(dsp::vector3d_t *v, const dsp::vector3d_t *sv);
+        }
+
+        namespace avx
+        {
+            void init_vector_dxyz(dsp::vector3d_t *v, float dx, float dy, float dz);
+            void init_vector(dsp::vector3d_t *p, const dsp::vector3d_t *s);
+            void normalize_vector(dsp::vector3d_t *v);
+            void normalize_vector2(dsp::vector3d_t *v, const dsp::vector3d_t *sv);
         }
     )
 
     typedef void (* init_vector_dxyz_t)(dsp::vector3d_t *v, float dx, float dy, float dz);
     typedef void (* init_vector_t)(dsp::vector3d_t *p, const dsp::vector3d_t *s);
     typedef void (* normalize_vector_t)(dsp::vector3d_t *v);
+    typedef void (* normalize_vector2_t)(dsp::vector3d_t *v, const dsp::vector3d_t *sv);
 }
 
 UTEST_BEGIN("dsp.3d", vector)
+
+    static void fill_vector(dsp::vector3d_t *v)
+    {
+        v->dx   = 0.1f;
+        v->dy   = 0.2f;
+        v->dz   = 0.3f;
+        v->dw   = 0.4f;
+    }
 
     void call(
             const char *label,
             init_vector_dxyz_t init_dxyz,
             init_vector_t init,
-            normalize_vector_t norm
+            normalize_vector_t norm,
+            normalize_vector2_t norm2
         )
     {
-        if ((!UTEST_SUPPORTED(init_dxyz)) || (!UTEST_SUPPORTED(init)) || (!UTEST_SUPPORTED(norm)))
+        if ((!UTEST_SUPPORTED(init_dxyz)) || (!UTEST_SUPPORTED(init)) || (!UTEST_SUPPORTED(norm)) || (!UTEST_SUPPORTED(norm2)))
             return;
 
         printf("Testing %s\n", label);
 
-        dsp::vector3d_t  v1, v2, v3;
+        dsp::vector3d_t  v1, v2, v3, v4, v5, v6;
 
-        generic::init_vector_dxyz(&v1, 1.0f, 2.0f, 3.0f);
-        init_dxyz(&v2, 1.0f, 2.0f, 3.0f);
+        fill_vector(&v1);
+        fill_vector(&v2);
+        fill_vector(&v3);
+        fill_vector(&v4);
+        fill_vector(&v5);
+        fill_vector(&v6);
+
+        generic::init_vector_dxyz(&v1, 2.0f, 3.0f, 4.0f);
+        init_dxyz(&v2, 2.0f, 3.0f, 4.0f);
         UTEST_ASSERT_MSG(vector3d_sck(&v1, &v2), "Failed init_vector_dxyz");
 
-        generic::init_vector(&v2, &v1);
-        init(&v3, &v1);
-        UTEST_ASSERT_MSG(vector3d_sck(&v1, &v2), "Failed generic init_vector");
-        UTEST_ASSERT_MSG(vector3d_sck(&v1, &v3), "Failed optimized init_vector");
+        generic::init_vector(&v3, &v1);
+        init(&v4, &v1);
+        UTEST_ASSERT_MSG(vector3d_sck(&v1, &v3), "Failed generic init_vector");
+        UTEST_ASSERT_MSG(vector3d_sck(&v1, &v4), "Failed optimized init_vector");
 
-        generic::normalize_vector(&v2);
-        norm(&v3);
+        generic::normalize_vector2(&v5, &v1);
+        norm2(&v6, &v1);
+        UTEST_ASSERT_MSG(vector3d_sck(&v5, &v6), "Failed normalize vector 2");
 
-        UTEST_ASSERT_MSG(vector3d_sck(&v2, &v3), "Failed normalize vector");
+        generic::normalize_vector(&v3);
+        norm(&v4);
+        UTEST_ASSERT_MSG(vector3d_sck(&v3, &v4), "Failed normalize vector");
     }
 
     UTEST_MAIN
     {
-        IF_ARCH_X86(call("sse_vector", sse::init_vector_dxyz, sse::init_vector, sse::normalize_vector));
+        IF_ARCH_X86(call("sse_vector", sse::init_vector_dxyz, sse::init_vector, sse::normalize_vector, sse::normalize_vector2));
+        IF_ARCH_X86(call("avx_vector", avx::init_vector_dxyz, avx::init_vector, avx::normalize_vector, avx::normalize_vector2));
     }
 UTEST_END;
 

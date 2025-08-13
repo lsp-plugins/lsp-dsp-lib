@@ -56,6 +56,14 @@ namespace lsp
 
 UTEST_BEGIN("dsp.3d", point)
 
+    static void fill_point(dsp::point3d_t *p)
+    {
+        p->x    = 0.1f;
+        p->y    = 0.2f;
+        p->z    = 0.3f;
+        p->w    = 0.4f;
+    }
+
     void call(
             const char *label,
             init_point_xyz_t init_xyz,
@@ -68,29 +76,25 @@ UTEST_BEGIN("dsp.3d", point)
 
         printf("Testing %s\n", label);
 
-        dsp::point3d_t   p1, p2, p3;
-        p2.x = 0.1;
-        p2.y = 0.2;
-        p2.z = 0.3;
-        p2.w = 0.4;
-        p3.x = 0.1;
-        p3.y = 0.2;
-        p3.z = 0.3;
-        p3.w = 0.4;
+        dsp::point3d_t   p1, p2, p3, p4;
+        fill_point(&p1);
+        fill_point(&p2);
+        fill_point(&p3);
+        fill_point(&p4);
 
         generic::init_point_xyz(&p1, 2.0f, 3.0f, 4.0f);
         init_xyz(&p2, 2.0f, 3.0f, 4.0f);
         UTEST_ASSERT_MSG(point3d_sck(&p1, &p2), "Failed init_point_xyz");
 
-        generic::init_point(&p2, &p1);
-        init(&p3, &p1);
-        UTEST_ASSERT_MSG(point3d_sck(&p1, &p2), "Failed generic init_point");
-        UTEST_ASSERT_MSG(point3d_sck(&p1, &p3), "Failed optimized init_point");
+        generic::init_point(&p3, &p1);
+        init(&p4, &p1);
+        UTEST_ASSERT_MSG(point3d_sck(&p1, &p3), "Failed generic init_point");
+        UTEST_ASSERT_MSG(point3d_sck(&p1, &p4), "Failed optimized init_point");
 
-        generic::normalize_point(&p2);
-        norm(&p3);
+        generic::normalize_point(&p3);
+        norm(&p4);
 
-        UTEST_ASSERT_MSG(point3d_sck(&p2, &p3), "Failed normalize point");
+        UTEST_ASSERT_MSG(point3d_sck(&p3, &p4), "Failed normalize point");
     }
 
     UTEST_MAIN
