@@ -1271,50 +1271,6 @@ namespace lsp
             return x0;
         }
 
-        float check_triplet3d_t(const triangle3d_t *t)
-        {
-            float x0, x1, x2, x3, x4;
-
-            ARCH_X86_ASM
-            (
-                __ASM_EMIT("movups      0x10(%[t]), %[x1]")     // xmm1 = px2 py2 pz2 pw2
-                __ASM_EMIT("movups      0x20(%[t]), %[x2]")     // xmm2 = px3 py3 pz3 pw3
-                __ASM_EMIT("movups      0x00(%[t]), %[x4]")     // xmm3 = px1 py1 pz1 pw1
-                __ASM_EMIT("subps       %[x1], %[x2]")          // xmm2 = x2 y2 z2 w2
-                __ASM_EMIT("movups      0x30(%[t]), %[x0]")     // xmm0 = nx ny nz nw
-                __ASM_EMIT("subps       %[x4], %[x1]")          // xmm1 = x1 y1 z1 w1
-
-                TRIPLET_CHECK("x0", "x1", "x2", "x3", "x4")
-
-                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
-                : [t] "r" (t)
-            );
-
-            return x0;
-        }
-
-        float check_triplet3d_tn(const triangle3d_t *t, const vector3d_t *n)
-        {
-            float x0, x1, x2, x3, x4;
-
-            ARCH_X86_ASM
-            (
-                __ASM_EMIT("movups      0x10(%[t]), %[x1]")     // xmm1 = px2 py2 pz2 pw2
-                __ASM_EMIT("movups      0x20(%[t]), %[x2]")     // xmm2 = px3 py3 pz3 pw3
-                __ASM_EMIT("movups      0x00(%[t]), %[x4]")     // xmm4 = px1 py1 pz1 pw1
-                __ASM_EMIT("subps       %[x1], %[x2]")          // xmm2 = x2 y2 z2 w2
-                __ASM_EMIT("movups      (%[n]), %[x0]")         // xmm0 = nx ny nz nw
-                __ASM_EMIT("subps       %[x4], %[x1]")          // xmm1 = x1 y1 z1 w1
-
-                TRIPLET_CHECK("x0", "x1", "x2", "x3", "x4")
-
-                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
-                : [t] "r" (t), [n] "r" (n)
-            );
-
-            return x0;
-        }
-
         size_t longest_edge3d_p3(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3)
         {
             size_t res;
@@ -1409,65 +1365,6 @@ namespace lsp
             );
 
             return res;
-        }
-
-        float check_point3d_on_triangle_tp(const triangle3d_t *t, const point3d_t *p)
-        {
-            float x0, x1, x2, x3, x4, x5, x6, x7;
-
-            ARCH_X86_ASM
-            (
-                /* Load vectors */
-                __ASM_EMIT("movups      (%[p]), %[x3]")         /* xmm3 = px py pz pw */
-                __ASM_EMIT("movups      0x00(%[t]), %[x0]")     /* xmm0 = x0 y0 z0 w0 */
-                __ASM_EMIT("movups      0x10(%[t]), %[x1]")     /* xmm1 = x1 y1 z1 w1 */
-                __ASM_EMIT("movups      0x20(%[t]), %[x2]")     /* xmm2 = x2 y2 z2 w2 */
-                __ASM_EMIT("subps       %[x3], %[x0]")          /* xmm0 = dx0 dy0 dz0 dw0 */
-                __ASM_EMIT("subps       %[x3], %[x1]")          /* xmm1 = dx1 dy1 dz1 dw1 */
-                __ASM_EMIT("subps       %[x3], %[x2]")          /* xmm2 = dx2 dy2 dz2 dw2 */
-                /* 3x vector multiplications */
-                VECTOR_MUL3("[x0]", "[x1]", "[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]")
-                /* 3x scalar multiplications */
-                SCALAR_MUL3("[x0]", "[x1]", "[x2]", "[x3]")
-                /* Compare with zeros */
-                __ASM_EMIT("xorps       %[x4], %[x4]")
-                __ASM_EMIT("ucomiss     %[x4], %[x0]")
-                __ASM_EMIT("jb          110f")
-                __ASM_EMIT("ucomiss     %[x4], %[x1]")
-                __ASM_EMIT("jb          109f")
-                __ASM_EMIT("ucomiss     %[x4], %[x2]")
-                __ASM_EMIT("jb          108f")
-                __ASM_EMIT("mulss       %[x1], %[x0]")
-                __ASM_EMIT("mulss       %[x2], %[x0]")
-                __ASM_EMIT("ucomiss     %[x4], %[x0]")
-                __ASM_EMIT("jne         110f")
-                /* There is somewhere zero, need additional check */
-                /* Load vectors */
-                __ASM_EMIT("movups      (%[p]), %[x3]")         /* xmm3 = px py pz pw */
-                __ASM_EMIT("movups      0x00(%[t]), %[x0]")     /* xmm0 = x0 y0 z0 w0 */
-                __ASM_EMIT("movups      0x10(%[t]), %[x1]")     /* xmm1 = x1 y1 z1 w1 */
-                __ASM_EMIT("movups      0x20(%[t]), %[x2]")     /* xmm2 = x2 y2 z2 w2 */
-                __ASM_EMIT("subps       %[x3], %[x0]")          /* xmm0 = dx0 dy0 dz0 dw0 */
-                __ASM_EMIT("subps       %[x3], %[x1]")          /* xmm1 = dx1 dy1 dz1 dw1 */
-                __ASM_EMIT("subps       %[x3], %[x2]")          /* xmm2 = dx2 dy2 dz2 dw2 */
-                /* Do 3x scalar multiplications */
-                SCALAR_MUL3("[x0]", "[x1]", "[x2]", "[x3]")
-                __ASM_EMIT("mulss       %[x1], %[x0]")
-                __ASM_EMIT("mulss       %[x2], %[x0]")
-                __ASM_EMIT("jmp         110f")
-
-                __ASM_EMIT("108:")
-                __ASM_EMIT("movss       %[x2], %[x0]")
-                __ASM_EMIT("jmp         110f")
-                __ASM_EMIT("109:")
-                __ASM_EMIT("movss       %[x1], %[x0]")
-                __ASM_EMIT("110:")
-                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
-                  [x4] "=&x" (x4), [x5] "=&x" (x5), [x6] "=&x" (x6), [x7] "=&x" (x7)
-                : [p] "r" (p), [t] "r" (t)
-            );
-
-            return x0;
         }
 
         float check_point3d_on_triangle_pvp(const point3d_t *pv, const point3d_t *p)

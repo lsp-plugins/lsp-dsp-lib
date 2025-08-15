@@ -73,7 +73,6 @@
 
                 EXPORT1(check_point3d_on_triangle_p3p);
                 EXPORT1(check_point3d_on_triangle_pvp);
-                EXPORT1(check_point3d_on_triangle_tp);
             }
 
             #undef EXPORT1

@@ -440,7 +440,6 @@
 
                 EXPORT1(check_point3d_on_triangle_p3p);
                 EXPORT1(check_point3d_on_triangle_pvp);
-                EXPORT1(check_point3d_on_triangle_tp);
 
                 EXPORT1(longest_edge3d_p3);
                 EXPORT1(longest_edge3d_pv);
@@ -450,8 +449,6 @@
                 EXPORT1(check_triplet3d_v2n);
                 EXPORT1(check_triplet3d_vvn);
                 EXPORT1(check_triplet3d_vv);
-                EXPORT1(check_triplet3d_t);
-                EXPORT1(check_triplet3d_tn);
 
         //            EXPORT1(reflect_ray);
 
