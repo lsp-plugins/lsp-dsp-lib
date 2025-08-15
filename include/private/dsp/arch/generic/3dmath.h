@@ -339,34 +339,6 @@ namespace lsp
             normalize_vector(&l->v);
         }
 
-        void init_segment_xyz(segment3d_t *s,
-            float x0, float y0, float z0,
-            float x1, float y1, float z1
-        )
-        {
-            s->p[0].x       = x0;
-            s->p[0].y       = y0;
-            s->p[0].z       = z0;
-            s->p[0].w       = 0.0f;
-
-            s->p[1].x       = x1;
-            s->p[1].y       = y1;
-            s->p[1].z       = z1;
-            s->p[1].w       = 0.0f;
-        }
-
-        void init_segment_p2(segment3d_t *s, const point3d_t *p1, const point3d_t *p2)
-        {
-            s->p[0]         = *p1;
-            s->p[1]         = *p2;
-        }
-
-        void init_segment_pv(segment3d_t *s, const point3d_t *p)
-        {
-            s->p[0]         = p[0];
-            s->p[1]         = p[1];
-        }
-
         void calc_triangle3d_params(triangle3d_t *t)
         {
             // Calculate edge parameters

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -431,10 +431,6 @@
                 EXPORT1(calc_ray_p2);
                 EXPORT1(calc_ray_pv);
                 EXPORT1(calc_ray);
-
-                EXPORT1(init_segment_xyz);
-                EXPORT1(init_segment_p2);
-                EXPORT1(init_segment_pv);
 
                 EXPORT1(init_matrix3d);
                 EXPORT1(init_matrix3d_zero);

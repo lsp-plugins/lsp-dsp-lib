@@ -58,10 +58,6 @@ typedef struct LSP_DSP_LIB_TYPE(bound_box3d_t)
     LSP_DSP_LIB_TYPE(point3d_t)     p[8];       // Bounding-box contains 8 points
 } LSP_DSP_LIB_TYPE(bound_box3d_t);
 
-typedef struct LSP_DSP_LIB_TYPE(segment3d_t)
-{
-    LSP_DSP_LIB_TYPE(point3d_t)     p[2];
-} LSP_DSP_LIB_TYPE(segment3d_t);
 
 typedef struct LSP_DSP_LIB_TYPE(triangle3d_t)
 {

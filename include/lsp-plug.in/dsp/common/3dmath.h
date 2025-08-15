@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -176,36 +176,6 @@ LSP_DSP_LIB_SYMBOL(void, vector_mul_v2, LSP_DSP_LIB_TYPE(vector3d_t) *r, const L
  * @param vv array of two vectors to multiply
  */
 LSP_DSP_LIB_SYMBOL(void, vector_mul_vv, LSP_DSP_LIB_TYPE(vector3d_t) *r, const LSP_DSP_LIB_TYPE(vector3d_t) *vv);
-
-/** Init segment using coordinates of 2 points
- *
- * @param s segment to initialize
- * @param x0 point 1 X coordinate
- * @param y0 point 1 Y coordinate
- * @param z0 point 1 Z coordinate
- * @param x1 point 2 X coordinate
- * @param y1 point 2 Y coordinate
- * @param z1 point 2 Z coordinate
- */
-LSP_DSP_LIB_SYMBOL(void, init_segment_xyz, LSP_DSP_LIB_TYPE(segment3d_t) *s,
-    float x0, float y0, float z0,
-    float x1, float y1, float z1
-);
-
-/** Init segment using two points
- *
- * @param s segment to initialize
- * @param p1 point 1
- * @param p2 point 2
- */
-LSP_DSP_LIB_SYMBOL(void, init_segment_p2, LSP_DSP_LIB_TYPE(segment3d_t) *s, const LSP_DSP_LIB_TYPE(point3d_t) *p1, const LSP_DSP_LIB_TYPE(point3d_t) *p2);
-
-/** Init segment using array of two points
- *
- * @param s segment to initialize
- * @param p array of points
- */
-LSP_DSP_LIB_SYMBOL(void, init_segment_pv, LSP_DSP_LIB_TYPE(segment3d_t) *s, const LSP_DSP_LIB_TYPE(point3d_t) *p);
 
 /** Initialize matrix (make copy)
  *

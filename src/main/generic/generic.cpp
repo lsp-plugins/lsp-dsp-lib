@@ -498,10 +498,6 @@ namespace lsp
             EXPORT1(init_normal3d_dxyz);
             EXPORT1(init_normal3d);
 
-            EXPORT1(init_segment_xyz);
-            EXPORT1(init_segment_p2);
-            EXPORT1(init_segment_pv);
-
             EXPORT1(init_matrix3d);
             EXPORT1(init_matrix3d_zero);
             EXPORT1(init_matrix3d_one);
