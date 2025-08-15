@@ -302,32 +302,6 @@ LSP_DSP_LIB_SYMBOL(void, init_matrix3d_lookat_p2v1, LSP_DSP_LIB_TYPE(matrix3d_t)
  */
 LSP_DSP_LIB_SYMBOL(void, init_matrix3d_orientation, LSP_DSP_LIB_TYPE(matrix3d_t) *m, LSP_DSP_LIB_TYPE(axis_orientation_t) orientation);
 
-/**
- * Compute tranfromation matrix from point and vector data which provides:
- *   - position of the object (point)
- *   - direction of the object (vector)
- *   - scale of the object (length of vector)
- * After applying this matrix, the point with coordinates (0, 0, 1)
- * will have coordinates (p.x + v.dx, p.y + v.dy, p.z + v.dz)
- *
- * @param m target matrix
- * @param p point that indicates position of the object
- * @param v vector that indicates rotation and size of the object
- */
-LSP_DSP_LIB_SYMBOL(void, calc_matrix3d_transform_p1v1, LSP_DSP_LIB_TYPE(matrix3d_t) *m, const LSP_DSP_LIB_TYPE(point3d_t) *p, const LSP_DSP_LIB_TYPE(vector3d_t) *v);
-
-/**
- * Compute tranfromation matrix from ray data which provides:
- *   - position of the object (point)
- *   - direction of the object (vector)
- *   - scale of the object (length of vector)
- * After applying this matrix, the point with coordinates (0, 0, 1)
- * will have coordinates (r.z.x + r.v.dx, r.z.y + r.v.dy, r.z.z + r.v.dz)
- * @param m target matrix
- * @param r ray that indicates position, rotation and size of the object
- */
-LSP_DSP_LIB_SYMBOL(void, calc_matrix3d_transform_r1, LSP_DSP_LIB_TYPE(matrix3d_t) *m, const LSP_DSP_LIB_TYPE(ray3d_t) *r);
-
 /** Apply matrix to vector
  *
  * @param r target vector
@@ -385,113 +359,6 @@ LSP_DSP_LIB_SYMBOL(void, transpose_matrix3d1, LSP_DSP_LIB_TYPE(matrix3d_t) *r);
  * @param m source matrix
  */
 LSP_DSP_LIB_SYMBOL(void, transpose_matrix3d2, LSP_DSP_LIB_TYPE(matrix3d_t) *r, const LSP_DSP_LIB_TYPE(matrix3d_t) *m);
-
-/** Initialize ray using coordinates of 2 points
- *
- * @param l ray to initialize
- * @param x0 source point X coordinate
- * @param y0 source point Y coordinate
- * @param z0 source point Z coordinate
- * @param x1 destination point X coordinate
- * @param y1 destination point X coordinate
- * @param z1 destination point X coordinate
- */
-LSP_DSP_LIB_SYMBOL(void, init_ray_xyz, LSP_DSP_LIB_TYPE(ray3d_t) *l, float x0, float y0, float z0, float x1, float y1, float z1);
-
-/** Initialize ray using coordinate of start point and direction vector
- *
- * @param l ray to initialize
- * @param x0 source point X coordinate
- * @param y0 source point Y coordinate
- * @param z0 source point Z coordinate
- * @param dx direction vector X projection
- * @param dy direction vector Y projection
- * @param dz direction vector Z projection
- */
-LSP_DSP_LIB_SYMBOL(void, init_ray_dxyz, LSP_DSP_LIB_TYPE(ray3d_t) *l, float x0, float y0, float z0, float dx, float dy, float dz);
-
-/** Initialize ray using point and vector object
- *
- * @param l ray to initialize
- * @param p source point
- * @param v direction vector
- */
-LSP_DSP_LIB_SYMBOL(void, init_ray_pdv, LSP_DSP_LIB_TYPE(ray3d_t) *l, const LSP_DSP_LIB_TYPE(point3d_t) *p, const LSP_DSP_LIB_TYPE(vector3d_t) *m);
-
-/** Initialize ray using two points
- *
- * @param l ray to initialize
- * @param p1 source point
- * @param p2 destination point
- */
-LSP_DSP_LIB_SYMBOL(void, init_ray_p2, LSP_DSP_LIB_TYPE(ray3d_t) *l, const LSP_DSP_LIB_TYPE(point3d_t) *p1, const LSP_DSP_LIB_TYPE(point3d_t) *p2);
-
-/** Initialize ray using array of two points
- *
- * @param l ray to initialize
- * @param p array of two points to initialize
- */
-LSP_DSP_LIB_SYMBOL(void, init_ray_pv, LSP_DSP_LIB_TYPE(ray3d_t) *l, const LSP_DSP_LIB_TYPE(point3d_t) *p);
-
-/** Initialize ray using another ray
- *
- * @param l ray to initialize
- * @param r source ray
- */
-LSP_DSP_LIB_SYMBOL(void, init_ray, LSP_DSP_LIB_TYPE(ray3d_t) *l, const LSP_DSP_LIB_TYPE(ray3d_t) *r);
-
-/** Calculate ray using coordinates of 2 points
- *
- * @param l ray to initialize
- * @param x0 source point X coordinate
- * @param y0 source point Y coordinate
- * @param z0 source point Z coordinate
- * @param x1 destination point X coordinate
- * @param y1 destination point X coordinate
- * @param z1 destination point X coordinate
- */
-LSP_DSP_LIB_SYMBOL(void, calc_ray_xyz, LSP_DSP_LIB_TYPE(ray3d_t) *l, float x0, float y0, float z0, float x1, float y1, float z1);
-
-/** Calculate ray using coordinate of start point and direction vector
- *
- * @param l ray to initialize
- * @param x0 source point X coordinate
- * @param y0 source point Y coordinate
- * @param z0 source point Z coordinate
- * @param dx direction vector X projection
- * @param dy direction vector Y projection
- * @param dz direction vector Z projection
- */
-LSP_DSP_LIB_SYMBOL(void, calc_ray_dxyz, LSP_DSP_LIB_TYPE(ray3d_t) *l, float x0, float y0, float z0, float dx, float dy, float dz);
-
-/** Calculate ray using another ray
- *
- * @param l ray to initialize
- * @param r source ray
- */
-LSP_DSP_LIB_SYMBOL(void, calc_ray_pdv, LSP_DSP_LIB_TYPE(ray3d_t) *l, const LSP_DSP_LIB_TYPE(point3d_t) *p, const LSP_DSP_LIB_TYPE(vector3d_t) *m);
-
-/** Calculate ray using two points
- *
- * @param l ray to initialize
- * @param p1 source point
- * @param p2 destination point
- */
-LSP_DSP_LIB_SYMBOL(void, calc_ray_p2, LSP_DSP_LIB_TYPE(ray3d_t) *l, const LSP_DSP_LIB_TYPE(point3d_t) *p1, const LSP_DSP_LIB_TYPE(point3d_t) *p2);
-
-/** Calculate ray using array of two points
- *
- * @param l ray to initialize
- * @param p array of two points to initialize
- */
-LSP_DSP_LIB_SYMBOL(void, calc_ray_pv, LSP_DSP_LIB_TYPE(ray3d_t) *l, const LSP_DSP_LIB_TYPE(point3d_t) *p);
-
-/** Calculate ray using another ray
- *
- * @param l ray to initialize
- * @param r source ray
- */
-LSP_DSP_LIB_SYMBOL(void, calc_ray, LSP_DSP_LIB_TYPE(ray3d_t) *l, const LSP_DSP_LIB_TYPE(ray3d_t) *r);
 
 /** Calculate triangle normal and edge lengths
  *
@@ -712,16 +579,6 @@ LSP_DSP_LIB_SYMBOL(size_t, longest_edge3d_p3, const LSP_DSP_LIB_TYPE(point3d_t) 
  * @return 0 if edge between points 0 and 1 is longest, 1 if between points 1 and 2, 2 if between ponts 2 and 0
  */
 LSP_DSP_LIB_SYMBOL(size_t, longest_edge3d_pv, const LSP_DSP_LIB_TYPE(point3d_t) *p);
-
-/** Find intersection of ray and triangle
- *
- * @param ip intersection point to store result
- * @param l ray to test intersection
- * @param t pre-calculated triangle to check (with plane equation)
- * @return actual distance between ray start point and intersection point.
- *         If value is less than zero, then there is no intersection
- */
-LSP_DSP_LIB_SYMBOL(float, find_intersection3d_rt, LSP_DSP_LIB_TYPE(point3d_t) *ip, const LSP_DSP_LIB_TYPE(ray3d_t) *l, const LSP_DSP_LIB_TYPE(triangle3d_t) *t);
 
 /** Calculate angle between two vectors
  *

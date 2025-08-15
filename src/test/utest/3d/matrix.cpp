@@ -43,9 +43,6 @@ namespace lsp
         void init_matrix3d_rotate_z(dsp::matrix3d_t *m, float angle);
         void init_matrix3d_rotate_xyz(dsp::matrix3d_t *m, float x, float y, float z, float angle);
 
-        void calc_matrix3d_transform_p1v1(dsp::matrix3d_t *m, const dsp::point3d_t *p, const dsp::vector3d_t *v);
-        void calc_matrix3d_transform_r1(dsp::matrix3d_t *m, const dsp::ray3d_t *r);
-
         void apply_matrix3d_mv2(dsp::vector3d_t *r, const dsp::vector3d_t *v, const dsp::matrix3d_t *m);
         void apply_matrix3d_mv1(dsp::vector3d_t *r, const dsp::matrix3d_t *m);
         void apply_matrix3d_mp2(dsp::point3d_t *r, const dsp::point3d_t *p, const dsp::matrix3d_t *m);
@@ -98,51 +95,9 @@ namespace lsp
     typedef void (* apply_matrix3d_mm1_t)(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
     typedef void (* transpose_matrix3d1_t)(dsp::matrix3d_t *r);
     typedef void (* transpose_matrix3d2_t)(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
-
-    typedef void (* calc_matrix3d_transform_p1v1)(dsp::matrix3d_t *m, const dsp::point3d_t *p, const dsp::vector3d_t *v);
-    typedef void (* calc_matrix3d_transform_r1)(dsp::matrix3d_t *m, const dsp::ray3d_t *r);
 }
 
 UTEST_BEGIN("dsp.3d", matrix)
-
-    void calc_matrix3d_transform(
-                const char *label,
-                calc_matrix3d_transform_p1v1 transform_p1v1,
-                calc_matrix3d_transform_r1 transform_r1
-            )
-    {
-        printf("Testing %s\n", label);
-
-        if ((!UTEST_SUPPORTED(transform_p1v1)) ||
-            (!UTEST_SUPPORTED(transform_r1))
-            )
-            return;
-
-        dsp::ray3d_t r;
-        dsp::init_point_xyz(&r.z, 1.0f, 2.0f, 3.0f);
-        dsp::init_vector_dxyz(&r.v, 0.5f, 0.6f, 0.7f);
-
-        dsp::point3d_t p, dp, check;
-        dsp::init_point_xyz(&p, 0.0f, 0.0f, 2.0f);
-        dsp::init_point_xyz(&check, 2.0f, 3.2f, 4.4f);
-
-        dsp::matrix3d_t m;
-
-        transform_p1v1(&m, &r.z, &r.v);
-        dsp::apply_matrix3d_mp2(&dp, &p, &m);
-        UTEST_ASSERT_MSG(point3d_ck(&dp, &check), "point = {%f, %f, %f}, expected= {%f, %f, %f}\n",
-                dp.x, dp.y, dp.z,
-                check.x, check.y, check.z
-            );
-
-
-        transform_r1(&m, &r);
-        dsp::apply_matrix3d_mp2(&dp, &p, &m);
-        UTEST_ASSERT_MSG(point3d_ck(&dp, &check), "point = {%f, %f, %f}, expected= {%f, %f, %f}\n",
-                dp.x, dp.y, dp.z,
-                check.x, check.y, check.z
-            );
-    }
 
     void init_data(
             const char *label,
@@ -511,10 +466,5 @@ UTEST_BEGIN("dsp.3d", matrix)
                 sse::apply_matrix3d_mv1,
                 sse::apply_matrix3d_mv2
             ));
-
-        calc_matrix3d_transform("calc_matrix3d_transform",
-                generic::calc_matrix3d_transform_p1v1,
-                generic::calc_matrix3d_transform_r1
-            );
     }
 UTEST_END;

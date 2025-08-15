@@ -419,19 +419,6 @@
                 EXPORT1(add_vector_pvk1);
                 EXPORT1(add_vector_pvk2);
 
-                EXPORT1(init_ray_xyz);
-                EXPORT1(init_ray_dxyz);
-                EXPORT1(init_ray_pdv);
-                EXPORT1(init_ray_p2);
-                EXPORT1(init_ray_pv);
-                EXPORT1(init_ray);
-                EXPORT1(calc_ray_xyz);
-                EXPORT1(calc_ray_dxyz);
-                EXPORT1(calc_ray_pdv);
-                EXPORT1(calc_ray_p2);
-                EXPORT1(calc_ray_pv);
-                EXPORT1(calc_ray);
-
                 EXPORT1(init_matrix3d);
                 EXPORT1(init_matrix3d_zero);
                 EXPORT1(init_matrix3d_one);

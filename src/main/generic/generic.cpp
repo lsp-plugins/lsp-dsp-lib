@@ -514,8 +514,6 @@ namespace lsp
             EXPORT1(init_matrix3d_lookat_p1v2);
             EXPORT1(init_matrix3d_lookat_p2v1);
             EXPORT1(init_matrix3d_orientation);
-            EXPORT1(calc_matrix3d_transform_r1);
-            EXPORT1(calc_matrix3d_transform_p1v1);
             EXPORT1(apply_matrix3d_mv2);
             EXPORT1(apply_matrix3d_mv1);
             EXPORT1(apply_matrix3d_mp2);
@@ -524,19 +522,6 @@ namespace lsp
             EXPORT1(apply_matrix3d_mm1);
             EXPORT1(transpose_matrix3d1);
             EXPORT1(transpose_matrix3d2);
-
-            EXPORT1(init_ray_xyz);
-            EXPORT1(init_ray_dxyz);
-            EXPORT1(init_ray_pdv);
-            EXPORT1(init_ray_p2);
-            EXPORT1(init_ray_pv);
-            EXPORT1(init_ray);
-            EXPORT1(calc_ray_xyz);
-            EXPORT1(calc_ray_dxyz);
-            EXPORT1(calc_ray_pdv);
-            EXPORT1(calc_ray_p2);
-            EXPORT1(calc_ray_pv);
-            EXPORT1(calc_ray);
 
             EXPORT1(calc_triangle3d_params);
             EXPORT1(init_triangle3d_xyz);
