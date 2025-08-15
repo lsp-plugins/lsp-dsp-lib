@@ -672,10 +672,9 @@ namespace lsp
 
             ARCH_X86_ASM
             (
-                __ASM_EMIT("andps     %[mask], %[x0]")          // xmm0 = sx 0 0 0
-                __ASM_EMIT("andps     %[mask], %[x1]")          // xmm1 = sy 0 0 0
-                __ASM_EMIT("andps     %[mask], %[x2]")          // xmm2 = sz 0 0 0
-
+                __ASM_EMIT("andps       %[mask], %[x0]")        // xmm0 = sx 0 0 0
+                __ASM_EMIT("andps       %[mask], %[x1]")        // xmm1 = sy 0 0 0
+                __ASM_EMIT("andps       %[mask], %[x2]")        // xmm2 = sz 0 0 0
                 __ASM_EMIT("shufps      $0xf3, %[x1], %[x1]")   // xmm1 = 0 sy 0 0
                 __ASM_EMIT("shufps      $0xcf, %[x2], %[x2]")   // xmm2 = 0 0 sz 0
                 __ASM_EMIT("movaps      %[idm3], %[x3]")        // xmm3 = 0 0 0 1
@@ -699,9 +698,8 @@ namespace lsp
 
             ARCH_X86_ASM
             (
-                __ASM_EMIT("movss       %[s], %[x0]")           // xmm0 = s 0 0 0
-                __ASM_EMIT("movss       %[c], %[x1]")           // xmm1 = c 0 0 0
-
+                __ASM_EMIT("andps       %[zmask], %[x0]")       // xmm0 = s 0 0 0
+                __ASM_EMIT("andps       %[zmask], %[x1]")       // xmm1 = c 0 0 0
                 __ASM_EMIT("shufps      $0xc3, %[x1], %[x0]")   // xmm0 = 0 s c 0
                 __ASM_EMIT("movaps      %[idm0], %[x2]")        // xmm2 = 1 0 0 0
                 __ASM_EMIT("movaps      %[x0], %[x1]")          // xmm1 = 0 s c 0
@@ -711,11 +709,11 @@ namespace lsp
 
                 MATRIX_STORE("m", "[x2]", "[x1]", "[x0]", "[x3]")
                 : [x0] "+x" (s), [x1] "+x" (c), [x2] "=&x" (x2), [x3] "=&x" (x3)
-                : [s] "m" (s), [c] "m" (c),
-                    [m] "r" (m),
-                    [idm0] "m" (IDENTITY0),
-                    [idm3] "m" (IDENTITY3),
-                    [mask] "m" (X_SMASK0010)
+                : [m] "r" (m),
+                  [idm0] "m" (IDENTITY0),
+                  [idm3] "m" (IDENTITY3),
+                  [zmask] "m" (X_MASK0001),
+                  [mask] "m" (X_SMASK0010)
                 : "memory"
             );
         }
@@ -728,23 +726,22 @@ namespace lsp
 
             ARCH_X86_ASM
             (
-                __ASM_EMIT("movss       %[s], %[x0]")          // xmm0 = s 0 0 0
-                __ASM_EMIT("movss       %[c], %[x1]")          // xmm1 = c 0 0 0
-
-                __ASM_EMIT("movlhps     %[x1], %[x0]")        // xmm0 = s 0 c 0
-                __ASM_EMIT("movaps      %[x0], %[x1]")        // xmm1 = s 0 c 0
-                __ASM_EMIT("movaps      %[idm1], %[x2]")       // xmm2 = 0 1 0 0
-                __ASM_EMIT("xorps       %[mask], %[x1]")       // xmm1 = -s 0 c 0
-                __ASM_EMIT("movaps      %[idm3], %[x3]")       // xmm3 = 0 0 0 1
-                __ASM_EMIT("shufps      $0xc6, %[x1], %[x1]") // xmm1 = c 0 -s 0
+                __ASM_EMIT("andps       %[zmask], %[x0]")       // xmm0 = s 0 0 0
+                __ASM_EMIT("andps       %[zmask], %[x1]")       // xmm1 = c 0 0 0
+                __ASM_EMIT("movlhps     %[x1], %[x0]")          // xmm0 = s 0 c 0
+                __ASM_EMIT("movaps      %[x0], %[x1]")          // xmm1 = s 0 c 0
+                __ASM_EMIT("movaps      %[idm1], %[x2]")        // xmm2 = 0 1 0 0
+                __ASM_EMIT("xorps       %[mask], %[x1]")        // xmm1 = -s 0 c 0
+                __ASM_EMIT("movaps      %[idm3], %[x3]")        // xmm3 = 0 0 0 1
+                __ASM_EMIT("shufps      $0xc6, %[x1], %[x1]")   // xmm1 = c 0 -s 0
 
                 MATRIX_STORE("m", "[x1]", "[x2]", "[x0]", "[x3]")
                 : [x0] "+x" (s), [x1] "+x" (c), [x2] "=&x" (x2), [x3] "=&x" (x3)
-                : [s] "m" (s), [c] "m" (c),
-                    [m] "r" (m),
-                    [idm1] "m" (IDENTITY1),
-                    [idm3] "m" (IDENTITY3),
-                    [mask] "m" (X_SMASK0001)
+                : [m] "r" (m),
+                  [idm1] "m" (IDENTITY1),
+                  [idm3] "m" (IDENTITY3),
+                  [zmask] "m" (X_MASK0001),
+                  [mask] "m" (X_SMASK0001)
                 : "memory"
             );
         }
@@ -757,23 +754,22 @@ namespace lsp
 
             ARCH_X86_ASM
             (
-                __ASM_EMIT("movss       %[s], %[x0]")          // xmm0 = s 0 0 0
-                __ASM_EMIT("movss       %[c], %[x1]")          // xmm1 = c 0 0 0
-
-                __ASM_EMIT("movaps      %[x0], %[x2]")        // xmm2 = s 0 0 0
-                __ASM_EMIT("movaps      %[idm2], %[x3]")       // xmm3 = 0 0 1 0
-                __ASM_EMIT("unpcklps    %[x1], %[x0]")        // xmm0 = s c 0 0
-                __ASM_EMIT("movaps      %[idm3], %[x4]")       // xmm3 = 0 0 0 1
-                __ASM_EMIT("unpcklps    %[x2], %[x1]")        // xmm1 = c s 0 0
-                __ASM_EMIT("xorps       %[mask], %[x0]")       // xmm0 = -s c 0 0
+                __ASM_EMIT("andps       %[zmask], %[x0]")       // xmm0 = s 0 0 0
+                __ASM_EMIT("andps       %[zmask], %[x1]")       // xmm1 = c 0 0 0
+                __ASM_EMIT("movaps      %[x0], %[x2]")          // xmm2 = s 0 0 0
+                __ASM_EMIT("movaps      %[idm2], %[x3]")        // xmm3 = 0 0 1 0
+                __ASM_EMIT("unpcklps    %[x1], %[x0]")          // xmm0 = s c 0 0
+                __ASM_EMIT("movaps      %[idm3], %[x4]")        // xmm3 = 0 0 0 1
+                __ASM_EMIT("unpcklps    %[x2], %[x1]")          // xmm1 = c s 0 0
+                __ASM_EMIT("xorps       %[mask], %[x0]")        // xmm0 = -s c 0 0
 
                 MATRIX_STORE("m", "[x1]", "[x0]", "[x3]", "[x4]")
                 : [x0] "+x" (s), [x1] "+x" (c), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
-                : [s] "m" (s), [c] "m" (c),
-                    [m] "r" (m),
-                    [idm2] "m" (IDENTITY2),
-                    [idm3] "m" (IDENTITY3),
-                    [mask] "m" (X_SMASK0001)
+                : [m] "r" (m),
+                  [idm2] "m" (IDENTITY2),
+                  [idm3] "m" (IDENTITY3),
+                  [zmask] "m" (X_MASK0001),
+                  [mask] "m" (X_SMASK0001)
                 : "memory"
             );
         }
