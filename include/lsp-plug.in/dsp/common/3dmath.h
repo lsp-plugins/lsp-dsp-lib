@@ -442,21 +442,6 @@ LSP_DSP_LIB_SYMBOL(size_t, longest_edge3d_p3, const LSP_DSP_LIB_TYPE(point3d_t) 
  */
 LSP_DSP_LIB_SYMBOL(size_t, longest_edge3d_pv, const LSP_DSP_LIB_TYPE(point3d_t) *p);
 
-/** Calculate angle between two vectors
- *
- * @param v1 vector 1
- * @param v2 vector 2
- * @return cosine of angle between two vectors [-1..1]
- */
-LSP_DSP_LIB_SYMBOL(float, calc_angle3d_v2, const LSP_DSP_LIB_TYPE(vector3d_t) *v1, const LSP_DSP_LIB_TYPE(vector3d_t) *v2);
-
-/** Calculate angle between two vectors
- *
- * @param v array of two vectors
- * @return cosine of angle between two vectors [-1..1]
- */
-LSP_DSP_LIB_SYMBOL(float, calc_angle3d_vv, const LSP_DSP_LIB_TYPE(vector3d_t) *v);
-
 /** Calculate normal for triangle described by three points
  *
  * @param n normal

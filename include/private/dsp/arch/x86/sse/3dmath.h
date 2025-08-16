@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -113,56 +113,6 @@
     __ASM_EMIT("unpcklps    %" x0 ", %" x0)         /* xmm0 = A+C A+C B+D B+D */ \
     __ASM_EMIT("movhlps     %" x0 ", %" x2)         /* xmm2 = B+D B+D  */ \
     __ASM_EMIT("addps       %" x2 ", %" x0)         /* xmm0 = A+C+B+D  */
-
-/* Get cosine of angle between two vectors
- * Input:
- *   x0 = vector1 [dx dy dz ? ]
- *   x1 = vector2 [dx dy dz ? ]
- *   m0 = -1
- *   m1 = +1
- *
- * Output:
- *   x0 = vector1 * vector2 [ S0 ? ? ? ]
- */
-#define CALC_COSINE2V(x0, x1, x2, x3, x4, m0, m1) \
-    __ASM_EMIT("movaps      %" x0 ", %" x2)      /* xmm2 = dx0 dy0 dz0 ? */ \
-    __ASM_EMIT("mulps       %" x1 ", %" x0)      /* xmm0 = dx0*dx1 dy0*dy1 dz0*dz1 ? */ \
-    __ASM_EMIT("mulps       %" x2 ", %" x2)      /* xmm2 = dx0*dx0 dy0*dy0 dz0*dz0 ? */ \
-    __ASM_EMIT("mulps       %" x1 ", %" x1)      /* xmm1 = dx1*dx1 dy1*dy1 dz1*dz1 ? */ \
-    __ASM_EMIT("movhlps     %" x2 ", %" x4)      /* xmm4 = dz0*dz0 */ \
-    __ASM_EMIT("movhlps     %" x1 ", %" x3)      /* xmm3 = dz1*dz1 */ \
-    __ASM_EMIT("addss       %" x4 ", %" x2)      /* xmm2 = dx0*dx0+dz0*dz0 dy0*dy0 dz0*dz0 ? */ \
-    __ASM_EMIT("addss       %" x3 ", %" x1)      /* xmm1 = dx1*dx1+dz1*dz1 dy1*dy1 dz1*dz1 ? */ \
-    __ASM_EMIT("unpcklps    %" x2 ", %" x2)      /* xmm2 = dx0*dx0+dz0*dz0 dx0*dx0+dz0*dz0 dy0*dy0 dy0*dy0 */ \
-    __ASM_EMIT("unpcklps    %" x1 ", %" x1)      /* xmm1 = dx1*dx1+dz1*dz1 dx1*dx1+dz1*dz1 dy1*dy1 dy1*dy1 */ \
-    __ASM_EMIT("movhlps     %" x2 ", %" x4)      /* xmm4 = dy0*dy0 */ \
-    __ASM_EMIT("movhlps     %" x1 ", %" x3)      /* xmm3 = dy1*dy1 */ \
-    __ASM_EMIT("addss       %" x4 ", %" x2)      /* xmm2 = dx0*dx0+dz0*dz0+dy0*dy0 */ \
-    __ASM_EMIT("addss       %" x3 ", %" x1)      /* xmm1 = dx1*dx1+dz1*dz1+dy1*dy1 */ \
-    __ASM_EMIT("movhlps     %" x0 ", %" x4)      /* xmm4 = dz0*dz1 */ \
-    __ASM_EMIT("sqrtss      %" x2 ", %" x2)      /* xmm2 = sqrtf(dx0*dx0+dz0*dz0+dy0*dy0) */ \
-    __ASM_EMIT("addss       %" x4 ", %" x0)      /* xmm0 = dz1*dz1+dx0*dx1 dy0*dy1 dz0*dz1 ? */ \
-    __ASM_EMIT("sqrtss      %" x1 ", %" x1)      /* xmm1 = sqrtf(dx1*dx1+dz1*dz1+dy1*dy1) */ \
-    __ASM_EMIT("unpcklps    %" x0 ", %" x0)      /* xmm0 = dz1*dz1+dx0*dx1 dz1*dz1+dx0*dx1 dy0*dy1 dy0*dy1 */ \
-    __ASM_EMIT("mulss       %" x1 ", %" x2)      /* xmm2 = w */ \
-    __ASM_EMIT("movhlps     %" x0 ", %" x4)      /* xmm4 = dy0*dy1 */ \
-    __ASM_EMIT("xorps       %" x1 ", %" x1)      /* xmm1 = 0 */ \
-    __ASM_EMIT("addss       %" x4 ", %" x0)      /* xmm0 = dz1*dz1+dx0*dx1+dy0*dy1 */ \
-    __ASM_EMIT("ucomiss     %" x1 ", %" x2)      /* xmm2 <?> 0 */ \
-    __ASM_EMIT("jbe         1000000f")           /* xmm2 <= 0 */ \
-    __ASM_EMIT("divss       %" x2 ", %" x0)      /* xmm0 = (dz1*dz1+dx0*dx1+dy0*dy1)/w */ \
-    __ASM_EMIT("1000000:") \
-    __ASM_EMIT("ucomiss     %" m0 ", %" x0) \
-    __ASM_EMIT("jae 1000001f") \
-    __ASM_EMIT("movss       %" m0 ", %" x0) \
-    __ASM_EMIT("jmp         1000002f") \
-    __ASM_EMIT("1000001:") \
-    __ASM_EMIT("ucomiss     %" m1 ", %" x0) \
-    __ASM_EMIT("jbe 1000002f") \
-    __ASM_EMIT("movss       %" m1 ", %" x0) \
-    __ASM_EMIT("jmp         1000002f") \
-    __ASM_EMIT("1000002:") \
-
 
 /* 3x vector multiplication
  * Input:
@@ -1480,48 +1430,6 @@ namespace lsp
                 : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
                   [x4] "=&x" (x4), [x5] "=&x" (x5), [x6] "=&x" (x6), [x7] "=&x" (x7)
                 : [p1] "r" (p1), [p2] "r" (p2), [p3] "r" (p3), [p] "r" (p)
-            );
-
-            return x0;
-        }
-
-        float calc_angle3d_v2(const vector3d_t *v1, const vector3d_t *v2)
-        {
-            float x0, x1, x2, x3, x4;
-
-            ARCH_X86_ASM
-            (
-                /* Load vectors */
-                __ASM_EMIT("movups      (%[v1]), %[x0]")        /* xmm0 = dx0 dy0 dz0 dw0 */
-                __ASM_EMIT("movups      (%[v2]), %[x1]")        /* xmm1 = dx1 dy1 dz1 dw1 */
-                CALC_COSINE2V("[x0]", "[x1]", "[x2]", "[x3]", "[x4]", "[M_ONE]", "[ONE]")
-                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
-                  [x4] "=&x" (x4)
-                : [v1] "r" (v1), [v2] "r" (v2),
-                  [ONE] "m" (ONE),
-                  [M_ONE] "m" (X_MINUS_ONE)
-                : "cc", "memory"
-            );
-
-            return x0;
-        }
-
-        float calc_angle3d_vv(const vector3d_t *v)
-        {
-            float x0, x1, x2, x3, x4;
-
-            ARCH_X86_ASM
-            (
-                /* Load vectors */
-                __ASM_EMIT("movups      0x00(%[v]), %[x0]")      /* xmm0 = dx0 dy0 dz0 dw0 */
-                __ASM_EMIT("movups      0x10(%[v]), %[x1]")      /* xmm1 = dx1 dy1 dz1 dw1 */
-                CALC_COSINE2V("[x0]", "[x1]", "[x2]", "[x3]", "[x4]", "[M_ONE]", "[ONE]")
-                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
-                  [x4] "=&x" (x4)
-                : [v] "r" (v),
-                  [ONE] "m" (ONE),
-                  [M_ONE] "m" (X_MINUS_ONE)
-                : "cc", "memory"
             );
 
             return x0;
@@ -3009,8 +2917,8 @@ namespace lsp
             #undef STR_SPLIT_1P
             #undef STR_SPLIT_2P
         }
-    }
-}
+    } /* namespace sse */
+} /* namespace lsp */
 
 #undef SCALAR_MUL
 #undef MAT3_TRANSPOSE
@@ -3023,6 +2931,5 @@ namespace lsp
 #undef VECTOR_MUL3
 #undef VECTOR_MUL
 #undef VECTOR_XCHG
-#undef CALC_COSINE2V
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_3DMATH_H_ */

@@ -450,11 +450,6 @@
                 EXPORT1(check_triplet3d_vvn);
                 EXPORT1(check_triplet3d_vv);
 
-        //            EXPORT1(reflect_ray);
-
-                EXPORT1(calc_angle3d_v2);
-                EXPORT1(calc_angle3d_vv);
-
                 EXPORT1(calc_normal3d_p3);
                 EXPORT1(calc_normal3d_pv);
                 EXPORT1(calc_normal3d_v2);
