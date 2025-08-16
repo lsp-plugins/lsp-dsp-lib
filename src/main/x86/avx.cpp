@@ -454,6 +454,9 @@
                 EXPORT1(transpose_matrix3d1);
                 EXPORT1(transpose_matrix3d2);
 
+                EXPORT1(calc_area_p3);
+                EXPORT1(calc_area_pv);
+
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)
                 {
@@ -554,6 +557,9 @@
                     CEXPORT2(favx, apply_matrix3d_mp1, apply_matrix3d_mp1_fma3);
                     CEXPORT2(favx, apply_matrix3d_mv2, apply_matrix3d_mv2_fma3);
                     CEXPORT2(favx, apply_matrix3d_mv1, apply_matrix3d_mv1_fma3);
+
+                    CEXPORT2(favx, calc_area_p3, calc_area_p3_fma3);
+                    CEXPORT2(favx, calc_area_pv, calc_area_pv_fma3);
                 }
             }
 
