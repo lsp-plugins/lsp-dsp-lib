@@ -455,8 +455,6 @@
                 EXPORT1(calc_normal3d_v2);
                 EXPORT1(calc_normal3d_vv);
 
-                EXPORT1(move_point3d_p2);
-                EXPORT1(move_point3d_pv);
                 EXPORT1(calc_split_point_p2v1);
                 EXPORT1(calc_split_point_pvv1);
 

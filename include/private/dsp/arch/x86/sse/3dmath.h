@@ -1565,52 +1565,6 @@ namespace lsp
             );
         }
 
-        void move_point3d_p2(point3d_t *p, const point3d_t *p1, const point3d_t *p2, float k)
-        {
-            float x0, x1;
-
-            ARCH_X86_ASM
-            (
-                __ASM_EMIT("movups      (%[p1]), %[x0]")        // xmm0 = x0 y0 z0 w0
-                __ASM_EMIT("movups      (%[p2]), %[x1]")        // xmm1 = x1 y1 z1 w1
-                __ASM_EMIT("shufps      $0x00, %[x2], %[x2]")   // xmm2 = k k k k
-                __ASM_EMIT("subps       %[x0], %[x1]")          // xmm1 = dx dy dz dw
-                __ASM_EMIT("mulps       %[x2], %[x1]")          // xmm1 = dx*k dy*k dz*k dw*k
-                __ASM_EMIT("addps       %[x1], %[x0]")          // xmm0 = x0+dx*k y0+dx*k z0+dx*k w0+dw*k
-                __ASM_EMIT("andps       %[zmask], %[x0]")       // xmm0 = x0+dx*k y0+dx*k z0+dx*k 0
-                __ASM_EMIT("orps        %[omask], %[x0]")       // xmm0 = x0+dx*k y0+dx*k z0+dx*k 1
-                __ASM_EMIT("movups      %[x0], (%[p])")
-                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "+x" (k)
-                : [p] "r" (p), [p1] "r" (p1), [p2] "r" (p2),
-                  [zmask] "m" (X_MASK0111),
-                  [omask] "m" (X_3DPOINT)
-                : "memory"
-            );
-        }
-
-        void move_point3d_pv(point3d_t *p, const point3d_t *pv, float k)
-        {
-            float x0, x1;
-
-            ARCH_X86_ASM
-            (
-                __ASM_EMIT("movups      0x00(%[pv]), %[x0]")    // xmm0 = x0 y0 z0 w0
-                __ASM_EMIT("movups      0x10(%[pv]), %[x1]")    // xmm1 = x1 y1 z1 w1
-                __ASM_EMIT("shufps      $0x00, %[x2], %[x2]")   // xmm2 = k k k k
-                __ASM_EMIT("subps       %[x0], %[x1]")          // xmm1 = dx dy dz dw
-                __ASM_EMIT("mulps       %[x2], %[x1]")          // xmm1 = dx*k dy*k dz*k dw*k
-                __ASM_EMIT("addps       %[x1], %[x0]")          // xmm0 = x0+dx*k y0+dx*k z0+dx*k w0+dw*k
-                __ASM_EMIT("andps       %[zmask], %[x0]")       // xmm0 = x0+dx*k y0+dx*k z0+dx*k 0
-                __ASM_EMIT("orps        %[omask], %[x0]")       // xmm0 = x0+dx*k y0+dx*k z0+dx*k 1
-                __ASM_EMIT("movups      %[x0], (%[p])")
-                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "+x" (k)
-                : [p] "r" (p), [pv] "r" (pv),
-                  [zmask] "m" (X_MASK0111),
-                  [omask] "m" (X_3DPOINT)
-                : "memory"
-            );
-        }
-
         float calc_area_p3(const point3d_t *p0, const point3d_t *p1, const point3d_t *p2)
         {
             float x0, x1, x2, x3;

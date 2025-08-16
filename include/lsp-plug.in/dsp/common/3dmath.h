@@ -473,23 +473,6 @@ LSP_DSP_LIB_SYMBOL(void, calc_normal3d_v2, LSP_DSP_LIB_TYPE(vector3d_t) *n, cons
  */
 LSP_DSP_LIB_SYMBOL(void, calc_normal3d_vv, LSP_DSP_LIB_TYPE(vector3d_t) *n, const LSP_DSP_LIB_TYPE(vector3d_t) *vv);
 
-/** Move point between two other points: p = p1 + (p2 - p1) * k
- *
- * @param p target to store result
- * @param p1 point 1
- * @param p2 point 2
- * @param k movement
- */
-LSP_DSP_LIB_SYMBOL(void, move_point3d_p2, LSP_DSP_LIB_TYPE(point3d_t) *p, const LSP_DSP_LIB_TYPE(point3d_t) *p1, const LSP_DSP_LIB_TYPE(point3d_t) *p2, float k);
-
-/** Move point between two other points: p = p1 + (p2 - p1) * k
- *
- * @param p point to move
- * @param pv array of two points
- * @param k movement
- */
-LSP_DSP_LIB_SYMBOL(void, move_point3d_pv, LSP_DSP_LIB_TYPE(point3d_t) *p, const LSP_DSP_LIB_TYPE(point3d_t) *pv, float k);
-
 /**
  * Add vector to point
  * @param p point
@@ -520,14 +503,6 @@ LSP_DSP_LIB_SYMBOL(void, add_vector_pvk1, LSP_DSP_LIB_TYPE(point3d_t) *p, const 
  * @param k scale factor
  */
 LSP_DSP_LIB_SYMBOL(void, add_vector_pvk2, LSP_DSP_LIB_TYPE(point3d_t) *p, const LSP_DSP_LIB_TYPE(point3d_t) *sp, const LSP_DSP_LIB_TYPE(vector3d_t) *dv, float k);
-
-/**
- * Compute bounding box around object
- * @param b bounding box object
- * @param p array of object vertexes
- * @param n number of vertexes in object
- */
-LSP_DSP_LIB_SYMBOL(void, calc_bound_box, LSP_DSP_LIB_TYPE(bound_box3d_t) *b, const LSP_DSP_LIB_TYPE(point3d_t) *p, size_t n);
 
 /**
  * Compute plane equation using three points
@@ -636,23 +611,6 @@ LSP_DSP_LIB_SYMBOL(float, calc_area_p3, const LSP_DSP_LIB_TYPE(point3d_t) *p0, c
  * @return area of parallelogram
  */
 LSP_DSP_LIB_SYMBOL(float, calc_area_pv, const LSP_DSP_LIB_TYPE(point3d_t) *pv);
-
-/**
- * Return length of the projection of the point on the line
- * @param p0 projection line point 0
- * @param p1 projection line point 1
- * @param pp projected point
- * @return length of the projection of the point on the line
- */
-LSP_DSP_LIB_SYMBOL(float, projection_length_p2, const LSP_DSP_LIB_TYPE(point3d_t) *p0, const LSP_DSP_LIB_TYPE(point3d_t) *p1, const LSP_DSP_LIB_TYPE(point3d_t) *pp);
-
-/**
- * Return length of the projection of the vector on another vector
- * @param v projection vector
- * @param pv projected vector
- * @return length of the projection of the vector on another vector
- */
-LSP_DSP_LIB_SYMBOL(float, projection_length_v2, const LSP_DSP_LIB_TYPE(vector3d_t) *v, const LSP_DSP_LIB_TYPE(vector3d_t) *pv);
 
 /**
  * Estimate the shortest distance to triangle

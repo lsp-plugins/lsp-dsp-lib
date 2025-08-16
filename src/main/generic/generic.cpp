@@ -540,11 +540,6 @@ namespace lsp
             EXPORT1(calc_normal3d_v2);
             EXPORT1(calc_normal3d_vv);
 
-            EXPORT1(move_point3d_p2);
-            EXPORT1(move_point3d_pv);
-
-            EXPORT1(calc_bound_box);
-
             EXPORT1(calc_plane_p3);
             EXPORT1(calc_plane_pv);
             EXPORT1(calc_plane_v1p2);
@@ -567,9 +562,6 @@ namespace lsp
             EXPORT1(calc_distance_pv);
             EXPORT1(calc_distance_v1);
             EXPORT1(calc_sqr_distance_pv);
-
-            EXPORT1(projection_length_p2);
-            EXPORT1(projection_length_v2);
 
             EXPORT1(split_triangle_raw);
             EXPORT1(cull_triangle_raw);
