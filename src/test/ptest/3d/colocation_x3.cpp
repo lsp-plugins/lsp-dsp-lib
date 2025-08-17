@@ -40,6 +40,14 @@ namespace lsp
     }
 
     IF_ARCH_X86(
+        namespace sse
+        {
+            size_t colocation_x3_v1p3(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+            size_t colocation_x3_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
+            size_t colocation_x3_v3p1(const dsp::vector3d_t *v0, const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::point3d_t *p);
+            size_t colocation_x3_vvp1(const dsp::vector3d_t *vv, const dsp::point3d_t *p);
+        }
+
         namespace sse2
         {
             size_t colocation_x3_v1p3(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
@@ -49,6 +57,14 @@ namespace lsp
         }
 
         namespace sse3
+        {
+            size_t colocation_x3_v1p3(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+            size_t colocation_x3_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
+            size_t colocation_x3_v3p1(const dsp::vector3d_t *v0, const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::point3d_t *p);
+            size_t colocation_x3_vvp1(const dsp::vector3d_t *vv, const dsp::point3d_t *p);
+        }
+
+        namespace avx
         {
             size_t colocation_x3_v1p3(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
             size_t colocation_x3_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
@@ -74,7 +90,7 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
 
         char buf[80];
         snprintf(buf, sizeof(buf), "%s", label);
-        printf("Testing %s numbers...\n", buf);
+        printf("Testing %s ...\n", buf);
 
         PTEST_LOOP(buf,
             const dsp::vector3d_t *xpl = pl;
@@ -94,7 +110,7 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
 
         char buf[80];
         snprintf(buf, sizeof(buf), "%s", label);
-        printf("Testing %s numbers...\n", buf);
+        printf("Testing %s ...\n", buf);
 
         PTEST_LOOP(buf,
             const dsp::vector3d_t *xpl = pl;
@@ -114,7 +130,7 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
 
         char buf[80];
         snprintf(buf, sizeof(buf), "%s", label);
-        printf("Testing %s numbers...\n", buf);
+        printf("Testing %s ...\n", buf);
 
         PTEST_LOOP(buf,
             const dsp::vector3d_t *xpl = pl;
@@ -134,7 +150,7 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
 
         char buf[80];
         snprintf(buf, sizeof(buf), "%s", label);
-        printf("Testing %s numbers...\n", buf);
+        printf("Testing %s ...\n", buf);
 
         PTEST_LOOP(buf,
             const dsp::vector3d_t *xpl = pl;
@@ -179,25 +195,37 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
         for (size_t i=0; i < N_POINTS*3; ++i)
             dsp::init_point_xyz(&points[i], randf(-10.0f, 10.0f), randf(-10.0f, 10.0f), randf(-10.0f, 10.0f));
 
+    #define CALL_PV(func) \
+        call_pv(#func, planes, points, func)
+    #define CALL_VV(func) \
+        call_vv(#func, planes, points, func)
 
-        call_pv("generic::colocation_x3_v1p3", planes, points, generic::colocation_x3_v1p3);
-        IF_ARCH_X86(call_pv("sse2::colocation_x3_v1p3", planes, points, sse2::colocation_x3_v1p3));
-        IF_ARCH_X86(call_pv("sse3::colocation_x3_v1p3", planes, points, sse3::colocation_x3_v1p3));
+        CALL_PV(generic::colocation_x3_v1p3);
+        IF_ARCH_X86(CALL_PV(sse::colocation_x3_v1p3));
+        IF_ARCH_X86(CALL_PV(sse2::colocation_x3_v1p3));
+        IF_ARCH_X86(CALL_PV(sse3::colocation_x3_v1p3));
+        IF_ARCH_X86(CALL_PV(avx::colocation_x3_v1p3));
         PTEST_SEPARATOR;
 
-        call_pv("generic::colocation_x3_v1pv", planes, points, generic::colocation_x3_v1pv);
-        IF_ARCH_X86(call_pv("sse2::colocation_x3_v1pv", planes, points, sse2::colocation_x3_v1pv));
-        IF_ARCH_X86(call_pv("sse3::colocation_x3_v1pv", planes, points, sse3::colocation_x3_v1pv));
+        CALL_PV(generic::colocation_x3_v1pv);
+        IF_ARCH_X86(CALL_PV(sse::colocation_x3_v1pv));
+        IF_ARCH_X86(CALL_PV(sse2::colocation_x3_v1pv));
+        IF_ARCH_X86(CALL_PV(sse3::colocation_x3_v1pv));
+        IF_ARCH_X86(CALL_PV(avx::colocation_x3_v1pv));
         PTEST_SEPARATOR;
 
-        call_vv("generic::colocation_x3_v3p1", planes, points, generic::colocation_x3_v3p1);
-        IF_ARCH_X86(call_vv("sse2::colocation_x3_v3p1", planes, points, sse2::colocation_x3_v3p1));
-        IF_ARCH_X86(call_vv("sse3::colocation_x3_v3p1", planes, points, sse3::colocation_x3_v3p1));
+        CALL_VV(generic::colocation_x3_v3p1);
+        IF_ARCH_X86(CALL_VV(sse::colocation_x3_v3p1));
+        IF_ARCH_X86(CALL_VV(sse2::colocation_x3_v3p1));
+        IF_ARCH_X86(CALL_VV(sse3::colocation_x3_v3p1));
+        IF_ARCH_X86(CALL_VV(avx::colocation_x3_v3p1));
         PTEST_SEPARATOR;
 
-        call_vv("generic::colocation_x3_vvp1", planes, points, generic::colocation_x3_vvp1);
-        IF_ARCH_X86(call_vv("sse2::colocation_x3_vvp1", planes, points, sse2::colocation_x3_vvp1));
-        IF_ARCH_X86(call_vv("sse3::colocation_x3_vvp1", planes, points, sse3::colocation_x3_vvp1));
+        CALL_VV(generic::colocation_x3_vvp1);
+        IF_ARCH_X86(CALL_VV(sse::colocation_x3_vvp1));
+        IF_ARCH_X86(CALL_VV(sse2::colocation_x3_vvp1));
+        IF_ARCH_X86(CALL_VV(sse3::colocation_x3_vvp1));
+        IF_ARCH_X86(CALL_VV(avx::colocation_x3_vvp1));
         PTEST_SEPARATOR;
 
         free_aligned(data);

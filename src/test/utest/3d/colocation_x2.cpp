@@ -33,6 +33,12 @@ namespace lsp
     }
 
     IF_ARCH_X86(
+        namespace sse
+        {
+            size_t colocation_x2_v1p2(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
+            size_t colocation_x2_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
+        }
+
         namespace sse2
         {
             size_t colocation_x2_v1p2(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
@@ -40,6 +46,12 @@ namespace lsp
         }
 
         namespace sse3
+        {
+            size_t colocation_x2_v1p2(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
+            size_t colocation_x2_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
+        }
+
+        namespace avx
         {
             size_t colocation_x2_v1p2(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
             size_t colocation_x2_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
@@ -182,10 +194,14 @@ UTEST_BEGIN("dsp.3d", colocation_x2)
         #define CALL(func) \
             test(#func, func)
 
+        IF_ARCH_X86(CALL(sse::colocation_x2_v1p2));
         IF_ARCH_X86(CALL(sse2::colocation_x2_v1p2));
         IF_ARCH_X86(CALL(sse3::colocation_x2_v1p2));
+        IF_ARCH_X86(CALL(avx::colocation_x2_v1p2));
 
+        IF_ARCH_X86(CALL(sse::colocation_x2_v1pv));
         IF_ARCH_X86(CALL(sse2::colocation_x2_v1pv));
         IF_ARCH_X86(CALL(sse3::colocation_x2_v1pv));
+        IF_ARCH_X86(CALL(avx::colocation_x2_v1pv));
     }
 UTEST_END;

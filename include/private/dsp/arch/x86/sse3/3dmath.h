@@ -182,7 +182,7 @@ namespace lsp
 
         size_t colocation_x3_v1p3(const vector3d_t *pl, const point3d_t *p0, const point3d_t *p1, const point3d_t *p2)
         {
-            float x0, x1, x2, x3, x4;
+            float x0, x1, x2, x3;
             float res[4] __lsp_aligned16;
 
             ARCH_X86_ASM
@@ -214,8 +214,7 @@ namespace lsp
                 __ASM_EMIT("lea         (%[p1], %[p2], 4), %[p1]")
                 __ASM_EMIT("lea         (%[p0], %[p1], 4), %[p0]")
                 : [p0] "+r" (p0), [p1] "+r" (p1), [p2] "+r" (p2),
-                  [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
-                  [x4] "=&x" (x4)
+                  [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
                 : [pl] "r" (pl),
                   [res] "r" (res),
                   [PTOL] "m" (X_3D_TOLERANCE),
@@ -229,7 +228,7 @@ namespace lsp
 
         size_t colocation_x3_v1pv(const vector3d_t *pl, const point3d_t *pv)
         {
-            float x0, x1, x2, x3, x4;
+            float x0, x1, x2, x3;
             float res[4] __lsp_aligned16;
             size_t pt;
 
@@ -262,8 +261,7 @@ namespace lsp
                 __ASM_EMIT("lea         (%[pl], %[pv], 4), %[pl]")
                 __ASM_EMIT("lea         (%[pt], %[pl], 4), %[pt]")
                 : [pl] "+r" (pl), [pv] "+r" (pv), [pt] "=&r" (pt),
-                  [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
-                  [x4] "=&x" (x4)
+                  [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
                 : [res] "r" (res),
                   [PTOL] "m" (X_3D_TOLERANCE),
                   [MTOL] "m" (X_3D_MTOLERANCE),
@@ -276,7 +274,7 @@ namespace lsp
 
         size_t colocation_x3_v3p1(const vector3d_t *v0, const vector3d_t *v1, const vector3d_t *v2, const point3d_t *p)
         {
-            float x0, x1, x2, x3, x4;
+            float x0, x1, x2, x3;
             float res[4] __lsp_aligned16;
 
             ARCH_X86_ASM
@@ -309,8 +307,7 @@ namespace lsp
                 __ASM_EMIT("lea         (%[v0], %[v1], 4), %[v0]")
 
                 : [v0] "+r" (v0), [v1] "+r" (v1), [v2] "+r" (v2),
-                  [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
-                  [x4] "=&x" (x4)
+                  [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
                 : [p] "r" (p),
                   [res] "r" (res),
                   [PTOL] "m" (X_3D_TOLERANCE),
@@ -324,7 +321,7 @@ namespace lsp
 
         size_t colocation_x3_vvp1(const vector3d_t *vv, const point3d_t *p)
         {
-            float x0, x1, x2, x3, x4;
+            float x0, x1, x2, x3;
             float res[4] __lsp_aligned16;
             size_t pt;
 
@@ -358,8 +355,7 @@ namespace lsp
                 __ASM_EMIT("lea         (%[pt], %[vv], 4), %[pt]")
 
                 : [p] "+r" (p), [vv] "+r" (vv), [pt] "=&r" (pt),
-                  [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
-                  [x4] "=&x" (x4)
+                  [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
                 : [res] "r" (res),
                   [PTOL] "m" (X_3D_TOLERANCE),
                   [MTOL] "m" (X_3D_MTOLERANCE),
