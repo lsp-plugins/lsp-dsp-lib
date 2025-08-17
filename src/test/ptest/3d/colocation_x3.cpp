@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -40,7 +40,7 @@ namespace lsp
     }
 
     IF_ARCH_X86(
-        namespace sse
+        namespace sse2
         {
             size_t colocation_x3_v1p3(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
             size_t colocation_x3_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
@@ -181,22 +181,22 @@ PTEST_BEGIN("dsp.3d", colocation_x3, 5, 1000)
 
 
         call_pv("generic::colocation_x3_v1p3", planes, points, generic::colocation_x3_v1p3);
-        IF_ARCH_X86(call_pv("sse::colocation_x3_v1p3", planes, points, sse::colocation_x3_v1p3));
+        IF_ARCH_X86(call_pv("sse2::colocation_x3_v1p3", planes, points, sse2::colocation_x3_v1p3));
         IF_ARCH_X86(call_pv("sse3::colocation_x3_v1p3", planes, points, sse3::colocation_x3_v1p3));
         PTEST_SEPARATOR;
 
         call_pv("generic::colocation_x3_v1pv", planes, points, generic::colocation_x3_v1pv);
-        IF_ARCH_X86(call_pv("sse::colocation_x3_v1pv", planes, points, sse::colocation_x3_v1pv));
+        IF_ARCH_X86(call_pv("sse2::colocation_x3_v1pv", planes, points, sse2::colocation_x3_v1pv));
         IF_ARCH_X86(call_pv("sse3::colocation_x3_v1pv", planes, points, sse3::colocation_x3_v1pv));
         PTEST_SEPARATOR;
 
         call_vv("generic::colocation_x3_v3p1", planes, points, generic::colocation_x3_v3p1);
-        IF_ARCH_X86(call_vv("sse::colocation_x3_v3p1", planes, points, sse::colocation_x3_v3p1));
+        IF_ARCH_X86(call_vv("sse2::colocation_x3_v3p1", planes, points, sse2::colocation_x3_v3p1));
         IF_ARCH_X86(call_vv("sse3::colocation_x3_v3p1", planes, points, sse3::colocation_x3_v3p1));
         PTEST_SEPARATOR;
 
         call_vv("generic::colocation_x3_vvp1", planes, points, generic::colocation_x3_vvp1);
-        IF_ARCH_X86(call_vv("sse::colocation_x3_vvp1", planes, points, sse::colocation_x3_vvp1));
+        IF_ARCH_X86(call_vv("sse2::colocation_x3_vvp1", planes, points, sse2::colocation_x3_vvp1));
         IF_ARCH_X86(call_vv("sse3::colocation_x3_vvp1", planes, points, sse3::colocation_x3_vvp1));
         PTEST_SEPARATOR;
 

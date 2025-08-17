@@ -458,13 +458,6 @@
                 EXPORT1(calc_split_point_p2v1);
                 EXPORT1(calc_split_point_pvv1);
 
-                EXPORT1(colocation_x2_v1p2);
-                EXPORT1(colocation_x2_v1pv);
-                EXPORT1(colocation_x3_v1p3);
-                EXPORT1(colocation_x3_v1pv);
-                EXPORT1(colocation_x3_v3p1);
-                EXPORT1(colocation_x3_vvp1);
-
                 EXPORT1(calc_plane_p3);
                 EXPORT1(calc_plane_pv);
                 EXPORT1(calc_plane_v1p2);

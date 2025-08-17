@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -38,7 +38,7 @@ namespace lsp
     }
 
     IF_ARCH_X86(
-        namespace sse
+        namespace sse2
         {
             size_t colocation_x2_v1p2(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
             size_t colocation_x2_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
@@ -133,12 +133,12 @@ PTEST_BEGIN("dsp.3d", colocation_x2, 5, 1000)
 
 
         call("generic::colocation_x2_v1p2", planes, points, generic::colocation_x2_v1p2);
-        IF_ARCH_X86(call("sse::colocation_x2_v1p2", planes, points, sse::colocation_x2_v1p2));
+        IF_ARCH_X86(call("sse2::colocation_x2_v1p2", planes, points, sse2::colocation_x2_v1p2));
         IF_ARCH_X86(call("sse3::colocation_x2_v1p2", planes, points, sse3::colocation_x2_v1p2));
         PTEST_SEPARATOR;
 
         call("generic::colocation_x2_v1pv", planes, points, generic::colocation_x2_v1pv);
-        IF_ARCH_X86(call("sse::colocation_x2_v1pv", planes, points, sse::colocation_x2_v1pv));
+        IF_ARCH_X86(call("sse2::colocation_x2_v1pv", planes, points, sse2::colocation_x2_v1pv));
         IF_ARCH_X86(call("sse3::colocation_x2_v1pv", planes, points, sse3::colocation_x2_v1pv));
         PTEST_SEPARATOR;
 

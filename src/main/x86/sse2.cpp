@@ -54,6 +54,8 @@
         #include <private/dsp/arch/x86/sse2/graphics/pixelfmt.h>
 
         #include <private/dsp/arch/x86/sse2/pmath.h>
+
+        #include <private/dsp/arch/x86/sse2/3dmath.h>
     #undef PRIVATE_DSP_ARCH_X86_SSE2_IMPL
 
     namespace lsp
@@ -159,6 +161,14 @@
                 EXPORT1(uexpander_x1_curve)
                 EXPORT1(dexpander_x1_gain)
                 EXPORT1(dexpander_x1_curve)
+
+                // 3D Math
+                EXPORT1(colocation_x2_v1p2);
+                EXPORT1(colocation_x2_v1pv);
+                EXPORT1(colocation_x3_v1p3);
+                EXPORT1(colocation_x3_v1pv);
+                EXPORT1(colocation_x3_v3p1);
+                EXPORT1(colocation_x3_vvp1);
             }
 
             #undef EXPORT1
