@@ -26,6 +26,20 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_X86_SSE2_IMPL */
 
+/* 1x matrix transpose
+ * Input:
+ *   x0 = row 0 (a1 a2 a3 a4)
+ *   x1 = row 1 (b1 b2 b3 b4)
+ *   x2 = row 2 (c1 c2 c3 c4)
+ *   x3 = row 3 (d1 d2 d3 d4)
+ *   x4 = temporary
+ *
+ * Output:
+ *   x0 = row 0 (a1 b1 c1 d1)
+ *   x1 = row 1 (a2 b2 c2 d2)
+ *   x2 = row 2 (a3 b3 c3 d3)
+ *   x3 = row 3 (a4 b4 c4 d4)
+ */
 #define MAT4_TRANSPOSE(x0, x1, x2, x3, x4)    \
     __ASM_EMIT("movaps      %" x2 ", %" x4)      /* xmm4 = c1 c2 c3 c4 */   \
     __ASM_EMIT("punpckldq   %" x3 ", %" x2)      /* xmm2 = c1 d1 c2 d2 */   \
@@ -39,6 +53,18 @@
     __ASM_EMIT("movaps      %" x3 ", %" x2)      /* xmm2 = a3 b3 a4 b4 */   \
     __ASM_EMIT("punpcklqdq  %" x4 ", %" x2)      /* xmm2 = a3 b3 c3 d3 */   \
     __ASM_EMIT("punpckhqdq  %" x4 ", %" x3)      /* xmm3 = a4 b4 c4 d4 */
+
+#define MATRIX_LOAD(ptr, x0, x1, x2, x3) \
+    __ASM_EMIT("movups      0x00(%[" ptr "]), %" x0 ) \
+    __ASM_EMIT("movups      0x10(%[" ptr "]), %" x1 ) \
+    __ASM_EMIT("movups      0x20(%[" ptr "]), %" x2 ) \
+    __ASM_EMIT("movups      0x30(%[" ptr "]), %" x3 )
+
+#define MATRIX_STORE(ptr, x0, x1, x2, x3) \
+    __ASM_EMIT("movups      %" x0 ", 0x00(%[" ptr "])") \
+    __ASM_EMIT("movups      %" x1 ", 0x10(%[" ptr "])") \
+    __ASM_EMIT("movups      %" x2 ", 0x20(%[" ptr "])") \
+    __ASM_EMIT("movups      %" x3 ", 0x30(%[" ptr "])")
 
 namespace lsp
 {
@@ -354,9 +380,39 @@ namespace lsp
             return pt;
         }
 
+        void transpose_matrix3d1(matrix3d_t *r)
+        {
+            ARCH_X86_ASM
+            (
+                MATRIX_LOAD("m", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
+                MAT4_TRANSPOSE("%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4")
+                MATRIX_STORE("m", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
+                :
+                : [m] "r" (r)
+                : "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4"
+            );
+        }
+
+        void transpose_matrix3d2(matrix3d_t *r, const matrix3d_t *m)
+        {
+            ARCH_X86_ASM
+            (
+                MATRIX_LOAD("m", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
+                MAT4_TRANSPOSE("%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4")
+                MATRIX_STORE("r", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
+                :
+                : [r] "r" (r), [m] "r" (m)
+                : "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4"
+            );
+        }
+
     } /* namespace sse2 */
 } /* namespace lsp */
 
 #undef MAT4_TRANSPOSE
+#undef MAT4_LOAD
+#undef MAT4_STORE
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE2_3DMATH_H_ */

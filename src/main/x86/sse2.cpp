@@ -163,6 +163,9 @@
                 EXPORT1(dexpander_x1_curve)
 
                 // 3D Math
+                EXPORT1(transpose_matrix3d1);
+                EXPORT1(transpose_matrix3d2);
+
                 EXPORT1(colocation_x2_v1p2);
                 EXPORT1(colocation_x2_v1pv);
                 EXPORT1(colocation_x3_v1p3);

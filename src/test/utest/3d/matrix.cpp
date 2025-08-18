@@ -76,6 +76,12 @@ namespace lsp
             void apply_matrix3d_mm1(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
         }
 
+        namespace sse2
+        {
+            void transpose_matrix3d1(dsp::matrix3d_t *r);
+            void transpose_matrix3d2(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
+        }
+
         namespace avx
         {
             void init_matrix3d(dsp::matrix3d_t *dst, const dsp::matrix3d_t *src);
@@ -517,6 +523,17 @@ UTEST_BEGIN("dsp.3d", matrix)
                 sse::init_matrix3d_identity,
                 sse::transpose_matrix3d1,
                 sse::transpose_matrix3d2
+            ));
+
+        IF_ARCH_X86(
+            init_data(
+                "sse2 init_matrix",
+                sse::init_matrix3d,
+                sse::init_matrix3d_zero,
+                sse::init_matrix3d_one,
+                sse::init_matrix3d_identity,
+                sse2::transpose_matrix3d1,
+                sse2::transpose_matrix3d2
             ));
 
         IF_ARCH_X86(
