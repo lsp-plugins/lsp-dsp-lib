@@ -464,6 +464,8 @@
                 EXPORT1(colocation_x3_v3p1);
                 EXPORT1(colocation_x3_vvp1);
 
+                EXPORT1(cull_triangle_raw);
+
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)
                 {

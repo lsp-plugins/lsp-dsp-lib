@@ -119,6 +119,11 @@
                 EXPORT1(cull_triangle_raw);
 
                 EXPORT2_X64(corr_incr, x64_corr_incr);
+
+                if (f->features & CPU_OPTION_SSSE3)
+                {
+                    EXPORT2(cull_triangle_raw, cull_triangle_raw_ssse3);
+                }
             }
 
             #undef EXPORT2

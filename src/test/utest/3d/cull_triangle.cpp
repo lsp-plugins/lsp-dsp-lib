@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -37,6 +37,12 @@ namespace lsp
         }
 
         namespace sse3
+        {
+            void cull_triangle_raw(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+            void cull_triangle_raw_ssse3(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+        }
+
+        namespace avx
         {
             void cull_triangle_raw(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
         }
@@ -175,9 +181,14 @@ UTEST_BEGIN("dsp.3d", cull_triangle)
 
     UTEST_MAIN
     {
-        test_func("generic::cull_triangle_raw", generic::cull_triangle_raw);
-        IF_ARCH_X86(test_func("sse::cull_triangle_raw", sse::cull_triangle_raw));
-        IF_ARCH_X86(test_func("sse3::cull_triangle_raw", sse3::cull_triangle_raw));
+        #define CALL(func) \
+            test_func(#func, func);
+
+        CALL(generic::cull_triangle_raw);
+        IF_ARCH_X86(CALL(sse::cull_triangle_raw));
+        IF_ARCH_X86(CALL(sse3::cull_triangle_raw));
+        IF_ARCH_X86(CALL(sse3::cull_triangle_raw_ssse3));
+        IF_ARCH_X86(CALL(avx::cull_triangle_raw));
     }
 UTEST_END;
 
