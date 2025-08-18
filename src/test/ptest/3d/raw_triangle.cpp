@@ -55,6 +55,7 @@ namespace lsp
         namespace avx
         {
             void cull_triangle_raw(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+            void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
         }
     )
 
@@ -150,6 +151,7 @@ PTEST_BEGIN("dsp.3d", raw_triangle, 5, 1000)
         IF_ARCH_X86(CALL(sse2::split_triangle_raw));
         IF_ARCH_X86(CALL(sse3::split_triangle_raw));
         IF_ARCH_X86(CALL(sse3::split_triangle_raw_ssse3));
+        IF_ARCH_X86(CALL(avx::split_triangle_raw));
         PTEST_SEPARATOR;
 
         CALL(generic::cull_triangle_raw);
