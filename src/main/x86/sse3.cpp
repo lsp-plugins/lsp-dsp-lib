@@ -122,6 +122,7 @@
 
                 if (f->features & CPU_OPTION_SSSE3)
                 {
+                    EXPORT2(split_triangle_raw, split_triangle_raw_ssse3);
                     EXPORT2(cull_triangle_raw, cull_triangle_raw_ssse3);
                 }
             }

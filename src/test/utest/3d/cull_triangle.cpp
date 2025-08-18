@@ -31,7 +31,7 @@ namespace lsp
     }
 
     IF_ARCH_X86(
-        namespace sse
+        namespace sse2
         {
             void cull_triangle_raw(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
         }
@@ -185,7 +185,7 @@ UTEST_BEGIN("dsp.3d", cull_triangle)
             test_func(#func, func);
 
         CALL(generic::cull_triangle_raw);
-        IF_ARCH_X86(CALL(sse::cull_triangle_raw));
+        IF_ARCH_X86(CALL(sse2::cull_triangle_raw));
         IF_ARCH_X86(CALL(sse3::cull_triangle_raw));
         IF_ARCH_X86(CALL(sse3::cull_triangle_raw_ssse3));
         IF_ARCH_X86(CALL(avx::cull_triangle_raw));

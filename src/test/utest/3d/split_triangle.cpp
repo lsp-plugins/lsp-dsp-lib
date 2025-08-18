@@ -32,7 +32,7 @@ namespace lsp
     }
 
     IF_ARCH_X86(
-        namespace sse
+        namespace sse2
         {
             void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
         }
@@ -177,9 +177,12 @@ UTEST_BEGIN("dsp.3d", split_triangle)
 
     UTEST_MAIN
     {
-        test_func("generic::split_triangle_raw", generic::split_triangle_raw);
-        IF_ARCH_X86(test_func("sse::split_triangle_raw", sse::split_triangle_raw));
-        IF_ARCH_X86(test_func("sse3::split_triangle_raw", sse3::split_triangle_raw));
+    #define CALL(func) \
+        test_func(#func, func);
+
+        CALL(generic::split_triangle_raw);
+        IF_ARCH_X86(CALL(sse2::split_triangle_raw));
+        IF_ARCH_X86(CALL(sse3::split_triangle_raw));
     }
 UTEST_END;
 

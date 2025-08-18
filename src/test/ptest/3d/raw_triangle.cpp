@@ -38,7 +38,7 @@ namespace lsp
     }
 
     IF_ARCH_X86(
-        namespace sse
+        namespace sse2
         {
             void cull_triangle_raw(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
             void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
@@ -49,6 +49,7 @@ namespace lsp
             void cull_triangle_raw(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
             void cull_triangle_raw_ssse3(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
             void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+            void split_triangle_raw_ssse3(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
         }
 
         namespace avx
@@ -146,12 +147,13 @@ PTEST_BEGIN("dsp.3d", raw_triangle, 5, 1000)
             call(#func, planes, triangles, func);
 
         CALL(generic::split_triangle_raw);
-        IF_ARCH_X86(CALL(sse::split_triangle_raw));
+        IF_ARCH_X86(CALL(sse2::split_triangle_raw));
         IF_ARCH_X86(CALL(sse3::split_triangle_raw));
+        IF_ARCH_X86(CALL(sse3::split_triangle_raw_ssse3));
         PTEST_SEPARATOR;
 
         CALL(generic::cull_triangle_raw);
-        IF_ARCH_X86(CALL(sse::cull_triangle_raw));
+        IF_ARCH_X86(CALL(sse2::cull_triangle_raw));
         IF_ARCH_X86(CALL(sse3::cull_triangle_raw));
         IF_ARCH_X86(CALL(sse3::cull_triangle_raw_ssse3));
         IF_ARCH_X86(CALL(avx::cull_triangle_raw));

@@ -172,6 +172,9 @@
                 EXPORT1(colocation_x3_v1pv);
                 EXPORT1(colocation_x3_v3p1);
                 EXPORT1(colocation_x3_vvp1);
+
+                EXPORT1(split_triangle_raw);
+                EXPORT1(cull_triangle_raw);
             }
 
             #undef EXPORT1
