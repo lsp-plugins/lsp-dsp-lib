@@ -437,7 +437,7 @@ LSP_DSP_LIB_SYMBOL(size_t, longest_edge3d_p3, const LSP_DSP_LIB_TYPE(point3d_t) 
 
 /** Return the index of longest edge between three points
  *
- * @param p array of points
+ * @param p array of three points (0, 1, 2)
  * @return 0 if edge between points 0 and 1 is longest, 1 if between points 1 and 2, 2 if between ponts 2 and 0
  */
 LSP_DSP_LIB_SYMBOL(size_t, longest_edge3d_pv, const LSP_DSP_LIB_TYPE(point3d_t) *p);

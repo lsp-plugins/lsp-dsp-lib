@@ -1251,9 +1251,9 @@ namespace lsp
             r[1]                = v[1].dx * v[1].dx + v[1].dy * v[1].dy + v[1].dz * v[1].dz;
             r[2]                = v[2].dx * v[2].dx + v[2].dy * v[2].dy + v[2].dz * v[2].dz;
 
-            if (r[0] > r[1])
-                return (r[0] > r[2]) ? 0 : 2;
-            return (r[1] > r[2]) ? 1 : 2;
+            if (r[0] >= r[1])
+                return (r[0] >= r[2]) ? 0 : 2;
+            return (r[1] >= r[2]) ? 1 : 2;
         }
 
         size_t longest_edge3d_pv(const point3d_t *p)
@@ -1276,9 +1276,9 @@ namespace lsp
             r[1]                = v[1].dx * v[1].dx + v[1].dy * v[1].dy + v[1].dz * v[1].dz;
             r[2]                = v[2].dx * v[2].dx + v[2].dy * v[2].dy + v[2].dz * v[2].dz;
 
-            if (r[0] > r[1])
-                return (r[0] > r[2]) ? 0 : 2;
-            return (r[1] > r[2]) ? 1 : 2;
+            if (r[0] >= r[1])
+                return (r[0] >= r[2]) ? 0 : 2;
+            return (r[1] >= r[2]) ? 1 : 2;
         }
 
         float calc_angle3d_v2(const vector3d_t *v1, const vector3d_t *v2)

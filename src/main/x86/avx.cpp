@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -466,6 +466,9 @@
 
                 EXPORT1(split_triangle_raw);
                 EXPORT1(cull_triangle_raw);
+
+                EXPORT1(longest_edge3d_p3);
+                EXPORT1(longest_edge3d_pv);
 
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)

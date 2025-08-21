@@ -71,7 +71,7 @@
     __ASM_EMIT("vmovups         %" x2 ", 0x20(%[" ptr "])") \
     __ASM_EMIT("vmovups         %" x3 ", 0x30(%[" ptr "])")
 
-// Transpose matrix
+// Transpose 4x4 matrix
 // Input:
 //   x0 = row 0
 //   x1 = row 1
@@ -92,6 +92,24 @@
     __ASM_EMIT("vpunpcklqdq     %" x2 ", %" x0 ", %" x0)            /* x0   = a1 b1 c1 d1 */   \
     __ASM_EMIT("vpunpcklqdq     %" x4 ", %" x3 ", %" x2)            /* x2   = a3 b3 c3 d3 */   \
     __ASM_EMIT("vpunpckhqdq     %" x4 ", %" x3 ", %" x3)            /* x3   = a4 b4 c4 d4 */
+
+// Transpose 3x3 matrix
+// Input:
+//   x0 = row 0 = a0 a1 a2 ?
+//   x1 = row 1 = b0 b1 b2 ?
+//   x2 = row 2 = c0 c1 c2 ?
+//   x3 = temp
+// Output:
+//   x0 = row 0 = a0 b0 c0 ?
+//   x1 = row 1 = a1 b1 c1 ?
+//   x2 = row 2 = a2 b2 c2 ?
+#define MAT3_TRANSPOSE(x0, x1, x2, x3)    \
+    __ASM_EMIT("vunpckhps       %" x1 ", %" x0 ", %" x3)            /* x3   = a2 b2 ? ?     */ \
+    __ASM_EMIT("vunpcklps       %" x1 ", %" x0 ", %" x0)            /* x0   = a0 b0 a1 b1   */  \
+    __ASM_EMIT("vmovhlps        %" x0 ", %" x1 ", %" x1)            /* x1   = a1 b1 b2 ?    */ \
+    __ASM_EMIT("vmovlhps        %" x2 ", %" x0 ", %" x0)            /* x0   = a0 b0 c0 c1   */ \
+    __ASM_EMIT("vshufps         $0x54, %" x2 ", %" x1", %" x1)      /* x1   = a1 b1 c1 c1   */ \
+    __ASM_EMIT("vshufps         $0xa4, %" x2 ", %" x3", %" x2)      /* x2   = a2 b2 c2 c2   */
 
 // Multiply martix by vector
 // Input:
@@ -1957,6 +1975,102 @@ namespace lsp
             #undef STR_COPY_TO
             #undef STR_SPLIT_1P
             #undef STR_SPLIT_2P
+        }
+
+        size_t longest_edge3d_p3(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3)
+        {
+            size_t res;
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                // Calc vectors
+                __ASM_EMIT("vmovups         (%[p1]), %[x0]")            // x0   = x0 y0 z0 w0
+                __ASM_EMIT("vmovups         (%[p2]), %[x1]")            // x1   = x1 y1 z1 w1
+                __ASM_EMIT("vmovups         (%[p3]), %[x2]")            // x2   = x2 y2 z2 w2
+                __ASM_EMIT("vsubps          %[x0], %[x1], %[x3]")       // x3   = x1-x0 y1-y0 z1-z0 w1-w0 = dx0 dy0 dz0 0
+                __ASM_EMIT("vsubps          %[x1], %[x2], %[x1]")       // x1   = x2-x1 y2-y1 z2-z1 w2-w1 = dx1 dy1 dz1 0
+                __ASM_EMIT("vsubps          %[x2], %[x0], %[x0]")       // x0   = x0-x2 y0-y2 z0-z2 w0-w2 = dx2 dy2 dz2 0
+
+                __ASM_EMIT("vmulps          %[x3], %[x3], %[x2]")       // x2   = ax2 ay2 az2 0
+                __ASM_EMIT("vmulps          %[x1], %[x1], %[x1]")       // x1   = bx2 by2 bz2 0
+                __ASM_EMIT("vmulps          %[x0], %[x0], %[x0]")       // x0   = cx2 cy2 cz2 0
+                MAT3_TRANSPOSE("x2", "x1", "x0", "x3")
+                __ASM_EMIT("vaddps          %[x2], %[x0], %[x3]")       // x3   = ax2+az2 + bx2+bz2 cx2+cz2 ?
+                __ASM_EMIT("vaddps          %[x1], %[x0], %[x3]")       // x3   = A2 B2 C2
+                __ASM_EMIT("xor             %[res], %[res]")            // res  = 0
+                __ASM_EMIT("vunpcklps       %[x3], %[x3], %[x2]")       // x2   = A2 A2 B2 B2
+                __ASM_EMIT("vmovhlps        %[x3], %[x0], %[x0]")       // x0   = C2 ? ? ?
+                __ASM_EMIT("vmovhlps        %[x2], %[x1], %[x1]")       // x1   = B2 B2 ? ?
+
+                // Solve result
+                __ASM_EMIT("vucomiss        %[x1], %[x2]")              // A2 <?> B2
+                __ASM_EMIT("jae             1f")
+                    // A2 < B2
+                    __ASM_EMIT("vucomiss        %[x1], %[x0]")          // C2 <?> B2
+                    __ASM_EMIT("seta            %%al")                  // res = (B2 >= C2) ? 0 : 1
+                    __ASM_EMIT("add             $1, %[res]")            // res = (B2 >= C2) ? 1 : 2
+                    __ASM_EMIT("jmp             2f")
+                __ASM_EMIT("1:")
+                    // A2 >= B2
+                    __ASM_EMIT("vucomiss        %[x0], %[x2]")          // A2 <?> C2
+                    __ASM_EMIT("jae             2f")                    //
+                    __ASM_EMIT("mov             $2, %[res]")            // res = (A2 >= C2) ? 0 : 2
+                __ASM_EMIT("2:")
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
+                  [res] "=a" (res)
+                : [p1] "r" (p1), [p2] "r" (p2), [p3] "r" (p3)
+            );
+
+            return res;
+        }
+
+        size_t longest_edge3d_pv(const point3d_t *p)
+        {
+            size_t res;
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                // Calc vectors
+                __ASM_EMIT("vmovups         0x00(%[pv]), %[x0]")        // x0   = x0 y0 z0 w0
+                __ASM_EMIT("vmovups         0x10(%[pv]), %[x1]")        // x1   = x1 y1 z1 w1
+                __ASM_EMIT("vmovups         0x20(%[pv]), %[x2]")        // x2   = x2 y2 z2 w2
+                __ASM_EMIT("vsubps          %[x0], %[x1], %[x3]")       // x3   = x1-x0 y1-y0 z1-z0 w1-w0 = dx0 dy0 dz0 0
+                __ASM_EMIT("vsubps          %[x1], %[x2], %[x1]")       // x1   = x2-x1 y2-y1 z2-z1 w2-w1 = dx1 dy1 dz1 0
+                __ASM_EMIT("vsubps          %[x2], %[x0], %[x0]")       // x0   = x0-x2 y0-y2 z0-z2 w0-w2 = dx2 dy2 dz2 0
+
+                __ASM_EMIT("vmulps          %[x3], %[x3], %[x2]")       // x2   = ax2 ay2 az2 0
+                __ASM_EMIT("vmulps          %[x1], %[x1], %[x1]")       // x1   = bx2 by2 bz2 0
+                __ASM_EMIT("vmulps          %[x0], %[x0], %[x0]")       // x0   = cx2 cy2 cz2 0
+                MAT3_TRANSPOSE("x2", "x1", "x0", "x3")
+                __ASM_EMIT("vaddps          %[x2], %[x0], %[x3]")       // x3   = ax2+az2 + bx2+bz2 cx2+cz2 ?
+                __ASM_EMIT("vaddps          %[x1], %[x0], %[x3]")       // x3   = A2 B2 C2
+                __ASM_EMIT("xor             %[res], %[res]")            // res  = 0
+                __ASM_EMIT("vunpcklps       %[x3], %[x3], %[x2]")       // x2   = A2 A2 B2 B2
+                __ASM_EMIT("vmovhlps        %[x3], %[x0], %[x0]")       // x0   = C2 ? ? ?
+                __ASM_EMIT("vmovhlps        %[x2], %[x1], %[x1]")       // x1   = B2 B2 ? ?
+
+                // Solve result
+                __ASM_EMIT("vucomiss        %[x1], %[x2]")              // A2 <?> B2
+                __ASM_EMIT("jae             1f")
+                    // A2 < B2
+                    __ASM_EMIT("vucomiss        %[x1], %[x0]")          // C2 <?> B2
+                    __ASM_EMIT("seta            %%al")                  // res = (B2 >= C2) ? 0 : 1
+                    __ASM_EMIT("add             $1, %[res]")            // res = (B2 >= C2) ? 1 : 2
+                    __ASM_EMIT("jmp             2f")
+                __ASM_EMIT("1:")
+                    // A2 >= B2
+                    __ASM_EMIT("vucomiss        %[x0], %[x2]")          // A2 <?> C2
+                    __ASM_EMIT("jae             2f")                    //
+                    __ASM_EMIT("mov             $2, %[res]")            // res = (A2 >= C2) ? 0 : 2
+                __ASM_EMIT("2:")
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
+                  [res] "=a" (res)
+                : [pv] "r" (p)
+            );
+
+            return res;
         }
 
     } /* namespace avx */

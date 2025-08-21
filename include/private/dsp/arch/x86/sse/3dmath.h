@@ -1238,33 +1238,35 @@ namespace lsp
                 __ASM_EMIT("movups      (%[p2]), %[x0]")        // xmm0 = x1 y1 z1 w1
                 __ASM_EMIT("movups      (%[p3]), %[x1]")        // xmm1 = x2 y2 z2 w2
                 __ASM_EMIT("movaps      %[x2], %[x3]")          // xmm3 = x0 y0 z0 w0
-                __ASM_EMIT("subps       %[x1], %[x2]")          // xmm2 = x0-x2 y0-y2 z0-z2 w0-w2 = dx2 dy2 dz2 dw2
-                __ASM_EMIT("subps       %[x0], %[x1]")          // xmm1 = x2-x1 y2-y1 z2-z1 w2-w1 = dx1 dy1 dz1 dw1
-                __ASM_EMIT("subps       %[x3], %[x0]")          // xmm0 = x1-x0 y1-y0 z1-z0 w1-w0 = dx0 dy0 dz0 dw0
+                __ASM_EMIT("subps       %[x1], %[x2]")          // xmm2 = x0-x2 y0-y2 z0-z2 w0-w2 = dx2 dy2 dz2 0
+                __ASM_EMIT("subps       %[x0], %[x1]")          // xmm1 = x2-x1 y2-y1 z2-z1 w2-w1 = dx1 dy1 dz1 0
+                __ASM_EMIT("subps       %[x3], %[x0]")          // xmm0 = x1-x0 y1-y0 z1-z0 w1-w0 = dx0 dy0 dz0 0
 
                 // Calc scalar multiplication
-                __ASM_EMIT("mulps       %[x2], %[x2]")          // xmm2 = sx2 sy2 sz2 sw2
-                __ASM_EMIT("mulps       %[x1], %[x1]")          // xmm1 = sx2 sy2 sz2 sw2
-                __ASM_EMIT("mulps       %[x0], %[x0]")          // xmm0 = sx2 sy2 sz2 sw2
+                __ASM_EMIT("mulps       %[x2], %[x2]")          // xmm2 = cx2 cy2 cz2 0
+                __ASM_EMIT("mulps       %[x1], %[x1]")          // xmm1 = bx2 by2 bz2 0
+                __ASM_EMIT("mulps       %[x0], %[x0]")          // xmm0 = ax2 ay2 az2 0
                 MAT3_TRANSPOSE("[x0]", "[x1]", "[x2]", "[x3]")
                 __ASM_EMIT("addps       %[x1], %[x0]")
-                __ASM_EMIT("addps       %[x3], %[x0]")          // xmm0 = S0 S1 S2 ?
+                __ASM_EMIT("addps       %[x3], %[x0]")          // xmm0 = A2 B2 C2 ?
 
-                __ASM_EMIT("xor         %[res], %[res]")
-                __ASM_EMIT("movhlps     %[x0], %[x2]")          // xmm2 = S2 ? ? ? ?
-                __ASM_EMIT("unpcklps    %[x0], %[x0]")          // xmm0 = S0 S0 S1 S1
-                __ASM_EMIT("movhlps     %[x0], %[x1]")          // xmm1 = S1 ? ? ? ?
+                __ASM_EMIT("xor         %[res], %[res]")        // res  = 0
+                __ASM_EMIT("movhlps     %[x0], %[x2]")          // xmm2 = C2 ? ? ?
+                __ASM_EMIT("unpcklps    %[x0], %[x0]")          // xmm0 = A2 A2 B2 B2
+                __ASM_EMIT("movhlps     %[x0], %[x1]")          // xmm1 = B2 B2 ? ?
 
-                __ASM_EMIT("ucomiss     %[x1], %[x0]")          // S0 <?> S1
-                __ASM_EMIT("ja          1f")                   // S0 > S1
-                    __ASM_EMIT("ucomiss     %[x2], %[x1]")          // S1 <?> S2
-                    __ASM_EMIT("setbe       %%al")
-                    __ASM_EMIT("inc         %%al")
+                __ASM_EMIT("ucomiss     %[x1], %[x0]")          // A2 <?> B2
+                __ASM_EMIT("jae         1f")
+                    // A2 < B2
+                    __ASM_EMIT("ucomiss     %[x1], %[x2]")          // C2 <?> B2
+                    __ASM_EMIT("seta        %%al")                  // res = (B2 >= C2) ? 0 : 1
+                    __ASM_EMIT("add         $1, %[res]")            // res = (B2 >= C2) ? 1 : 2
                     __ASM_EMIT("jmp         2f")
-                __ASM_EMIT("1:")                                // S0 <= S1
-                    __ASM_EMIT("ucomiss     %[x2], %[x0]")          // S0 <?> S2
-                    __ASM_EMIT("ja          2f")                    // S0 > S2
-                    __ASM_EMIT("add         $2, %%al")              // res = 2
+                __ASM_EMIT("1:")
+                    // A2 >= B2
+                    __ASM_EMIT("ucomiss     %[x2], %[x0]")          // A2 <?> C2
+                    __ASM_EMIT("jae         2f")
+                    __ASM_EMIT("mov         $2, %[res]")            // res = (A2 >= C2) ? 0 : 2
                 __ASM_EMIT("2:")
                 : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
                   [res] "=a" (res)
@@ -1303,16 +1305,18 @@ namespace lsp
                 __ASM_EMIT("unpcklps    %[x0], %[x0]")          // xmm0 = S0 S0 S1 S1
                 __ASM_EMIT("movhlps     %[x0], %[x1]")          // xmm1 = S1 ? ? ? ?
 
-                __ASM_EMIT("ucomiss     %[x1], %[x0]")          // S0 <?> S1
-                __ASM_EMIT("ja          1f")                   // S0 > S1
-                    __ASM_EMIT("ucomiss     %[x2], %[x1]")          // S1 <?> S2
-                    __ASM_EMIT("setbe       %%al")
-                    __ASM_EMIT("inc         %%al")
+                __ASM_EMIT("ucomiss     %[x1], %[x0]")          // A2 <?> B2
+                __ASM_EMIT("jae         1f")
+                    // A2 < B2
+                    __ASM_EMIT("ucomiss     %[x1], %[x2]")          // C2 <?> B2
+                    __ASM_EMIT("seta        %%al")                  // res = (B2 >= C2) ? 0 : 1
+                    __ASM_EMIT("add         $1, %[res]")            // res = (B2 >= C2) ? 1 : 2
                     __ASM_EMIT("jmp         2f")
-                __ASM_EMIT("1:")                                // S0 <= S1
-                    __ASM_EMIT("ucomiss     %[x2], %[x0]")          // S0 <?> S2
-                    __ASM_EMIT("ja          2f")                    // S0 > S2
-                    __ASM_EMIT("add         $2, %%al")              // res = 2
+                __ASM_EMIT("1:")
+                    // A2 >= B2
+                    __ASM_EMIT("ucomiss     %[x2], %[x0]")          // A2 <?> C2
+                    __ASM_EMIT("jae         2f")
+                    __ASM_EMIT("mov         $2, %[res]")            // res = (A2 >= C2) ? 0 : 2
                 __ASM_EMIT("2:")
                 : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
                   [res] "=a" (res)
