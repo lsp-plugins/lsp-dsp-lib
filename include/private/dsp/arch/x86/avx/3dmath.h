@@ -1119,7 +1119,7 @@ namespace lsp
                 __ASM_EMIT("vbroadcastss    0x04(%[s]), %%xmm1")            // xmm1 = vy vy vy vy
                 __ASM_EMIT("vbroadcastss    0x08(%[s]), %%xmm2")            // xmm2 = vz vz vz vz
                 __ASM_EMIT("vmulps          0x00(%[m]), %%xmm0, %%xmm0")    // xmm0 = vx * (m0  m1  m2  m3)
-                __ASM_EMIT("vmovaps         0x30(%[m]), %%xmm3")            // xmm3 = (m12 m13 m14 m15)
+                __ASM_EMIT("vmovups         0x30(%[m]), %%xmm3")            // xmm3 = (m12 m13 m14 m15)
                 __ASM_EMIT("vfmadd231ps     0x10(%[m]), %%xmm1, %%xmm0")
                 __ASM_EMIT("vfmadd231ps     0x20(%[m]), %%xmm2, %%xmm3")
                 __ASM_EMIT("vxorps          %%xmm1, %%xmm1, %%xmm1")        // xmm1 = 0 0 0 0
@@ -1145,7 +1145,7 @@ namespace lsp
                 __ASM_EMIT("vbroadcastss    0x04(%[p]), %%xmm1")            // xmm1 = vy vy vy vy
                 __ASM_EMIT("vbroadcastss    0x08(%[p]), %%xmm2")            // xmm2 = vz vz vz vz
                 __ASM_EMIT("vmulps          0x00(%[p]), %%xmm0, %%xmm0")    // xmm0 = vx * (m0  m1  m2  m3)
-                __ASM_EMIT("vmovaps         0x30(%[m]), %%xmm3")            // xmm3 = (m12 m13 m14 m15)
+                __ASM_EMIT("vmovups         0x30(%[m]), %%xmm3")            // xmm3 = (m12 m13 m14 m15)
                 __ASM_EMIT("vfmadd231ps     0x10(%[m]), %%xmm1, %%xmm0")
                 __ASM_EMIT("vfmadd231ps     0x20(%[m]), %%xmm2, %%xmm3")
                 __ASM_EMIT("vxorps          %%xmm1, %%xmm1, %%xmm1")        // xmm1 = 0 0 0 0
