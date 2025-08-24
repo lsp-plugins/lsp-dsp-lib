@@ -43,6 +43,21 @@ namespace lsp
             float check_triplet3d_vvn(const dsp::vector3d_t *v, const dsp::vector3d_t *n);
             float check_triplet3d_vv(const dsp::vector3d_t *v);
         }
+
+        namespace avx
+        {
+            float check_triplet3d_p3n(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3, const dsp::vector3d_t *n);
+            float check_triplet3d_pvn(const dsp::point3d_t *pv, const dsp::vector3d_t *n);
+            float check_triplet3d_v2n(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::vector3d_t *n);
+            float check_triplet3d_vvn(const dsp::vector3d_t *v, const dsp::vector3d_t *n);
+            float check_triplet3d_vv(const dsp::vector3d_t *v);
+
+            float check_triplet3d_p3n_fma3(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3, const dsp::vector3d_t *n);
+            float check_triplet3d_pvn_fma3(const dsp::point3d_t *pv, const dsp::vector3d_t *n);
+            float check_triplet3d_v2n_fma3(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::vector3d_t *n);
+            float check_triplet3d_vvn_fma3(const dsp::vector3d_t *v, const dsp::vector3d_t *n);
+            float check_triplet3d_vv_fma3(const dsp::vector3d_t *v);
+        }
     )
 
     typedef float (* check_triplet3d_p3n_t)(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3, const dsp::vector3d_t *n);
@@ -127,21 +142,37 @@ UTEST_BEGIN("dsp.3d", triplet)
 
     UTEST_MAIN
     {
-        call("generic_ck_triplet",
-                generic::check_triplet3d_p3n,
-                generic::check_triplet3d_pvn,
-                generic::check_triplet3d_v2n,
-                generic::check_triplet3d_vvn,
-                generic::check_triplet3d_vv
-                );
+        call(
+            "generic::ck_triplet",
+            generic::check_triplet3d_p3n,
+            generic::check_triplet3d_pvn,
+            generic::check_triplet3d_v2n,
+            generic::check_triplet3d_vvn,
+            generic::check_triplet3d_vv);
 
-        IF_ARCH_X86(call("sse_ck_triplet",
-                sse::check_triplet3d_p3n,
-                sse::check_triplet3d_pvn,
-                sse::check_triplet3d_v2n,
-                sse::check_triplet3d_vvn,
-                sse::check_triplet3d_vv
-                ));
+        IF_ARCH_X86(call(
+            "sse::ck_triplet",
+            sse::check_triplet3d_p3n,
+            sse::check_triplet3d_pvn,
+            sse::check_triplet3d_v2n,
+            sse::check_triplet3d_vvn,
+            sse::check_triplet3d_vv));
+
+        IF_ARCH_X86(call(
+            "avx::ck_triplet",
+            avx::check_triplet3d_p3n,
+            avx::check_triplet3d_pvn,
+            avx::check_triplet3d_v2n,
+            avx::check_triplet3d_vvn,
+            avx::check_triplet3d_vv));
+
+        IF_ARCH_X86(call(
+            "avx_fma3::ck_triplet",
+            avx::check_triplet3d_p3n_fma3,
+            avx::check_triplet3d_pvn_fma3,
+            avx::check_triplet3d_v2n_fma3,
+            avx::check_triplet3d_vvn_fma3,
+            avx::check_triplet3d_vv_fma3));
     }
 
 UTEST_END

@@ -482,6 +482,12 @@
                 EXPORT1(calc_split_point_p2v1);
                 EXPORT1(calc_split_point_pvv1);
 
+                EXPORT1(check_triplet3d_p3n);
+                EXPORT1(check_triplet3d_pvn);
+                EXPORT1(check_triplet3d_v2n);
+                EXPORT1(check_triplet3d_vvn);
+                EXPORT1(check_triplet3d_vv);
+
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)
                 {
@@ -597,6 +603,12 @@
 
                     CEXPORT2(favx, calc_split_point_p2v1, calc_split_point_p2v1_fma3);
                     CEXPORT2(favx, calc_split_point_pvv1, calc_split_point_pvv1_fma3);
+
+                    CEXPORT2(favx, check_triplet3d_p3n, check_triplet3d_p3n_fma3);
+                    CEXPORT2(favx, check_triplet3d_pvn, check_triplet3d_pvn_fma3);
+                    CEXPORT2(favx, check_triplet3d_v2n, check_triplet3d_v2n_fma3);
+                    CEXPORT2(favx, check_triplet3d_vvn, check_triplet3d_vvn_fma3);
+                    CEXPORT2(favx, check_triplet3d_vv, check_triplet3d_vv_fma3);
                 }
             }
 

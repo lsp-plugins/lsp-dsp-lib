@@ -207,6 +207,56 @@
     __ASM_EMIT("vaddss          %" x3 ", %" x0 ", %" x0)            /* x0   = dx1*dx2 + dy1*dy2 */ \
     __ASM_EMIT("vaddss          %" x2 ", %" x0 ", %" x0)            /* x0   = dx1*dx2 + dy1*dy2 + dz1*dz2 */ \
 
+/* Compute projection of the normal to the result of cross product of two vectors (mixed product)
+ * Input:
+ *   x0 = vector a [ x0 y0 z0 0 ]
+ *   x1 = vector b [ x1 y1 z1 0 ]
+ *   x2 = vector c [ x2 y2 z2 0 ]
+ *   x3 = temporary
+ *   x4 = temporary
+ *
+ * Output:
+ *   x0 = cross product: a dot (b cross c)
+ */
+#define MIXED_PRODUCT3(x0, x1, x2, x3, x4) \
+    __ASM_EMIT("vshufps         $0xc9, %" x1 ", %" x1 ", %" x3)     /* x3   = y1 z1 x1 0 */ \
+    __ASM_EMIT("vshufps         $0xc9, %" x2 ", %" x2 ", %" x4)     /* x4   = y2 z2 x2 0 */ \
+    __ASM_EMIT("vshufps         $0xd2, %" x0 ", %" x0 ", %" x0)     /* x0   = z0 x0 y0 0 */ \
+    __ASM_EMIT("vmulps          %" x4 ", %" x1 ", %" x1)            /* x1   = x1*y2 y1*z2 z1*x2 w1*w2 */ \
+    __ASM_EMIT("vmulps          %" x3 ", %" x2 ", %" x2)            /* x2   = y1*x2 z1*y2 x1*z2 w1*w2 */ \
+    __ASM_EMIT("vsubps          %" x2 ", %" x1 ", %" x1)            /* x1   = x1*y2-y1*x2 y1*z2-z1*y2 z1*x2-x1*z2 0 = vz vx vy 0 */ \
+    __ASM_EMIT("vmulps          %" x1 ", %" x0 ", %" x0)            /* x0   = z0*vz x0*vx y0*vy 0 */ \
+    __ASM_EMIT("vmovhlps        %" x0 ", %" x2 ", %" x2)            /* x2   = y0*vy 0 ? ? */ \
+    __ASM_EMIT("vunpcklps       %" x0 ", %" x0 ", %" x0)            /* x0   = z0*vz z0*vz x0*vx x0*vx */ \
+    __ASM_EMIT("vmovhlps        %" x0 ", %" x1 ", %" x1)            /* x1   = x0*vx x0*vx ? ? */ \
+    __ASM_EMIT("vaddss          %" x2 ", %" x0 ", %" x0)            /* x0   = z0*vz + y0*vy */ \
+    __ASM_EMIT("vaddss          %" x1 ", %" x0 ", %" x0)            /* x0   = z0*vz + y0*vy + x0*vx */
+
+/* Compute projection of the normal to the result of cross product of two vectors (mixed product), FMA3 implementation
+ * Input:
+ *   x0 = vector a [ x0 y0 z0 0 ]
+ *   x1 = vector b [ x1 y1 z1 0 ]
+ *   x2 = vector c [ x2 y2 z2 0 ]
+ *   x3 = temporary
+ *   x4 = temporary
+ *
+ * Output:
+ *   x0 = cross product: a dot (b cross c)
+ */
+#define MIXED_PRODUCT3_FMA3(x0, x1, x2, x3, x4) \
+    __ASM_EMIT("vshufps         $0xc9, %" x1 ", %" x1 ", %" x3)     /* x3   = y1 z1 x1 0 */ \
+    __ASM_EMIT("vshufps         $0xc9, %" x2 ", %" x2 ", %" x4)     /* x4   = y2 z2 x2 0 */ \
+    __ASM_EMIT("vshufps         $0xd2, %" x0 ", %" x0 ", %" x0)     /* x0   = z0 x0 y0 0 */ \
+    __ASM_EMIT("vmulps          %" x4 ", %" x1 ", %" x1)            /* x1   = x1*y2 y1*z2 z1*x2 w1*w2 */ \
+    __ASM_EMIT("vfnmadd231ps    %" x3 ", %" x2 ", %" x1)            /* x1   = x1*y2-y1*x2 y1*z2-z1*y2 z1*x2-x1*z2 0 = vz vx vy 0 */ \
+    __ASM_EMIT("vmulps          %" x1 ", %" x0 ", %" x0)            /* x0   = z0*vz x0*vx y0*vy 0 */ \
+    __ASM_EMIT("vmovhlps        %" x0 ", %" x2 ", %" x2)            /* x2   = y0*vy 0 ? ? */ \
+    __ASM_EMIT("vunpcklps       %" x0 ", %" x0 ", %" x0)            /* x0   = z0*vz z0*vz x0*vx x0*vx */ \
+    __ASM_EMIT("vmovhlps        %" x0 ", %" x1 ", %" x1)            /* x1   = x0*vx x0*vx ? ? */ \
+    __ASM_EMIT("vaddss          %" x2 ", %" x0 ", %" x0)            /* x0   = z0*vz + y0*vy */ \
+    __ASM_EMIT("vaddss          %" x1 ", %" x0 ", %" x0)            /* x0   = z0*vz + y0*vy + x0*vx */
+
+
 namespace lsp
 {
     namespace avx
@@ -2596,6 +2646,204 @@ namespace lsp
                 : [sp] "r" (sp), [lv] "r" (lv), [pl] "r" (pl)
                 : "cc", "memory"
             );
+        }
+
+        float check_triplet3d_p3n(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3, const vector3d_t *n)
+        {
+            float x0, x1, x2, x3, x4;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[p2]), %[x2]")            // x2   = p2 = px2 py2 pz2 1
+                __ASM_EMIT("vmovups         (%[p3]), %[x3]")            // x3   = p3 = px3 py3 pz3 1
+                __ASM_EMIT("vsubps          (%[p1]), %[x2], %[x1]")     // x1   = p2 - p1
+                __ASM_EMIT("vmovups         (%[n]), %[x0]")             // x0   = nx ny nz 0
+                __ASM_EMIT("vsubps          %[x2], %[x3], %[x2]")       // x2   = p3 - p2
+
+                MIXED_PRODUCT3("x0", "x1", "x2", "x3", "x4")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
+                : [p1] "r" (p1), [p2] "r" (p2), [p3] "r" (p3), [n] "r" (n)
+            );
+
+            return x0;
+        }
+
+        float check_triplet3d_pvn(const point3d_t *pv, const vector3d_t *n)
+        {
+            float x0, x1, x2, x3, x4;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         0x10(%[pv]), %[x2]")        // x2   = p2 = px2 py2 pz2 1
+                __ASM_EMIT("vmovups         0x20(%[pv]), %[x3]")        // x3   = p3 = px3 py3 pz3 1
+                __ASM_EMIT("vsubps          0x00(%[pv]), %[x2], %[x1]") // x1   = p2 - p1
+                __ASM_EMIT("vmovups         (%[n]), %[x0]")             // x0   = nx ny nz nw
+                __ASM_EMIT("vsubps          %[x2], %[x3], %[x2]")       // x2   = p3 - p2
+
+                MIXED_PRODUCT3("x0", "x1", "x2", "x3", "x4")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
+                : [pv] "r" (pv), [n] "r" (n)
+            );
+
+            return x0;
+        }
+
+        float check_triplet3d_v2n(const vector3d_t *v1, const vector3d_t *v2, const vector3d_t *n)
+        {
+            float x0, x1, x2, x3, x4;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[v1]), %[x1]")            // x1   = x1 y1 z1 w1
+                __ASM_EMIT("vmovups         (%[v2]), %[x2]")            // x2   = x2 y2 z2 w2
+                __ASM_EMIT("vmovups         (%[n]), %[x0]")             // x0   = nx ny nz nw
+
+                MIXED_PRODUCT3("x0", "x1", "x2", "x3", "x4")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
+                : [v1] "r" (v1), [v2] "r" (v2), [n] "r" (n)
+            );
+
+            return x0;
+        }
+
+        float check_triplet3d_vvn(const vector3d_t *v, const vector3d_t *n)
+        {
+            float x0, x1, x2, x3, x4;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         0x00(%[v]), %[x1]")         // x1   = x1 y1 z1 w1
+                __ASM_EMIT("vmovups         0x10(%[v]), %[x2]")         // x2   = x2 y2 z2 w2
+                __ASM_EMIT("vmovups         (%[n]), %[x0]")             // x0   = nx ny nz nw
+
+                MIXED_PRODUCT3("x0", "x1", "x2", "x3", "x4")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
+                : [v] "r" (v), [n] "r" (n)
+            );
+
+            return x0;
+        }
+
+        float check_triplet3d_vv(const vector3d_t *v)
+        {
+            float x0, x1, x2, x3, x4;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups      0x00(%[v]), %[x1]")            // x1   = x1 y1 z1 w1
+                __ASM_EMIT("vmovups      0x10(%[v]), %[x2]")            // x2   = x2 y2 z2 w2
+                __ASM_EMIT("vmovups      0x20(%[v]), %[x0]")            // x0   = nx ny nz nw
+
+                MIXED_PRODUCT3("x0", "x1", "x2", "x3", "x4")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
+                : [v] "r" (v)
+            );
+
+            return x0;
+        }
+
+        float check_triplet3d_p3n_fma3(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3, const vector3d_t *n)
+        {
+            float x0, x1, x2, x3, x4;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[p2]), %[x2]")            // x2   = p2 = px2 py2 pz2 1
+                __ASM_EMIT("vmovups         (%[p3]), %[x3]")            // x3   = p3 = px3 py3 pz3 1
+                __ASM_EMIT("vsubps          (%[p1]), %[x2], %[x1]")     // x1   = p2 - p1
+                __ASM_EMIT("vmovups         (%[n]), %[x0]")             // x0   = nx ny nz 0
+                __ASM_EMIT("vsubps          %[x2], %[x3], %[x2]")       // x2   = p3 - p2
+
+                MIXED_PRODUCT3("x0", "x1", "x2", "x3", "x4")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
+                : [p1] "r" (p1), [p2] "r" (p2), [p3] "r" (p3), [n] "r" (n)
+            );
+
+            return x0;
+        }
+
+        float check_triplet3d_pvn_fma3(const point3d_t *pv, const vector3d_t *n)
+        {
+            float x0, x1, x2, x3, x4;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         0x10(%[pv]), %[x2]")        // x2   = p2 = px2 py2 pz2 1
+                __ASM_EMIT("vmovups         0x20(%[pv]), %[x3]")        // x3   = p3 = px3 py3 pz3 1
+                __ASM_EMIT("vsubps          0x00(%[pv]), %[x2], %[x1]") // x1   = p2 - p1
+                __ASM_EMIT("vmovups         (%[n]), %[x0]")             // x0   = nx ny nz nw
+                __ASM_EMIT("vsubps          %[x2], %[x3], %[x2]")       // x2   = p3 - p2
+
+                MIXED_PRODUCT3("x0", "x1", "x2", "x3", "x4")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
+                : [pv] "r" (pv), [n] "r" (n)
+            );
+
+            return x0;
+        }
+
+        float check_triplet3d_v2n_fma3(const vector3d_t *v1, const vector3d_t *v2, const vector3d_t *n)
+        {
+            float x0, x1, x2, x3, x4;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[v1]), %[x1]")            // x1   = x1 y1 z1 w1
+                __ASM_EMIT("vmovups         (%[v2]), %[x2]")            // x2   = x2 y2 z2 w2
+                __ASM_EMIT("vmovups         (%[n]), %[x0]")             // x0   = nx ny nz nw
+
+                MIXED_PRODUCT3("x0", "x1", "x2", "x3", "x4")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
+                : [v1] "r" (v1), [v2] "r" (v2), [n] "r" (n)
+            );
+
+            return x0;
+        }
+
+        float check_triplet3d_vvn_fma3(const vector3d_t *v, const vector3d_t *n)
+        {
+            float x0, x1, x2, x3, x4;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         0x00(%[v]), %[x1]")         // x1   = x1 y1 z1 w1
+                __ASM_EMIT("vmovups         0x10(%[v]), %[x2]")         // x2   = x2 y2 z2 w2
+                __ASM_EMIT("vmovups         (%[n]), %[x0]")             // x0   = nx ny nz nw
+
+                MIXED_PRODUCT3("x0", "x1", "x2", "x3", "x4")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
+                : [v] "r" (v), [n] "r" (n)
+            );
+
+            return x0;
+        }
+
+        float check_triplet3d_vv_fma3(const vector3d_t *v)
+        {
+            float x0, x1, x2, x3, x4;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups      0x00(%[v]), %[x1]")            // x1   = x1 y1 z1 w1
+                __ASM_EMIT("vmovups      0x10(%[v]), %[x2]")            // x2   = x2 y2 z2 w2
+                __ASM_EMIT("vmovups      0x20(%[v]), %[x0]")            // x0   = nx ny nz nw
+
+                MIXED_PRODUCT3("x0", "x1", "x2", "x3", "x4")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3), [x4] "=&x" (x4)
+                : [v] "r" (v)
+            );
+
+            return x0;
         }
 
     } /* namespace avx */
