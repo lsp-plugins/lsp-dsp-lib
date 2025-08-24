@@ -403,25 +403,29 @@ LSP_DSP_LIB_SYMBOL(float, check_triplet3d_vvn, const LSP_DSP_LIB_TYPE(vector3d_t
  */
 LSP_DSP_LIB_SYMBOL(float, check_triplet3d_vv, const LSP_DSP_LIB_TYPE(vector3d_t) *v);
 
-/** Analyze point location relative to the triangle of three points
+/**
+ * Analyze point location relative to the triangle of three points.
+ * All points should be considered being co-planar.
  *
  * @param t array of three triangle points
  * @param p point
- * @return value > 0 if point is candidate to be inside the triangle,
- *         value < 0 if point is candidate to be outside the triangle,
- *         value = 0 if point is on the edge of triangle
+ * @return value > 0 if point is inside of the triangle,
+ *         value < 0 if point is outside of the triangle,
+ *         value = 0 if point is on the edge of the triangle
  */
 LSP_DSP_LIB_SYMBOL(float, check_point3d_on_triangle_pvp, const LSP_DSP_LIB_TYPE(point3d_t) *t, const LSP_DSP_LIB_TYPE(point3d_t) *p);
 
-/** Analyze point location relative to the triangle of three points
+/**
+ * Analyze point location relative to the triangle of three points.
+ * All points should be considered being co-planar.
  *
  * @param p1 triangle point 1
  * @param p2 triangle point 2
  * @param p3 triangle point 3
  * @param p point
- * @return value > 0 if point is candidate to be inside the triangle,
- *         value < 0 if point is candidate to be outside the triangle,
- *         value = 0 if point is on the edge of triangle
+ * @return value > 0 if point is inside of the triangle,
+ *         value < 0 if point is outside of the triangle,
+ *         value = 0 if point is on the edge of the triangle
  */
 LSP_DSP_LIB_SYMBOL(float, check_point3d_on_triangle_p3p, const LSP_DSP_LIB_TYPE(point3d_t) *p1, const LSP_DSP_LIB_TYPE(point3d_t) *p2, const LSP_DSP_LIB_TYPE(point3d_t) *p3, const LSP_DSP_LIB_TYPE(point3d_t) *p);
 

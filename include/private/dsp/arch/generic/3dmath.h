@@ -1112,16 +1112,7 @@ namespace lsp
             if (r[2] < 0.0f)
                 return r[2];
 
-            // Check 4
-            r[2]                = r[0]*r[1]*r[2];
-            if (r[2] != 0.0f)
-                return r[2];
-
-            // Edge check: 3 scalar multiplications
-            r[0]                = v[0].dx * v[1].dx + v[0].dy * v[1].dy + v[0].dz * v[1].dz;
-            r[1]                = v[1].dx * v[2].dx + v[1].dy * v[2].dy + v[1].dz * v[2].dz;
-            r[2]                = v[2].dx * v[0].dx + v[2].dy * v[0].dy + v[2].dz * v[0].dz;
-
+            // The point may be located on the edge or on the vertex
             return r[0]*r[1]*r[2];
         }
 
@@ -1172,16 +1163,7 @@ namespace lsp
             if (r[2] < 0.0f)
                 return r[2];
 
-            // Check 4
-            r[2]                = r[0]*r[1]*r[2];
-            if (r[2] != 0.0f)
-                return r[2];
-
-            // Edge check: 3 scalar multiplications
-            r[0]                = v[0].dx * v[1].dx + v[0].dy * v[1].dy + v[0].dz * v[1].dz;
-            r[1]                = v[1].dx * v[2].dx + v[1].dy * v[2].dy + v[1].dz * v[2].dz;
-            r[2]                = v[2].dx * v[0].dx + v[2].dy * v[0].dy + v[2].dz * v[0].dz;
-
+            // The point may be located on the edge or on the vertex
             return r[0]*r[1]*r[2];
         }
 
