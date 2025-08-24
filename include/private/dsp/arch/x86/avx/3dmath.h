@@ -39,10 +39,9 @@
     __ASM_EMIT("vhaddps         %" x1 ", %" x1 ", %" x1)        /* x1   = w2 w2 w2 w2 = x*x + y*y + z*z ... */ \
     __ASM_EMIT("vxorps          %" x2 ", %" x2 ", %" x2)        /* x2   = 0 */ \
     __ASM_EMIT("vsqrtps         %" x1 ", %" x1)                 /* x1   = w = sqrt(w2) */ \
-    __ASM_EMIT("vucomiss        %" x2 ", %" x0)                 /* x2   =?= 0 */ \
-    __ASM_EMIT("jle             1000000f") \
+    __ASM_EMIT("vcmpps          $4, %" x2 ", %" x0 ", %" x2)    /* x2   = (w != 0) */ \
     __ASM_EMIT("vdivps          %" x1 ", %" x0 ", %" x0)        /* x0   = x/w y/w z/w w/w */ \
-    __ASM_EMIT("1000000:")
+    __ASM_EMIT("vandps          %" x2 ", %" x0 ", %" x0)        /* x0   = (w != 0) ? x/w y/w z/w w/w : 0 */ \
 
 // Load matrix
 // Input:

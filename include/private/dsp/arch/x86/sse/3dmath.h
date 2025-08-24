@@ -214,12 +214,11 @@
     __ASM_EMIT("movhlps     %" x2 ", %" x1)         /* xmm1 = y*y y*y ? ? */ \
     __ASM_EMIT("addss       %" x1 ", %" x2)         /* xmm2 = x*x+y*y+z*z */ \
     __ASM_EMIT("xorps       %" x1 ", %" x1)         /* xmm1 = 0 */ \
-    __ASM_EMIT("sqrtss      %" x2", %" x2)          /* xmm2 = sqrt(x*x + y*y + z*z) */ \
-    __ASM_EMIT("ucomiss     %" x1 ", %" x2)         /* xmm2 =?= xmm1 */ \
-    __ASM_EMIT("jle         1000000f") \
     __ASM_EMIT("shufps      $0x00, %" x2 ", %" x2)  /* xmm2 = w w w w */ \
+    __ASM_EMIT("sqrtps      %" x2 ", %" x2)         /* xmm2 = sqrt(x*x + y*y + z*z) */ \
+    __ASM_EMIT("cmpps       $4, %" x2 ", %" x1)     /* xmm1 = w != 0 */ \
     __ASM_EMIT("divps       %" x2 ", %" x0)         /* xmm0 = x/w y/w z/w w/w */ \
-    __ASM_EMIT("1000000:")
+    __ASM_EMIT("andps       %" x1 ", %" x0)         /* xmm0 = (w != 0) ? x/w y/w z/w w/w : 0 */ \
 
 /*
  * Input:
