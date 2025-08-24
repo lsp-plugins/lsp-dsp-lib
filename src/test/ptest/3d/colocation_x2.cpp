@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -44,7 +44,19 @@ namespace lsp
             size_t colocation_x2_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
         }
 
+        namespace sse2
+        {
+            size_t colocation_x2_v1p2(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
+            size_t colocation_x2_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
+        }
+
         namespace sse3
+        {
+            size_t colocation_x2_v1p2(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
+            size_t colocation_x2_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
+        }
+
+        namespace avx
         {
             size_t colocation_x2_v1p2(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
             size_t colocation_x2_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
@@ -66,7 +78,7 @@ PTEST_BEGIN("dsp.3d", colocation_x2, 5, 1000)
 
         char buf[80];
         snprintf(buf, sizeof(buf), "%s", label);
-        printf("Testing %s numbers...\n", buf);
+        printf("Testing %s ...\n", buf);
 
         PTEST_LOOP(buf,
             const dsp::vector3d_t *xpl = pl;
@@ -86,7 +98,7 @@ PTEST_BEGIN("dsp.3d", colocation_x2, 5, 1000)
 
         char buf[80];
         snprintf(buf, sizeof(buf), "%s", label);
-        printf("Testing %s numbers...\n", buf);
+        printf("Testing %s ...\n", buf);
 
         PTEST_LOOP(buf,
             const dsp::vector3d_t *xpl = pl;
@@ -131,15 +143,21 @@ PTEST_BEGIN("dsp.3d", colocation_x2, 5, 1000)
         for (size_t i=0; i < N_LINES*2; ++i)
             dsp::init_point_xyz(&points[i], randf(-10.0f, 10.0f), randf(-10.0f, 10.0f), randf(-10.0f, 10.0f));
 
+    #define CALL(func) \
+        call(#func, planes, points, func);
 
-        call("generic::colocation_x2_v1p2", planes, points, generic::colocation_x2_v1p2);
-        IF_ARCH_X86(call("sse::colocation_x2_v1p2", planes, points, sse::colocation_x2_v1p2));
-        IF_ARCH_X86(call("sse3::colocation_x2_v1p2", planes, points, sse3::colocation_x2_v1p2));
+        CALL(generic::colocation_x2_v1p2);
+        CALL(sse::colocation_x2_v1p2);
+        CALL(sse2::colocation_x2_v1p2);
+        CALL(sse3::colocation_x2_v1p2);
+        CALL(avx::colocation_x2_v1p2);
         PTEST_SEPARATOR;
 
-        call("generic::colocation_x2_v1pv", planes, points, generic::colocation_x2_v1pv);
-        IF_ARCH_X86(call("sse::colocation_x2_v1pv", planes, points, sse::colocation_x2_v1pv));
-        IF_ARCH_X86(call("sse3::colocation_x2_v1pv", planes, points, sse3::colocation_x2_v1pv));
+        CALL(generic::colocation_x2_v1pv);
+        CALL(sse::colocation_x2_v1pv);
+        CALL(sse2::colocation_x2_v1pv);
+        CALL(sse3::colocation_x2_v1pv);
+        CALL(avx::colocation_x2_v1pv);
         PTEST_SEPARATOR;
 
         free_aligned(data);

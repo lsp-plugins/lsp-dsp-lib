@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 17 нояб. 2020 г.
@@ -43,7 +43,23 @@ namespace lsp
             size_t colocation_x3_vvp1(const dsp::vector3d_t *vv, const dsp::point3d_t *p);
         }
 
+        namespace sse2
+        {
+            size_t colocation_x3_v1p3(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+            size_t colocation_x3_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
+            size_t colocation_x3_v3p1(const dsp::vector3d_t *v0, const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::point3d_t *p);
+            size_t colocation_x3_vvp1(const dsp::vector3d_t *vv, const dsp::point3d_t *p);
+        }
+
         namespace sse3
+        {
+            size_t colocation_x3_v1p3(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+            size_t colocation_x3_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
+            size_t colocation_x3_v3p1(const dsp::vector3d_t *v0, const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::point3d_t *p);
+            size_t colocation_x3_vvp1(const dsp::vector3d_t *vv, const dsp::point3d_t *p);
+        }
+
+        namespace avx
         {
             size_t colocation_x3_v1p3(const dsp::vector3d_t *pl, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
             size_t colocation_x3_v1pv(const dsp::vector3d_t *pl, const dsp::point3d_t *pv);
@@ -294,15 +310,23 @@ UTEST_BEGIN("dsp.3d", colocation_x3)
             test ## id(#func, func)
 
         IF_ARCH_X86(CALL(1, sse::colocation_x3_v1p3));
+        IF_ARCH_X86(CALL(1, sse2::colocation_x3_v1p3));
         IF_ARCH_X86(CALL(1, sse3::colocation_x3_v1p3));
+        IF_ARCH_X86(CALL(1, avx::colocation_x3_v1p3));
 
         IF_ARCH_X86(CALL(2, sse::colocation_x3_v1pv));
+        IF_ARCH_X86(CALL(2, sse2::colocation_x3_v1pv));
         IF_ARCH_X86(CALL(2, sse3::colocation_x3_v1pv));
+        IF_ARCH_X86(CALL(2, avx::colocation_x3_v1pv));
 
         IF_ARCH_X86(CALL(3, sse::colocation_x3_v3p1));
+        IF_ARCH_X86(CALL(3, sse2::colocation_x3_v3p1));
         IF_ARCH_X86(CALL(3, sse3::colocation_x3_v3p1));
+        IF_ARCH_X86(CALL(3, avx::colocation_x3_v3p1));
 
         IF_ARCH_X86(CALL(4, sse::colocation_x3_vvp1));
+        IF_ARCH_X86(CALL(4, sse2::colocation_x3_vvp1));
         IF_ARCH_X86(CALL(4, sse3::colocation_x3_vvp1));
+        IF_ARCH_X86(CALL(4, avx::colocation_x3_vvp1));
     }
 UTEST_END;

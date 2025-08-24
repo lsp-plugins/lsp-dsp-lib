@@ -3,6 +3,7 @@
 *******************************************************************************
 
 === 1.0.31 ===
+* Implementation of 3D mathematics using AVX instruction set.
 * Fixed improper AVX-512 optimization for lanczos kernel genration function.
 * Fixed Mid/Side transformation functions bug for 32-bit and 64-bit ARM processors. 
 * Added MacOS CI builds.

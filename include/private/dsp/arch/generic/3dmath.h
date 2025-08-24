@@ -400,14 +400,17 @@ namespace lsp
             M[1]        = 0.0f;
             M[2]        = 0.0f;
             M[3]        = 0.0f;
+
             M[4]        = 0.0f;
             M[5]        = c;
             M[6]        = s;
             M[7]        = 0.0f;
+
             M[8]        = 0.0f;
             M[9]        = -s;
             M[10]       = c;
             M[11]       = 0.0f;
+
             M[12]       = 0.0f;
             M[13]       = 0.0f;
             M[14]       = 0.0f;
@@ -424,14 +427,17 @@ namespace lsp
             M[1]        = 0.0f;
             M[2]        = -s;
             M[3]        = 0.0f;
+
             M[4]        = 0.0f;
             M[5]        = 1.0f;
             M[6]        = 0.0f;
             M[7]        = 0.0f;
+
             M[8]        = s;
             M[9]        = 0.0f;
             M[10]       = c;
             M[11]       = 0.0f;
+
             M[12]       = 0.0f;
             M[13]       = 0.0f;
             M[14]       = 0.0f;
@@ -448,14 +454,17 @@ namespace lsp
             M[1]        = s;
             M[2]        = 0.0f;
             M[3]        = 0.0f;
+
             M[4]        = -s;
             M[5]        = c;
             M[6]        = 0.0f;
             M[7]        = 0.0f;
+
             M[8]        = 0.0f;
             M[9]        = 0.0f;
             M[10]       = 1.0f;
             M[11]       = 0.0f;
+
             M[12]       = 0.0f;
             M[13]       = 0.0f;
             M[14]       = 0.0f;
@@ -1103,16 +1112,7 @@ namespace lsp
             if (r[2] < 0.0f)
                 return r[2];
 
-            // Check 4
-            r[2]                = r[0]*r[1]*r[2];
-            if (r[2] != 0.0f)
-                return r[2];
-
-            // Edge check: 3 scalar multiplications
-            r[0]                = v[0].dx * v[1].dx + v[0].dy * v[1].dy + v[0].dz * v[1].dz;
-            r[1]                = v[1].dx * v[2].dx + v[1].dy * v[2].dy + v[1].dz * v[2].dz;
-            r[2]                = v[2].dx * v[0].dx + v[2].dy * v[0].dy + v[2].dz * v[0].dz;
-
+            // The point may be located on the edge or on the vertex
             return r[0]*r[1]*r[2];
         }
 
@@ -1163,16 +1163,7 @@ namespace lsp
             if (r[2] < 0.0f)
                 return r[2];
 
-            // Check 4
-            r[2]                = r[0]*r[1]*r[2];
-            if (r[2] != 0.0f)
-                return r[2];
-
-            // Edge check: 3 scalar multiplications
-            r[0]                = v[0].dx * v[1].dx + v[0].dy * v[1].dy + v[0].dz * v[1].dz;
-            r[1]                = v[1].dx * v[2].dx + v[1].dy * v[2].dy + v[1].dz * v[2].dz;
-            r[2]                = v[2].dx * v[0].dx + v[2].dy * v[0].dy + v[2].dz * v[0].dz;
-
+            // The point may be located on the edge or on the vertex
             return r[0]*r[1]*r[2];
         }
 
@@ -1242,9 +1233,9 @@ namespace lsp
             r[1]                = v[1].dx * v[1].dx + v[1].dy * v[1].dy + v[1].dz * v[1].dz;
             r[2]                = v[2].dx * v[2].dx + v[2].dy * v[2].dy + v[2].dz * v[2].dz;
 
-            if (r[0] > r[1])
-                return (r[0] > r[2]) ? 0 : 2;
-            return (r[1] > r[2]) ? 1 : 2;
+            if (r[0] >= r[1])
+                return (r[0] >= r[2]) ? 0 : 2;
+            return (r[1] >= r[2]) ? 1 : 2;
         }
 
         size_t longest_edge3d_pv(const point3d_t *p)
@@ -1267,9 +1258,9 @@ namespace lsp
             r[1]                = v[1].dx * v[1].dx + v[1].dy * v[1].dy + v[1].dz * v[1].dz;
             r[2]                = v[2].dx * v[2].dx + v[2].dy * v[2].dy + v[2].dz * v[2].dz;
 
-            if (r[0] > r[1])
-                return (r[0] > r[2]) ? 0 : 2;
-            return (r[1] > r[2]) ? 1 : 2;
+            if (r[0] >= r[1])
+                return (r[0] >= r[2]) ? 0 : 2;
+            return (r[1] >= r[2]) ? 1 : 2;
         }
 
         float calc_angle3d_v2(const vector3d_t *v1, const vector3d_t *v2)

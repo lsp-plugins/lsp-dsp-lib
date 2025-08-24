@@ -39,6 +39,14 @@ namespace lsp
             float calc_area_p3(const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
             float calc_area_pv(const dsp::point3d_t *pv);
         }
+
+        namespace avx
+        {
+            float calc_area_p3(const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+            float calc_area_p3_fma3(const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+            float calc_area_pv(const dsp::point3d_t *pv);
+            float calc_area_pv_fma3(const dsp::point3d_t *pv);
+        }
     )
 
     typedef float (* calc_area_p3_t)(const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
@@ -98,6 +106,8 @@ UTEST_BEGIN("dsp.3d", area)
     UTEST_MAIN
     {
         IF_ARCH_X86(call("sse::calc_area", sse::calc_area_p3, sse::calc_area_pv));
+        IF_ARCH_X86(call("avx::calc_area", avx::calc_area_p3, avx::calc_area_pv));
+        IF_ARCH_X86(call("avx_fma3::calc_area", avx::calc_area_p3_fma3, avx::calc_area_pv_fma3));
     }
 UTEST_END;
 

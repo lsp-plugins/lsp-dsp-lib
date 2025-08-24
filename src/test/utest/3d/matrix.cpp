@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -75,6 +75,44 @@ namespace lsp
             void apply_matrix3d_mm2(dsp::matrix3d_t *r, const dsp::matrix3d_t *s, const dsp::matrix3d_t *m);
             void apply_matrix3d_mm1(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
         }
+
+        namespace sse2
+        {
+            void transpose_matrix3d1(dsp::matrix3d_t *r);
+            void transpose_matrix3d2(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
+        }
+
+        namespace avx
+        {
+            void init_matrix3d(dsp::matrix3d_t *dst, const dsp::matrix3d_t *src);
+            void init_matrix3d_zero(dsp::matrix3d_t *m);
+            void init_matrix3d_one(dsp::matrix3d_t *m);
+            void init_matrix3d_identity(dsp::matrix3d_t *m);
+            void transpose_matrix3d1(dsp::matrix3d_t *r);
+            void transpose_matrix3d2(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
+
+            void init_matrix3d_translate(dsp::matrix3d_t *m, float dx, float dy, float dz);
+            void init_matrix3d_scale(dsp::matrix3d_t *m, float sx, float sy, float sz);
+            void init_matrix3d_rotate_x(dsp::matrix3d_t *m, float angle);
+            void init_matrix3d_rotate_y(dsp::matrix3d_t *m, float angle);
+            void init_matrix3d_rotate_z(dsp::matrix3d_t *m, float angle);
+//            void init_matrix3d_rotate_xyz(dsp::matrix3d_t *m, float x, float y, float z, float angle);
+
+            void apply_matrix3d_mp2(dsp::point3d_t *r, const dsp::point3d_t *p, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mp2_fma3(dsp::point3d_t *r, const dsp::point3d_t *p, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mp1(dsp::point3d_t *r, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mp1_fma3(dsp::point3d_t *r, const dsp::matrix3d_t *m);
+
+            void apply_matrix3d_mm2(dsp::matrix3d_t *r, const dsp::matrix3d_t *s, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mm2_fma3(dsp::matrix3d_t *r, const dsp::matrix3d_t *s, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mm1(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mm1_fma3(dsp::matrix3d_t *r, const dsp::matrix3d_t *m);
+
+            void apply_matrix3d_mv2(dsp::vector3d_t *r, const dsp::vector3d_t *v, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mv2_fma3(dsp::vector3d_t *r, const dsp::vector3d_t *v, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mv1(dsp::vector3d_t *r, const dsp::matrix3d_t *m);
+            void apply_matrix3d_mv1_fma3(dsp::vector3d_t *r, const dsp::matrix3d_t *m);
+        }
     )
 
     typedef void (* init_matrix3d_t)(dsp::matrix3d_t *dst, const dsp::matrix3d_t *src);
@@ -99,6 +137,12 @@ namespace lsp
 
 UTEST_BEGIN("dsp.3d", matrix)
 
+    static void fill_matrix(dsp::matrix3d_t & m)
+    {
+        for (size_t i=0; i<16; ++i)
+            m.m[i]  = (i + 1) * 0.01f;
+    }
+
     void init_data(
             const char *label,
             init_matrix3d_t init_matrix3d,
@@ -121,6 +165,10 @@ UTEST_BEGIN("dsp.3d", matrix)
         printf("Testing %s\n", label);
 
         dsp::matrix3d_t m1, m2, m3;
+        fill_matrix(m1);
+        fill_matrix(m2);
+        fill_matrix(m3);
+
         generic::init_matrix3d_zero(&m1);
         init_matrix3d_zero(&m2);
         UTEST_ASSERT_MSG(matrix3d_ck(&m1, &m2), "init_matrix3d_zero failed");
@@ -185,6 +233,22 @@ UTEST_BEGIN("dsp.3d", matrix)
         dsp::matrix3d_t  i1, t1, s1, rx1, ry1, rz1, rxyz1;
         dsp::matrix3d_t  i2, t2, s2, rx2, ry2, rz2, rxyz2;
 
+        fill_matrix(i1);
+        fill_matrix(t1);
+        fill_matrix(s1);
+        fill_matrix(rx1);
+        fill_matrix(ry1);
+        fill_matrix(rz1);
+        fill_matrix(rxyz1);
+
+        fill_matrix(i2);
+        fill_matrix(t2);
+        fill_matrix(s2);
+        fill_matrix(rx2);
+        fill_matrix(ry2);
+        fill_matrix(rz2);
+        fill_matrix(rxyz2);
+
         generic::init_matrix3d_identity(&i1);
         init_matrix3d_identity(&i2);
         UTEST_ASSERT_MSG(matrix3d_ck(&i1, &i2), "init_matrix3d_identity failed");
@@ -244,6 +308,10 @@ UTEST_BEGIN("dsp.3d", matrix)
             apply_matrix3d_mp2_t apply_matrix3d_mp2
             )
     {
+        if ((!UTEST_SUPPORTED(apply_matrix3d_mp1)) ||
+            (!UTEST_SUPPORTED(apply_matrix3d_mp2)))
+            return;
+
         dsp::matrix3d_t m;
         dsp::point3d_t p1, p2, p3, p4, pc;
 
@@ -353,6 +421,12 @@ UTEST_BEGIN("dsp.3d", matrix)
             apply_matrix3d_mv2_t apply_matrix3d_mv2
             )
     {
+        if ((!UTEST_SUPPORTED(apply_matrix3d_mv1)) ||
+            (!UTEST_SUPPORTED(apply_matrix3d_mv2)))
+            return;
+
+        printf("Testing %s\n", label);
+
         dsp::matrix3d_t m;
         dsp::vector3d_t v1, v2, v3, v4, vc;
 
@@ -440,12 +514,42 @@ UTEST_BEGIN("dsp.3d", matrix)
 
     UTEST_MAIN
     {
-        IF_ARCH_X86(init_data("sse init_matrix",
-                sse::init_matrix3d, sse::init_matrix3d_zero, sse::init_matrix3d_one, sse::init_matrix3d_identity,
-                sse::transpose_matrix3d1, sse::transpose_matrix3d2
+        IF_ARCH_X86(
+            init_data(
+                "sse init_matrix",
+                sse::init_matrix3d,
+                sse::init_matrix3d_zero,
+                sse::init_matrix3d_one,
+                sse::init_matrix3d_identity,
+                sse::transpose_matrix3d1,
+                sse::transpose_matrix3d2
             ));
 
-        IF_ARCH_X86(transform("sse init_matrix_transform",
+        IF_ARCH_X86(
+            init_data(
+                "sse2 init_matrix",
+                sse::init_matrix3d,
+                sse::init_matrix3d_zero,
+                sse::init_matrix3d_one,
+                sse::init_matrix3d_identity,
+                sse2::transpose_matrix3d1,
+                sse2::transpose_matrix3d2
+            ));
+
+        IF_ARCH_X86(
+            init_data(
+                "avx init_matrix",
+                avx::init_matrix3d,
+                avx::init_matrix3d_zero,
+                avx::init_matrix3d_one,
+                avx::init_matrix3d_identity,
+                avx::transpose_matrix3d1,
+                avx::transpose_matrix3d2
+            ));
+
+        IF_ARCH_X86(
+            transform(
+                "sse init_matrix_transform",
                 sse::init_matrix3d_identity,
                 sse::init_matrix3d_translate,
                 sse::init_matrix3d_scale,
@@ -457,14 +561,74 @@ UTEST_BEGIN("dsp.3d", matrix)
                 sse::apply_matrix3d_mm2
             ));
 
-        IF_ARCH_X86(modify_point("sse modify_point",
+        IF_ARCH_X86(
+            transform(
+                "avx init_matrix_transform",
+                avx::init_matrix3d_identity,
+                avx::init_matrix3d_translate,
+                avx::init_matrix3d_scale,
+                avx::init_matrix3d_rotate_x,
+                avx::init_matrix3d_rotate_y,
+                avx::init_matrix3d_rotate_z,
+                generic::init_matrix3d_rotate_xyz, // avoid currently due to FMA implementation
+                avx::apply_matrix3d_mm1,
+                avx::apply_matrix3d_mm2
+            ));
+
+        IF_ARCH_X86(
+            transform(
+                "avx_fma3 init_matrix_transform",
+                avx::init_matrix3d_identity,
+                avx::init_matrix3d_translate,
+                avx::init_matrix3d_scale,
+                avx::init_matrix3d_rotate_x,
+                avx::init_matrix3d_rotate_y,
+                avx::init_matrix3d_rotate_z,
+                generic::init_matrix3d_rotate_xyz, // avoid currently due to FMA implementation
+                avx::apply_matrix3d_mm1_fma3,
+                avx::apply_matrix3d_mm2_fma3
+            ));
+
+        IF_ARCH_X86(
+            modify_point(
+                "sse modify_point",
                 sse::apply_matrix3d_mp1,
                 sse::apply_matrix3d_mp2
             ));
 
-        IF_ARCH_X86(modify_vector("generic modify_vector",
+        IF_ARCH_X86(
+            modify_point(
+                "avx modify_point",
+                avx::apply_matrix3d_mp1,
+                avx::apply_matrix3d_mp2
+            ));
+
+        IF_ARCH_X86(
+            modify_point(
+                "avx_fma3 modify_point",
+                avx::apply_matrix3d_mp1_fma3,
+                avx::apply_matrix3d_mp2_fma3
+            ));
+
+        IF_ARCH_X86(
+            modify_vector(
+                "sse modify_vector",
                 sse::apply_matrix3d_mv1,
                 sse::apply_matrix3d_mv2
+            ));
+
+        IF_ARCH_X86(
+            modify_vector(
+                "avx modify_vector",
+                avx::apply_matrix3d_mv1,
+                avx::apply_matrix3d_mv2
+            ));
+
+        IF_ARCH_X86(
+            modify_vector(
+                "avx_fma3 modify_vector",
+                avx::apply_matrix3d_mv1_fma3,
+                avx::apply_matrix3d_mv2_fma3
             ));
     }
 UTEST_END;
