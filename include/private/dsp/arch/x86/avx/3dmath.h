@@ -161,34 +161,34 @@
 
 // 1x vector cross-product (3 coordinates)
 // Input:
-//   x0 = vector1 [dx1 dy1 dz1 ? ]
-//   x1 = vector2 [dx2 dy2 dz2 ? ]
+//   x0 = vector1 [dx1 dy1 dz1 0 ]
+//   x1 = vector2 [dx2 dy2 dz2 0 ]
 //   x2 = temporary
 //   x3 = temporary
 //
 // Output:
-//   x0 = vector1 * vector2 [ vz vx vy ? ]
+//   x0 = vector1 * vector2 [ vz vx vy 0 ]
 #define VECTOR_CROSS3(x0, x1, x2, x3) \
-    __ASM_EMIT("vshufps         $0xc9, %" x0 ", %" x0 ", %" x2)     /* x2   = dx1 dy1 dz1 dw1 */ \
-    __ASM_EMIT("vshufps         $0xc9, %" x1 ", %" x1 ", %" x3)     /* x3   = dy2 dz2 dx2 dw2 */ \
-    __ASM_EMIT("vmulps          %" x2 ", %" x1 ", %" x1)            /* x1   = dx2*dy1 dy2*dz1 dz2*dx1 dw2*dw2 */ \
-    __ASM_EMIT("vmulps          %" x3 ", %" x0 ", %" x0)            /* x0   = dx1*dy2 dy1*dz2 dz1*dx2 dw1*dw1 */ \
-    __ASM_EMIT("vsubps          %" x1 ", %" x0 ", %" x0)            /* x0   = dx1*dy2-dx2*dy1 dy1*dz2-dy2*dz1 dz1*dx2-dz2*dx1 dw1*dw1-dw2*dw2 = NY NZ NX NW */ \
+    __ASM_EMIT("vshufps         $0xc9, %" x0 ", %" x0 ", %" x2)     /* x2   = dy1 dz1 dx1 0 */ \
+    __ASM_EMIT("vshufps         $0xc9, %" x1 ", %" x1 ", %" x3)     /* x3   = dy2 dz2 dx2 0 */ \
+    __ASM_EMIT("vmulps          %" x2 ", %" x1 ", %" x1)            /* x1   = dx2*dy1 dy2*dz1 dz2*dx1 0 */ \
+    __ASM_EMIT("vmulps          %" x3 ", %" x0 ", %" x0)            /* x0   = dx1*dy2 dy1*dz2 dz1*dx2 0 */ \
+    __ASM_EMIT("vsubps          %" x1 ", %" x0 ", %" x0)            /* x0   = dx1*dy2-dx2*dy1 dy1*dz2-dy2*dz1 dz1*dx2-dz2*dx1 0 = NY NZ NX 0 */ \
 
 // 1x vector cross-product (3 coordinates), FMA3
 // Input:
-//   x0 = vector1 [dx1 dy1 dz1 ? ]
-//   x1 = vector2 [dx2 dy2 dz2 ? ]
+//   x0 = vector1 [dx1 dy1 dz1 0 ]
+//   x1 = vector2 [dx2 dy2 dz2 0 ]
 //   x2 = temporary
 //   x3 = temporary
 //
 // Output:
-//   x0 = vector1 * vector2 [ vz vx vy ? ]
+//   x0 = vector1 * vector2 [ vz vx vy 0 ]
 #define VECTOR_CROSS3_FMA3(x0, x1, x2, x3) \
-    __ASM_EMIT("vshufps         $0xc9, %" x0 ", %" x0 ", %" x2)     /* x2   = dx1 dy1 dz1 dw1 */ \
-    __ASM_EMIT("vshufps         $0xc9, %" x1 ", %" x1 ", %" x3)     /* x3   = dy2 dz2 dx2 dw2 */ \
-    __ASM_EMIT("vmulps          %" x2 ", %" x1 ", %" x1)            /* x1   = dx2*dy1 dy2*dz1 dz2*dx1 dw2*dw2 */ \
-    __ASM_EMIT("vfmsub213ps     %" x1 ", %" x3 ", %" x0)            /* x0   = dx1*dy2-dx2*dy1 dy1*dz2-dy2*dz1 dz1*dx2-dz2*dx1 dw1*dw1-dw2*dw2 = NY NZ NX NW */
+    __ASM_EMIT("vshufps         $0xc9, %" x0 ", %" x0 ", %" x2)     /* x2   = dy1 dz1 dx1 0 */ \
+    __ASM_EMIT("vshufps         $0xc9, %" x1 ", %" x1 ", %" x3)     /* x3   = dy2 dz2 dx2 0 */ \
+    __ASM_EMIT("vmulps          %" x2 ", %" x1 ", %" x1)            /* x1   = dx2*dy1 dy2*dz1 dz2*dx1 0 */ \
+    __ASM_EMIT("vfmsub213ps     %" x1 ", %" x3 ", %" x0)            /* x0   = dx1*dy2-dx2*dy1 dy1*dz2-dy2*dz1 dz1*dx2-dz2*dx1 0 = NY NZ NX 0 */
 
 /* 1x vector dot-product (3 coordinates)
  * Input:
@@ -886,7 +886,7 @@ namespace lsp
                 __ASM_EMIT("vxorps          %%xmm3, %%xmm3, %%xmm3")        // xmm3 = 0 0 0 0
                 __ASM_EMIT("vaddps          %%xmm2, %%xmm0, %%xmm0")        // xmm0 = rx ry rz rw
                 __ASM_EMIT("vshufps         $0xff, %%xmm0, %%xmm0, %%xmm1") // xmm1 = rw rw rw rw
-                __ASM_EMIT("vucomiss        %%xmm1, %%xmm3")                // xmm1 =?= xmm1
+                __ASM_EMIT("vucomiss        %%xmm1, %%xmm3")                // xmm1 =?= 0
                 __ASM_EMIT("je              1f")
                 __ASM_EMIT("vdivps          %%xmm1, %%xmm0, %%xmm0")        // xmm0 = rx/r2 ry/r2 rz/rw rw/rw
                 __ASM_EMIT("1:")
@@ -1061,8 +1061,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         (%[p0]), %[x2]")                /* x2   = p0 = x0 y0 z0 w0 */
                 __ASM_EMIT("vmovups         (%[p1]), %[x0]")                /* x1   = p1 = x1 y1 z1 w1 */
                 __ASM_EMIT("vmovups         (%[p2]), %[x1]")                /* x2   = p2 = x2 y2 z2 w2 */
-                __ASM_EMIT("vsubps          %[x2], %[x0], %[x0]")           /* x0   = p1 - p0 = dx1 dy1 dz1 dw1 */
-                __ASM_EMIT("vsubps          %[x2], %[x1], %[x1]")           /* x1   = p2 - p0 = dx2 dy2 dz2 dw2 */
+                __ASM_EMIT("vsubps          %[x2], %[x0], %[x0]")           /* x0   = p1 - p0 = dx1 dy1 dz1 0 */
+                __ASM_EMIT("vsubps          %[x2], %[x1], %[x1]")           /* x1   = p2 - p0 = dx2 dy2 dz2 0 */
                 VECTOR_CROSS3("[x0]", "[x1]", "[x2]", "[x3]")               /* x0   = NZ NX NY NW */
                 VECTOR_DOT3("[x0]", "[x0]", "[x1]", "[x2]")                 /* x0   = NX*NX + NY*NY + NZ*NZ */
                 __ASM_EMIT("vsqrtss         %[x0], %[x0], %[x0]")           /* x0   = sqrtf(NX*NX + NY*NY + NZ*NZ) */
@@ -1083,8 +1083,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[pv]), %[x2]")            /* x0   = p0 = x0 y0 z0 w0 */
                 __ASM_EMIT("vmovups         0x10(%[pv]), %[x0]")            /* x1   = p1 = x1 y1 z1 w1 */
                 __ASM_EMIT("vmovups         0x20(%[pv]), %[x1]")            /* x2   = p2 = x2 y2 z2 w2 */
-                __ASM_EMIT("vsubps          %[x2], %[x0], %[x0]")           /* x0   = p1 - p0 = dx1 dy1 dz1 dw1 */
-                __ASM_EMIT("vsubps          %[x2], %[x1], %[x1]")           /* x1   = p2 - p0 = dx2 dy2 dz2 dw2 */
+                __ASM_EMIT("vsubps          %[x2], %[x0], %[x0]")           /* x0   = p1 - p0 = dx1 dy1 dz1 0 */
+                __ASM_EMIT("vsubps          %[x2], %[x1], %[x1]")           /* x1   = p2 - p0 = dx2 dy2 dz2 0 */
                 VECTOR_CROSS3("[x0]", "[x1]", "[x2]", "[x3]")               /* x0   = NZ NX NY NW */
                 VECTOR_DOT3("[x0]", "[x0]", "[x1]", "[x2]")                 /* x0   = NX*NX + NY*NY + NZ*NZ */
                 __ASM_EMIT("vsqrtss         %[x0], %[x0], %[x0]")           /* x0   = sqrtf(NX*NX + NY*NY + NZ*NZ) */
@@ -1106,8 +1106,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         (%[p0]), %[x2]")                /* x2   = x0 y0 z0 w0 */
                 __ASM_EMIT("vmovups         (%[p1]), %[x0]")                /* x1   = x1 y1 z1 w1 */
                 __ASM_EMIT("vmovups         (%[p2]), %[x1]")                /* x2   = x2 y2 z2 w2 */
-                __ASM_EMIT("vsubps          %[x2], %[x0], %[x0]")           /* x0   = p1 - p0 = dx1 dy1 dz1 dw1 */
-                __ASM_EMIT("vsubps          %[x2], %[x1], %[x1]")           /* x1   = p2 - p0 = dx2 dy2 dz2 dw2 */
+                __ASM_EMIT("vsubps          %[x2], %[x0], %[x0]")           /* x0   = p1 - p0 = dx1 dy1 dz1 0 */
+                __ASM_EMIT("vsubps          %[x2], %[x1], %[x1]")           /* x1   = p2 - p0 = dx2 dy2 dz2 0 */
                 VECTOR_CROSS3_FMA3("[x0]", "[x1]", "[x2]", "[x3]")          /* x0   = NZ NX NY NW */
                 VECTOR_DOT3("[x0]", "[x0]", "[x1]", "[x2]")                 /* x0   = NX*NX + NY*NY + NZ*NZ */
                 __ASM_EMIT("vsqrtss         %[x0], %[x0], %[x0]")           /* x0   = sqrtf(NX*NX + NY*NY + NZ*NZ) */
@@ -1128,8 +1128,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[pv]), %[x2]")            /* x0   = x0 y0 z0 w0 */
                 __ASM_EMIT("vmovups         0x10(%[pv]), %[x0]")            /* x1   = x1 y1 z1 w1 */
                 __ASM_EMIT("vmovups         0x20(%[pv]), %[x1]")            /* x2   = x2 y2 z2 w2 */
-                __ASM_EMIT("vsubps          %[x2], %[x0], %[x0]")           /* x0   = p1 - p0 = dx1 dy1 dz1 dw1 */
-                __ASM_EMIT("vsubps          %[x2], %[x1], %[x1]")           /* x1   = p2 - p0 = dx2 dy2 dz2 dw2 */
+                __ASM_EMIT("vsubps          %[x2], %[x0], %[x0]")           /* x0   = p1 - p0 = dx1 dy1 dz1 0 */
+                __ASM_EMIT("vsubps          %[x2], %[x1], %[x1]")           /* x1   = p2 - p0 = dx2 dy2 dz2 0 */
                 VECTOR_CROSS3_FMA3("[x0]", "[x1]", "[x2]", "[x3]")          /* x0   = NZ NX NY NW */
                 VECTOR_DOT3("[x0]", "[x0]", "[x1]", "[x2]")                 /* x0   = NX*NX + NY*NY + NZ*NZ */
                 __ASM_EMIT("vsqrtss         %[x0], %[x0], %[x0]")           /* x0   = sqrtf(NX*NX + NY*NY + NZ*NZ) */
@@ -2071,6 +2071,221 @@ namespace lsp
             );
 
             return res;
+        }
+
+        void calc_normal3d_v2(vector3d_t *n, const vector3d_t *v1, const vector3d_t *v2)
+        {
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[v1]), %[x0]")            // x0   = dx1 dy1 dz1 dw1
+                __ASM_EMIT("vmovups         (%[v2]), %[x1]")            // x1   = dx2 dy2 dz2 dw2
+                VECTOR_CROSS3("[x0]", "[x1]", "[x2]", "[x3]")           // x0   = NZ NX NY 0
+                __ASM_EMIT("vshufps         $0xc9, %[x0], %[x0], %[x1]")// x1   = NX NY NZ 0
+                VECTOR_DOT3("[x0]", "[x0]", "[x2]", "[x3]")             // x0   = NX*NX + NY*NY + NZ*NZ = W2
+                __ASM_EMIT("vxorps          %[x3], %[x3], %[x3]")       // x3   = 0
+                __ASM_EMIT("vshufps         $0x00, %[x0], %[x0], %[x0]")// x0   = W2 W2 W2 W2
+                __ASM_EMIT("vsqrtps         %[x0], %[x0]")              // x0   = W = sqrtf(W2)
+                __ASM_EMIT("vcmpps          $4, %[x3], %[x0], %[x3]")   // x3   = W != 0
+                __ASM_EMIT("vdivps          %[x0], %[x1], %[x1]")       // x1   = NX/W NY/W NZ/W NZ/W
+                __ASM_EMIT("vandps          %[x3], %[x1], %[x0]")       // x0   = (W != 0) ? NX/W NY/W NZ/W NZ/W : 0
+                __ASM_EMIT("vmovups         %[x0], (%[n])")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
+                : [n] "r" (n), [v1] "r" (v1), [v2] "r" (v2),
+                  [X_3DMASK] "m" (X_MASK0111)
+                : "memory"
+            );
+        }
+
+        void calc_normal3d_vv(vector3d_t *n, const vector3d_t *vv)
+        {
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         0x00(%[vv]), %[x0]")        // x0   = dx1 dy1 dz1 0
+                __ASM_EMIT("vmovups         0x10(%[vv]), %[x1]")        // x1   = dx2 dy2 dz2 0
+                VECTOR_CROSS3("[x0]", "[x1]", "[x2]", "[x3]")           // x0   = NZ NX NY 0
+                __ASM_EMIT("vshufps         $0xc9, %[x0], %[x0], %[x1]")// x1   = NX NY NZ 0
+                VECTOR_DOT3("[x0]", "[x0]", "[x2]", "[x3]")             // x0   = NX*NX + NY*NY + NZ*NZ = W2
+                __ASM_EMIT("vxorps          %[x3], %[x3], %[x3]")       // x3   = 0
+                __ASM_EMIT("vshufps         $0x00, %[x0], %[x0], %[x0]")// x0   = W2 W2 W2 W2
+                __ASM_EMIT("vsqrtps         %[x0], %[x0]")              // x0   = W = sqrtf(W2)
+                __ASM_EMIT("vcmpps          $4, %[x3], %[x0], %[x3]")   // x3   = W != 0
+                __ASM_EMIT("vdivps          %[x0], %[x1], %[x1]")       // x1   = NX/W NY/W NZ/W NZ/W
+                __ASM_EMIT("vandps          %[x3], %[x1], %[x0]")       // x0   = (W != 0) ? NX/W NY/W NZ/W NZ/W : 0
+                __ASM_EMIT("vmovups         %[x0], (%[n])")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
+                : [n] "r" (n), [vv] "r" (vv)
+                : "memory"
+            );
+        }
+
+        void calc_normal3d_p3(vector3d_t *n, const point3d_t *p1, const point3d_t *p2, const point3d_t *p3)
+        {
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[p2]), %[x1]")            // x0   = dx1 dy1 dz1 dw1
+                __ASM_EMIT("vmovups         (%[p3]), %[x2]")            // x1   = dx2 dy2 dz2 dw2
+                __ASM_EMIT("vsubps          (%[p1]), %[x1], %[x0]")     // x0   = dx1 dy1 dz1 dw1
+                __ASM_EMIT("vsubps          %[x1], %[x2], %[x1]")       // x1   = dx2 dy2 dz2 dw2
+                VECTOR_CROSS3("[x0]", "[x1]", "[x2]", "[x3]")           // x0   = NZ NX NY 0
+                __ASM_EMIT("vshufps         $0xc9, %[x0], %[x0], %[x1]")// x1   = NX NY NZ 0
+                VECTOR_DOT3("[x0]", "[x0]", "[x2]", "[x3]")             // x0   = NX*NX + NY*NY + NZ*NZ = W2
+                __ASM_EMIT("vxorps          %[x3], %[x3], %[x3]")       // x3   = 0
+                __ASM_EMIT("vshufps         $0x00, %[x0], %[x0], %[x0]")// x0   = W2 W2 W2 W2
+                __ASM_EMIT("vsqrtps         %[x0], %[x0]")              // x0   = W = sqrtf(W2)
+                __ASM_EMIT("vcmpps          $4, %[x3], %[x0], %[x3]")   // x3   = W != 0
+                __ASM_EMIT("vdivps          %[x0], %[x1], %[x1]")       // x1   = NX/W NY/W NZ/W NZ/W
+                __ASM_EMIT("vandps          %[x3], %[x1], %[x0]")       // x0   = (W != 0) ? NX/W NY/W NZ/W NZ/W : 0
+                __ASM_EMIT("vmovups         %[x0], (%[n])")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
+                : [n] "r" (n), [p1] "r" (p1), [p2] "r" (p2), [p3] "r" (p3),
+                  [X_3DMASK] "m" (X_MASK0111)
+                : "memory"
+            );
+        }
+
+        void calc_normal3d_pv(vector3d_t *n, const point3d_t *pv)
+        {
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         0x10(%[pv]), %[x1]")        // x0   = dx1 dy1 dz1 dw1
+                __ASM_EMIT("vmovups         0x20(%[pv]), %[x2]")        // x1   = dx2 dy2 dz2 dw2
+                __ASM_EMIT("vsubps          0x00(%[pv]), %[x1], %[x0]") // x0   = dx1 dy1 dz1 dw1
+                __ASM_EMIT("vsubps          %[x1], %[x2], %[x1]")       // x1   = dx2 dy2 dz2 dw2
+                VECTOR_CROSS3("[x0]", "[x1]", "[x2]", "[x3]")           // x0   = NZ NX NY 0
+                __ASM_EMIT("vshufps         $0xc9, %[x0], %[x0], %[x1]")// x1   = NX NY NZ 0
+                VECTOR_DOT3("[x0]", "[x0]", "[x2]", "[x3]")             // x0   = NX*NX + NY*NY + NZ*NZ = W2
+                __ASM_EMIT("vxorps          %[x3], %[x3], %[x3]")       // x3   = 0
+                __ASM_EMIT("vshufps         $0x00, %[x0], %[x0], %[x0]")// x0   = W2 W2 W2 W2
+                __ASM_EMIT("vsqrtps         %[x0], %[x0]")              // x0   = W = sqrtf(W2)
+                __ASM_EMIT("vcmpps          $4, %[x3], %[x0], %[x3]")   // x3   = W != 0
+                __ASM_EMIT("vdivps          %[x0], %[x1], %[x1]")       // x1   = NX/W NY/W NZ/W NZ/W
+                __ASM_EMIT("vandps          %[x3], %[x1], %[x0]")       // x0   = (W != 0) ? NX/W NY/W NZ/W NZ/W : 0
+                __ASM_EMIT("vmovups         %[x0], (%[n])")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
+                : [n] "r" (n), [pv] "r" (pv),
+                  [X_3DMASK] "m" (X_MASK0111)
+                : "memory"
+            );
+        }
+
+        void calc_normal3d_v2_fma3(vector3d_t *n, const vector3d_t *v1, const vector3d_t *v2)
+        {
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[v1]), %[x0]")            // x0   = dx1 dy1 dz1 dw1
+                __ASM_EMIT("vmovups         (%[v2]), %[x1]")            // x1   = dx2 dy2 dz2 dw2
+                VECTOR_CROSS3_FMA3("[x0]", "[x1]", "[x2]", "[x3]")      // x0   = NZ NX NY 0
+                __ASM_EMIT("vshufps         $0xc9, %[x0], %[x0], %[x1]")// x1   = NX NY NZ 0
+                VECTOR_DOT3("[x0]", "[x0]", "[x2]", "[x3]")             // x0   = NX*NX + NY*NY + NZ*NZ = W2
+                __ASM_EMIT("vxorps          %[x3], %[x3], %[x3]")       // x3   = 0
+                __ASM_EMIT("vshufps         $0x00, %[x0], %[x0], %[x0]")// x0   = W2 W2 W2 W2
+                __ASM_EMIT("vsqrtps         %[x0], %[x0]")              // x0   = W = sqrtf(W2)
+                __ASM_EMIT("vcmpps          $4, %[x3], %[x0], %[x3]")   // x3   = W != 0
+                __ASM_EMIT("vdivps          %[x0], %[x1], %[x1]")       // x1   = NX/W NY/W NZ/W NZ/W
+                __ASM_EMIT("vandps          %[x3], %[x1], %[x0]")       // x0   = (W != 0) ? NX/W NY/W NZ/W NZ/W : 0
+                __ASM_EMIT("vmovups         %[x0], (%[n])")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
+                : [n] "r" (n), [v1] "r" (v1), [v2] "r" (v2),
+                  [X_3DMASK] "m" (X_MASK0111)
+                : "memory"
+            );
+        }
+
+        void calc_normal3d_vv_fma3(vector3d_t *n, const vector3d_t *vv)
+        {
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         0x00(%[vv]), %[x0]")        // x0   = dx1 dy1 dz1 dw1
+                __ASM_EMIT("vmovups         0x10(%[vv]), %[x1]")        // x1   = dx2 dy2 dz2 dw2
+                VECTOR_CROSS3_FMA3("[x0]", "[x1]", "[x2]", "[x3]")      // x0   = NZ NX NY 0
+                __ASM_EMIT("vshufps         $0xc9, %[x0], %[x0], %[x1]")// x1   = NX NY NZ 0
+                VECTOR_DOT3("[x0]", "[x0]", "[x2]", "[x3]")             // x0   = NX*NX + NY*NY + NZ*NZ = W2
+                __ASM_EMIT("vxorps          %[x3], %[x3], %[x3]")       // x3   = 0
+                __ASM_EMIT("vshufps         $0x00, %[x0], %[x0], %[x0]")// x0   = W2 W2 W2 W2
+                __ASM_EMIT("vsqrtps         %[x0], %[x0]")              // x0   = W = sqrtf(W2)
+                __ASM_EMIT("vcmpps          $4, %[x3], %[x0], %[x3]")   // x3   = W != 0
+                __ASM_EMIT("vdivps          %[x0], %[x1], %[x1]")       // x1   = NX/W NY/W NZ/W NZ/W
+                __ASM_EMIT("vandps          %[x3], %[x1], %[x0]")       // x0   = (W != 0) ? NX/W NY/W NZ/W NZ/W : 0
+                __ASM_EMIT("vmovups         %[x0], (%[n])")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
+                : [n] "r" (n), [vv] "r" (vv),
+                  [X_3DMASK] "m" (X_MASK0111)
+                : "memory"
+            );
+        }
+
+        void calc_normal3d_p3_fma3(vector3d_t *n, const point3d_t *p1, const point3d_t *p2, const point3d_t *p3)
+        {
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[p2]), %[x1]")            // x0   = dx1 dy1 dz1 dw1
+                __ASM_EMIT("vmovups         (%[p3]), %[x2]")            // x1   = dx2 dy2 dz2 dw2
+                __ASM_EMIT("vsubps          (%[p1]), %[x1], %[x0]")     // x0   = dx1 dy1 dz1 dw1
+                __ASM_EMIT("vsubps          %[x1], %[x2], %[x1]")       // x1   = dx2 dy2 dz2 dw2
+                VECTOR_CROSS3_FMA3("[x0]", "[x1]", "[x2]", "[x3]")      // x0   = NZ NX NY 0
+                __ASM_EMIT("vshufps         $0xc9, %[x0], %[x0], %[x1]")// x1   = NX NY NZ 0
+                VECTOR_DOT3("[x0]", "[x0]", "[x2]", "[x3]")             // x0   = NX*NX + NY*NY + NZ*NZ = W2
+                __ASM_EMIT("vxorps          %[x3], %[x3], %[x3]")       // x3   = 0
+                __ASM_EMIT("vshufps         $0x00, %[x0], %[x0], %[x0]")// x0   = W2 W2 W2 W2
+                __ASM_EMIT("vsqrtps         %[x0], %[x0]")              // x0   = W = sqrtf(W2)
+                __ASM_EMIT("vcmpps          $4, %[x3], %[x0], %[x3]")   // x3   = W != 0
+                __ASM_EMIT("vdivps          %[x0], %[x1], %[x1]")       // x1   = NX/W NY/W NZ/W NZ/W
+                __ASM_EMIT("vandps          %[x3], %[x1], %[x0]")       // x0   = (W != 0) ? NX/W NY/W NZ/W NZ/W : 0
+                __ASM_EMIT("vmovups         %[x0], (%[n])")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
+                : [n] "r" (n), [p1] "r" (p1), [p2] "r" (p2), [p3] "r" (p3),
+                  [X_3DMASK] "m" (X_MASK0111)
+                : "memory"
+            );
+        }
+
+        void calc_normal3d_pv_fma3(vector3d_t *n, const point3d_t *pv)
+        {
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         0x10(%[pv]), %[x1]")        // x0   = dx1 dy1 dz1 dw1
+                __ASM_EMIT("vmovups         0x20(%[pv]), %[x2]")        // x1   = dx2 dy2 dz2 dw2
+                __ASM_EMIT("vsubps          0x00(%[pv]), %[x1], %[x0]") // x0   = dx1 dy1 dz1 dw1
+                __ASM_EMIT("vsubps          %[x1], %[x2], %[x1]")       // x1   = dx2 dy2 dz2 dw2
+                VECTOR_CROSS3_FMA3("[x0]", "[x1]", "[x2]", "[x3]")      // x0   = NZ NX NY 0
+                __ASM_EMIT("vshufps         $0xc9, %[x0], %[x0], %[x1]")// x1   = NX NY NZ 0
+                VECTOR_DOT3("[x0]", "[x0]", "[x2]", "[x3]")             // x0   = NX*NX + NY*NY + NZ*NZ = W2
+                __ASM_EMIT("vxorps          %[x3], %[x3], %[x3]")       // x3   = 0
+                __ASM_EMIT("vshufps         $0x00, %[x0], %[x0], %[x0]")// x0   = W2 W2 W2 W2
+                __ASM_EMIT("vsqrtps         %[x0], %[x0]")              // x0   = W = sqrtf(W2)
+                __ASM_EMIT("vcmpps          $4, %[x3], %[x0], %[x3]")   // x3   = W != 0
+                __ASM_EMIT("vdivps          %[x0], %[x1], %[x1]")       // x1   = NX/W NY/W NZ/W NZ/W
+                __ASM_EMIT("vandps          %[x3], %[x1], %[x0]")       // x0   = (W != 0) ? NX/W NY/W NZ/W NZ/W : 0
+                __ASM_EMIT("vmovups         %[x0], (%[n])")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
+                : [n] "r" (n), [pv] "r" (pv),
+                  [X_3DMASK] "m" (X_MASK0111)
+                : "memory"
+            );
         }
 
     } /* namespace avx */

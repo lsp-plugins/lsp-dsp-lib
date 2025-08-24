@@ -3,7 +3,7 @@
  *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
- * Created on: 21 авг. 2025 г.
+ * Created on: 24 авг. 2025 г.
  *
  * lsp-dsp-lib is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -31,58 +31,61 @@ namespace lsp
 {
     namespace generic
     {
-        size_t longest_edge3d_p3(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
-        size_t longest_edge3d_pv(const dsp::point3d_t *p);
+        void calc_normal3d_p3(dsp::vector3d_t *n, const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
+        void calc_normal3d_pv(dsp::vector3d_t *n, const dsp::point3d_t *pv);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
-            size_t longest_edge3d_p3(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
-            size_t longest_edge3d_pv(const dsp::point3d_t *p);
+            void calc_normal3d_p3(dsp::vector3d_t *n, const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
+            void calc_normal3d_pv(dsp::vector3d_t *n, const dsp::point3d_t *pv);
         }
 
         namespace avx
         {
-            size_t longest_edge3d_p3(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
-            size_t longest_edge3d_pv(const dsp::point3d_t *p);
+            void calc_normal3d_p3(dsp::vector3d_t *n, const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
+            void calc_normal3d_pv(dsp::vector3d_t *n, const dsp::point3d_t *pv);
+
+            void calc_normal3d_p3_fma3(dsp::vector3d_t *n, const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
+            void calc_normal3d_pv_fma3(dsp::vector3d_t *n, const dsp::point3d_t *pv);
         }
     )
 
-    typedef size_t (* longest_edge3d_p3_t)(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
-    typedef size_t (* longest_edge3d_pv_t)(const dsp::point3d_t *p);
+    typedef void (* calc_normal3d_p3_t)(dsp::vector3d_t *n, const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
+    typedef void (* calc_normal3d_pv_t)(dsp::vector3d_t *n, const dsp::point3d_t *pv);
 }
 
 //-----------------------------------------------------------------------------
 // Performance test
-PTEST_BEGIN("dsp.3d", edge, 5, 1000)
+PTEST_BEGIN("dsp.3d", normal_p, 5, 1000)
 
-    void call(const char *label, const dsp::point3d_t *pv, longest_edge3d_p3_t func)
+    void call(const char *label, const dsp::point3d_t *pv, calc_normal3d_p3_t func)
     {
         if (!PTEST_SUPPORTED(func))
             return;
 
         printf("Testing %s...\n", label);
 
+        dsp::vector3d_t dst;
         PTEST_LOOP(label,
             const dsp::point3d_t *p = pv;
             for (size_t i=0; i<(POINTS_COUNT - 2); ++i, ++p)
-            {
-                func(&p[0], &p[1], &p[2]);
-            }
+                func(&dst, &p[0], &p[1], &p[2]);
         );
     }
 
-    void call(const char *label, const dsp::point3d_t *pv, longest_edge3d_pv_t func)
+    void call(const char *label, const dsp::point3d_t *pv, calc_normal3d_pv_t func)
     {
         if (!PTEST_SUPPORTED(func))
             return;
 
         printf("Testing %s...\n", label);
 
+        dsp::vector3d_t dst;
         PTEST_LOOP(label,
             for (size_t i=0; i<(POINTS_COUNT - 2); ++i)
-                func(&pv[i]);
+                func(&dst, &pv[i]);
         );
     }
 
@@ -102,16 +105,20 @@ PTEST_BEGIN("dsp.3d", edge, 5, 1000)
         #define CALL(func) \
             call(#func, src, func);
 
-        CALL(generic::longest_edge3d_p3);
-        IF_ARCH_X86(CALL(sse::longest_edge3d_p3));
-        IF_ARCH_X86(CALL(avx::longest_edge3d_p3));
+        CALL(generic::calc_normal3d_p3);
+        IF_ARCH_X86(CALL(sse::calc_normal3d_p3));
+        IF_ARCH_X86(CALL(avx::calc_normal3d_p3));
+        IF_ARCH_X86(CALL(avx::calc_normal3d_p3_fma3));
         PTEST_SEPARATOR;
 
-        CALL(generic::longest_edge3d_pv);
-        IF_ARCH_X86(CALL(sse::longest_edge3d_pv));
-        IF_ARCH_X86(CALL(avx::longest_edge3d_pv));
+        CALL(generic::calc_normal3d_pv);
+        IF_ARCH_X86(CALL(sse::calc_normal3d_pv));
+        IF_ARCH_X86(CALL(avx::calc_normal3d_pv));
+        IF_ARCH_X86(CALL(avx::calc_normal3d_pv_fma3));
         PTEST_SEPARATOR;
     }
 PTEST_END
+
+
 
 

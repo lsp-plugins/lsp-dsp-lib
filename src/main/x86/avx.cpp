@@ -470,6 +470,11 @@
                 EXPORT1(longest_edge3d_p3);
                 EXPORT1(longest_edge3d_pv);
 
+                EXPORT1(calc_normal3d_p3);
+                EXPORT1(calc_normal3d_pv);
+                EXPORT1(calc_normal3d_v2);
+                EXPORT1(calc_normal3d_vv);
+
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)
                 {
@@ -573,6 +578,11 @@
 
                     CEXPORT2(favx, calc_area_p3, calc_area_p3_fma3);
                     CEXPORT2(favx, calc_area_pv, calc_area_pv_fma3);
+
+                    CEXPORT2(favx, calc_normal3d_p3, calc_normal3d_p3_fma3);
+                    CEXPORT2(favx, calc_normal3d_pv, calc_normal3d_pv_fma3);
+                    CEXPORT2(favx, calc_normal3d_v2, calc_normal3d_v2_fma3);
+                    CEXPORT2(favx, calc_normal3d_vv, calc_normal3d_vv_fma3);
                 }
             }
 
