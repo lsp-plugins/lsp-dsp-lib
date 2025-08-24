@@ -305,7 +305,6 @@ namespace lsp
             static const float ONE[] __lsp_aligned16            = { LSP_DSP_VEC4(1.0f) };
             static const float X_MINUS_ONE[] __lsp_aligned16    = { LSP_DSP_VEC4(-1.0f) };
             static const uint32_t IONE[] __lsp_aligned16        = { LSP_DSP_VEC4(1) };
-            static const uint32_t X_ISIGN[] __lsp_aligned16     = { LSP_DSP_VEC4(0x80000000) };
         )
 
         void init_point_xyz(point3d_t *p, float x, float y, float z)
@@ -1609,10 +1608,10 @@ namespace lsp
                 __ASM_EMIT("movups      (%[p0]), %[x2]")        /* xmm2 = x0 y0 z0 w0 */
                 __ASM_EMIT("movups      (%[p1]), %[x0]")        /* xmm0 = x1 y1 z1 w1 */
                 __ASM_EMIT("movups      (%[p2]), %[x1]")        /* xmm1 = x2 y2 z2 w2 */
-                __ASM_EMIT("subps       %[x2], %[x0]")          /* xmm0 = p1 - p0 = dx1 dy1 dz1 dw1 */
-                __ASM_EMIT("subps       %[x2], %[x1]")          /* xmm1 = p2 - p0 = dx2 dy2 dz2 dw2 */
-                VECTOR_MUL("[x0]", "[x1]", "[x2]", "[x3]")      /* xmm0 = NZ NX NY ? */
-                __ASM_EMIT("movaps      %[x0], %[x1]")          /* xmm1 = NZ NX NY ? */
+                __ASM_EMIT("subps       %[x2], %[x0]")          /* xmm0 = p1 - p0 = dx1 dy1 dz1 0 */
+                __ASM_EMIT("subps       %[x2], %[x1]")          /* xmm1 = p2 - p0 = dx2 dy2 dz2 0 */
+                VECTOR_MUL("[x0]", "[x1]", "[x2]", "[x3]")      /* xmm0 = NZ NX NY 0 */
+                __ASM_EMIT("movaps      %[x0], %[x1]")          /* xmm1 = NZ NX NY 0 */
                 VECTOR_DPPS3("[x0]", "[x0]", "[x2]")            /* xmm0 = NX*NX + NY*NY + NZ*NZ = W2 */
                 __ASM_EMIT("shufps      $0x09, %[x1], %[x1]")   /* xmm1 = NX NY NZ NZ */
                 __ASM_EMIT("shufps      $0x00, %[x0], %[x0]")   /* xmm0 = W2 W2 W2 W2 */
@@ -1623,7 +1622,7 @@ namespace lsp
                 __ASM_EMIT("andps       %[x3], %[x1]")          /* xmm1 = (NX/W) & [W!=0] (NY/W) & [W!=0] (NZ/W) & [W!=0] (NZ/W) & [W!=0] = nx ny nz nz */
                 __ASM_EMIT("movaps      %[x1], %[x2]")          /* xmm2 = nx ny nz nz */
                 __ASM_EMIT("movups      (%[p0]), %[x3]")        /* xmm3 = x0 y0 z0 w0 */
-                __ASM_EMIT("xorps       %[X_ISIGN], %[x1]")     /* xmm1 = -nx -ny -nz -nz */
+                __ASM_EMIT("xorps       %[X_ISIGN], %[x1]")     /* xmm1 = -nx -ny -nz nz */
                 VECTOR_DPPS3("[x1]", "[x3]", "[x3]")            /* xmm1 = -(nx*x0 + ny*y0 + nz*z0) = dw ? */
                 __ASM_EMIT("shufps      $0xf0, %[x2], %[x1]")   /* xmm1 = dw dw nz nz */
                 __ASM_EMIT("shufps      $0x24, %[x1], %[x2]")   /* xmm2 = nx ny nz dw */
@@ -1631,7 +1630,7 @@ namespace lsp
 
                 : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
                 : [v] "r" (v), [p0] "r" (p0), [p1] "r" (p1), [p2] "r" (p2),
-                  [X_ISIGN] "m" (X_ISIGN)
+                  [X_ISIGN] "m" (X_SMASK0111)
                 : "memory"
             );
 
@@ -1647,10 +1646,10 @@ namespace lsp
                 __ASM_EMIT("movups      0x00(%[pv]), %[x2]")    /* xmm2 = x0 y0 z0 w0 */
                 __ASM_EMIT("movups      0x10(%[pv]), %[x0]")    /* xmm0 = x1 y1 z1 w1 */
                 __ASM_EMIT("movups      0x20(%[pv]), %[x1]")    /* xmm1 = x2 y2 z2 w2 */
-                __ASM_EMIT("subps       %[x2], %[x0]")          /* xmm0 = p1 - p0 = dx1 dy1 dz1 dw1 */
-                __ASM_EMIT("subps       %[x2], %[x1]")          /* xmm1 = p2 - p0 = dx2 dy2 dz2 dw2 */
-                VECTOR_MUL("[x0]", "[x1]", "[x2]", "[x3]")      /* xmm0 = NZ NX NY ? */
-                __ASM_EMIT("movaps      %[x0], %[x1]")          /* xmm1 = NZ NX NY ? */
+                __ASM_EMIT("subps       %[x2], %[x0]")          /* xmm0 = p1 - p0 = dx1 dy1 dz1 0 */
+                __ASM_EMIT("subps       %[x2], %[x1]")          /* xmm1 = p2 - p0 = dx2 dy2 dz2 0 */
+                VECTOR_MUL("[x0]", "[x1]", "[x2]", "[x3]")      /* xmm0 = NZ NX NY 0 */
+                __ASM_EMIT("movaps      %[x0], %[x1]")          /* xmm1 = NZ NX NY 0 */
                 VECTOR_DPPS3("[x0]", "[x0]", "[x2]")            /* xmm0 = NX*NX + NY*NY + NZ*NZ = W2 */
                 __ASM_EMIT("shufps      $0x09, %[x1], %[x1]")   /* xmm1 = NX NY NZ NZ */
                 __ASM_EMIT("shufps      $0x00, %[x0], %[x0]")   /* xmm0 = W2 W2 W2 W2 */
@@ -1669,7 +1668,7 @@ namespace lsp
 
                 : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
                 : [v] "r" (v), [pv] "r" (pv),
-                  [X_ISIGN] "m" (X_ISIGN)
+                  [X_ISIGN] "m" (X_SMASK0111)
                 : "memory"
             );
 
@@ -1684,10 +1683,10 @@ namespace lsp
             (
                 __ASM_EMIT("movups      (%[p0]), %[x2]")        /* xmm2 = x0 y0 z0 w0 */
                 __ASM_EMIT("movups      (%[p1]), %[x0]")        /* xmm0 = x1 y1 z1 w1 */
-                __ASM_EMIT("movups      (%[v0]), %[x1]")        /* xmm1 = v = dx2 dy2 dz2 dw2 */
-                __ASM_EMIT("subps       %[x2], %[x0]")          /* xmm0 = p1 - p0 = dx1 dy1 dz1 dw1 */
-                VECTOR_MUL("[x0]", "[x1]", "[x2]", "[x3]")      /* xmm0 = NZ NX NY ? */
-                __ASM_EMIT("movaps      %[x0], %[x1]")          /* xmm1 = NZ NX NY ? */
+                __ASM_EMIT("movups      (%[v0]), %[x1]")        /* xmm1 = v = dx2 dy2 dz2 0 */
+                __ASM_EMIT("subps       %[x2], %[x0]")          /* xmm0 = p1 - p0 = dx1 dy1 dz1 0 */
+                VECTOR_MUL("[x0]", "[x1]", "[x2]", "[x3]")      /* xmm0 = NZ NX NY 0 */
+                __ASM_EMIT("movaps      %[x0], %[x1]")          /* xmm1 = NZ NX NY 0 */
                 VECTOR_DPPS3("[x0]", "[x0]", "[x2]")            /* xmm0 = NX*NX + NY*NY + NZ*NZ = W2 */
                 __ASM_EMIT("shufps      $0x09, %[x1], %[x1]")   /* xmm1 = NX NY NZ NZ */
                 __ASM_EMIT("shufps      $0x00, %[x0], %[x0]")   /* xmm0 = W2 W2 W2 W2 */
@@ -1706,7 +1705,7 @@ namespace lsp
 
                 : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
                 : [v] "r" (v), [v0] "r" (v0), [p0] "r" (p0), [p1] "r" (p1),
-                  [X_ISIGN] "m" (X_ISIGN)
+                  [X_ISIGN] "m" (X_SMASK0111)
                 : "memory"
             );
 

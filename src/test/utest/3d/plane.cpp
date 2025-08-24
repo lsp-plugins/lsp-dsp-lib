@@ -42,6 +42,17 @@ namespace lsp
             float calc_plane_pv(dsp::vector3d_t *v, const dsp::point3d_t *pv);
             float calc_plane_v1p2(dsp::vector3d_t *v, const dsp::vector3d_t *v0, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
         }
+
+        namespace avx
+        {
+            float calc_plane_p3(dsp::vector3d_t *v, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+            float calc_plane_pv(dsp::vector3d_t *v, const dsp::point3d_t *pv);
+            float calc_plane_v1p2(dsp::vector3d_t *v, const dsp::vector3d_t *v0, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
+
+            float calc_plane_p3_fma3(dsp::vector3d_t *v, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
+            float calc_plane_pv_fma3(dsp::vector3d_t *v, const dsp::point3d_t *pv);
+            float calc_plane_v1p2_fma3(dsp::vector3d_t *v, const dsp::vector3d_t *v0, const dsp::point3d_t *p0, const dsp::point3d_t *p1);
+        }
     )
 
     typedef float (* calc_plane_p3_t)(dsp::vector3d_t *v, const dsp::point3d_t *p0, const dsp::point3d_t *p1, const dsp::point3d_t *p2);
@@ -165,9 +176,20 @@ UTEST_BEGIN("dsp.3d", plane)
 
     UTEST_MAIN
     {
-        IF_ARCH_X86(call("sse::calc_plane_p3", sse::calc_plane_p3));
-        IF_ARCH_X86(call("sse::calc_plane_pv", sse::calc_plane_pv));
-        IF_ARCH_X86(call("sse::calc_plane_v1p2", sse::calc_plane_v1p2));
+    #define CALL(func) \
+        call(#func, func)
+
+        IF_ARCH_X86(CALL(sse::calc_plane_p3));
+        IF_ARCH_X86(CALL(sse::calc_plane_pv));
+        IF_ARCH_X86(CALL(sse::calc_plane_v1p2));
+
+        IF_ARCH_X86(CALL(avx::calc_plane_p3));
+        IF_ARCH_X86(CALL(avx::calc_plane_pv));
+        IF_ARCH_X86(CALL(avx::calc_plane_v1p2));
+
+        IF_ARCH_X86(CALL(avx::calc_plane_p3_fma3));
+        IF_ARCH_X86(CALL(avx::calc_plane_pv_fma3));
+        IF_ARCH_X86(CALL(avx::calc_plane_v1p2_fma3));
     }
 UTEST_END;
 
