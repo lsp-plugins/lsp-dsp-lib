@@ -479,6 +479,9 @@
                 EXPORT1(calc_plane_pv);
                 EXPORT1(calc_plane_v1p2);
 
+                EXPORT1(calc_split_point_p2v1);
+                EXPORT1(calc_split_point_pvv1);
+
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)
                 {
@@ -591,6 +594,9 @@
                     CEXPORT2(favx, calc_plane_p3, calc_plane_p3_fma3);
                     CEXPORT2(favx, calc_plane_pv, calc_plane_pv_fma3);
                     CEXPORT2(favx, calc_plane_v1p2, calc_plane_v1p2_fma3);
+
+                    CEXPORT2(favx, calc_split_point_p2v1, calc_split_point_p2v1_fma3);
+                    CEXPORT2(favx, calc_split_point_pvv1, calc_split_point_pvv1_fma3);
                 }
             }
 

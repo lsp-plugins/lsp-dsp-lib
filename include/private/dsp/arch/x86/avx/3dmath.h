@@ -2495,6 +2495,110 @@ namespace lsp
             return x0;
         }
 
+        void calc_split_point_p2v1(point3d_t *sp, const point3d_t *l0, const point3d_t *l1, const vector3d_t *pl)
+        {
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[l0]), %[x1]")            // x1   = l0 = lx0 ly0 lz0 1
+                __ASM_EMIT("vmovups         (%[l1]), %[x0]")            // x0   = l1 = lx1 ly1 lz1 1
+                __ASM_EMIT("vmovups         (%[pl]), %[x2]")            // x2   = pl = nx ny nz nw
+                __ASM_EMIT("vsubps          %[x1], %[x0], %[x0]")       // x0   = d = l1 - l0 = dx dy dz 0
+                __ASM_EMIT("vmulps          %[x2], %[x1], %[x3]")       // x3   = nx*lx0 ny*ly0 nz*lz0 nw */
+                __ASM_EMIT("vmulps          %[x0], %[x2], %[x2]")       // x2   = nx*dx ny*dy nz*dz 0 */
+                __ASM_EMIT("vhaddps         %[x3], %[x3], %[x3]")       // x3   = nx*lx0+ny*ly0 nz*lz0+nw nx*lx0+ny*ly0 nz*lz0+nw
+                __ASM_EMIT("vhaddps         %[x2], %[x2], %[x2]")       // x2   = nx*dx+ny*dy nz*dz nx*dx+ny*dy nz*dz
+                __ASM_EMIT("vhaddps         %[x3], %[x3], %[x3]")       // x3   = nx*lx0+ny*ly0+nz*lz0+nw = T T T T
+                __ASM_EMIT("vhaddps         %[x2], %[x2], %[x2]")       // x2   = nx*dx+ny*dy nz*dz B B B B
+                __ASM_EMIT("vdivps          %[x2], %[x3], %[x3]")       // x3   = T/B T/B T/B T/B = W
+                __ASM_EMIT("vmulps          %[x3], %[x0], %[x0]")       // x0   = dx*W dy*W dz*W 0
+                __ASM_EMIT("vsubps          %[x0], %[x1], %[x1]")       // x1   = lx0-dx*W ly0-dy*W lz0-dz*W 1
+                __ASM_EMIT("vmovups         %[x1], (%[sp])")
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
+                : [sp] "r" (sp), [l0] "r" (l0), [l1] "r" (l1), [pl] "r" (pl)
+                : "memory"
+            );
+        }
+
+        void calc_split_point_pvv1(point3d_t *sp, const point3d_t *lv, const vector3d_t *pl)
+        {
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         0x00(%[lv]), %[x1]")        // x1   = l0 = lx0 ly0 lz0 1
+                __ASM_EMIT("vmovups         0x10(%[lv]), %[x0]")        // x0   = l1 = lx1 ly1 lz1 1
+                __ASM_EMIT("vmovups         (%[pl]), %[x2]")            // x2   = pl = nx ny nz nw
+                __ASM_EMIT("vsubps          %[x1], %[x0], %[x0]")       // x0   = d = l1 - l0 = dx dy dz 0
+                __ASM_EMIT("vmulps          %[x2], %[x1], %[x3]")       // x3   = nx*lx0 ny*ly0 nz*lz0 nw */
+                __ASM_EMIT("vmulps          %[x0], %[x2], %[x2]")       // x2   = nx*dx ny*dy nz*dz 0 */
+                __ASM_EMIT("vhaddps         %[x3], %[x3], %[x3]")       // x3   = nx*lx0+ny*ly0 nz*lz0+nw nx*lx0+ny*ly0 nz*lz0+nw
+                __ASM_EMIT("vhaddps         %[x2], %[x2], %[x2]")       // x2   = nx*dx+ny*dy nz*dz nx*dx+ny*dy nz*dz
+                __ASM_EMIT("vhaddps         %[x3], %[x3], %[x3]")       // x3   = nx*lx0+ny*ly0+nz*lz0+nw = T T T T
+                __ASM_EMIT("vhaddps         %[x2], %[x2], %[x2]")       // x2   = nx*dx+ny*dy nz*dz B B B B
+                __ASM_EMIT("vdivps          %[x2], %[x3], %[x3]")       // x3   = T/B T/B T/B T/B = W
+                __ASM_EMIT("vmulps          %[x3], %[x0], %[x0]")       // x0   = dx*W dy*W dz*W 0
+                __ASM_EMIT("vsubps          %[x0], %[x1], %[x1]")       // x1   = lx0-dx*W ly0-dy*W lz0-dz*W 1
+                __ASM_EMIT("vmovups         %[x1], (%[sp])")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
+                : [sp] "r" (sp), [lv] "r" (lv), [pl] "r" (pl)
+                : "cc", "memory"
+            );
+        }
+
+        void calc_split_point_p2v1_fma3(point3d_t *sp, const point3d_t *l0, const point3d_t *l1, const vector3d_t *pl)
+        {
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         (%[l0]), %[x1]")            // x1   = l0 = lx0 ly0 lz0 1
+                __ASM_EMIT("vmovups         (%[l1]), %[x0]")            // x0   = l1 = lx1 ly1 lz1 1
+                __ASM_EMIT("vmovups         (%[pl]), %[x2]")            // x2   = pl = nx ny nz nw
+                __ASM_EMIT("vsubps          %[x1], %[x0], %[x0]")       // x0   = d = l1 - l0 = dx dy dz 0
+                __ASM_EMIT("vmulps          %[x2], %[x1], %[x3]")       // x3   = nx*lx0 ny*ly0 nz*lz0 nw */
+                __ASM_EMIT("vmulps          %[x0], %[x2], %[x2]")       // x2   = nx*dx ny*dy nz*dz 0 */
+                __ASM_EMIT("vhaddps         %[x3], %[x3], %[x3]")       // x3   = nx*lx0+ny*ly0 nz*lz0+nw nx*lx0+ny*ly0 nz*lz0+nw
+                __ASM_EMIT("vhaddps         %[x2], %[x2], %[x2]")       // x2   = nx*dx+ny*dy nz*dz nx*dx+ny*dy nz*dz
+                __ASM_EMIT("vhaddps         %[x3], %[x3], %[x3]")       // x3   = nx*lx0+ny*ly0+nz*lz0+nw = T T T T
+                __ASM_EMIT("vhaddps         %[x2], %[x2], %[x2]")       // x2   = nx*dx+ny*dy nz*dz B B B B
+                __ASM_EMIT("vdivps          %[x2], %[x3], %[x3]")       // x3   = T/B T/B T/B T/B = W
+                __ASM_EMIT("vfnmadd231ps    %[x3], %[x0], %[x1]")       // x1   = lx0-dx*W ly0-dy*W lz0-dz*W 1
+                __ASM_EMIT("vmovups         %[x1], (%[sp])")
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
+                : [sp] "r" (sp), [l0] "r" (l0), [l1] "r" (l1), [pl] "r" (pl)
+                : "memory"
+            );
+        }
+
+        void calc_split_point_pvv1_fma3(point3d_t *sp, const point3d_t *lv, const vector3d_t *pl)
+        {
+            float x0, x1, x2, x3;
+
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("vmovups         0x00(%[lv]), %[x1]")        // x1   = l0 = lx0 ly0 lz0 1
+                __ASM_EMIT("vmovups         0x10(%[lv]), %[x0]")        // x0   = l1 = lx1 ly1 lz1 1
+                __ASM_EMIT("vmovups         (%[pl]), %[x2]")            // x2   = pl = nx ny nz nw
+                __ASM_EMIT("vsubps          %[x1], %[x0], %[x0]")       // x0   = d = l1 - l0 = dx dy dz 0
+                __ASM_EMIT("vmulps          %[x2], %[x1], %[x3]")       // x3   = nx*lx0 ny*ly0 nz*lz0 nw */
+                __ASM_EMIT("vmulps          %[x0], %[x2], %[x2]")       // x2   = nx*dx ny*dy nz*dz 0 */
+                __ASM_EMIT("vhaddps         %[x3], %[x3], %[x3]")       // x3   = nx*lx0+ny*ly0 nz*lz0+nw nx*lx0+ny*ly0 nz*lz0+nw
+                __ASM_EMIT("vhaddps         %[x2], %[x2], %[x2]")       // x2   = nx*dx+ny*dy nz*dz nx*dx+ny*dy nz*dz
+                __ASM_EMIT("vhaddps         %[x3], %[x3], %[x3]")       // x3   = nx*lx0+ny*ly0+nz*lz0+nw = T T T T
+                __ASM_EMIT("vhaddps         %[x2], %[x2], %[x2]")       // x2   = nx*dx+ny*dy nz*dz B B B B
+                __ASM_EMIT("vdivps          %[x2], %[x3], %[x3]")       // x3   = T/B T/B T/B T/B = W
+                __ASM_EMIT("vfnmadd231ps    %[x3], %[x0], %[x1]")       // x1   = lx0-dx*W ly0-dy*W lz0-dz*W 1
+                __ASM_EMIT("vmovups         %[x1], (%[sp])")
+
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
+                : [sp] "r" (sp), [lv] "r" (lv), [pl] "r" (pl)
+                : "cc", "memory"
+            );
+        }
+
     } /* namespace avx */
 } /* namespace lsp */
 
