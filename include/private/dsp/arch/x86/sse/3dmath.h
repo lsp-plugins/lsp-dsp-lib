@@ -2071,7 +2071,7 @@ namespace lsp
                 __ASM_EMIT("andps       %[ONE], %[x0]")        /* xmm0 = 1*[k0 <= +TOL] 1*[k1 <= +TOL] 1*[k2 <= +TOL] ? */
                 __ASM_EMIT("andps       %[ONE], %[x1]")        /* xmm1 = 1*[k0 < -TOL] 1*[k1 < -TOL] 1*[k2 < -TOL] ? */
                 __ASM_EMIT("addps       %[x1], %[x0]")
-                __ASM_EMIT32("cvttss2si %[x0], %[pv]")
+                __ASM_EMIT32("cvttss2si %[x0], %[v0]")
                 __ASM_EMIT64("cvttss2si %[x0], %k[v0]")
                 __ASM_EMIT("shufps      $0x39, %[x0], %[x0]")
                 __ASM_EMIT32("cvttss2si %[x0], %[v1]")
