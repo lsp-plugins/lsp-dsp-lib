@@ -147,17 +147,17 @@ PTEST_BEGIN("dsp.3d", colocation_x2, 5, 1000)
         call(#func, planes, points, func);
 
         CALL(generic::colocation_x2_v1p2);
-        CALL(sse::colocation_x2_v1p2);
-        CALL(sse2::colocation_x2_v1p2);
-        CALL(sse3::colocation_x2_v1p2);
-        CALL(avx::colocation_x2_v1p2);
+        IF_ARCH_X86(CALL(sse::colocation_x2_v1p2));
+        IF_ARCH_X86(CALL(sse2::colocation_x2_v1p2));
+        IF_ARCH_X86(CALL(sse3::colocation_x2_v1p2));
+        IF_ARCH_X86(CALL(avx::colocation_x2_v1p2));
         PTEST_SEPARATOR;
 
         CALL(generic::colocation_x2_v1pv);
-        CALL(sse::colocation_x2_v1pv);
-        CALL(sse2::colocation_x2_v1pv);
-        CALL(sse3::colocation_x2_v1pv);
-        CALL(avx::colocation_x2_v1pv);
+        IF_ARCH_X86(CALL(sse::colocation_x2_v1pv));
+        IF_ARCH_X86(CALL(sse2::colocation_x2_v1pv));
+        IF_ARCH_X86(CALL(sse3::colocation_x2_v1pv));
+        IF_ARCH_X86(CALL(avx::colocation_x2_v1pv));
         PTEST_SEPARATOR;
 
         free_aligned(data);

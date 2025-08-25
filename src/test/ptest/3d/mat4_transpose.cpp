@@ -119,15 +119,15 @@ PTEST_BEGIN("dsp.3d", mat4_transpose, 5, 1000)
         call(#func, dst, src, func);
 
         CALL1(generic::transpose_matrix3d1);
-        CALL1(sse::transpose_matrix3d1);
-        CALL1(sse2::transpose_matrix3d1);
-        CALL1(avx::transpose_matrix3d1);
+        IF_ARCH_X86(CALL1(sse::transpose_matrix3d1));
+        IF_ARCH_X86(CALL1(sse2::transpose_matrix3d1));
+        IF_ARCH_X86(CALL1(avx::transpose_matrix3d1));
         PTEST_SEPARATOR;
 
         CALL2(generic::transpose_matrix3d2);
-        CALL2(sse::transpose_matrix3d2);
-        CALL2(sse2::transpose_matrix3d2);
-        CALL2(avx::transpose_matrix3d2);
+        IF_ARCH_X86(CALL2(sse::transpose_matrix3d2));
+        IF_ARCH_X86(CALL2(sse2::transpose_matrix3d2));
+        IF_ARCH_X86(CALL2(avx::transpose_matrix3d2));
         PTEST_SEPARATOR;
 
         free_aligned(data);
