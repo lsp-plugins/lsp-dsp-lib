@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -37,6 +37,12 @@ namespace lsp
             size_t longest_edge3d_p3(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
             size_t longest_edge3d_pv(const dsp::point3d_t *p);
         }
+
+        namespace avx
+        {
+            size_t longest_edge3d_p3(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
+            size_t longest_edge3d_pv(const dsp::point3d_t *p);
+        }
     )
 
     typedef size_t (* longest_edge3d_p3_t)(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3);
@@ -62,6 +68,20 @@ UTEST_BEGIN("dsp.3d", edge)
         UTEST_ASSERT_MSG(longest_edge3d_p3(&lp[0], &lp[1], &lp[2]) == 1, "longest_edge3d_p3 failed");
         UTEST_ASSERT_MSG(longest_edge3d_p3(&lp[1], &lp[2], &lp[0]) == 0, "longest_edge3d_p3 failed");
         UTEST_ASSERT_MSG(longest_edge3d_p3(&lp[2], &lp[0], &lp[1]) == 2, "longest_edge3d_p3 failed");
+
+        dsp::init_point_xyz(&lp[0], 0.0f, 0.0f, 0.0f);
+        dsp::init_point_xyz(&lp[1], 1.0f, 0.0f, 0.0f);
+        dsp::init_point_xyz(&lp[2], 0.5f, 1.0f, 0.0f);
+
+        UTEST_ASSERT_MSG(longest_edge3d_p3(&lp[0], &lp[1], &lp[2]) == 1, "longest_edge3d_p3 failed");
+        UTEST_ASSERT_MSG(longest_edge3d_p3(&lp[1], &lp[2], &lp[0]) == 0, "longest_edge3d_p3 failed");
+        UTEST_ASSERT_MSG(longest_edge3d_p3(&lp[2], &lp[0], &lp[1]) == 0, "longest_edge3d_p3 failed");
+
+        UTEST_ASSERT_MSG(longest_edge3d_p3(&lp[0], &lp[2], &lp[1]) == 0, "longest_edge3d_p3 failed");
+        UTEST_ASSERT_MSG(longest_edge3d_p3(&lp[1], &lp[0], &lp[2]) == 1, "longest_edge3d_p3 failed");
+        UTEST_ASSERT_MSG(longest_edge3d_p3(&lp[2], &lp[1], &lp[0]) == 0, "longest_edge3d_p3 failed");
+
+        UTEST_ASSERT_MSG(longest_edge3d_pv(lp) == 1, "longest_edge3d_pv failed");
     }
 
     UTEST_MAIN
@@ -74,6 +94,12 @@ UTEST_BEGIN("dsp.3d", edge)
             call("sse::longest_edge",
                     sse::longest_edge3d_p3,
                     sse::longest_edge3d_pv
+                )
+        );
+        IF_ARCH_X86(
+            call("avx::longest_edge",
+                    avx::longest_edge3d_p3,
+                    avx::longest_edge3d_pv
                 )
         );
     }

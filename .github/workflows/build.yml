@@ -188,3 +188,25 @@ jobs:
       - name: Run unit tests
         shell: msys2 {0}
         run: .build/target/${{env.ARTIFACT}}/${{env.ARTIFACT}}-test.exe utest --verbose --jobs 1
+  macos_stable:
+    runs-on: macos-latest
+    steps:
+      - name: Update repositories
+        run: brew update
+      - name: Install dependencies
+        run: brew install make pkgconf cairo freetype
+      - uses: actions/checkout@v3
+      - name: Configure project
+        run: gmake config TEST=1 STRICT=1 DEBUG=1 ASAN=1
+      - name: Fetch project dependencies
+        run: gmake fetch
+      - name: Build project
+        run: gmake VERBOSE=1
+      - name: Run unit tests
+        run: .build/target/${{env.ARTIFACT}}/${{env.ARTIFACT}}-test utest --verbose --jobs 1
+      - name: Run unit tests with memcheck
+        run: |
+          for test in $(.build/target/${{env.ARTIFACT}}/${{env.ARTIFACT}}-test utest --list --suppress); do \
+            echo "***** MEMCHECK $test *****"; \
+            .build/target/${{env.ARTIFACT}}/${{env.ARTIFACT}}-test utest --verbose --jobs 1 --nofork --debug $test; \
+          done

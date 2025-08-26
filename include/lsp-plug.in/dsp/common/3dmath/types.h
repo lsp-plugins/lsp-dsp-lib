@@ -47,27 +47,10 @@ typedef struct LSP_DSP_LIB_TYPE(color3d_t)
     float       r, g, b, a;
 } LSP_DSP_LIB_TYPE(color3d_t);
 
-typedef struct LSP_DSP_LIB_TYPE(ray3d_t)
-{
-    LSP_DSP_LIB_TYPE(point3d_t)     z;          // The start point: x, y, z = point coordinates
-    LSP_DSP_LIB_TYPE(vector3d_t)    v;          // The spread vector: dx, dy, dz = direction
-} LSP_DSP_LIB_TYPE(ray3d_t);
-
 typedef struct LSP_DSP_LIB_TYPE(bound_box3d_t)
 {
     LSP_DSP_LIB_TYPE(point3d_t)     p[8];       // Bounding-box contains 8 points
 } LSP_DSP_LIB_TYPE(bound_box3d_t);
-
-typedef struct LSP_DSP_LIB_TYPE(segment3d_t)
-{
-    LSP_DSP_LIB_TYPE(point3d_t)     p[2];
-} LSP_DSP_LIB_TYPE(segment3d_t);
-
-typedef struct LSP_DSP_LIB_TYPE(triangle3d_t)
-{
-    LSP_DSP_LIB_TYPE(point3d_t)     p[3];       // Vertexes: x, y, z = vertex coordinates, w = length of the corresponding edge
-    LSP_DSP_LIB_TYPE(vector3d_t)    n;          // Normal: dx, dy, dz = normal coordinates, dw = plane equation coefficient
-} LSP_DSP_LIB_TYPE(triangle3d_t);
 
 typedef struct LSP_DSP_LIB_TYPE(matrix3d_t)
 {

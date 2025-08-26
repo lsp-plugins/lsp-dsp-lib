@@ -35,7 +35,7 @@ namespace lsp
         IF_ARCH_ARM(
             static const uint32_t lanczos_const[] __lsp_aligned16 =
             {
-                LSP_DSP_VEC4(0x358637bd),                   // +0x00: Sinc threshold = 1e-6
+                LSP_DSP_VEC4(0x38d1b717),                   // +0x00: Sinc threshold = 1e-4
                 LSP_DSP_VEC4(0x3f800000),                   // +0x10: 1.0
             };
         )
@@ -68,13 +68,13 @@ namespace lsp
             __ASM_EMIT("vadd.f32        q1, q1, q8")                    /* q1   = x2 + PI/2 */ \
             SINF_X_PLUS_PI_2_CORE_X8                                    /* q0   = sinf(x1), q1 = sinf(x2) */ \
             __ASM_EMIT("vldm            %[state], {q8-q15}")            /* load state */ \
-            __ASM_EMIT("vldm            %[LC], {q6-q7}")                /* q6   = 1e-6, q7 = 1.0 */ \
+            __ASM_EMIT("vldm            %[LC], {q6-q7}")                /* q6   = 1e-4, q7 = 1.0 */ \
             __ASM_EMIT("vmul.f32        q0, q0, q1")                    /* q0   = sinf(x1)*sinf(x2) */ \
-            __ASM_EMIT("vcge.f32        q2, q13, q6")                   /* q2   = [ fabsf(x1) >= 1e-6 ] */ \
+            __ASM_EMIT("vcge.f32        q2, q13, q6")                   /* q2   = [ fabsf(x1) >= 1e-4 ] */ \
             __ASM_EMIT("vmul.f32        q0, q0, q14")                   /* q0   = f = sinf(x1)*sinf(x2)/(x1*x2) */ \
             __ASM_EMIT("vcgt.f32        q3, q12, q13")                  /* q3   = [ fabsf(x1) < t ] */ \
-            __ASM_EMIT("vbif            q0, q7, q2")                    /* q0   = [ fabsf(x1) >= 1e-6 ] ? f : 1.0 */ \
-            __ASM_EMIT("vand            q0, q0, q3")                    /* q0   = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-6 ] ? f : 1.0) : 0.0 */
+            __ASM_EMIT("vbif            q0, q7, q2")                    /* q0   = [ fabsf(x1) >= 1e-4 ] ? f : 1.0 */ \
+            __ASM_EMIT("vand            q0, q0, q3")                    /* q0   = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-4 ] ? f : 1.0) : 0.0 */
 
         void lanczos1(float *dst, float k, float p, float t, float a, size_t count)
         {

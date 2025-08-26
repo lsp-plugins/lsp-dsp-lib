@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -40,6 +40,13 @@ namespace lsp
             void init_point(dsp::point3d_t *p, const dsp::point3d_t *s);
             void normalize_point(dsp::point3d_t *p);
         }
+
+        namespace avx
+        {
+            void init_point_xyz(dsp::point3d_t *p, float x, float y, float z);
+            void init_point(dsp::point3d_t *p, const dsp::point3d_t *s);
+            void normalize_point(dsp::point3d_t *p);
+        }
     )
 
     typedef void (* init_point_xyz_t)(dsp::point3d_t *p, float x, float y, float z);
@@ -48,6 +55,14 @@ namespace lsp
 }
 
 UTEST_BEGIN("dsp.3d", point)
+
+    static void fill_point(dsp::point3d_t *p)
+    {
+        p->x    = 0.1f;
+        p->y    = 0.2f;
+        p->z    = 0.3f;
+        p->w    = 0.4f;
+    }
 
     void call(
             const char *label,
@@ -61,26 +76,31 @@ UTEST_BEGIN("dsp.3d", point)
 
         printf("Testing %s\n", label);
 
-        dsp::point3d_t   p1, p2, p3;
+        dsp::point3d_t   p1, p2, p3, p4;
+        fill_point(&p1);
+        fill_point(&p2);
+        fill_point(&p3);
+        fill_point(&p4);
 
-        generic::init_point_xyz(&p1, 1.0f, 2.0f, 3.0f);
-        init_xyz(&p2, 1.0f, 2.0f, 3.0f);
+        generic::init_point_xyz(&p1, 2.0f, 3.0f, 4.0f);
+        init_xyz(&p2, 2.0f, 3.0f, 4.0f);
         UTEST_ASSERT_MSG(point3d_sck(&p1, &p2), "Failed init_point_xyz");
 
-        generic::init_point(&p2, &p1);
-        init(&p3, &p1);
-        UTEST_ASSERT_MSG(point3d_sck(&p1, &p2), "Failed generic init_point");
-        UTEST_ASSERT_MSG(point3d_sck(&p1, &p3), "Failed optimized init_point");
+        generic::init_point(&p3, &p1);
+        init(&p4, &p1);
+        UTEST_ASSERT_MSG(point3d_sck(&p1, &p3), "Failed generic init_point");
+        UTEST_ASSERT_MSG(point3d_sck(&p1, &p4), "Failed optimized init_point");
 
-        generic::normalize_point(&p2);
-        norm(&p3);
+        generic::normalize_point(&p3);
+        norm(&p4);
 
-        UTEST_ASSERT_MSG(point3d_sck(&p2, &p3), "Failed normalize point");
+        UTEST_ASSERT_MSG(point3d_sck(&p3, &p4), "Failed normalize point");
     }
 
     UTEST_MAIN
     {
-        IF_ARCH_X86(call("sse_point", sse::init_point_xyz, sse::init_point, sse::normalize_point));
+        IF_ARCH_X86(call("sse::point", sse::init_point_xyz, sse::init_point, sse::normalize_point));
+        IF_ARCH_X86(call("avx::point", avx::init_point_xyz, avx::init_point, avx::normalize_point));
     }
 UTEST_END;
 

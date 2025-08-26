@@ -45,6 +45,15 @@ namespace lsp
             void calc_split_point_p2v1(dsp::point3d_t *sp, const dsp::point3d_t *l0, const dsp::point3d_t *l1, const dsp::vector3d_t *pl);
             void calc_split_point_pvv1(dsp::point3d_t *sp, const dsp::point3d_t *lv, const dsp::vector3d_t *pl);
         }
+
+        namespace avx
+        {
+            void calc_split_point_p2v1(dsp::point3d_t *sp, const dsp::point3d_t *l0, const dsp::point3d_t *l1, const dsp::vector3d_t *pl);
+            void calc_split_point_pvv1(dsp::point3d_t *sp, const dsp::point3d_t *lv, const dsp::vector3d_t *pl);
+
+            void calc_split_point_p2v1_fma3(dsp::point3d_t *sp, const dsp::point3d_t *l0, const dsp::point3d_t *l1, const dsp::vector3d_t *pl);
+            void calc_split_point_pvv1_fma3(dsp::point3d_t *sp, const dsp::point3d_t *lv, const dsp::vector3d_t *pl);
+        }
     )
 
     typedef void (* calc_split_point_p2v1_t)(dsp::point3d_t *sp, const dsp::point3d_t *l0, const dsp::point3d_t *l1, const dsp::vector3d_t *pl);
@@ -169,11 +178,20 @@ UTEST_BEGIN("dsp.3d", split_point)
 
     UTEST_MAIN
     {
-        IF_ARCH_X86(call("sse::calc_split_point_p2v1", sse::calc_split_point_p2v1));
-        IF_ARCH_X86(call("sse::calc_split_point_pvv1", sse::calc_split_point_pvv1));
+    #define CALL(func) \
+        call(#func, func)
 
-        IF_ARCH_X86(call("sse3::calc_split_point_p2v1", sse3::calc_split_point_p2v1));
-        IF_ARCH_X86(call("sse3::calc_split_point_pvv1", sse3::calc_split_point_pvv1));
+        IF_ARCH_X86(CALL(sse::calc_split_point_p2v1));
+        IF_ARCH_X86(CALL(sse::calc_split_point_pvv1));
+
+        IF_ARCH_X86(CALL(sse3::calc_split_point_p2v1));
+        IF_ARCH_X86(CALL(sse3::calc_split_point_pvv1));
+
+        IF_ARCH_X86(CALL(avx::calc_split_point_p2v1));
+        IF_ARCH_X86(CALL(avx::calc_split_point_pvv1));
+
+        IF_ARCH_X86(CALL(avx::calc_split_point_p2v1_fma3));
+        IF_ARCH_X86(CALL(avx::calc_split_point_pvv1_fma3));
     }
 UTEST_END;
 

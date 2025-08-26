@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -32,12 +32,18 @@ namespace lsp
     }
 
     IF_ARCH_X86(
-        namespace sse
+        namespace sse2
         {
             void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
         }
 
         namespace sse3
+        {
+            void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+            void split_triangle_raw_ssse3(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+        }
+
+        namespace avx
         {
             void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
         }
@@ -177,9 +183,14 @@ UTEST_BEGIN("dsp.3d", split_triangle)
 
     UTEST_MAIN
     {
-        test_func("generic::split_triangle_raw", generic::split_triangle_raw);
-        IF_ARCH_X86(test_func("sse::split_triangle_raw", sse::split_triangle_raw));
-        IF_ARCH_X86(test_func("sse3::split_triangle_raw", sse3::split_triangle_raw));
+    #define CALL(func) \
+        test_func(#func, func);
+
+        CALL(generic::split_triangle_raw);
+        IF_ARCH_X86(CALL(sse2::split_triangle_raw));
+        IF_ARCH_X86(CALL(sse3::split_triangle_raw));
+        IF_ARCH_X86(CALL(sse3::split_triangle_raw_ssse3));
+        IF_ARCH_X86(CALL(avx::split_triangle_raw));
     }
 UTEST_END;
 

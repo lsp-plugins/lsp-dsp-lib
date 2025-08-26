@@ -210,344 +210,6 @@ namespace lsp
             normalize_vector(p);
         }
 
-        void init_ray_xyz(ray3d_t *l,
-            float x0, float y0, float z0,
-            float x1, float y1, float z1
-        )
-        {
-            l->z.x      = x0;
-            l->z.y      = y0;
-            l->z.z      = z0;
-            l->z.w      = 1.0f;
-
-            l->v.dx     = (x1 - x0);
-            l->v.dy     = (y1 - y0);
-            l->v.dz     = (z1 - z0);
-            l->v.dw     = 0.0f;
-        }
-
-        void init_ray_dxyz(ray3d_t *l,
-            float x0, float y0, float z0,
-            float dx, float dy, float dz
-        )
-        {
-            l->z.x      = x0;
-            l->z.y      = y0;
-            l->z.z      = z0;
-            l->z.w      = 1.0f;
-
-            l->v.dx     = dx;
-            l->v.dy     = dy;
-            l->v.dz     = dz;
-            l->v.dw     = 0.0f;
-        }
-
-        void init_ray_pdv(ray3d_t *l, const point3d_t *p, const vector3d_t *v)
-        {
-            l->z        = *p;
-            l->v        = *v;
-        }
-
-        void init_ray_p2(ray3d_t *l, const point3d_t *p1, const point3d_t *p2)
-        {
-            l->z        = *p1;
-            l->v.dx     = (p2->x - p1->x);
-            l->v.dx     = (p2->y - p1->y);
-            l->v.dx     = (p2->z - p1->z);
-            l->v.dw     = 0.0f;
-        }
-
-        void init_ray_pv(ray3d_t *l, const point3d_t *p)
-        {
-            l->z        = p[0];
-            l->v.dx     = (p[1].x - p[0].x);
-            l->v.dx     = (p[1].y - p[0].y);
-            l->v.dx     = (p[1].z - p[0].z);
-            l->v.dw     = 0.0f;
-        }
-
-        void init_ray(ray3d_t *l, const ray3d_t *r)
-        {
-            *l          = *r;
-        }
-
-        void calc_ray_xyz(ray3d_t *l,
-            float x0, float y0, float z0,
-            float x1, float y1, float z1
-        )
-        {
-            l->z.x      = x0;
-            l->z.y      = y0;
-            l->z.z      = z0;
-            l->z.w      = 1.0f;
-
-            l->v.dx     = (x1 - x0);
-            l->v.dy     = (y1 - y0);
-            l->v.dz     = (z1 - z0);
-            l->v.dw     = 0.0f;
-
-            normalize_vector(&l->v);
-        }
-
-        void calc_ray_dxyz(ray3d_t *l,
-            float x0, float y0, float z0,
-            float dx, float dy, float dz
-        )
-        {
-            l->z.x      = x0;
-            l->z.y      = y0;
-            l->z.z      = z0;
-            l->z.w      = 0.0f;
-
-            l->v.dx     = dx;
-            l->v.dy     = dy;
-            l->v.dz     = dz;
-            l->v.dw     = 0.0f;
-            normalize_vector(&l->v);
-        }
-
-        void calc_ray_pdv(ray3d_t *l, const point3d_t *p, const vector3d_t *v)
-        {
-            l->z        = *p;
-            l->v        = *v;
-            normalize_vector(&l->v);
-        }
-
-        void calc_ray_p2(ray3d_t *l, const point3d_t *p1, const point3d_t *p2)
-        {
-            l->z        = *p1;
-            l->v.dx     = (p2->x - p1->x);
-            l->v.dx     = (p2->y - p1->y);
-            l->v.dx     = (p2->z - p1->z);
-            l->v.dw     = 0.0f;
-            normalize_vector(&l->v);
-        }
-
-        void calc_ray_pv(ray3d_t *l, const point3d_t *p)
-        {
-            l->z        = p[0];
-            l->v.dx     = (p[1].x - p[0].x);
-            l->v.dx     = (p[1].y - p[0].y);
-            l->v.dx     = (p[1].z - p[0].z);
-            l->v.dw     = 0.0f;
-            normalize_vector(&l->v);
-        }
-
-        void calc_ray(ray3d_t *l, const ray3d_t *r)
-        {
-            *l          = *r;
-            normalize_vector(&l->v);
-        }
-
-        void init_segment_xyz(segment3d_t *s,
-            float x0, float y0, float z0,
-            float x1, float y1, float z1
-        )
-        {
-            s->p[0].x       = x0;
-            s->p[0].y       = y0;
-            s->p[0].z       = z0;
-            s->p[0].w       = 0.0f;
-
-            s->p[1].x       = x1;
-            s->p[1].y       = y1;
-            s->p[1].z       = z1;
-            s->p[1].w       = 0.0f;
-        }
-
-        void init_segment_p2(segment3d_t *s, const point3d_t *p1, const point3d_t *p2)
-        {
-            s->p[0]         = *p1;
-            s->p[1]         = *p2;
-        }
-
-        void init_segment_pv(segment3d_t *s, const point3d_t *p)
-        {
-            s->p[0]         = p[0];
-            s->p[1]         = p[1];
-        }
-
-        void calc_triangle3d_params(triangle3d_t *t)
-        {
-            // Calculate edge parameters
-            vector3d_t d[3];
-            d[0].dx     = t->p[1].x - t->p[0].x;
-            d[0].dy     = t->p[1].y - t->p[0].y;
-            d[0].dz     = t->p[1].z - t->p[0].z;
-            d[0].dw     = t->p[1].w - t->p[0].w;
-
-            d[1].dx     = t->p[2].x - t->p[1].x;
-            d[1].dy     = t->p[2].y - t->p[1].y;
-            d[1].dz     = t->p[2].z - t->p[1].z;
-            d[1].dw     = t->p[2].w - t->p[1].w;
-
-            d[2].dx     = t->p[2].x - t->p[0].x;
-            d[2].dy     = t->p[2].y - t->p[0].y;
-            d[2].dz     = t->p[2].z - t->p[0].z;
-            d[2].dw     = t->p[2].w - t->p[0].w;
-
-            // Do vector multiplication to calculate the normal vector
-            t->n.dx     = + d[0].dy*d[2].dz - d[0].dz*d[2].dy;
-            t->n.dy     = - d[0].dx*d[2].dz + d[0].dz*d[2].dx;
-            t->n.dz     = + d[0].dx*d[2].dy - d[0].dy*d[2].dx;
-            t->n.dw     = - ( t->n.dx * t->p[0].x + t->n.dy * t->p[0].y + t->n.dz * t->p[0].z); // Parameter for the plane equation
-
-            // Calculate lengths of edges and (additionally) length of normal
-            float l[4];
-            l[0]        = sqrtf(d[0].dx*d[0].dx + d[0].dy*d[0].dy + d[0].dz*d[0].dz);
-            l[1]        = sqrtf(d[1].dx*d[1].dx + d[1].dy*d[1].dy + d[1].dz*d[1].dz);
-            l[2]        = sqrtf(d[2].dx*d[2].dx + d[2].dy*d[2].dy + d[2].dz*d[2].dz);
-            l[3]        = sqrtf(t->n.dx*t->n.dx + t->n.dy*t->n.dy + t->n.dz*t->n.dz);
-
-            // Calculate normal length and normalize normal
-            t->n.dx    /= l[3];
-            t->n.dy    /= l[3];
-            t->n.dz    /= l[3];
-            t->n.dw    /= l[3];
-
-            // Additionally, calculate the length of edges
-            t->p[0].w   = l[0];
-            t->p[1].w   = l[1];
-            t->p[2].w   = l[2];
-        }
-
-        void init_triangle3d_xyz(triangle3d_t *t,
-                float x0, float y0, float z0,
-                float x1, float y1, float z1,
-                float x2, float y2, float z2
-            )
-        {
-            // Initalize points
-            t->p[0].x   = x0;
-            t->p[0].y   = y0;
-            t->p[0].z   = z0;
-            t->p[0].w   = 0.0f;
-
-            t->p[1].x   = x1;
-            t->p[1].y   = y1;
-            t->p[1].z   = z1;
-            t->p[1].w   = 0.0f;
-
-            t->p[2].x   = x2;
-            t->p[2].y   = y2;
-            t->p[2].z   = z2;
-            t->p[2].w   = 0.0f;
-
-            // Init normal
-            t->n.dx     = 0.0f;
-            t->n.dy     = 0.0f;
-            t->n.dz     = 0.0f;
-            t->n.dw     = 0.0f;
-        }
-
-        void init_triangle3d_p3(
-                triangle3d_t *t,
-                const point3d_t *p1,
-                const point3d_t *p2,
-                const point3d_t *p3
-            )
-        {
-            // Initalize points
-            t->p[0]     = *p1;
-            t->p[1]     = *p2;
-            t->p[2]     = *p3;
-
-            // Init normal
-            t->n.dx     = 0.0f;
-            t->n.dy     = 0.0f;
-            t->n.dz     = 0.0f;
-            t->n.dw     = 0.0f;
-        }
-
-        void init_triangle3d_pv(
-                triangle3d_t *t,
-                const point3d_t *p
-            )
-        {
-            // Initalize points
-            t->p[0]     = p[0];
-            t->p[1]     = p[1];
-            t->p[2]     = p[2];
-
-            // Init normal
-            t->n.dx     = 0.0f;
-            t->n.dy     = 0.0f;
-            t->n.dz     = 0.0f;
-            t->n.dw     = 0.0f;
-        }
-
-        void init_triangle3d(triangle3d_t *dst, const triangle3d_t *src)
-        {
-            dst->p[0]   = src->p[0];
-            dst->p[1]   = src->p[1];
-            dst->p[2]   = src->p[2];
-            dst->n      = src->n;
-        }
-
-        void calc_triangle3d_xyz(triangle3d_t *t,
-                float x0, float y0, float z0,
-                float x1, float y1, float z1,
-                float x2, float y2, float z2
-            )
-        {
-            // Initalize points
-            t->p[0].x   = x0;
-            t->p[0].y   = y0;
-            t->p[0].z   = z0;
-            t->p[0].w   = 0.0f;
-
-            t->p[1].x   = x1;
-            t->p[1].y   = y1;
-            t->p[1].z   = z1;
-            t->p[1].w   = 0.0f;
-
-            t->p[2].x   = x2;
-            t->p[2].y   = y2;
-            t->p[2].z   = z2;
-            t->p[2].w   = 0.0f;
-
-            // Calc parameters
-            calc_triangle3d_params(t);
-        }
-
-        void calc_triangle3d_p3(
-                triangle3d_t *t,
-                const point3d_t *p1,
-                const point3d_t *p2,
-                const point3d_t *p3
-            )
-        {
-            // Initalize points
-            t->p[0]     = *p1;
-            t->p[1]     = *p2;
-            t->p[2]     = *p3;
-
-            // Calc parameters
-            calc_triangle3d_params(t);
-        }
-
-        void calc_triangle3d_pv(
-                triangle3d_t *t,
-                const point3d_t *p
-            )
-        {
-            // Initalize points
-            t->p[0]     = p[0];
-            t->p[1]     = p[1];
-            t->p[2]     = p[2];
-
-            // Calc parameters
-            calc_triangle3d_params(t);
-        }
-
-        void calc_triangle3d(triangle3d_t *dst, const triangle3d_t *src)
-        {
-            dst->p[0]   = src->p[0];
-            dst->p[1]   = src->p[1];
-            dst->p[2]   = src->p[2];
-            calc_triangle3d_params(dst);
-        }
-
         void init_matrix3d(matrix3d_t *dst, const matrix3d_t *src)
         {
             *dst        = *src;
@@ -738,14 +400,17 @@ namespace lsp
             M[1]        = 0.0f;
             M[2]        = 0.0f;
             M[3]        = 0.0f;
+
             M[4]        = 0.0f;
             M[5]        = c;
             M[6]        = s;
             M[7]        = 0.0f;
+
             M[8]        = 0.0f;
             M[9]        = -s;
             M[10]       = c;
             M[11]       = 0.0f;
+
             M[12]       = 0.0f;
             M[13]       = 0.0f;
             M[14]       = 0.0f;
@@ -762,14 +427,17 @@ namespace lsp
             M[1]        = 0.0f;
             M[2]        = -s;
             M[3]        = 0.0f;
+
             M[4]        = 0.0f;
             M[5]        = 1.0f;
             M[6]        = 0.0f;
             M[7]        = 0.0f;
+
             M[8]        = s;
             M[9]        = 0.0f;
             M[10]       = c;
             M[11]       = 0.0f;
+
             M[12]       = 0.0f;
             M[13]       = 0.0f;
             M[14]       = 0.0f;
@@ -786,14 +454,17 @@ namespace lsp
             M[1]        = s;
             M[2]        = 0.0f;
             M[3]        = 0.0f;
+
             M[4]        = -s;
             M[5]        = c;
             M[6]        = 0.0f;
             M[7]        = 0.0f;
+
             M[8]        = 0.0f;
             M[9]        = 0.0f;
             M[10]       = 1.0f;
             M[11]       = 0.0f;
+
             M[12]       = 0.0f;
             M[13]       = 0.0f;
             M[14]       = 0.0f;
@@ -1176,132 +847,6 @@ namespace lsp
             }
         }
 
-        void calc_matrix3d_transform_p1v1(matrix3d_t *m, const point3d_t *p, const vector3d_t *v)
-        {
-            matrix3d_t xm;
-
-            // Initialize matrix with translation and scaling parameters
-            float l = sqrtf(v->dx * v->dx + v->dy * v->dy + v->dz * v->dz);
-            m->m[0]     = l;
-            m->m[1]     = 0.0f;
-            m->m[2]     = 0.0f;
-            m->m[3]     = 0.0f;
-
-            m->m[4]     = 0.0f;
-            m->m[5]     = l;
-            m->m[6]     = 0.0f;
-            m->m[7]     = 0.0f;
-
-            m->m[8]     = 0.0f;
-            m->m[9]     = 0.0f;
-            m->m[10]    = l;
-            m->m[11]    = 0.0f;
-
-            m->m[12]    = p->x;
-            m->m[13]    = p->y;
-            m->m[14]    = p->z;
-            m->m[15]    = 1.0f;
-
-            if (l <= 0.0f)
-                return;
-
-            // Compute normalized vector (with length = 1)
-            vector3d_t tv;
-            tv.dx       = v->dx / l;
-            tv.dy       = v->dy / l;
-            tv.dz       = v->dz / l;
-            tv.dw       = 0.0f;
-
-            // Compute theta and phi
-            float sinp  = tv.dx;
-            float cosp  = sqrtf(tv.dy*tv.dy + tv.dz*tv.dz);
-
-            // Apply rotation matrix around X axis
-            if (cosp > 0.0f)
-            {
-                float cost  = tv.dz/cosp;
-                float sint  = tv.dy/cosp;
-
-                dsp::init_matrix3d_identity(&xm);
-                xm.m[5]     = cost;
-                xm.m[6]     = -sint;
-                xm.m[9]     = sint;
-                xm.m[10]    = cost;
-                dsp::apply_matrix3d_mm1(m, &xm);
-            }
-
-            // Apply rotation matrix around Y axis
-            dsp::init_matrix3d_identity(&xm);
-            xm.m[0]     = cosp;
-            xm.m[2]     = -sinp;
-            xm.m[8]     = sinp;
-            xm.m[10]    = cosp;
-            dsp::apply_matrix3d_mm1(m, &xm);
-        }
-
-        void calc_matrix3d_transform_r1(matrix3d_t *m, const ray3d_t *r)
-        {
-            matrix3d_t xm;
-
-            // Initialize matrix with translation and scaling parameters
-            float l     = sqrtf(r->v.dx * r->v.dx + r->v.dy * r->v.dy + r->v.dz * r->v.dz);
-            m->m[0]     = l;
-            m->m[1]     = 0.0f;
-            m->m[2]     = 0.0f;
-            m->m[3]     = 0.0f;
-
-            m->m[4]     = 0.0f;
-            m->m[5]     = l;
-            m->m[6]     = 0.0f;
-            m->m[7]     = 0.0f;
-
-            m->m[8]     = 0.0f;
-            m->m[9]     = 0.0f;
-            m->m[10]    = l;
-            m->m[11]    = 0.0f;
-
-            m->m[12]    = r->z.x;
-            m->m[13]    = r->z.y;
-            m->m[14]    = r->z.z;
-            m->m[15]    = 1.0f;
-
-            if (l <= 0.0f)
-                return;
-
-            // Compute normalized vector (with length = 1)
-            vector3d_t tv;
-            tv.dx       = r->v.dx / l;
-            tv.dy       = r->v.dy / l;
-            tv.dz       = r->v.dz / l;
-            tv.dw       = 0.0f;
-
-            // Compute theta and phi
-            float sinp  = tv.dx;
-            float cosp  = sqrtf(tv.dy*tv.dy + tv.dz*tv.dz);
-
-            // Apply rotation matrix around X axis
-            if (cosp > 0.0f)
-            {
-                float cost  = tv.dz/cosp;
-                float sint  = tv.dy/cosp;
-
-                dsp::init_matrix3d_identity(&xm);
-                xm.m[5]     = cost;
-                xm.m[6]     = -sint;
-                xm.m[9]     = sint;
-                xm.m[10]    = cost;
-                dsp::apply_matrix3d_mm1(m, &xm);
-            }
-
-            // Apply rotation matrix around Y axis
-            dsp::init_matrix3d_identity(&xm);
-            xm.m[0]     = cosp;
-            xm.m[2]     = -sinp;
-            xm.m[8]     = sinp;
-            xm.m[10]    = cosp;
-            dsp::apply_matrix3d_mm1(m, &xm);
-        }
-
         void apply_matrix3d_mv2(vector3d_t *r, const vector3d_t *v, const matrix3d_t *m)
         {
             const float *M = m->m;
@@ -1520,48 +1065,6 @@ namespace lsp
             return v[2].dx * vt.dx + v[2].dy * vt.dy + v[2].dz * vt.dz;
         }
 
-        float check_triplet3d_t(const triangle3d_t *t)
-        {
-            // Calculate two vectors
-            vector3d_t  v[3];
-            v[0].dx             = t->p[1].x - t->p[0].x;
-            v[0].dy             = t->p[1].y - t->p[0].y;
-            v[0].dz             = t->p[1].z - t->p[0].z;
-
-            v[1].dx             = t->p[2].x - t->p[1].x;
-            v[1].dy             = t->p[2].y - t->p[1].y;
-            v[1].dz             = t->p[2].z - t->p[1].z;
-
-            // Calculate vector multiplication
-            v[2].dx             = v[0].dy * v[1].dz - v[0].dz * v[1].dy;
-            v[2].dy             = v[0].dz * v[1].dx - v[0].dx * v[1].dz;
-            v[2].dz             = v[0].dx * v[1].dy - v[0].dy * v[1].dx;
-
-            // Return result of scalar multiplication to the normal
-            return t->n.dx * v[2].dx + t->n.dy * v[2].dy + t->n.dz * v[2].dz;
-        }
-
-        float check_triplet3d_tn(const triangle3d_t *t, const vector3d_t *n)
-        {
-            // Calculate two vectors
-            vector3d_t  v[3];
-            v[0].dx             = t->p[1].x - t->p[0].x;
-            v[0].dy             = t->p[1].y - t->p[0].y;
-            v[0].dz             = t->p[1].z - t->p[0].z;
-
-            v[1].dx             = t->p[2].x - t->p[1].x;
-            v[1].dy             = t->p[2].y - t->p[1].y;
-            v[1].dz             = t->p[2].z - t->p[1].z;
-
-            // Calculate vector multiplication
-            v[2].dx             = v[0].dy * v[1].dz - v[0].dz * v[1].dy;
-            v[2].dy             = v[0].dz * v[1].dx - v[0].dx * v[1].dz;
-            v[2].dz             = v[0].dx * v[1].dy - v[0].dy * v[1].dx;
-
-            // Return result of scalar multiplication to the normal
-            return n->dx * v[2].dx + n->dy * v[2].dy + n->dz * v[2].dz;
-        }
-
         float check_point3d_on_triangle_p3p(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3, const point3d_t *p)
         {
             // Vector parameters
@@ -1609,16 +1112,7 @@ namespace lsp
             if (r[2] < 0.0f)
                 return r[2];
 
-            // Check 4
-            r[2]                = r[0]*r[1]*r[2];
-            if (r[2] != 0.0f)
-                return r[2];
-
-            // Edge check: 3 scalar multiplications
-            r[0]                = v[0].dx * v[1].dx + v[0].dy * v[1].dy + v[0].dz * v[1].dz;
-            r[1]                = v[1].dx * v[2].dx + v[1].dy * v[2].dy + v[1].dz * v[2].dz;
-            r[2]                = v[2].dx * v[0].dx + v[2].dy * v[0].dy + v[2].dz * v[0].dz;
-
+            // The point may be located on the edge or on the vertex
             return r[0]*r[1]*r[2];
         }
 
@@ -1669,76 +1163,7 @@ namespace lsp
             if (r[2] < 0.0f)
                 return r[2];
 
-            // Check 4
-            r[2]                = r[0]*r[1]*r[2];
-            if (r[2] != 0.0f)
-                return r[2];
-
-            // Edge check: 3 scalar multiplications
-            r[0]                = v[0].dx * v[1].dx + v[0].dy * v[1].dy + v[0].dz * v[1].dz;
-            r[1]                = v[1].dx * v[2].dx + v[1].dy * v[2].dy + v[1].dz * v[2].dz;
-            r[2]                = v[2].dx * v[0].dx + v[2].dy * v[0].dy + v[2].dz * v[0].dz;
-
-            return r[0]*r[1]*r[2];
-        }
-
-        inline float check_point3d_on_triangle_tp(const triangle3d_t *t, const point3d_t *p)
-        {
-            // Vector parameters
-            vector3d_t  v[3];
-            v[0].dx             = t->p[0].x - p->x;
-            v[0].dy             = t->p[0].y - p->y;
-            v[0].dz             = t->p[0].z - p->z;
-
-            v[1].dx             = t->p[1].x - p->x;
-            v[1].dy             = t->p[1].y - p->y;
-            v[1].dz             = t->p[1].z - p->z;
-
-            v[2].dx             = t->p[2].x - p->x;
-            v[2].dy             = t->p[2].y - p->y;
-            v[2].dz             = t->p[2].z - p->z;
-
-            // Do logic
-            vector3d_t  m[3];
-            float r[3];
-
-            // Check 1: 2 vector multiplications and 1 scalar
-            m[0].dx             = v[0].dy * v[1].dz - v[0].dz * v[1].dy;
-            m[0].dy             = v[0].dz * v[1].dx - v[0].dx * v[1].dz;
-            m[0].dz             = v[0].dx * v[1].dy - v[0].dy * v[1].dx;
-
-            m[1].dx             = v[1].dy * v[2].dz - v[1].dz * v[2].dy;
-            m[1].dy             = v[1].dz * v[2].dx - v[1].dx * v[2].dz;
-            m[1].dz             = v[1].dx * v[2].dy - v[1].dy * v[2].dx;
-
-            r[0]                = m[0].dx * m[1].dx + m[0].dy * m[1].dy + m[0].dz * m[1].dz;
-            if (r[0] < 0.0f)
-                return r[0];
-
-            // Check 2: 1 vector multiplication and 1 scalar
-            m[2].dx             = v[2].dy * v[0].dz - v[2].dz * v[0].dy;
-            m[2].dy             = v[2].dz * v[0].dx - v[2].dx * v[0].dz;
-            m[2].dz             = v[2].dx * v[0].dy - v[2].dy * v[0].dx;
-
-            r[1]                = m[1].dx * m[2].dx + m[1].dy * m[2].dy + m[1].dz * m[2].dz;
-            if (r[1] < 0.0f)
-                return r[1];
-
-            // Check 3: 1 scalar multiplication
-            r[2]                = m[2].dx * m[0].dx + m[2].dy * m[0].dy + m[2].dz * m[0].dz;
-            if (r[2] < 0.0f)
-                return r[2];
-
-            // Check 4
-            r[2]                = r[0]*r[1]*r[2];
-            if (r[2] != 0.0f)
-                return r[2];
-
-            // Edge check: 3 scalar multiplications
-            r[0]                = v[0].dx * v[1].dx + v[0].dy * v[1].dy + v[0].dz * v[1].dz;
-            r[1]                = v[1].dx * v[2].dx + v[1].dy * v[2].dy + v[1].dz * v[2].dz;
-            r[2]                = v[2].dx * v[0].dx + v[2].dy * v[0].dy + v[2].dz * v[0].dz;
-
+            // The point may be located on the edge or on the vertex
             return r[0]*r[1]*r[2];
         }
 
@@ -1808,9 +1233,9 @@ namespace lsp
             r[1]                = v[1].dx * v[1].dx + v[1].dy * v[1].dy + v[1].dz * v[1].dz;
             r[2]                = v[2].dx * v[2].dx + v[2].dy * v[2].dy + v[2].dz * v[2].dz;
 
-            if (r[0] > r[1])
-                return (r[0] > r[2]) ? 0 : 2;
-            return (r[1] > r[2]) ? 1 : 2;
+            if (r[0] >= r[1])
+                return (r[0] >= r[2]) ? 0 : 2;
+            return (r[1] >= r[2]) ? 1 : 2;
         }
 
         size_t longest_edge3d_pv(const point3d_t *p)
@@ -1833,9 +1258,9 @@ namespace lsp
             r[1]                = v[1].dx * v[1].dx + v[1].dy * v[1].dy + v[1].dz * v[1].dz;
             r[2]                = v[2].dx * v[2].dx + v[2].dy * v[2].dy + v[2].dz * v[2].dz;
 
-            if (r[0] > r[1])
-                return (r[0] > r[2]) ? 0 : 2;
-            return (r[1] > r[2]) ? 1 : 2;
+            if (r[0] >= r[1])
+                return (r[0] >= r[2]) ? 0 : 2;
+            return (r[1] >= r[2]) ? 1 : 2;
         }
 
         float calc_angle3d_v2(const vector3d_t *v1, const vector3d_t *v2)

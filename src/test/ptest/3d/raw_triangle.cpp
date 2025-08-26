@@ -38,13 +38,21 @@ namespace lsp
     }
 
     IF_ARCH_X86(
-        namespace sse
+        namespace sse2
         {
             void cull_triangle_raw(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
             void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
         }
 
         namespace sse3
+        {
+            void cull_triangle_raw(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+            void cull_triangle_raw_ssse3(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+            void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+            void split_triangle_raw_ssse3(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
+        }
+
+        namespace avx
         {
             void cull_triangle_raw(dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
             void split_triangle_raw(dsp::raw_triangle_t *out, size_t *n_out, dsp::raw_triangle_t *in, size_t *n_in, const dsp::vector3d_t *pl, const dsp::raw_triangle_t *pv);
@@ -75,7 +83,7 @@ PTEST_BEGIN("dsp.3d", raw_triangle, 5, 1000)
                 const dsp::raw_triangle_t *t = vt;
                 size_t nin = 0;
                 for (size_t j=0; j<N_TRIANGLES; ++j, ++t)
-                    func(in, &nin, pl, vt);
+                    func(in, &nin, pl, t);
             }
         );
     }
@@ -95,7 +103,7 @@ PTEST_BEGIN("dsp.3d", raw_triangle, 5, 1000)
                 const dsp::raw_triangle_t *t = vt;
                 size_t nin = 0, nout=0;
                 for (size_t j=0; j<N_TRIANGLES; ++j, ++t)
-                    func(out, &nout, in, &nin, pl, vt);
+                    func(out, &nout, in, &nin, pl, t);
             }
         );
     }
@@ -136,14 +144,21 @@ PTEST_BEGIN("dsp.3d", raw_triangle, 5, 1000)
             dsp::init_point_xyz(&triangles[i].v[2], randf(-10.0f, 10.0f), randf(-10.0f, 10.0f), randf(-10.0f, 10.0f));
         }
 
-        call("generic::split_triangle_raw", planes, triangles, generic::split_triangle_raw);
-        IF_ARCH_X86(call("sse::split_triangle_raw", planes, triangles, sse::split_triangle_raw));
-        IF_ARCH_X86(call("sse3::split_triangle_raw", planes, triangles, sse3::split_triangle_raw));
+        #define CALL(func) \
+            call(#func, planes, triangles, func);
+
+        CALL(generic::split_triangle_raw);
+        IF_ARCH_X86(CALL(sse2::split_triangle_raw));
+        IF_ARCH_X86(CALL(sse3::split_triangle_raw));
+        IF_ARCH_X86(CALL(sse3::split_triangle_raw_ssse3));
+        IF_ARCH_X86(CALL(avx::split_triangle_raw));
         PTEST_SEPARATOR;
 
-        call("generic::cull_triangle_raw", planes, triangles, generic::cull_triangle_raw);
-        IF_ARCH_X86(call("sse::cull_triangle_raw", planes, triangles, sse::cull_triangle_raw));
-        IF_ARCH_X86(call("sse3::cull_triangle_raw", planes, triangles, sse3::cull_triangle_raw));
+        CALL(generic::cull_triangle_raw);
+        IF_ARCH_X86(CALL(sse2::cull_triangle_raw));
+        IF_ARCH_X86(CALL(sse3::cull_triangle_raw));
+        IF_ARCH_X86(CALL(sse3::cull_triangle_raw_ssse3));
+        IF_ARCH_X86(CALL(avx::cull_triangle_raw));
         PTEST_SEPARATOR;
 
         free_aligned(data);

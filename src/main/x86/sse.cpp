@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -419,23 +419,6 @@
                 EXPORT1(add_vector_pvk1);
                 EXPORT1(add_vector_pvk2);
 
-                EXPORT1(init_ray_xyz);
-                EXPORT1(init_ray_dxyz);
-                EXPORT1(init_ray_pdv);
-                EXPORT1(init_ray_p2);
-                EXPORT1(init_ray_pv);
-                EXPORT1(init_ray);
-                EXPORT1(calc_ray_xyz);
-                EXPORT1(calc_ray_dxyz);
-                EXPORT1(calc_ray_pdv);
-                EXPORT1(calc_ray_p2);
-                EXPORT1(calc_ray_pv);
-                EXPORT1(calc_ray);
-
-                EXPORT1(init_segment_xyz);
-                EXPORT1(init_segment_p2);
-                EXPORT1(init_segment_pv);
-
                 EXPORT1(init_matrix3d);
                 EXPORT1(init_matrix3d_zero);
                 EXPORT1(init_matrix3d_one);
@@ -455,9 +438,15 @@
                 EXPORT1(transpose_matrix3d1);
                 EXPORT1(transpose_matrix3d2);
 
+                EXPORT1(colocation_x2_v1p2);
+                EXPORT1(colocation_x2_v1pv);
+                EXPORT1(colocation_x3_v1p3);
+                EXPORT1(colocation_x3_v1pv);
+                EXPORT1(colocation_x3_v3p1);
+                EXPORT1(colocation_x3_vvp1);
+
                 EXPORT1(check_point3d_on_triangle_p3p);
                 EXPORT1(check_point3d_on_triangle_pvp);
-                EXPORT1(check_point3d_on_triangle_tp);
 
                 EXPORT1(longest_edge3d_p3);
                 EXPORT1(longest_edge3d_pv);
@@ -467,30 +456,14 @@
                 EXPORT1(check_triplet3d_v2n);
                 EXPORT1(check_triplet3d_vvn);
                 EXPORT1(check_triplet3d_vv);
-                EXPORT1(check_triplet3d_t);
-                EXPORT1(check_triplet3d_tn);
-
-        //            EXPORT1(reflect_ray);
-
-                EXPORT1(calc_angle3d_v2);
-                EXPORT1(calc_angle3d_vv);
 
                 EXPORT1(calc_normal3d_p3);
                 EXPORT1(calc_normal3d_pv);
                 EXPORT1(calc_normal3d_v2);
                 EXPORT1(calc_normal3d_vv);
 
-                EXPORT1(move_point3d_p2);
-                EXPORT1(move_point3d_pv);
                 EXPORT1(calc_split_point_p2v1);
                 EXPORT1(calc_split_point_pvv1);
-
-                EXPORT1(colocation_x2_v1p2);
-                EXPORT1(colocation_x2_v1pv);
-                EXPORT1(colocation_x3_v1p3);
-                EXPORT1(colocation_x3_v1pv);
-                EXPORT1(colocation_x3_v3p1);
-                EXPORT1(colocation_x3_vvp1);
 
                 EXPORT1(calc_plane_p3);
                 EXPORT1(calc_plane_pv);
@@ -500,9 +473,6 @@
                 EXPORT1(calc_area_pv);
                 EXPORT1(calc_min_distance_p3);
                 EXPORT1(calc_min_distance_pv);
-
-                EXPORT1(split_triangle_raw);
-                EXPORT1(cull_triangle_raw);
 
                 EXPORT1(convolve);
                 EXPORT1(corr_init);

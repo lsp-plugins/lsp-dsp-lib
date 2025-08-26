@@ -498,10 +498,6 @@ namespace lsp
             EXPORT1(init_normal3d_dxyz);
             EXPORT1(init_normal3d);
 
-            EXPORT1(init_segment_xyz);
-            EXPORT1(init_segment_p2);
-            EXPORT1(init_segment_pv);
-
             EXPORT1(init_matrix3d);
             EXPORT1(init_matrix3d_zero);
             EXPORT1(init_matrix3d_one);
@@ -518,8 +514,6 @@ namespace lsp
             EXPORT1(init_matrix3d_lookat_p1v2);
             EXPORT1(init_matrix3d_lookat_p2v1);
             EXPORT1(init_matrix3d_orientation);
-            EXPORT1(calc_matrix3d_transform_r1);
-            EXPORT1(calc_matrix3d_transform_p1v1);
             EXPORT1(apply_matrix3d_mv2);
             EXPORT1(apply_matrix3d_mv1);
             EXPORT1(apply_matrix3d_mp2);
@@ -529,56 +523,22 @@ namespace lsp
             EXPORT1(transpose_matrix3d1);
             EXPORT1(transpose_matrix3d2);
 
-            EXPORT1(init_ray_xyz);
-            EXPORT1(init_ray_dxyz);
-            EXPORT1(init_ray_pdv);
-            EXPORT1(init_ray_p2);
-            EXPORT1(init_ray_pv);
-            EXPORT1(init_ray);
-            EXPORT1(calc_ray_xyz);
-            EXPORT1(calc_ray_dxyz);
-            EXPORT1(calc_ray_pdv);
-            EXPORT1(calc_ray_p2);
-            EXPORT1(calc_ray_pv);
-            EXPORT1(calc_ray);
-
-            EXPORT1(calc_triangle3d_params);
-            EXPORT1(init_triangle3d_xyz);
-            EXPORT1(init_triangle3d_p3);
-            EXPORT1(init_triangle3d_pv);
-            EXPORT1(init_triangle3d);
-            EXPORT1(calc_triangle3d_xyz);
-            EXPORT1(calc_triangle3d_p3);
-            EXPORT1(calc_triangle3d_pv);
-            EXPORT1(calc_triangle3d);
-
             EXPORT1(check_triplet3d_p3n);
             EXPORT1(check_triplet3d_pvn);
             EXPORT1(check_triplet3d_v2n);
             EXPORT1(check_triplet3d_vvn);
             EXPORT1(check_triplet3d_vv);
-            EXPORT1(check_triplet3d_t);
-            EXPORT1(check_triplet3d_tn);
 
             EXPORT1(check_point3d_on_triangle_p3p);
             EXPORT1(check_point3d_on_triangle_pvp);
-            EXPORT1(check_point3d_on_triangle_tp);
 
             EXPORT1(longest_edge3d_p3);
             EXPORT1(longest_edge3d_pv);
-
-            EXPORT1(calc_angle3d_v2);
-            EXPORT1(calc_angle3d_vv);
 
             EXPORT1(calc_normal3d_p3);
             EXPORT1(calc_normal3d_pv);
             EXPORT1(calc_normal3d_v2);
             EXPORT1(calc_normal3d_vv);
-
-            EXPORT1(move_point3d_p2);
-            EXPORT1(move_point3d_pv);
-
-            EXPORT1(calc_bound_box);
 
             EXPORT1(calc_plane_p3);
             EXPORT1(calc_plane_pv);
@@ -602,9 +562,6 @@ namespace lsp
             EXPORT1(calc_distance_pv);
             EXPORT1(calc_distance_v1);
             EXPORT1(calc_sqr_distance_pv);
-
-            EXPORT1(projection_length_p2);
-            EXPORT1(projection_length_v2);
 
             EXPORT1(split_triangle_raw);
             EXPORT1(cull_triangle_raw);

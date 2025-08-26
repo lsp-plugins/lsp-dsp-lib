@@ -32,8 +32,6 @@ namespace lsp
         float check_triplet3d_v2n(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::vector3d_t *n);
         float check_triplet3d_vvn(const dsp::vector3d_t *v, const dsp::vector3d_t *n);
         float check_triplet3d_vv(const dsp::vector3d_t *v);
-        float check_triplet3d_t(const dsp::triangle3d_t *t);
-        float check_triplet3d_tn(const dsp::triangle3d_t *t, const dsp::vector3d_t *n);
     }
 
     IF_ARCH_X86(
@@ -44,8 +42,21 @@ namespace lsp
             float check_triplet3d_v2n(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::vector3d_t *n);
             float check_triplet3d_vvn(const dsp::vector3d_t *v, const dsp::vector3d_t *n);
             float check_triplet3d_vv(const dsp::vector3d_t *v);
-            float check_triplet3d_t(const dsp::triangle3d_t *t);
-            float check_triplet3d_tn(const dsp::triangle3d_t *t, const dsp::vector3d_t *n);
+        }
+
+        namespace avx
+        {
+            float check_triplet3d_p3n(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3, const dsp::vector3d_t *n);
+            float check_triplet3d_pvn(const dsp::point3d_t *pv, const dsp::vector3d_t *n);
+            float check_triplet3d_v2n(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::vector3d_t *n);
+            float check_triplet3d_vvn(const dsp::vector3d_t *v, const dsp::vector3d_t *n);
+            float check_triplet3d_vv(const dsp::vector3d_t *v);
+
+            float check_triplet3d_p3n_fma3(const dsp::point3d_t *p1, const dsp::point3d_t *p2, const dsp::point3d_t *p3, const dsp::vector3d_t *n);
+            float check_triplet3d_pvn_fma3(const dsp::point3d_t *pv, const dsp::vector3d_t *n);
+            float check_triplet3d_v2n_fma3(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::vector3d_t *n);
+            float check_triplet3d_vvn_fma3(const dsp::vector3d_t *v, const dsp::vector3d_t *n);
+            float check_triplet3d_vv_fma3(const dsp::vector3d_t *v);
         }
     )
 
@@ -54,8 +65,6 @@ namespace lsp
     typedef float (* check_triplet3d_v2n_t)(const dsp::vector3d_t *v1, const dsp::vector3d_t *v2, const dsp::vector3d_t *n);
     typedef float (* check_triplet3d_vvn_t)(const dsp::vector3d_t *v, const dsp::vector3d_t *n);
     typedef float (* check_triplet3d_vv_t)(const dsp::vector3d_t *v);
-    typedef float (* check_triplet3d_t_t)(const dsp::triangle3d_t *t);
-    typedef float (* check_triplet3d_tn_t)(const dsp::triangle3d_t *t, const dsp::vector3d_t *n);
 }
 
 UTEST_BEGIN("dsp.3d", triplet)
@@ -66,27 +75,36 @@ UTEST_BEGIN("dsp.3d", triplet)
             check_triplet3d_pvn_t check_triplet3d_pvn,
             check_triplet3d_v2n_t check_triplet3d_v2n,
             check_triplet3d_vvn_t check_triplet3d_vvn,
-            check_triplet3d_vv_t check_triplet3d_vv,
-            check_triplet3d_t_t check_triplet3d_t,
-            check_triplet3d_tn_t check_triplet3d_tn
+            check_triplet3d_vv_t check_triplet3d_vv
         )
     {
         if ((!UTEST_SUPPORTED(check_triplet3d_p3n)) ||
             (!UTEST_SUPPORTED(check_triplet3d_pvn)) ||
             (!UTEST_SUPPORTED(check_triplet3d_v2n)) ||
             (!UTEST_SUPPORTED(check_triplet3d_vvn)) ||
-            (!UTEST_SUPPORTED(check_triplet3d_vv)) ||
-            (!UTEST_SUPPORTED(check_triplet3d_t)) ||
-            (!UTEST_SUPPORTED(check_triplet3d_tn))
+            (!UTEST_SUPPORTED(check_triplet3d_vv))
         )
             return;
 
         printf("Launching %s implementation\n", label);
 
-        dsp::triangle3d_t t[3];
-        dsp::calc_triangle3d_xyz(&t[0], 1.0f, 1.0f, 1.0f, 2.0f, 2.0f, 1.0f, -3.0f, 3.0f, 1.0f);
-        dsp::calc_triangle3d_xyz(&t[1], 1.0f, 2.0f, 2.0f, 1.0f, 1.0f, 1.0f, 1.0f, 3.0f, -3.0f);
-        dsp::calc_triangle3d_xyz(&t[2], 1.0f, 1.0f, 2.0f, 2.0f, 1.0f, 2.0f, 3.0f, 1.0f, -3.0f);
+        typedef struct triangle3d_t
+        {
+            dsp::point3d_t p[3];
+        } triangle3d_t;
+
+        triangle3d_t t[3];
+        dsp::init_point_xyz(&t[0].p[0], 1.0f, 1.0f, 1.0f);
+        dsp::init_point_xyz(&t[0].p[1], 2.0f, 2.0f, 1.0f);
+        dsp::init_point_xyz(&t[0].p[2], -3.0f, 3.0f, 1.0f);
+
+        dsp::init_point_xyz(&t[1].p[0], 1.0f, 2.0f, 2.0f);
+        dsp::init_point_xyz(&t[1].p[1], 1.0f, 1.0f, 1.0f);
+        dsp::init_point_xyz(&t[1].p[2], 1.0f, 3.0f, -3.0f);
+
+        dsp::init_point_xyz(&t[2].p[0], 1.0f, 1.0f, 2.0f);
+        dsp::init_point_xyz(&t[2].p[1], 2.0f, 1.0f, 2.0f);
+        dsp::init_point_xyz(&t[2].p[2], 3.0f, 1.0f, -3.0f);
 
         dsp::vector3d_t n1, n2;
         dsp::init_vector_dxyz(&n1, 1.0f, 1.0f, 1.0f);
@@ -95,10 +113,6 @@ UTEST_BEGIN("dsp.3d", triplet)
         for (size_t i=0; i<3; ++i)
         {
             printf("Checking triangle %d\n", int(i));
-
-            UTEST_ASSERT(check_triplet3d_t(&t[i]) >= 0.0f);
-            UTEST_ASSERT(check_triplet3d_tn(&t[i], &n1) >= 0.0f);
-            UTEST_ASSERT(check_triplet3d_tn(&t[i], &n2) <= 0.0f);
 
             UTEST_ASSERT(check_triplet3d_p3n(&t[i].p[0], &t[i].p[1], &t[i].p[2], &n1) >= 0.0f);
             UTEST_ASSERT(check_triplet3d_p3n(&t[i].p[0], &t[i].p[1], &t[i].p[2], &n2) <= 0.0f);
@@ -128,25 +142,37 @@ UTEST_BEGIN("dsp.3d", triplet)
 
     UTEST_MAIN
     {
-        call("generic_ck_triplet",
-                generic::check_triplet3d_p3n,
-                generic::check_triplet3d_pvn,
-                generic::check_triplet3d_v2n,
-                generic::check_triplet3d_vvn,
-                generic::check_triplet3d_vv,
-                generic::check_triplet3d_t,
-                generic::check_triplet3d_tn
-                );
+        call(
+            "generic::ck_triplet",
+            generic::check_triplet3d_p3n,
+            generic::check_triplet3d_pvn,
+            generic::check_triplet3d_v2n,
+            generic::check_triplet3d_vvn,
+            generic::check_triplet3d_vv);
 
-        IF_ARCH_X86(call("sse_ck_triplet",
-                sse::check_triplet3d_p3n,
-                sse::check_triplet3d_pvn,
-                sse::check_triplet3d_v2n,
-                sse::check_triplet3d_vvn,
-                sse::check_triplet3d_vv,
-                sse::check_triplet3d_t,
-                sse::check_triplet3d_tn
-                ));
+        IF_ARCH_X86(call(
+            "sse::ck_triplet",
+            sse::check_triplet3d_p3n,
+            sse::check_triplet3d_pvn,
+            sse::check_triplet3d_v2n,
+            sse::check_triplet3d_vvn,
+            sse::check_triplet3d_vv));
+
+        IF_ARCH_X86(call(
+            "avx::ck_triplet",
+            avx::check_triplet3d_p3n,
+            avx::check_triplet3d_pvn,
+            avx::check_triplet3d_v2n,
+            avx::check_triplet3d_vvn,
+            avx::check_triplet3d_vv));
+
+        IF_ARCH_X86(call(
+            "avx_fma3::ck_triplet",
+            avx::check_triplet3d_p3n_fma3,
+            avx::check_triplet3d_pvn_fma3,
+            avx::check_triplet3d_v2n_fma3,
+            avx::check_triplet3d_vvn_fma3,
+            avx::check_triplet3d_vv_fma3));
     }
 
 UTEST_END
