@@ -33,13 +33,13 @@ namespace lsp
         void logb1(float *dst, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i] = ::logf(dst[i]) * (float)M_LOG2E;
+                dst[i] = ::logf(dst[i]) * M_LOG2E;
         }
 
         void logb2(float *dst, const float *src, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i] = ::logf(src[i]) * (float)M_LOG2E;
+                dst[i] = ::logf(src[i]) * M_LOG2E;
         }
 
         void loge1(float *dst, size_t count)
