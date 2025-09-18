@@ -46,17 +46,17 @@ namespace lsp
 
             static const float LOGB_C[] __lsp_aligned32 =
             {
-                LSP_DSP_VEC8(2.0f * M_LOG2E)
+                LSP_DSP_VEC8(2.0f * (float)M_LOG2E)
             };
 
             static const float LOGE_C[] __lsp_aligned32 =
             {
-                LSP_DSP_VEC8(1.0f / M_LOG2E)
+                LSP_DSP_VEC8(1.0f / (float)M_LOG2E)
             };
 
             static const float LOGD_C[] __lsp_aligned32 =
             {
-                LSP_DSP_VEC8(2.0f * M_LOG10E),
+                LSP_DSP_VEC8(2.0f * (float)M_LOG10E),
                 LSP_DSP_VEC8(0.301029995663981f) // 1/log2(10)
             };
         )
