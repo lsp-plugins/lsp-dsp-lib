@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -33,13 +33,13 @@ namespace lsp
         void logb1(float *dst, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i] = ::logf(dst[i]) * M_LOG2E;
+                dst[i] = ::logf(dst[i]) * float(M_LOG2E);
         }
 
         void logb2(float *dst, const float *src, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i] = ::logf(src[i]) * M_LOG2E;
+                dst[i] = ::logf(src[i]) * float(M_LOG2E);
         }
 
         void loge1(float *dst, size_t count)
@@ -65,7 +65,8 @@ namespace lsp
             for (size_t i=0; i<count; ++i)
                 dst[i] = ::log10f(src[i]);
         }
-    }
-}
+
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_PMATH_LOG_H_ */

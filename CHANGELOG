@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.32 ===
+* Fixed compilation warnings for Clang.
+
 === 1.0.31 ===
 * Implementation of 3D mathematics using AVX instruction set.
 * Fixed improper AVX-512 optimization for lanczos kernel genration function.
