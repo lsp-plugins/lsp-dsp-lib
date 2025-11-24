@@ -354,6 +354,8 @@ namespace lsp
             EXPORT1(pcomplex_r2c);
             EXPORT1(pcomplex_c2r);
             EXPORT1(pcomplex_mod);
+            EXPORT1(pcomplex_mod_add2);
+            EXPORT1(pcomplex_mod_add3);
             EXPORT1(pcomplex_arg);
             EXPORT1(pcomplex_modarg);
             EXPORT1(pcomplex_corr);

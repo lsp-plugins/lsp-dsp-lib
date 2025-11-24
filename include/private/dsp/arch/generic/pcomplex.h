@@ -205,6 +205,33 @@ namespace lsp
             }
         }
 
+        void pcomplex_mod_add2(float *dst, const float *src, size_t count)
+        {
+            while (count--)
+            {
+                float re        = src[0];
+                float im        = src[1];
+                *dst           += sqrtf(re*re + im*im);
+
+                src            += 2;
+                ++dst;
+            }
+        }
+
+        void pcomplex_mod_add3(float *dst, const float * src, const float *reim, size_t count)
+        {
+            while (count--)
+            {
+                float re        = reim[0];
+                float im        = reim[1];
+                *dst            = *src + sqrtf(re*re + im*im);
+
+                reim           += 2;
+                ++dst;
+                ++src;
+            }
+        }
+
         void pcomplex_arg(float *dst, const float *src, size_t count)
         {
             for (; count > 0; --count, src += 2)

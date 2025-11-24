@@ -119,11 +119,31 @@ LSP_DSP_LIB_SYMBOL(void, pcomplex_c2r, float *dst, const float *src, size_t coun
 
 /** Get module for complex numbers: mod = sqrt(re*re + im*im)
  *
- * @param dst_mod array to sore module
+ * @param dst_mod array to store module
  * @param src packed complex number data
  * @param count count number of elements to process
  */
 LSP_DSP_LIB_SYMBOL(void, pcomplex_mod, float *dst_mod, const float *src, size_t count);
+
+/**
+ * Get module for complex numbers and add to destination:
+ *   dst[i] = dst[i] + sqrt(re[i]*re[i] + im[i]*im[i])
+ *
+ * @param dst array to add module
+ * @param src packed complex number data
+ * @param count count number of elements to process
+ */
+LSP_DSP_LIB_SYMBOL(void, pcomplex_mod_add2, float *dst, const float *src, size_t count);
+
+/**
+ * Get module for complex numbers and add to destination:
+ *   dst[i] = src1[i] + sqrt(re[i]*re[i] + im[i]*im[i])
+ *
+ * @param dst array to add module
+ * @param src packed complex number data
+ * @param count count number of elements to process
+ */
+LSP_DSP_LIB_SYMBOL(void, pcomplex_mod_add3, float *dst, const float *src, const float *reim, size_t count);
 
 /** Convert packed complex number to polar form
  *
