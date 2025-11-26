@@ -25,6 +25,7 @@
 #include <lsp-plug.in/dsp/common/types.h>
 
 #include <lsp-plug.in/dsp/common/pmath/abs_vv.h>
+#include <lsp-plug.in/dsp/common/pmath/clamp.h>
 #include <lsp-plug.in/dsp/common/pmath/cos.h>
 #include <lsp-plug.in/dsp/common/pmath/exp.h>
 #include <lsp-plug.in/dsp/common/pmath/fmop_kx.h>
@@ -36,6 +37,7 @@
 #include <lsp-plug.in/dsp/common/pmath/normalize.h>
 #include <lsp-plug.in/dsp/common/pmath/op_kx.h>
 #include <lsp-plug.in/dsp/common/pmath/op_vv.h>
+#include <lsp-plug.in/dsp/common/pmath/pmix.h>
 #include <lsp-plug.in/dsp/common/pmath/pow.h>
 #include <lsp-plug.in/dsp/common/pmath/sin.h>
 #include <lsp-plug.in/dsp/common/pmath/sqr.h>

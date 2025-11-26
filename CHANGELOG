@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.33 ===
-
+* Added clamp and pmix functions.
 
 === 1.0.32 ===
 * Fixed compilation warnings for Clang.
