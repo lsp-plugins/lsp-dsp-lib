@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL */
 
 #include <private/dsp/arch/aarch64/asimd/pmath/abs_vv.h>
+#include <private/dsp/arch/aarch64/asimd/pmath/clamp.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/cos.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/exp.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/fmop_kx.h>
@@ -37,6 +38,7 @@
 #include <private/dsp/arch/aarch64/asimd/pmath/minmax.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/op_kx.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/op_vv.h>
+#include <private/dsp/arch/aarch64/asimd/pmath/pmix.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/pow.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/sin.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/sqr.h>
