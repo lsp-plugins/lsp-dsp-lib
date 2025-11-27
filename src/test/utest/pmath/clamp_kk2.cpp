@@ -117,7 +117,7 @@ UTEST_BEGIN("dsp.pmath", clamp_kk2)
 
         IF_ARCH_X86(CALL(generic::clamp_kk2, sse::clamp_kk2, 16));
         IF_ARCH_X86(CALL(generic::clamp_kk2, avx::clamp_kk2, 32));
-//        IF_ARCH_X86(CALL(generic::clamp_kk2, avx512::clamp_kk2, 32));
+        IF_ARCH_X86(CALL(generic::clamp_kk2, avx512::clamp_kk2, 32));
 //        IF_ARCH_ARM(CALL(generic::clamp_kk2, neon_d32::clamp_kk2, 16));
 //        IF_ARCH_AARCH64(CALL(generic::clamp_kk2, asimd::clamp_kk2, 16));
     }

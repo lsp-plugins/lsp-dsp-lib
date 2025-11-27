@@ -108,7 +108,7 @@ PTEST_BEGIN("dsp.pmath", clamp_kk2, 5, 1000)
             CALL(generic::clamp_kk2);
             IF_ARCH_X86(CALL(sse::clamp_kk2));
             IF_ARCH_X86(CALL(avx::clamp_kk2));
-//            IF_ARCH_X86(CALL(avx512::clamp_kk2));
+            IF_ARCH_X86(CALL(avx512::clamp_kk2));
 //            IF_ARCH_ARM(CALL(neon_d32::clamp_kk2));
 //            IF_ARCH_AARCH64(CALL(asimd::clamp_kk2));
             PTEST_SEPARATOR;

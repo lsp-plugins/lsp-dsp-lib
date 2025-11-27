@@ -225,10 +225,10 @@ namespace lsp
             ARCH_X86_ASM
             (
                 __ASM_EMIT("xor         %[off], %[off]")
-                __ASM_EMIT("shufps      $0x00, %[min], %[min]")
-                __ASM_EMIT("shufps      $0x00, %[max], %[max]")
-                __ASM_EMIT("movaps      %[min], %%xmm6")
-                __ASM_EMIT("movaps      %[max], %%xmm7")
+                __ASM_EMIT("movss       %[min], %%xmm6")
+                __ASM_EMIT("movss       %[max], %%xmm7")
+                __ASM_EMIT("shufps      $0x00, %%xmm6, %%xmm6")
+                __ASM_EMIT("shufps      $0x00, %%xmm7, %%xmm7")
                 // 16x blocks
                 __ASM_EMIT("sub         $16, %[count]")
                 __ASM_EMIT("jb          2f")
@@ -290,9 +290,9 @@ namespace lsp
                 __ASM_EMIT("jge         7b")
                 // End
                 __ASM_EMIT("8:")
-                : [off] "=&r" (off), [count] "+r" (count),
-                  [min] "+x" (min), [max] "+x" (max)
-                : [dst] "r" (dst)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst),
+                  [min] "m" (min), [max] "m" (max)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm6", "%xmm7"
@@ -305,10 +305,10 @@ namespace lsp
             ARCH_X86_ASM
             (
                 __ASM_EMIT("xor         %[off], %[off]")
-                __ASM_EMIT("shufps      $0x00, %[min], %[min]")
-                __ASM_EMIT("shufps      $0x00, %[max], %[max]")
-                __ASM_EMIT("movaps      %[min], %%xmm6")
-                __ASM_EMIT("movaps      %[max], %%xmm7")
+                __ASM_EMIT("movss       %[min], %%xmm6")
+                __ASM_EMIT("movss       %[max], %%xmm7")
+                __ASM_EMIT("shufps      $0x00, %%xmm6, %%xmm6")
+                __ASM_EMIT("shufps      $0x00, %%xmm7, %%xmm7")
                 // 16x blocks
                 __ASM_EMIT("sub         $16, %[count]")
                 __ASM_EMIT("jb          2f")
@@ -370,9 +370,9 @@ namespace lsp
                 __ASM_EMIT("jge         7b")
                 // End
                 __ASM_EMIT("8:")
-                : [off] "=&r" (off), [count] "+r" (count),
-                  [min] "+x" (min), [max] "+x" (max)
-                : [dst] "r" (dst), [src] "r" (src)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [src] "r" (src),
+                  [min] "m" (min), [max] "m" (max)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm6", "%xmm7"
