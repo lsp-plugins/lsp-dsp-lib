@@ -120,7 +120,7 @@ UTEST_BEGIN("dsp.pmath", clamp_vv1)
             call(#func, align, generic, func)
 
         IF_ARCH_X86(CALL(generic::clamp_vv1, sse::clamp_vv1, 16));
-//        IF_ARCH_X86(CALL(generic::clamp_vv1, avx::clamp_vv1, 32));
+        IF_ARCH_X86(CALL(generic::clamp_vv1, avx::clamp_vv1, 32));
 //        IF_ARCH_X86(CALL(generic::clamp_vv1, avx512::clamp_vv1, 32));
 //        IF_ARCH_ARM(CALL(generic::clamp_vv1, neon_d32::clamp_vv1, 16));
 //        IF_ARCH_AARCH64(CALL(generic::clamp_vv1, asimd::clamp_vv1, 16));
