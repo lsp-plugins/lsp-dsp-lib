@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL */
 
 #include <private/dsp/arch/arm/neon-d32/pmath/abs_vv.h>
+#include <private/dsp/arch/arm/neon-d32/pmath/clamp.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/cos.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/exp.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/fmop_kx.h>
@@ -37,6 +38,7 @@
 #include <private/dsp/arch/arm/neon-d32/pmath/minmax.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/op_kx.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/op_vv.h>
+#include <private/dsp/arch/arm/neon-d32/pmath/pmix.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/pow.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/sin.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/sqr.h>
