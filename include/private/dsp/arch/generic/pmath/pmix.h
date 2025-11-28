@@ -39,7 +39,7 @@ namespace lsp
         void pmix_v2(float *dst, const float *src1, const float *src2, const float *k, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]      = (src2[i] - src1[i])*k[i];
+                dst[i]      = src1[i] + (src2[i] - src1[i])*k[i];
         }
 
         void pmix_k1(float *dst, const float *src, float k, size_t count)
@@ -51,7 +51,7 @@ namespace lsp
         void pmix_k2(float *dst, const float *src1, const float *src2, float k, size_t count)
         {
             for (size_t i=0; i<count; ++i)
-                dst[i]      = (src2[i] - src1[i])*k;
+                dst[i]      = src1[i] + (src2[i] - src1[i])*k;
         }
 
     } /* namespace generic */
