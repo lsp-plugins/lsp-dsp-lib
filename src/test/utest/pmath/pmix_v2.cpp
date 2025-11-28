@@ -125,7 +125,7 @@ UTEST_BEGIN("dsp.pmath", pmix_v2)
         IF_ARCH_X86(CALL(generic::pmix_v2, sse::pmix_v2, 16));
         IF_ARCH_X86(CALL(generic::pmix_v2, avx::pmix_v2, 32));
         IF_ARCH_X86(CALL(generic::pmix_v2, avx::pmix_v2_fma3, 32));
-//        IF_ARCH_X86(CALL(generic::pmix_v2, avx512::pmix_v2, 64));
+        IF_ARCH_X86(CALL(generic::pmix_v2, avx512::pmix_v2, 64));
 //        IF_ARCH_ARM(CALL(generic::pmix_v2, neon_d32::pmix_v2, 16));
 //        IF_ARCH_AARCH64(CALL(generic::pmix_v2, asimd::pmix_v2, 16));
     }
