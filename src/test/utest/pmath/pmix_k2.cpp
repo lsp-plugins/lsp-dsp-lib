@@ -120,8 +120,8 @@ UTEST_BEGIN("dsp.pmath", pmix_k2)
             call(#func, align, generic, func)
 
         IF_ARCH_X86(CALL(generic::pmix_k2, sse::pmix_k2, 16));
-//        IF_ARCH_X86(CALL(generic::pmix_k2, avx::pmix_k2, 32));
-//        IF_ARCH_X86(CALL(generic::pmix_k2, avx::pmix_k2_fma3, 32));
+        IF_ARCH_X86(CALL(generic::pmix_k2, avx::pmix_k2, 32));
+        IF_ARCH_X86(CALL(generic::pmix_k2, avx::pmix_k2_fma3, 32));
 //        IF_ARCH_X86(CALL(generic::pmix_k2, avx512::pmix_k2, 64));
 //        IF_ARCH_ARM(CALL(generic::pmix_k2, neon_d32::pmix_k2, 16));
 //        IF_ARCH_AARCH64(CALL(generic::pmix_k2, asimd::pmix_k1, 16));

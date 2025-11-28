@@ -110,8 +110,8 @@ PTEST_BEGIN("dsp.pmath", pmix_k2, 5, 1000)
 
             CALL(generic::pmix_k2);
             IF_ARCH_X86(CALL(sse::pmix_k2));
-//            IF_ARCH_X86(CALL(avx::pmix_k2));
-//            IF_ARCH_X86(CALL(avx::pmix_k2_fma3));
+            IF_ARCH_X86(CALL(avx::pmix_k2));
+            IF_ARCH_X86(CALL(avx::pmix_k2_fma3));
 //            IF_ARCH_X86(CALL(avx512::pmix_k2));
 //            IF_ARCH_ARM(CALL(neon_d32::pmix_k2));
 //            IF_ARCH_AARCH64(CALL(asimd::pmix_k2));
