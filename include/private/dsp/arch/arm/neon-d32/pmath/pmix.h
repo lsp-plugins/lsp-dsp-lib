@@ -30,7 +30,283 @@ namespace lsp
 {
     namespace neon_d32
     {
+        void pmix_v1(float *dst, const float *src, const float *k, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                // x16 blocks
+                __ASM_EMIT("subs        %[count], #16")
+                __ASM_EMIT("blo         2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vldm        %[dst], {q0-q3}")           // q0   = d
+                __ASM_EMIT("vldm        %[src]!, {q4-q7}")          // q4   = s
+                __ASM_EMIT("vldm        %[k]!, {q8-q11}")           // q8   = k
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vsub.f32    q5, q5, q1")
+                __ASM_EMIT("vsub.f32    q6, q6, q2")
+                __ASM_EMIT("vsub.f32    q7, q7, q3")
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("vmla.f32    q1, q5, q9")
+                __ASM_EMIT("vmla.f32    q2, q6, q10")
+                __ASM_EMIT("vmla.f32    q3, q7, q11")
+                __ASM_EMIT("subs        %[count], #16")
+                __ASM_EMIT("vstm        %[dst]!, {q0-q3}")
+                __ASM_EMIT("bhs         1b")
+                // x8 block
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds        %[count], #8")
+                __ASM_EMIT("blt         4f")
+                __ASM_EMIT("vldm        %[dst], {q0-q1}")           // q0   = d
+                __ASM_EMIT("vldm        %[src]!, {q4-q5}")          // q4   = s
+                __ASM_EMIT("vldm        %[k]!, {q8-q9}")            // q8   = k
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vsub.f32    q5, q5, q1")
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("vmla.f32    q1, q5, q9")
+                __ASM_EMIT("sub         %[count], #8")
+                __ASM_EMIT("vstm        %[dst]!, {q0-q1}")
+                // x4 blocks
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds        %[count], #4")
+                __ASM_EMIT("blt         6f")
+                __ASM_EMIT("vldm        %[dst], {q0}")              // q0   = d
+                __ASM_EMIT("vldm        %[src]!, {q4}")             // q4   = s
+                __ASM_EMIT("vldm        %[k]!, {q8}")               // q8   = k
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("sub         %[count], #4")
+                __ASM_EMIT("vstm        %[dst]!, {q0}")
+                // x1 blocks
+                __ASM_EMIT("6:")
+                __ASM_EMIT("adds        %[count], #3")
+                __ASM_EMIT("blt         8f")
+                __ASM_EMIT("7:")
+                __ASM_EMIT("vld1.32     {d0[], d1[]}, [%[dst]]")    // q0   = d
+                __ASM_EMIT("vld1.32     {d8[], d9[]}, [%[src]]!")   // q4   = s
+                __ASM_EMIT("vld1.32     {d16[], d17[]}, [%[k]]!")   // q8   = k
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("subs        %[count], #1")
+                __ASM_EMIT("vst1.32     {d0[0]}, [%[dst]]!")
+                __ASM_EMIT("bge         7b")
+                // end
+                __ASM_EMIT("8:")
 
+                : [dst] "+r" (dst), [src] "+r" (src), [k] "+r" (k),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
+        void pmix_v2(float *dst, const float *src1, const float *src2, const float *k, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                // x16 blocks
+                __ASM_EMIT("subs        %[count], #16")
+                __ASM_EMIT("blo         2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vldm        %[src1]!, {q0-q3}")         // q0   = d
+                __ASM_EMIT("vldm        %[src2]!, {q4-q7}")         // q4   = s
+                __ASM_EMIT("vldm        %[k]!, {q8-q11}")           // q8   = k
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vsub.f32    q5, q5, q1")
+                __ASM_EMIT("vsub.f32    q6, q6, q2")
+                __ASM_EMIT("vsub.f32    q7, q7, q3")
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("vmla.f32    q1, q5, q9")
+                __ASM_EMIT("vmla.f32    q2, q6, q10")
+                __ASM_EMIT("vmla.f32    q3, q7, q11")
+                __ASM_EMIT("subs        %[count], #16")
+                __ASM_EMIT("vstm        %[dst]!, {q0-q3}")
+                __ASM_EMIT("bhs         1b")
+                // x8 block
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds        %[count], #8")
+                __ASM_EMIT("blt         4f")
+                __ASM_EMIT("vldm        %[src1]!, {q0-q1}")         // q0   = d
+                __ASM_EMIT("vldm        %[src2]!, {q4-q5}")         // q4   = s
+                __ASM_EMIT("vldm        %[k]!, {q8-q9}")            // q8   = k
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vsub.f32    q5, q5, q1")
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("vmla.f32    q1, q5, q9")
+                __ASM_EMIT("sub         %[count], #8")
+                __ASM_EMIT("vstm        %[dst]!, {q0-q1}")
+                // x4 blocks
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds        %[count], #4")
+                __ASM_EMIT("blt         6f")
+                __ASM_EMIT("vldm        %[src1]!, {q0}")            // q0   = d
+                __ASM_EMIT("vldm        %[src2]!, {q4}")            // q4   = s
+                __ASM_EMIT("vldm        %[k]!, {q8}")               // q8   = k
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("sub         %[count], #4")
+                __ASM_EMIT("vstm        %[dst]!, {q0}")
+                // x1 blocks
+                __ASM_EMIT("6:")
+                __ASM_EMIT("adds        %[count], #3")
+                __ASM_EMIT("blt         8f")
+                __ASM_EMIT("7:")
+                __ASM_EMIT("vld1.32     {d0[], d1[]}, [%[src1]]!")  // q0   = d
+                __ASM_EMIT("vld1.32     {d8[], d9[]}, [%[src2]]!")  // q4   = s
+                __ASM_EMIT("vld1.32     {d16[], d17[]}, [%[k]]!")   // q8   = k
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("subs        %[count], #1")
+                __ASM_EMIT("vst1.32     {d0[0]}, [%[dst]]!")
+                __ASM_EMIT("bge         7b")
+                // end
+                __ASM_EMIT("8:")
+
+                : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2), [k] "+r" (k),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
+        void pmix_k1(float *dst, const float *src, float k, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                // x16 blocks
+                __ASM_EMIT("subs        %[count], #16")
+                __ASM_EMIT("vld1.32     {d16[], d17[]}, [%[k]]")    // q8   = k
+                __ASM_EMIT("blo         2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vldm        %[dst], {q0-q3}")           // q0   = d
+                __ASM_EMIT("vldm        %[src]!, {q4-q7}")          // q4   = s
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vsub.f32    q5, q5, q1")
+                __ASM_EMIT("vsub.f32    q6, q6, q2")
+                __ASM_EMIT("vsub.f32    q7, q7, q3")
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("vmla.f32    q1, q5, q8")
+                __ASM_EMIT("vmla.f32    q2, q6, q8")
+                __ASM_EMIT("vmla.f32    q3, q7, q8")
+                __ASM_EMIT("subs        %[count], #16")
+                __ASM_EMIT("vstm        %[dst]!, {q0-q3}")
+                __ASM_EMIT("bhs         1b")
+                // x8 block
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds        %[count], #8")
+                __ASM_EMIT("blt         4f")
+                __ASM_EMIT("vldm        %[dst], {q0-q1}")           // q0   = d
+                __ASM_EMIT("vldm        %[src]!, {q4-q5}")          // q4   = s
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vsub.f32    q5, q5, q1")
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("vmla.f32    q1, q5, q8")
+                __ASM_EMIT("sub         %[count], #8")
+                __ASM_EMIT("vstm        %[dst]!, {q0-q1}")
+                // x4 blocks
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds        %[count], #4")
+                __ASM_EMIT("blt         6f")
+                __ASM_EMIT("vldm        %[dst], {q0}")              // q0   = d
+                __ASM_EMIT("vldm        %[src]!, {q4}")             // q4   = s
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("sub         %[count], #4")
+                __ASM_EMIT("vstm        %[dst]!, {q0}")
+                // x1 blocks
+                __ASM_EMIT("6:")
+                __ASM_EMIT("adds        %[count], #3")
+                __ASM_EMIT("blt         8f")
+                __ASM_EMIT("7:")
+                __ASM_EMIT("vld1.32     {d0[], d1[]}, [%[dst]]")    // q0   = d
+                __ASM_EMIT("vld1.32     {d8[], d9[]}, [%[src]]!")   // q4   = s
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("subs        %[count], #1")
+                __ASM_EMIT("vst1.32     {d0[0]}, [%[dst]]!")
+                __ASM_EMIT("bge         7b")
+                // end
+                __ASM_EMIT("8:")
+
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                : [k] "r" (&k)
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
+                  "q8"
+            );
+        }
+
+        void pmix_k2(float *dst, const float *src1, const float *src2, float k, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                // x16 blocks
+                __ASM_EMIT("subs        %[count], #16")
+                __ASM_EMIT("vld1.32     {d16[], d17[]}, [%[k]]")    // q8   = k
+                __ASM_EMIT("blo         2f")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("vldm        %[src1]!, {q0-q3}")         // q0   = d
+                __ASM_EMIT("vldm        %[src2]!, {q4-q7}")         // q4   = s
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vsub.f32    q5, q5, q1")
+                __ASM_EMIT("vsub.f32    q6, q6, q2")
+                __ASM_EMIT("vsub.f32    q7, q7, q3")
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("vmla.f32    q1, q5, q8")
+                __ASM_EMIT("vmla.f32    q2, q6, q8")
+                __ASM_EMIT("vmla.f32    q3, q7, q8")
+                __ASM_EMIT("subs        %[count], #16")
+                __ASM_EMIT("vstm        %[dst]!, {q0-q3}")
+                __ASM_EMIT("bhs         1b")
+                // x8 block
+                __ASM_EMIT("2:")
+                __ASM_EMIT("adds        %[count], #8")
+                __ASM_EMIT("blt         4f")
+                __ASM_EMIT("vldm        %[src1]!, {q0-q1}")         // q0   = d
+                __ASM_EMIT("vldm        %[src2]!, {q4-q5}")         // q4   = s
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vsub.f32    q5, q5, q1")
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("vmla.f32    q1, q5, q8")
+                __ASM_EMIT("sub         %[count], #8")
+                __ASM_EMIT("vstm        %[dst]!, {q0-q1}")
+                // x4 blocks
+                __ASM_EMIT("4:")
+                __ASM_EMIT("adds        %[count], #4")
+                __ASM_EMIT("blt         6f")
+                __ASM_EMIT("vldm        %[src1]!, {q0}")            // q0   = d
+                __ASM_EMIT("vldm        %[src2]!, {q4}")            // q4   = s
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("sub         %[count], #4")
+                __ASM_EMIT("vstm        %[dst]!, {q0}")
+                // x1 blocks
+                __ASM_EMIT("6:")
+                __ASM_EMIT("adds        %[count], #3")
+                __ASM_EMIT("blt         8f")
+                __ASM_EMIT("7:")
+                __ASM_EMIT("vld1.32     {d0[], d1[]}, [%[src1]]!")  // q0   = d
+                __ASM_EMIT("vld1.32     {d8[], d9[]}, [%[src2]]!")  // q4   = s
+                __ASM_EMIT("vsub.f32    q4, q4, q0")                // q4   = s - d
+                __ASM_EMIT("vmla.f32    q0, q4, q8")                // q0   = d + (s-d)*k
+                __ASM_EMIT("subs        %[count], #1")
+                __ASM_EMIT("vst1.32     {d0[0]}, [%[dst]]!")
+                __ASM_EMIT("bge         7b")
+                // end
+                __ASM_EMIT("8:")
+
+                : [dst] "+r" (dst), [src1] "+r" (src1), [src2] "+r" (src2),
+                  [count] "+r" (count)
+                : [k] "r" (&k)
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7",
+                  "q8"
+            );
+        }
     } /* namespace neon_d32 */
 } /* namespace lsp */
 
