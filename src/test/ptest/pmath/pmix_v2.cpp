@@ -116,7 +116,7 @@ PTEST_BEGIN("dsp.pmath", pmix_v2, 5, 1000)
             IF_ARCH_X86(CALL(avx::pmix_v2_fma3));
             IF_ARCH_X86(CALL(avx512::pmix_v2));
             IF_ARCH_ARM(CALL(neon_d32::pmix_v2));
-//            IF_ARCH_AARCH64(CALL(asimd::pmix_v2));
+            IF_ARCH_AARCH64(CALL(asimd::pmix_v2));
             PTEST_SEPARATOR;
         }
 
