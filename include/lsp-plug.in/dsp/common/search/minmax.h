@@ -75,20 +75,18 @@ LSP_DSP_LIB_SYMBOL(float, sign_min, const float *src, size_t count);
 /** Calculate min { src }, max { src }
  *
  * @param src source vector
+ * @param count number of elements
  * @param min pointer to store minimum value
  * @param max pointer to store maximum value
- * @param count number of elements
- * @return maximum value
  */
 LSP_DSP_LIB_SYMBOL(void, minmax, const float *src, size_t count, float *min, float *max);
 
 /** Calculate min { abs(src) }, max { abs(src) }
  *
  * @param src source vector
+ * @param count number of elements
  * @param min pointer to store minimum value
  * @param max pointer to store maximum value
- * @param count number of elements
- * @return maximum value
  */
 LSP_DSP_LIB_SYMBOL(void, abs_minmax, const float *src, size_t count, float *min, float *max);
 
@@ -97,10 +95,9 @@ LSP_DSP_LIB_SYMBOL(void, abs_minmax, const float *src, size_t count, float *min,
  *    max = src[i] : abs(src[i]) -> max
  *
  * @param src source vector
+ * @param count number of elements
  * @param min pointer to store minimum value
  * @param max pointer to store maximum value
- * @param count number of elements
- * @return maximum value
  */
 LSP_DSP_LIB_SYMBOL(void, sign_minmax, const float *src, size_t count, float *min, float *max);
 
