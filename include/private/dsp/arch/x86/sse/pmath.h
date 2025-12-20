@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_IMPL */
 
 #include <private/dsp/arch/x86/sse/pmath/abs_vv.h>
+#include <private/dsp/arch/x86/sse/pmath/clamp.h>
 #include <private/dsp/arch/x86/sse/pmath/fmop_kx.h>
 #include <private/dsp/arch/x86/sse/pmath/fmop_vv.h>
 #include <private/dsp/arch/x86/sse/pmath/lramp.h>
@@ -34,6 +35,7 @@
 #include <private/dsp/arch/x86/sse/pmath/normalize.h>
 #include <private/dsp/arch/x86/sse/pmath/op_kx.h>
 #include <private/dsp/arch/x86/sse/pmath/op_vv.h>
+#include <private/dsp/arch/x86/sse/pmath/pmix.h>
 #include <private/dsp/arch/x86/sse/pmath/sqr.h>
 #include <private/dsp/arch/x86/sse/pmath/ssqrt.h>
 

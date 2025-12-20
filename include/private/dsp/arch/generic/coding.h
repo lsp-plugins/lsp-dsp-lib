@@ -87,7 +87,11 @@ namespace lsp
             {
                 // Enough space?
                 if (dl < 4)
-                    break;
+                {
+                    *dst_left   = dl;
+                    *src_left   = sl;
+                    return n;
+                }
 
                 // Perform encode
                 uint32_t x  = (s[0] << 16) | (s[1] << 8) | s[2];
@@ -147,7 +151,11 @@ namespace lsp
             {
                 // Enough space?
                 if (dl < 3)
+                {
+                    *dst_left   = dl;
+                    *src_left   = sl;
                     break;
+                }
 
                 x       = (base64_lookup[s[0]] << 18) |
                           (base64_lookup[s[1]] << 12) |

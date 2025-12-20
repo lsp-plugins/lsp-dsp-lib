@@ -491,6 +491,16 @@
                 EXPORT1(check_point3d_on_triangle_p3p);
                 EXPORT1(check_point3d_on_triangle_pvp);
 
+                EXPORT1(clamp_vv1);
+                EXPORT1(clamp_vv2);
+                EXPORT1(clamp_kk1);
+                EXPORT1(clamp_kk2);
+
+                EXPORT1(pmix_v1);
+                EXPORT1(pmix_v2);
+                EXPORT1(pmix_k1);
+                EXPORT1(pmix_k2);
+
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)
                 {
@@ -615,6 +625,11 @@
 
                     CEXPORT2(favx, check_point3d_on_triangle_p3p, check_point3d_on_triangle_p3p_fma3);
                     CEXPORT2(favx, check_point3d_on_triangle_pvp, check_point3d_on_triangle_pvp_fma3);
+
+                    CEXPORT2(favx, pmix_v1, pmix_v1_fma3);
+                    CEXPORT2(favx, pmix_v2, pmix_v2_fma3);
+                    CEXPORT2(favx, pmix_k1, pmix_k1_fma3);
+                    CEXPORT2(favx, pmix_k2, pmix_k2_fma3);
                 }
             }
 

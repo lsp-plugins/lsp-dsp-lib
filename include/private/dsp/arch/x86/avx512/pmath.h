@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_X86_AVX512_IMPL */
 
 #include <private/dsp/arch/x86/avx512/pmath/abs_vv.h>
+#include <private/dsp/arch/x86/avx512/pmath/clamp.h>
 #include <private/dsp/arch/x86/avx512/pmath/cos.h>
 #include <private/dsp/arch/x86/avx512/pmath/exp.h>
 #include <private/dsp/arch/x86/avx512/pmath/fmop_kx.h>
@@ -38,6 +39,7 @@
 #include <private/dsp/arch/x86/avx512/pmath/normalize.h>
 #include <private/dsp/arch/x86/avx512/pmath/op_kx.h>
 #include <private/dsp/arch/x86/avx512/pmath/op_vv.h>
+#include <private/dsp/arch/x86/avx512/pmath/pmix.h>
 #include <private/dsp/arch/x86/avx512/pmath/sin.h>
 #include <private/dsp/arch/x86/avx512/pmath/sqr.h>
 #include <private/dsp/arch/x86/avx512/pmath/ssqrt.h>

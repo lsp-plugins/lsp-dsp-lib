@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_GENERIC_IMPL */
 
 #include <private/dsp/arch/generic/pmath/abs_vv.h>
+#include <private/dsp/arch/generic/pmath/clamp.h>
 #include <private/dsp/arch/generic/pmath/cos.h>
 #include <private/dsp/arch/generic/pmath/exp.h>
 #include <private/dsp/arch/generic/pmath/fmop_kx.h>
@@ -38,6 +39,7 @@
 #include <private/dsp/arch/generic/pmath/normalize.h>
 #include <private/dsp/arch/generic/pmath/op_kx.h>
 #include <private/dsp/arch/generic/pmath/op_vv.h>
+#include <private/dsp/arch/generic/pmath/pmix.h>
 #include <private/dsp/arch/generic/pmath/pow.h>
 #include <private/dsp/arch/generic/pmath/sin.h>
 #include <private/dsp/arch/generic/pmath/sqr.h>

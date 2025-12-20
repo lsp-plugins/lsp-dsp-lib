@@ -355,6 +355,16 @@
                 CEXPORT1(vl, reverse_fft);
                 CEXPORT1(vl, normalize_fft2);
                 CEXPORT1(vl, normalize_fft3);
+
+                CEXPORT1(vl, clamp_vv1);
+                CEXPORT1(vl, clamp_vv2);
+                CEXPORT1(vl, clamp_kk1);
+                CEXPORT1(vl, clamp_kk2);
+
+                CEXPORT1(vl, pmix_v1);
+                CEXPORT1(vl, pmix_v2);
+                CEXPORT1(vl, pmix_k1);
+                CEXPORT1(vl, pmix_k2);
             }
         } /* namespace avx2 */
     } /* namespace lsp */

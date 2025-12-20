@@ -165,6 +165,11 @@ namespace lsp
             EXPORT1(ssqrt1);
             EXPORT1(ssqrt2);
 
+            EXPORT1(clamp_vv1);
+            EXPORT1(clamp_vv2);
+            EXPORT1(clamp_kk1);
+            EXPORT1(clamp_kk2);
+
             EXPORT1(sinf1);
             EXPORT1(sinf2);
             EXPORT1(sinf_kp1);
@@ -256,6 +261,11 @@ namespace lsp
             EXPORT1(psmax3);
             EXPORT1(pamin3);
             EXPORT1(pamax3);
+
+            EXPORT1(pmix_v1);
+            EXPORT1(pmix_v2);
+            EXPORT1(pmix_k1);
+            EXPORT1(pmix_k2);
 
             EXPORT1(h_sum);
             EXPORT1(h_sqr_sum);
@@ -354,6 +364,8 @@ namespace lsp
             EXPORT1(pcomplex_r2c);
             EXPORT1(pcomplex_c2r);
             EXPORT1(pcomplex_mod);
+            EXPORT1(pcomplex_mod_add2);
+            EXPORT1(pcomplex_mod_add3);
             EXPORT1(pcomplex_arg);
             EXPORT1(pcomplex_modarg);
             EXPORT1(pcomplex_corr);

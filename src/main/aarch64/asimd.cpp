@@ -480,6 +480,16 @@
                 EXPORT1(uexpander_x1_curve);
                 EXPORT1(dexpander_x1_gain);
                 EXPORT1(dexpander_x1_curve);
+
+                EXPORT1(clamp_vv1);
+                EXPORT1(clamp_vv2);
+                EXPORT1(clamp_kk1);
+                EXPORT1(clamp_kk2);
+
+                EXPORT1(pmix_v1);
+                EXPORT1(pmix_v2);
+                EXPORT1(pmix_k1);
+                EXPORT1(pmix_k2);
             }
         } /* namespace asimd */
     } /* namespace lsp */
