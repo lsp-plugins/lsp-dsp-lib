@@ -508,7 +508,8 @@ namespace lsp
                 __ASM_EMIT("vexpandps               0x80(%[src], %[off]), %%zmm4 %{%%k4%}%{z%}")
                 __ASM_EMIT("vexpandps               0xa0(%[src], %[off]), %%zmm5 %{%%k4%}%{z%}")
                 __ASM_EMIT("vexpandps               0xc0(%[src], %[off]), %%zmm6 %{%%k4%}%{z%}")
-                __ASM_EMIT("vexpandps               0xe0(%[src], %[off]), %%zmm7 %{%%k4%}%{z%}")
+                __ASM_EMIT("vmovups                 0xe0(%[src], %[off]), %%ymm7")
+                __ASM_EMIT("vexpandps               %%zmm7, %%zmm7 %{%%k4%}%{z%}")
                 __ASM_EMIT("vaddps                  0x000(%[dst], %[off], 2), %%zmm0, %%zmm0")  /* zmm0 = r0+s0 i0 r1+s1 i1 r2+s2 i2 r3+s3 i3 */
                 __ASM_EMIT("vaddps                  0x040(%[dst], %[off], 2), %%zmm1, %%zmm1")
                 __ASM_EMIT("vaddps                  0x080(%[dst], %[off], 2), %%zmm2, %%zmm2")
@@ -632,7 +633,8 @@ namespace lsp
                 __ASM_EMIT("vexpandps               0x80(%[src], %[off]), %%zmm4 %{%%k4%}%{z%}")
                 __ASM_EMIT("vexpandps               0xa0(%[src], %[off]), %%zmm5 %{%%k4%}%{z%}")
                 __ASM_EMIT("vexpandps               0xc0(%[src], %[off]), %%zmm6 %{%%k4%}%{z%}")
-                __ASM_EMIT("vexpandps               0xe0(%[src], %[off]), %%zmm7 %{%%k4%}%{z%}")
+                __ASM_EMIT("vmovups                 0xe0(%[src], %[off]), %%ymm7")
+                __ASM_EMIT("vexpandps               %%zmm7, %%zmm7 %{%%k4%}%{z%}")
                 __ASM_EMIT("vsubps                  0x000(%[dst], %[off], 2), %%zmm0, %%zmm0")  /* zmm0 = s0-r0 i0 ... */
                 __ASM_EMIT("vsubps                  0x040(%[dst], %[off], 2), %%zmm1, %%zmm1")
                 __ASM_EMIT("vsubps                  0x080(%[dst], %[off], 2), %%zmm2, %%zmm2")
@@ -753,7 +755,8 @@ namespace lsp
                 __ASM_EMIT("vexpandps               0x00(%[src], %[off]), %%zmm0 %{%%k4%}%{z%}")/* zmm0 = s0 0 ... */
                 __ASM_EMIT("vexpandps               0x20(%[src], %[off]), %%zmm1 %{%%k4%}%{z%}")
                 __ASM_EMIT("vexpandps               0x40(%[src], %[off]), %%zmm2 %{%%k4%}%{z%}")
-                __ASM_EMIT("vexpandps               0x60(%[src], %[off]), %%zmm3 %{%%k4%}%{z%}")
+                __ASM_EMIT("vmovups                 0x60(%[src], %[off]), %%ymm3")
+                __ASM_EMIT("vexpandps               %%zmm3, %%zmm3 %{%%k4%}%{z%}")
                 __ASM_EMIT("vmovups                 0x00(%[dst], %[off], 2), %%zmm4")           /* zmm4 = r0 i0 ... */
                 __ASM_EMIT("vmovups                 0x40(%[dst], %[off], 2), %%zmm5")
                 __ASM_EMIT("vmovups                 0x80(%[dst], %[off], 2), %%zmm6")
@@ -882,7 +885,8 @@ namespace lsp
                 __ASM_EMIT("vexpandps               0x80(%[src], %[off]), %%zmm4 %{%%k4%}%{z%}")
                 __ASM_EMIT("vexpandps               0xa0(%[src], %[off]), %%zmm5 %{%%k4%}%{z%}")
                 __ASM_EMIT("vexpandps               0xc0(%[src], %[off]), %%zmm6 %{%%k4%}%{z%}")
-                __ASM_EMIT("vexpandps               0xe0(%[src], %[off]), %%zmm7 %{%%k4%}%{z%}")
+                __ASM_EMIT("vmovups                 0xe0(%[src], %[off]), %%ymm7")
+                __ASM_EMIT("vexpandps               %%zmm7, %%zmm7 %{%%k4%}%{z%}")
                 __ASM_EMIT("vmovsldup               %%zmm0, %%zmm0")                            /* zmm0 = s0 s0 ... */
                 __ASM_EMIT("vmovsldup               %%zmm1, %%zmm1")
                 __ASM_EMIT("vmovsldup               %%zmm2, %%zmm2")
@@ -1009,7 +1013,8 @@ namespace lsp
                 __ASM_EMIT("vexpandps               0x00(%[src], %[off]), %%zmm0 %{%%k4%}%{z%}")/* zmm0 = s0 0 ... */
                 __ASM_EMIT("vexpandps               0x20(%[src], %[off]), %%zmm1 %{%%k4%}%{z%}")
                 __ASM_EMIT("vexpandps               0x40(%[src], %[off]), %%zmm2 %{%%k4%}%{z%}")
-                __ASM_EMIT("vexpandps               0x60(%[src], %[off]), %%zmm3 %{%%k4%}%{z%}")
+                __ASM_EMIT("vmovups                 0x60(%[src], %[off]), %%ymm3")
+                __ASM_EMIT("vexpandps               %%zmm3, %%zmm3 %{%%k4%}%{z%}")
                 __ASM_EMIT("vmovups                 0x000(%[dst], %[off], 2), %%zmm4")          /* zmm4 = r0 i0 ... */
                 __ASM_EMIT("vmovups                 0x040(%[dst], %[off], 2), %%zmm5")
                 __ASM_EMIT("vmovups                 0x080(%[dst], %[off], 2), %%zmm6")
@@ -1141,7 +1146,8 @@ namespace lsp
                 __ASM_EMIT("vexpandps               0x80(%[src], %[off]), %%zmm4 %{%%k4%}%{z%}")
                 __ASM_EMIT("vexpandps               0xa0(%[src], %[off]), %%zmm5 %{%%k4%}%{z%}")
                 __ASM_EMIT("vexpandps               0xc0(%[src], %[off]), %%zmm6 %{%%k4%}%{z%}")
-                __ASM_EMIT("vexpandps               0xe0(%[src], %[off]), %%zmm7 %{%%k4%}%{z%}")
+                __ASM_EMIT("vmovups                 0xe0(%[src], %[off]), %%ymm7")
+                __ASM_EMIT("vexpandps               %%zmm7, %%zmm7 %{%%k4%}%{z%}")
                 __ASM_EMIT("vmovups                 %%zmm0, 0x000(%[dst], %[off], 2)")
                 __ASM_EMIT("vmovups                 %%zmm1, 0x040(%[dst], %[off], 2)")
                 __ASM_EMIT("vmovups                 %%zmm2, 0x080(%[dst], %[off], 2)")
