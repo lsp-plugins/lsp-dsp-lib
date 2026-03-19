@@ -19,19 +19,27 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define FFT_PSCRAMBLE_LOAD4X2(re, im) \
-    __ASM_EMIT("vinsertps       $0x00, (%[src], %[index], 8), " re ", " re)             /* re   = R0 x  x  x        */ \
-    __ASM_EMIT("vinsertps       $0x00, 0x04(%[src], %[index], 8), " im ", " im)         /* im   = I0 x  x  x        */ \
+#define FFT_PSCRAMBLE_LOAD4X4(dst, a, b, c, d) \
+    __ASM_EMIT("vmovlps         (%[src], %[index], 8), " a ", " a)                  /* a    = R0 I0 x  x        */ \
     __ASM_EMIT("add             %[regs], %[index]") \
-    __ASM_EMIT("vinsertps       $0x10, (%[src], %[index], 8), " re ", " re)             /* re   = R0 R1 x  x        */ \
-    __ASM_EMIT("vinsertps       $0x10, 0x04(%[src], %[index], 8), " im ", " im)         /* im   = I0 I1 x  x        */ \
+    __ASM_EMIT("vmovhps         (%[src], %[index], 8), " a ", " a)                  /* a    = R0 I0 R1 I1       */ \
     __ASM_EMIT("add             %[regs], %[index]") \
-    __ASM_EMIT("vinsertps       $0x20, (%[src], %[index], 8), " re ", " re)             /* re   = R0 R1 R2 x        */ \
-    __ASM_EMIT("vinsertps       $0x20, 0x04(%[src], %[index], 8), " im ", " im)         /* im   = I0 I1 I2 x        */ \
+    __ASM_EMIT("vmovlps         (%[src], %[index], 8), " b ", " b)                  /* a    = R2 I2 x  x        */ \
     __ASM_EMIT("add             %[regs], %[index]") \
-    __ASM_EMIT("vinsertps       $0x30, (%[src], %[index], 8), " re ", " re)             /* re   = R0 R1 R2 R3       */ \
-    __ASM_EMIT("vinsertps       $0x30, 0x04(%[src], %[index], 8), " im ", " im)         /* im   = I0 I1 I2 I3       */ \
-    __ASM_EMIT("add             %[regs], %[index]")
+    __ASM_EMIT("vmovhps         (%[src], %[index], 8), " b ", " b)                  /* a    = R2 I2 R3 I3       */ \
+    __ASM_EMIT("add             %[regs], %[index]") \
+    __ASM_EMIT("vinsertf32x4    $01, " b ", " dst ", " dst)                         /* dst  = R0 I0 R1 I1 R2 I2 R3 I3  x  x  x  x  x  x  x  x */ \
+    __ASM_EMIT("vmovlps         (%[src], %[index], 8), " c ", " c)                  /* a    = R4 I4 x  x        */ \
+    __ASM_EMIT("add             %[regs], %[index]") \
+    __ASM_EMIT("vmovhps         (%[src], %[index], 8), " c ", " c)                  /* a    = R4 I4 R5 I5       */ \
+    __ASM_EMIT("add             %[regs], %[index]") \
+    __ASM_EMIT("vinsertf32x4    $02, " c ", " dst ", " dst)                         /* dst  = R0 I0 R1 I1 R2 I2 R3 I3 R4 I4 R5 I5  x  x  x  x */ \
+    __ASM_EMIT("vmovlps         (%[src], %[index], 8), " d ", " d)                  /* a    = R6 I6 x  x        */ \
+    __ASM_EMIT("add             %[regs], %[index]") \
+    __ASM_EMIT("vmovhps         (%[src], %[index], 8), " d ", " d)                  /* a    = R6 I6 R7 I7       */ \
+    __ASM_EMIT("add             %[regs], %[index]") \
+    __ASM_EMIT("vinsertf32x4    $03, " d ", " dst ", " dst)                         /* dst  = R0 I0 R1 I1 R2 I2 R3 I3 R4 I4 R5 I5 R6 I6 R7 I7 */
+
 
 namespace lsp
 {
@@ -555,34 +563,33 @@ namespace lsp
                 size_t index    = reverse_bits(FFT_TYPE(i), rank);
 
                 ARCH_X86_ASM(
-                    /* Load even indices */
                     __ASM_EMIT("vmovaps         0x280 + %[FFT_I], %%zmm7")                      /* zmm7 = indices */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm0", "%%xmm2")                                   /* xmm0 = r0  r16 r8  r24, xmm2 = i0  i16 i8  i24 */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm4", "%%xmm5")                                   /* xmm4 = r4  r20 r12 r28, xmm5 = i4  i20 i12 i28 */
-                    __ASM_EMIT("vinsertf32x4    $01, %%xmm4, %%zmm0, %%zmm0")                   /* zmm0 = r0  r16 r8  r24 r4  r20 r12 r28 x   x   x   x   x   x   x   x   */
-                    __ASM_EMIT("vinsertf32x4    $01, %%xmm5, %%zmm2, %%zmm2")                   /* zmm2 = i0  i16 i8  i24 i4  i20 i12 i28 x   x   x   x   x   x   x   x   */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm4", "%%xmm5")                                   /* xmm4 = r2  r18 r10 r26, xmm5 = i2  i18 i10 i26 */
-                    __ASM_EMIT("vinsertf32x4    $02, %%xmm4, %%zmm0, %%zmm0")                   /* zmm0 = r0  r16 r8  r24 r4  r20 r12 r28 r2  r18 r10 r26 x   x   x   x   */
-                    __ASM_EMIT("vinsertf32x4    $02, %%xmm5, %%zmm2, %%zmm2")                   /* zmm2 = i0  i16 i8  i24 i4  i20 i12 i28 i2  i18 i10 i26 x   x   x   x   */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm4", "%%xmm5")                                   /* xmm4 = r6  r22 r14 r30, xmm5 = i6  i22 i14 i30 */
-                    __ASM_EMIT("vinsertf32x4    $03, %%xmm4, %%zmm0, %%zmm0")                   /* zmm0 = r0  r16 r8  r24 r4  r20 r12 r28 r2  r18 r10 r26 r6  r22 r14 r30 */
-                    __ASM_EMIT("vinsertf32x4    $03, %%xmm5, %%zmm2, %%zmm2")                   /* zmm2 = i0  i16 i8  i24 i4  i20 i12 i28 i2  i18 i10 i26 i6  i22 i14 i30 */
+                    /* Load even indices */
+                    FFT_PSCRAMBLE_LOAD4X4("%%zmm0", "%%xmm0", "%%xmm4", "%%xmm5", "%%xmm6")     /* zmm0 = r0  i0 r16 i16  r8  i8 r24 i24  r4  i4 r20 i20 r12 i12 r28 i28 */
+                    FFT_PSCRAMBLE_LOAD4X4("%%zmm2", "%%xmm2", "%%xmm4", "%%xmm5", "%%xmm6")     /* zmm2 = r2  i2 r18  i8 r10 i10 r26 i26  r6  i6 r22 i22 r14 i14 r30 i30 */
                     /* Load odd indices */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm1", "%%xmm3")                                   /* xmm1 = r1  r17 r9  r25, xmm3 = i1  i17 i9  i25 */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm4", "%%xmm5")                                   /* xmm4 = r5  r21 r13 r29, xmm5 = i5  i21 i13 i29 */
-                    __ASM_EMIT("vinsertf32x4    $01, %%xmm4, %%zmm1, %%zmm1")                   /* zmm1 = r1  r17 r9  r25 r5  r21 r13 r29 x   x   x   x   x   x   x   x   */
-                    __ASM_EMIT("vinsertf32x4    $01, %%xmm5, %%zmm3, %%zmm3")                   /* zmm3 = i1  i17 i9  i25 i5  i21 i13 i29 x   x   x   x   x   x   x   x   */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm4", "%%xmm5")                                   /* xmm4 = r3  r19 r11 r27, xmm5 = i3  i19 i11 i27 */
-                    __ASM_EMIT("vinsertf32x4    $02, %%xmm4, %%zmm1, %%zmm1")                   /* zmm1 = r1  r17 r9  r25 r5  r21 r13 r29 r3  r19 r11 r27 x   x   x   x   */
-                    __ASM_EMIT("vinsertf32x4    $02, %%xmm5, %%zmm3, %%zmm3")                   /* zmm3 = i1  i17 i9  i25 i5  i21 i13 i29 i3  i19 i11 i27 x   x   x   x   */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm4", "%%xmm5")                                   /* xmm4 = r7  r23 r15 r31, xmm5 = i7  i23 i15 i31 */
-                    __ASM_EMIT("vinsertf32x4    $03, %%xmm4, %%zmm1, %%zmm1")                   /* zmm1 = r1  r17 r9  r25 r5  r21 r13 r29 r3  r19 r11 r27 r7  r23 r15 r31 */
-                    __ASM_EMIT("vinsertf32x4    $03, %%xmm5, %%zmm3, %%zmm3")                   /* zmm3 = i1  i17 i9  i25 i5  i21 i13 i29 i3  i19 i11 i27 i7  i23 i15 i31 */
+                    FFT_PSCRAMBLE_LOAD4X4("%%zmm1", "%%xmm1", "%%xmm4", "%%xmm5", "%%xmm6")     /* zmm1 = r1  i1 r17 i17  r9  i9 r25 i25  r5  i5 r21 i21 r13 i13 r29 i29 */
+                    FFT_PSCRAMBLE_LOAD4X4("%%zmm3", "%%xmm3", "%%xmm4", "%%xmm5", "%%xmm6")     /* zmm3 = r3  i3 r19 i19 r11 i11 r27 i27  r7  i7 r23 i23 r15 i15 r31 i31 */
+                    /* Unpack complex numbers */
+                    __ASM_EMIT("kmovw           0x00 + %[MASK], %%k4")
+                    __ASM_EMIT("kmovw           0x02 + %[MASK], %%k5")
+                    __ASM_EMIT("vcompressps     %%zmm0, %%zmm4 %{%%k5%}")                       /* zmm4 =  i0 i16  i8 i24  i4 i20 i12 i28   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vcompressps     %%zmm2, %%zmm5 %{%%k5%}")                       /* zmm5 =  i2  i8 i10 i26  i6 i22 i14 i30   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vcompressps     %%zmm0, %%zmm0 %{%%k4%}")                       /* zmm0 =  r0 r16  r8 r24  r4 r20 r12 r28   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vcompressps     %%zmm2, %%zmm6 %{%%k4%}")                       /* zmm6 =  r2  r8 r10 r26  r6 r22 r14 r30   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vinsertf64x4    $1, %%ymm6, %%zmm0, %%zmm0")                    /* zmm0 =  r0 r16  r8 r24  r4 r20 r12 r28  r2 r18 r10 r26  r6 r22 r14 r30   */
+                    __ASM_EMIT("vinsertf64x4    $1, %%ymm5, %%zmm4, %%zmm2")                    /* zmm2 =  i0 i16  i8 i24  i4 i20 i12 i28  i2 i18 i10 i26  i6 i22 i14 i30   */
+                    __ASM_EMIT("vcompressps     %%zmm1, %%zmm4 %{%%k5%}")                       /* zmm4 =  i1 i17  i9 i25  i5 i21 i13 i29   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vcompressps     %%zmm3, %%zmm5 %{%%k5%}")                       /* zmm5 =  i3 i19 i11 i27  i7 i23 i15 i31   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vcompressps     %%zmm1, %%zmm1 %{%%k4%}")                       /* zmm1 =  r1 r17  r9 r25  r5 r21 r13 r29   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vcompressps     %%zmm3, %%zmm6 %{%%k4%}")                       /* zmm6 =  r3 r19 r11 r27  r7 r23 r15 r31   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vinsertf64x4    $1, %%ymm6, %%zmm1, %%zmm1")                    /* zmm1 =  r1 r17  r9 r25  r5 r21 r13 r29  r3 r19 r11 r27  r7 r23 r15 r31   */
+                    __ASM_EMIT("vinsertf64x4    $1, %%ymm5, %%zmm4, %%zmm3")                    /* zmm3 =  i1 i17  i9 i25  i5 i21 i13 i29  i3 i19 i11 i27  i7 i23 i15 i31   */
                     /* Final permute */
-                    __ASM_EMIT("vpermps         %%zmm0, %%zmm7, %%zmm0")                        /* zmm0 = r0 r2 r4 r6 r8 r10 r12 r14 r16 r18 r20 r22 r24 r26 r28 r30 */
-                    __ASM_EMIT("vpermps         %%zmm1, %%zmm7, %%zmm1")                        /* zmm1 = r1 r3 r5 r7 r9 r11 r13 r15 r17 r19 r21 r23 r25 r27 r29 r31 */
-                    __ASM_EMIT("vpermps         %%zmm2, %%zmm7, %%zmm2")                        /* zmm2 = i0 i2 i4 i6 i8 i10 i12 i14 i16 i18 i20 i22 i24 i26 i28 i30 */
-                    __ASM_EMIT("vpermps         %%zmm3, %%zmm7, %%zmm3")                        /* zmm3 = i1 i3 i5 i7 i9 i11 i13 i15 i17 i19 i21 i23 i25 i27 i29 i31 */
+                    __ASM_EMIT("vpermps         %%zmm0, %%zmm7, %%zmm0")                        /* zmm0 =  r0 r2 r4 r6 r8 r10 r12 r14 r16 r18 r20 r22 r24 r26 r28 r30 */
+                    __ASM_EMIT("vpermps         %%zmm1, %%zmm7, %%zmm1")                        /* zmm1 =  r1 r3 r5 r7 r9 r11 r13 r15 r17 r19 r21 r23 r25 r27 r29 r31 */
+                    __ASM_EMIT("vpermps         %%zmm2, %%zmm7, %%zmm2")                        /* zmm2 =  i0 i2 i4 i6 i8 i10 i12 i14 i16 i18 i20 i22 i24 i26 i28 i30 */
+                    __ASM_EMIT("vpermps         %%zmm3, %%zmm7, %%zmm3")                        /* zmm3 =  i1 i3 i5 i7 i9 i11 i13 i15 i17 i19 i21 i23 i25 i27 i29 i31 */
 
                     /* 1st-order 16x butterfly */
                     /* zmm0 = r0 r2 r4 r6 r8 r10 r12 r14 r16 r18 r20 r22 r24 r26 r28 r30 */
@@ -658,7 +665,8 @@ namespace lsp
                     : [src] "r" (src),
                       [regs] "r" (regs),
                       [FFT_A] "o" (FFT_A),
-                      [FFT_I] "o" (FFT_SCRAMBLE_INDICES)
+                      [FFT_I] "o" (FFT_SCRAMBLE_INDICES),
+                      [MASK] "o" (FFT_REPACK_MASKS)
                     : "cc", "memory",
                       "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                       "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -675,29 +683,28 @@ namespace lsp
                 size_t index    = reverse_bits(FFT_TYPE(i), rank);
 
                 ARCH_X86_ASM(
-                    /* Load even indices */
                     __ASM_EMIT("vmovaps         0x280 + %[FFT_I], %%zmm7")                      /* zmm7 = indices */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm0", "%%xmm2")                                   /* xmm0 = r0  r16 r8  r24, xmm2 = i0  i16 i8  i24 */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm4", "%%xmm5")                                   /* xmm4 = r4  r20 r12 r28, xmm5 = i4  i20 i12 i28 */
-                    __ASM_EMIT("vinsertf32x4    $01, %%xmm4, %%zmm0, %%zmm0")                   /* zmm0 = r0  r16 r8  r24 r4  r20 r12 r28 x   x   x   x   x   x   x   x   */
-                    __ASM_EMIT("vinsertf32x4    $01, %%xmm5, %%zmm2, %%zmm2")                   /* zmm2 = i0  i16 i8  i24 i4  i20 i12 i28 x   x   x   x   x   x   x   x   */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm4", "%%xmm5")                                   /* xmm4 = r2  r18 r10 r26, xmm5 = i2  i18 i10 i26 */
-                    __ASM_EMIT("vinsertf32x4    $02, %%xmm4, %%zmm0, %%zmm0")                   /* zmm0 = r0  r16 r8  r24 r4  r20 r12 r28 r2  r18 r10 r26 x   x   x   x   */
-                    __ASM_EMIT("vinsertf32x4    $02, %%xmm5, %%zmm2, %%zmm2")                   /* zmm2 = i0  i16 i8  i24 i4  i20 i12 i28 i2  i18 i10 i26 x   x   x   x   */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm4", "%%xmm5")                                   /* xmm4 = r6  r22 r14 r30, xmm5 = i6  i22 i14 i30 */
-                    __ASM_EMIT("vinsertf32x4    $03, %%xmm4, %%zmm0, %%zmm0")                   /* zmm0 = r0  r16 r8  r24 r4  r20 r12 r28 r2  r18 r10 r26 r6  r22 r14 r30 */
-                    __ASM_EMIT("vinsertf32x4    $03, %%xmm5, %%zmm2, %%zmm2")                   /* zmm2 = i0  i16 i8  i24 i4  i20 i12 i28 i2  i18 i10 i26 i6  i22 i14 i30 */
+                    /* Load even indices */
+                    FFT_PSCRAMBLE_LOAD4X4("%%zmm0", "%%xmm0", "%%xmm4", "%%xmm5", "%%xmm6")     /* zmm0 = r0  i0 r16 i16  r8  i8 r24 i24  r4  i4 r20 i20 r12 i12 r28 i28 */
+                    FFT_PSCRAMBLE_LOAD4X4("%%zmm2", "%%xmm2", "%%xmm4", "%%xmm5", "%%xmm6")     /* zmm2 = r2  i2 r18  i8 r10 i10 r26 i26  r6  i6 r22 i22 r14 i14 r30 i30 */
                     /* Load odd indices */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm1", "%%xmm3")                                   /* xmm1 = r1  r17 r9  r25, xmm3 = i1  i17 i9  i25 */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm4", "%%xmm5")                                   /* xmm4 = r5  r21 r13 r29, xmm5 = i5  i21 i13 i29 */
-                    __ASM_EMIT("vinsertf32x4    $01, %%xmm4, %%zmm1, %%zmm1")                   /* zmm1 = r1  r17 r9  r25 r5  r21 r13 r29 x   x   x   x   x   x   x   x   */
-                    __ASM_EMIT("vinsertf32x4    $01, %%xmm5, %%zmm3, %%zmm3")                   /* zmm3 = i1  i17 i9  i25 i5  i21 i13 i29 x   x   x   x   x   x   x   x   */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm4", "%%xmm5")                                   /* xmm4 = r3  r19 r11 r27, xmm5 = i3  i19 i11 i27 */
-                    __ASM_EMIT("vinsertf32x4    $02, %%xmm4, %%zmm1, %%zmm1")                   /* zmm1 = r1  r17 r9  r25 r5  r21 r13 r29 r3  r19 r11 r27 x   x   x   x   */
-                    __ASM_EMIT("vinsertf32x4    $02, %%xmm5, %%zmm3, %%zmm3")                   /* zmm3 = i1  i17 i9  i25 i5  i21 i13 i29 i3  i19 i11 i27 x   x   x   x   */
-                    FFT_PSCRAMBLE_LOAD4X2("%%xmm4", "%%xmm5")                                   /* xmm4 = r7  r23 r15 r31, xmm5 = i7  i23 i15 i31 */
-                    __ASM_EMIT("vinsertf32x4    $03, %%xmm4, %%zmm1, %%zmm1")                   /* zmm1 = r1  r17 r9  r25 r5  r21 r13 r29 r3  r19 r11 r27 r7  r23 r15 r31 */
-                    __ASM_EMIT("vinsertf32x4    $03, %%xmm5, %%zmm3, %%zmm3")                   /* zmm3 = i1  i17 i9  i25 i5  i21 i13 i29 i3  i19 i11 i27 i7  i23 i15 i31 */
+                    FFT_PSCRAMBLE_LOAD4X4("%%zmm1", "%%xmm1", "%%xmm4", "%%xmm5", "%%xmm6")     /* zmm1 = r1  i1 r17 i17  r9  i9 r25 i25  r5  i5 r21 i21 r13 i13 r29 i29 */
+                    FFT_PSCRAMBLE_LOAD4X4("%%zmm3", "%%xmm3", "%%xmm4", "%%xmm5", "%%xmm6")     /* zmm3 = r3  i3 r19 i19 r11 i11 r27 i27  r7  i7 r23 i23 r15 i15 r31 i31 */
+                    /* Unpack complex numbers */
+                    __ASM_EMIT("kmovw           0x00 + %[MASK], %%k4")
+                    __ASM_EMIT("kmovw           0x02 + %[MASK], %%k5")
+                    __ASM_EMIT("vcompressps     %%zmm0, %%zmm4 %{%%k5%}")                       /* zmm4 =  i0 i16  i8 i24  i4 i20 i12 i28   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vcompressps     %%zmm2, %%zmm5 %{%%k5%}")                       /* zmm5 =  i2  i8 i10 i26  i6 i22 i14 i30   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vcompressps     %%zmm0, %%zmm0 %{%%k4%}")                       /* zmm0 =  r0 r16  r8 r24  r4 r20 r12 r28   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vcompressps     %%zmm2, %%zmm6 %{%%k4%}")                       /* zmm6 =  r2  r8 r10 r26  r6 r22 r14 r30   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vinsertf64x4    $1, %%ymm6, %%zmm0, %%zmm0")                    /* zmm0 =  r0 r16  r8 r24  r4 r20 r12 r28  r2 r18 r10 r26  r6 r22 r14 r30   */
+                    __ASM_EMIT("vinsertf64x4    $1, %%ymm5, %%zmm4, %%zmm2")                    /* zmm2 =  i0 i16  i8 i24  i4 i20 i12 i28  i2 i18 i10 i26  i6 i22 i14 i30   */
+                    __ASM_EMIT("vcompressps     %%zmm1, %%zmm4 %{%%k5%}")                       /* zmm4 =  i1 i17  i9 i25  i5 i21 i13 i29   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vcompressps     %%zmm3, %%zmm5 %{%%k5%}")                       /* zmm5 =  i3 i19 i11 i27  i7 i23 i15 i31   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vcompressps     %%zmm1, %%zmm1 %{%%k4%}")                       /* zmm1 =  r1 r17  r9 r25  r5 r21 r13 r29   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vcompressps     %%zmm3, %%zmm6 %{%%k4%}")                       /* zmm6 =  r3 r19 r11 r27  r7 r23 r15 r31   ?   ?   ?   ?   ?   ?   ?   ?   */
+                    __ASM_EMIT("vinsertf64x4    $1, %%ymm6, %%zmm1, %%zmm1")                    /* zmm1 =  r1 r17  r9 r25  r5 r21 r13 r29  r3 r19 r11 r27  r7 r23 r15 r31   */
+                    __ASM_EMIT("vinsertf64x4    $1, %%ymm5, %%zmm4, %%zmm3")                    /* zmm3 =  i1 i17  i9 i25  i5 i21 i13 i29  i3 i19 i11 i27  i7 i23 i15 i31   */
                     /* Final permute */
                     __ASM_EMIT("vpermps         %%zmm0, %%zmm7, %%zmm0")                        /* zmm0 = r0 r2 r4 r6 r8 r10 r12 r14 r16 r18 r20 r22 r24 r26 r28 r30 */
                     __ASM_EMIT("vpermps         %%zmm1, %%zmm7, %%zmm1")                        /* zmm1 = r1 r3 r5 r7 r9 r11 r13 r15 r17 r19 r21 r23 r25 r27 r29 r31 */
@@ -778,7 +785,8 @@ namespace lsp
                     : [src] "r" (src),
                       [regs] "r" (regs),
                       [FFT_A] "o" (FFT_A),
-                      [FFT_I] "o" (FFT_SCRAMBLE_INDICES)
+                      [FFT_I] "o" (FFT_SCRAMBLE_INDICES),
+                      [MASK] "o" (FFT_REPACK_MASKS)
                     : "cc", "memory",
                       "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                       "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -794,4 +802,4 @@ namespace lsp
 #undef FFT_PSCRAMBLE_COPY_DIRECT_NAME
 #undef FFT_PSCRAMBLE_COPY_REVERSE_NAME
 #undef FFT_TYPE
-#undef FFT_PSCRAMBLE_LOAD4X2
+#undef FFT_PSCRAMBLE_LOAD4X4
