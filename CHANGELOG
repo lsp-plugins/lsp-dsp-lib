@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.35 ===
-
+* Implemented AVX512-optimized pcomplex_rcp functions.
 
 === 1.0.34 ===
 * Updated module versions in dependencies.

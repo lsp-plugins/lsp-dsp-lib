@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -39,6 +39,12 @@ namespace lsp
         }
 
         namespace avx
+        {
+            void pcomplex_rcp1(float *dst, size_t count);
+            void pcomplex_rcp2(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx512
         {
             void pcomplex_rcp1(float *dst, size_t count);
             void pcomplex_rcp2(float *dst, const float *src, size_t count);
@@ -146,6 +152,8 @@ UTEST_BEGIN("dsp.pcomplex", rcp)
         IF_ARCH_X86(CALL(sse::pcomplex_rcp2, 16));
         IF_ARCH_X86(CALL(avx::pcomplex_rcp1, 32));
         IF_ARCH_X86(CALL(avx::pcomplex_rcp2, 32));
+        IF_ARCH_X86(CALL(avx512::pcomplex_rcp1, 64));
+        IF_ARCH_X86(CALL(avx512::pcomplex_rcp2, 64));
 
         IF_ARCH_ARM(CALL(neon_d32::pcomplex_rcp1, 16));
         IF_ARCH_ARM(CALL(neon_d32::pcomplex_rcp2, 16));

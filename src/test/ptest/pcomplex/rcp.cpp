@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -44,6 +44,12 @@ namespace lsp
         }
 
         namespace avx
+        {
+            void pcomplex_rcp1(float *dst, size_t count);
+            void pcomplex_rcp2(float *dst, const float *src, size_t count);
+        }
+
+        namespace avx512
         {
             void pcomplex_rcp1(float *dst, size_t count);
             void pcomplex_rcp2(float *dst, const float *src, size_t count);
@@ -129,6 +135,7 @@ PTEST_BEGIN("dsp.pcomplex", rcp, 5, 1000)
             CALL1(generic::pcomplex_rcp1);
             IF_ARCH_X86(CALL1(sse::pcomplex_rcp1));
             IF_ARCH_X86(CALL1(avx::pcomplex_rcp1));
+            IF_ARCH_X86(CALL1(avx512::pcomplex_rcp1));
             IF_ARCH_ARM(CALL1(neon_d32::pcomplex_rcp1));
             IF_ARCH_AARCH64(CALL1(asimd::pcomplex_rcp1));
             PTEST_SEPARATOR;
@@ -136,6 +143,7 @@ PTEST_BEGIN("dsp.pcomplex", rcp, 5, 1000)
             CALL2(generic::pcomplex_rcp2);
             IF_ARCH_X86(CALL2(sse::pcomplex_rcp2));
             IF_ARCH_X86(CALL2(avx::pcomplex_rcp2));
+            IF_ARCH_X86(CALL2(avx512::pcomplex_rcp2));
             IF_ARCH_ARM(CALL2(neon_d32::pcomplex_rcp2));
             IF_ARCH_AARCH64(CALL2(asimd::pcomplex_rcp2));
             PTEST_SEPARATOR2;

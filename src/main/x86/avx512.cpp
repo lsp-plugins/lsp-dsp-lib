@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 24 мая 2023 г.
@@ -288,6 +288,8 @@
                 CEXPORT1(vl, pcomplex_r2c_div2);
                 CEXPORT1(vl, pcomplex_c2r);
                 CEXPORT1(vl, pcomplex_corr);
+                CEXPORT1(vl, pcomplex_rcp1);
+                CEXPORT1(vl, pcomplex_rcp2);
 
                 CEXPORT1(vl, min);
                 CEXPORT1(vl, max);
