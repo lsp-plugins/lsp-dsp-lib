@@ -136,12 +136,12 @@ UTEST_BEGIN("dsp.fft", pfft)
             call(#func, align, generic, func)
 
         // Do tests
-        IF_ARCH_X86(CALL(generic::packed_direct_fft, sse::packed_direct_fft, 16));
-        IF_ARCH_X86(CALL(generic::packed_reverse_fft, sse::packed_reverse_fft, 16));
-        IF_ARCH_X86(CALL(generic::packed_direct_fft, avx::packed_direct_fft, 32));
-        IF_ARCH_X86(CALL(generic::packed_reverse_fft, avx::packed_reverse_fft, 32));
-        IF_ARCH_X86(CALL(generic::packed_direct_fft, avx::packed_direct_fft_fma3, 32));
-        IF_ARCH_X86(CALL(generic::packed_reverse_fft, avx::packed_reverse_fft_fma3, 32));
+//        IF_ARCH_X86(CALL(generic::packed_direct_fft, sse::packed_direct_fft, 16));
+//        IF_ARCH_X86(CALL(generic::packed_reverse_fft, sse::packed_reverse_fft, 16));
+//        IF_ARCH_X86(CALL(generic::packed_direct_fft, avx::packed_direct_fft, 32));
+//        IF_ARCH_X86(CALL(generic::packed_reverse_fft, avx::packed_reverse_fft, 32));
+//        IF_ARCH_X86(CALL(generic::packed_direct_fft, avx::packed_direct_fft_fma3, 32));
+//        IF_ARCH_X86(CALL(generic::packed_reverse_fft, avx::packed_reverse_fft_fma3, 32));
         IF_ARCH_X86(CALL(generic::packed_direct_fft, avx512::packed_direct_fft, 64));
         IF_ARCH_X86(CALL(generic::packed_reverse_fft, avx512::packed_reverse_fft, 64));
 

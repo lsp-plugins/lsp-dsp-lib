@@ -21,16 +21,16 @@
 
 #define FFT_PSCRAMBLE_LOAD4X2(re, im) \
     __ASM_EMIT("vinsertps       $0x00, (%[src], %[index], 8), " re ", " re)             /* re   = R0 x  x  x        */ \
-    __ASM_EMIT("vinsertps       $0x04, (%[src], %[index], 8), " im ", " im)             /* im   = I0 x  x  x        */ \
+    __ASM_EMIT("vinsertps       $0x00, 0x04(%[src], %[index], 8), " im ", " im)         /* im   = I0 x  x  x        */ \
     __ASM_EMIT("add             %[regs], %[index]") \
     __ASM_EMIT("vinsertps       $0x10, (%[src], %[index], 8), " re ", " re)             /* re   = R0 R1 x  x        */ \
-    __ASM_EMIT("vinsertps       $0x14, (%[src], %[index], 8), " im ", " im)             /* im   = I0 I1 x  x        */ \
+    __ASM_EMIT("vinsertps       $0x10, 0x04(%[src], %[index], 8), " im ", " im)         /* im   = I0 I1 x  x        */ \
     __ASM_EMIT("add             %[regs], %[index]") \
     __ASM_EMIT("vinsertps       $0x20, (%[src], %[index], 8), " re ", " re)             /* re   = R0 R1 R2 x        */ \
-    __ASM_EMIT("vinsertps       $0x24, (%[src], %[index], 8), " im ", " im)             /* im   = I0 I1 I2 x        */ \
+    __ASM_EMIT("vinsertps       $0x20, 0x04(%[src], %[index], 8), " im ", " im)         /* im   = I0 I1 I2 x        */ \
     __ASM_EMIT("add             %[regs], %[index]") \
     __ASM_EMIT("vinsertps       $0x30, (%[src], %[index], 8), " re ", " re)             /* re   = R0 R1 R2 R3       */ \
-    __ASM_EMIT("vinsertps       $0x34, (%[src], %[index], 8), " im ", " im)             /* im   = I0 I1 I2 I3       */ \
+    __ASM_EMIT("vinsertps       $0x30, 0x04(%[src], %[index], 8), " im ", " im)         /* im   = I0 I1 I2 I3       */ \
     __ASM_EMIT("add             %[regs], %[index]")
 
 namespace lsp
