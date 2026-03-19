@@ -31,7 +31,6 @@ namespace lsp
                 /* Prepare angle */ \
                 __ASM_EMIT("vmovaps         0x00(%[fft_a]), %%zmm6")        /* zmm6 = x_re */ \
                 __ASM_EMIT("vmovaps         0x40(%[fft_a]), %%zmm7")        /* zmm7 = x_im */ \
-                __ASM_EMIT32("mov           %[dst_im], %[ptr2]") \
                 /* Start loop */ \
                 __ASM_EMIT("1:") \
                     __ASM_EMIT("vmovups         0x00(%[dst], %[off1]), %%zmm0")     /* zmm0 = a_re */ \
@@ -53,8 +52,8 @@ namespace lsp
                     __ASM_EMIT("vmovups         %%zmm1, 0x40(%[dst], %[off1])") \
                     __ASM_EMIT("vmovups         %%zmm2, 0x00(%[dst], %[off2])") \
                     __ASM_EMIT("vmovups         %%zmm3, 0x40(%[dst], %[off2])") \
-                    __ASM_EMIT("add             $0x40, %[off1]") \
-                    __ASM_EMIT("add             $0x40, %[off2]") \
+                    __ASM_EMIT("add             $0x80, %[off1]") \
+                    __ASM_EMIT("add             $0x80, %[off2]") \
                     __ASM_EMIT32("subl          $16, %[np]") \
                     __ASM_EMIT64("subq          $16, %[np]") \
                     __ASM_EMIT("jz              2f") \
@@ -79,7 +78,7 @@ namespace lsp
         static inline void packed_butterfly_direct16p(float *dst, size_t rank, size_t blocks)
         {
             size_t pairs = 1 << rank;
-            size_t off1 = 0, shift = sizeof(float) << rank;
+            size_t off1 = 0, shift = 8 << rank;
             const float *fft_a = &FFT_A[(rank - 2) << 5];
             const float *fft_w = &FFT_DW[(rank - 3) << 5];
 
@@ -97,7 +96,7 @@ namespace lsp
         static inline void packed_butterfly_reverse16p(float *dst, size_t rank, size_t blocks)
         {
             size_t pairs = 1 << rank;
-            size_t off1 = 0, shift = sizeof(float) << rank;
+            size_t off1 = 0, shift = 8 << rank;
             const float *fft_a = &FFT_A[(rank - 2) << 5];
             const float *fft_w = &FFT_DW[(rank - 3) << 5];
 

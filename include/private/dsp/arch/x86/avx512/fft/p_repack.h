@@ -50,15 +50,11 @@ namespace lsp
                 __ASM_EMIT("vexpandps       0x0a0(%[dst]), %%zmm3 %{%%k4%}%{z%}")
                 __ASM_EMIT("vexpandps       0x0c0(%[dst]), %%zmm2 %{%%k5%}")
                 __ASM_EMIT("vmovups         0x0e0(%[dst]), %%ymm4")
-                __ASM_EMIT("vexpandps       %%zmm4, %%zmm7 %{%%k5%}")
+                __ASM_EMIT("vexpandps       %%zmm4, %%zmm3 %{%%k5%}")
                 __ASM_EMIT("vmovups         %%zmm0, 0x000(%[dst])")
                 __ASM_EMIT("vmovups         %%zmm1, 0x040(%[dst])")
                 __ASM_EMIT("vmovups         %%zmm2, 0x080(%[dst])")
                 __ASM_EMIT("vmovups         %%zmm3, 0x0c0(%[dst])")
-                __ASM_EMIT("vmovups         %%zmm4, 0x100(%[dst])")
-                __ASM_EMIT("vmovups         %%zmm5, 0x140(%[dst])")
-                __ASM_EMIT("vmovups         %%zmm6, 0x180(%[dst])")
-                __ASM_EMIT("vmovups         %%zmm7, 0x1c0(%[dst])")
                 __ASM_EMIT("add             $0x100, %[dst]")
                 __ASM_EMIT("sub             $32, %[blocks]")
                 __ASM_EMIT("jae             1b")
@@ -73,9 +69,8 @@ namespace lsp
                 __ASM_EMIT("vexpandps       %%zmm4, %%zmm1 %{%%k5%}")               /* zmm1 =  r8  i8  r9  i9 r10 i10 r11 i11 r12 i12 r13 i13 r14 i14 r15 i15 */
                 __ASM_EMIT("vmovups         %%zmm0, 0x000(%[dst])")
                 __ASM_EMIT("vmovups         %%zmm1, 0x040(%[dst])")
-                __ASM_EMIT("sub             $32, %[blocks]")
+                __ASM_EMIT("sub             $16, %[blocks]")
                 __ASM_EMIT("add             $0x100, %[dst]")
-                __ASM_EMIT("jae             1b")
                 // 8x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add             $8, %[blocks]")
@@ -123,7 +118,7 @@ namespace lsp
                 __ASM_EMIT("vexpandps       0x0a0(%[dst]), %%zmm3 %{%%k4%}%{z%}")
                 __ASM_EMIT("vexpandps       0x0c0(%[dst]), %%zmm2 %{%%k5%}")
                 __ASM_EMIT("vmovups         0x0e0(%[dst]), %%ymm4")
-                __ASM_EMIT("vexpandps       %%zmm4, %%zmm7 %{%%k5%}")
+                __ASM_EMIT("vexpandps       %%zmm4, %%zmm3 %{%%k5%}")
                 __ASM_EMIT("vmulps          %%zmm6, %%zmm0, %%zmm0")
                 __ASM_EMIT("vmulps          %%zmm7, %%zmm1, %%zmm1")
                 __ASM_EMIT("vmulps          %%zmm6, %%zmm2, %%zmm2")
@@ -137,7 +132,7 @@ namespace lsp
                 __ASM_EMIT("jae             1b")
                 // 16x block
                 __ASM_EMIT("2:")
-                __ASM_EMIT("add             $32, %[blocks]")
+                __ASM_EMIT("add             $16, %[blocks]")
                 __ASM_EMIT("jl              4f")
                 __ASM_EMIT("vexpandps       0x000(%[dst]), %%zmm0 %{%%k4%}%{z%}")   /* zmm0 =  r0   0  r1   0  r2   0  r3   0  r4   0  r5   0  r6   0  r7   0 */
                 __ASM_EMIT("vexpandps       0x020(%[dst]), %%zmm1 %{%%k4%}%{z%}")   /* zmm1 =  r8   0  r9   0 r10   0 r11   0 r12   0 r13   0 r14   0 r15   0 */
@@ -151,8 +146,9 @@ namespace lsp
                 __ASM_EMIT("sub             $16, %[blocks]")
                 __ASM_EMIT("add             $0x100, %[dst]")
                 // 8x block
+                __ASM_EMIT("4:")
                 __ASM_EMIT("add             $8, %[blocks]")
-                __ASM_EMIT("jl              4f")
+                __ASM_EMIT("jl              6f")
                 __ASM_EMIT("vmulps          0x00(%[dst]), %%ymm6, %%ymm0")          /* ymm0 = r0  r1  r2  r3  r4  r5  r6  r7  */
                 __ASM_EMIT("vmulps          0x20(%[dst]), %%ymm7, %%ymm1")          /* ymm1 = i0  i1  i2  i3  i4  i5  i6  i7  */
                 __ASM_EMIT("vunpcklps       %%ymm1, %%ymm0, %%ymm4")                /* ymm4 = r0  i0  r1  i1  r4  i4  r5  i5  */
@@ -161,7 +157,7 @@ namespace lsp
                 __ASM_EMIT("vmovups         %%xmm5, 0x10(%[dst])")
                 __ASM_EMIT("vextractf128    $1, %%ymm4, 0x20(%[dst])")
                 __ASM_EMIT("vextractf128    $1, %%ymm5, 0x30(%[dst])")
-                __ASM_EMIT("4:")
+                __ASM_EMIT("6:")
 
                 : [dst] "+r"(dst), [blocks] "+r" (blocks)
                 : [norm] "m" (norm),

@@ -46,6 +46,11 @@ namespace lsp
             void packed_direct_fft(float *dst, const float *src, size_t rank);
             void packed_direct_fft_fma3(float *dst, const float *src, size_t rank);
         }
+
+        namespace avx512
+        {
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
+        }
     )
 
     IF_ARCH_ARM(
@@ -108,6 +113,7 @@ PTEST_BEGIN("dsp.pfft", fft, 10, 1000)
             IF_ARCH_X86(CALL(sse::packed_direct_fft));
             IF_ARCH_X86(CALL(avx::packed_direct_fft));
             IF_ARCH_X86(CALL(avx::packed_direct_fft_fma3));
+            IF_ARCH_X86(CALL(avx512::packed_direct_fft));
             IF_ARCH_ARM(CALL(neon_d32::packed_direct_fft));
             IF_ARCH_AARCH64(CALL(asimd::packed_direct_fft));
             PTEST_SEPARATOR;

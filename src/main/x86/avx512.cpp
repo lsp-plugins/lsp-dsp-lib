@@ -356,6 +356,8 @@
 
                 CEXPORT1(vl, direct_fft);
                 CEXPORT1(vl, reverse_fft);
+                CEXPORT1(vl, packed_direct_fft);
+                CEXPORT1(vl, packed_reverse_fft);
                 CEXPORT1(vl, normalize_fft2);
                 CEXPORT1(vl, normalize_fft3);
 
