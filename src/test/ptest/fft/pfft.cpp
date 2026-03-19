@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 23 фев. 2025 г.
@@ -46,6 +46,11 @@ namespace lsp
             void packed_direct_fft(float *dst, const float *src, size_t rank);
             void packed_direct_fft_fma3(float *dst, const float *src, size_t rank);
         }
+
+        namespace avx512
+        {
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
+        }
     )
 
     IF_ARCH_ARM(
@@ -67,7 +72,7 @@ namespace lsp
 
 //-----------------------------------------------------------------------------
 // Performance test for complex multiplication
-PTEST_BEGIN("dsp.pfft", fft, 10, 1000)
+PTEST_BEGIN("dsp.fft", pfft, 10, 1000)
 
     void call(const char *label, float *dst, const float *src, size_t rank, packed_direct_fft_t fft)
     {
@@ -108,6 +113,7 @@ PTEST_BEGIN("dsp.pfft", fft, 10, 1000)
             IF_ARCH_X86(CALL(sse::packed_direct_fft));
             IF_ARCH_X86(CALL(avx::packed_direct_fft));
             IF_ARCH_X86(CALL(avx::packed_direct_fft_fma3));
+            IF_ARCH_X86(CALL(avx512::packed_direct_fft));
             IF_ARCH_ARM(CALL(neon_d32::packed_direct_fft));
             IF_ARCH_AARCH64(CALL(asimd::packed_direct_fft));
             PTEST_SEPARATOR;

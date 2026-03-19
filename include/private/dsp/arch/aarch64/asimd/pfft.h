@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -41,15 +41,15 @@ namespace lsp
             {
                 if (rank == 2)
                 {
-                    float s0_re     = dst[0] + dst[2];
-                    float s1_re     = dst[0] - dst[2];
-                    float s0_im     = dst[1] + dst[3];
-                    float s1_im     = dst[1] - dst[3];
+                    float s0_re     = src[0] + src[4];
+                    float s1_re     = src[0] - src[4];
+                    float s0_im     = src[1] + src[5];
+                    float s1_im     = src[1] - src[5];
 
-                    float s2_re     = dst[4] + dst[6];
-                    float s3_re     = dst[4] - dst[6];
-                    float s2_im     = dst[5] + dst[7];
-                    float s3_im     = dst[5] - dst[7];
+                    float s2_re     = src[2] + src[6];
+                    float s3_re     = src[2] - src[6];
+                    float s2_im     = src[3] + src[7];
+                    float s3_im     = src[3] - src[7];
 
                     dst[0]          = s0_re + s2_re;
                     dst[1]          = s0_im + s2_im;
@@ -99,15 +99,15 @@ namespace lsp
             {
                 if (rank == 2)
                 {
-                    float s0_re     = src[0] + src[2];
-                    float s1_re     = src[0] - src[2];
-                    float s2_re     = src[4] + src[6];
-                    float s3_re     = src[4] - src[6];
+                    float s0_re     = src[0] + src[4];
+                    float s1_re     = src[0] - src[4];
+                    float s0_im     = src[1] + src[5];
+                    float s1_im     = src[1] - src[5];
 
-                    float s0_im     = src[1] + src[3];
-                    float s1_im     = src[1] - src[3];
-                    float s2_im     = src[5] + src[7];
-                    float s3_im     = src[5] - src[7];
+                    float s2_re     = src[2] + src[6];
+                    float s3_re     = src[2] - src[6];
+                    float s2_im     = src[3] + src[7];
+                    float s3_im     = src[3] - src[7];
 
                     dst[0]          = (s0_re + s2_re)*0.25f;
                     dst[1]          = (s0_im + s2_im)*0.25f;

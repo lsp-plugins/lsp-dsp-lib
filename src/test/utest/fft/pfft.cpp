@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -49,6 +49,12 @@ namespace lsp
             void packed_direct_fft_fma3(float *dst, const float *src, size_t rank);
             void packed_reverse_fft_fma3(float *dst, const float *src, size_t rank);
         }
+
+        namespace avx512
+        {
+            void packed_direct_fft(float *dst, const float *src, size_t rank);
+            void packed_reverse_fft(float *dst, const float *src, size_t rank);
+        }
     )
 
     IF_ARCH_ARM(
@@ -81,7 +87,7 @@ UTEST_BEGIN("dsp.fft", pfft)
 
         for (int same=0; same < 2; ++same)
         {
-            for (size_t rank=6; rank<=16; ++rank)
+            for (size_t rank=2; rank<=16; ++rank)
             {
                 size_t count = 1 << (rank + 1);
                 for (size_t mask=0; mask <= 0x03; ++mask)
@@ -136,6 +142,8 @@ UTEST_BEGIN("dsp.fft", pfft)
         IF_ARCH_X86(CALL(generic::packed_reverse_fft, avx::packed_reverse_fft, 32));
         IF_ARCH_X86(CALL(generic::packed_direct_fft, avx::packed_direct_fft_fma3, 32));
         IF_ARCH_X86(CALL(generic::packed_reverse_fft, avx::packed_reverse_fft_fma3, 32));
+        IF_ARCH_X86(CALL(generic::packed_direct_fft, avx512::packed_direct_fft, 64));
+        IF_ARCH_X86(CALL(generic::packed_reverse_fft, avx512::packed_reverse_fft, 64));
 
         IF_ARCH_ARM(CALL(generic::packed_direct_fft, neon_d32::packed_direct_fft, 16));
         IF_ARCH_ARM(CALL(generic::packed_reverse_fft, neon_d32::packed_reverse_fft, 16));

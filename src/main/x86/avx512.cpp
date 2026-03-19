@@ -48,6 +48,7 @@
         #include <private/dsp/arch/x86/avx512/dynamics.h>
         #include <private/dsp/arch/x86/avx512/float.h>
         #include <private/dsp/arch/x86/avx512/fft.h>
+        #include <private/dsp/arch/x86/avx512/pfft.h>
         #include <private/dsp/arch/x86/avx512/graphics/axis.h>
         #include <private/dsp/arch/x86/avx512/hmath.h>
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
@@ -355,6 +356,8 @@
 
                 CEXPORT1(vl, direct_fft);
                 CEXPORT1(vl, reverse_fft);
+                CEXPORT1(vl, packed_direct_fft);
+                CEXPORT1(vl, packed_reverse_fft);
                 CEXPORT1(vl, normalize_fft2);
                 CEXPORT1(vl, normalize_fft3);
 

@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
- * Created on: 31 мар. 2020 г.
+ * Created on: 18 мар. 2026 г.
  *
  * lsp-dsp-lib is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,54 +19,37 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PRIVATE_DSP_ARCH_X86_AVX_PFFT_H_
-#define PRIVATE_DSP_ARCH_X86_AVX_PFFT_H_
+#ifndef PRIVATE_DSP_ARCH_X86_AVX512_PFFT_H_
+#define PRIVATE_DSP_ARCH_X86_AVX512_PFFT_H_
 
-#ifndef PRIVATE_DSP_ARCH_X86_AVX_IMPL
+
+#ifndef PRIVATE_DSP_ARCH_X86_AVX512_IMPL
     #error "This header should not be included directly"
-#endif /* PRIVATE_DSP_ARCH_X86_AVX_IMPL */
+#endif /* PRIVATE_DSP_ARCH_X86_AVX512_IMPL */
 
-#include <private/dsp/arch/x86/avx/fft/const.h>
-#include <private/dsp/arch/x86/avx/fft/p_repack.h>
-#include <private/dsp/arch/x86/avx/fft/p_butterfly.h>
+#include <private/dsp/arch/x86/avx512/fft/const.h>
+#include <private/dsp/arch/x86/avx512/fft/p_repack.h>
+#include <private/dsp/arch/x86/avx512/fft/p_butterfly.h>
 
-// Scrambling functions
-#define FFT_PSCRAMBLE_SELF_DIRECT_NAME      packed_scramble_self_direct8
-#define FFT_PSCRAMBLE_SELF_REVERSE_NAME     packed_scramble_self_reverse8
-#define FFT_PSCRAMBLE_COPY_DIRECT_NAME      packed_scramble_copy_direct8
-#define FFT_PSCRAMBLE_COPY_REVERSE_NAME     packed_scramble_copy_reverse8
-#define FFT_TYPE                            uint8_t
-#define FFT_FMA(a, b)                       a
-#include <private/dsp/arch/x86/avx/fft/p_scramble.h>
+#define FFT_PSCRAMBLE_SELF_DIRECT_NAME  packed_scramble_self_direct8
+#define FFT_PSCRAMBLE_SELF_REVERSE_NAME packed_scramble_self_reverse8
+#define FFT_PSCRAMBLE_COPY_DIRECT_NAME  packed_scramble_copy_direct8
+#define FFT_PSCRAMBLE_COPY_REVERSE_NAME packed_scramble_copy_reverse8
+#define FFT_TYPE                        uint8_t
+#include <private/dsp/arch/x86/avx512/fft/p_scramble.h>
 
-#define FFT_PSCRAMBLE_SELF_DIRECT_NAME      packed_scramble_self_direct16
-#define FFT_PSCRAMBLE_SELF_REVERSE_NAME     packed_scramble_self_reverse16
-#define FFT_PSCRAMBLE_COPY_DIRECT_NAME      packed_scramble_copy_direct16
-#define FFT_PSCRAMBLE_COPY_REVERSE_NAME     packed_scramble_copy_reverse16
-#define FFT_TYPE                            uint16_t
-#define FFT_FMA(a, b)                       a
-#include <private/dsp/arch/x86/avx/fft/p_scramble.h>
-
-#define FFT_PSCRAMBLE_SELF_DIRECT_NAME      packed_scramble_self_direct8_fma3
-#define FFT_PSCRAMBLE_SELF_REVERSE_NAME     packed_scramble_self_reverse8_fma3
-#define FFT_PSCRAMBLE_COPY_DIRECT_NAME      packed_scramble_copy_direct8_fma3
-#define FFT_PSCRAMBLE_COPY_REVERSE_NAME     packed_scramble_copy_reverse8_fma3
-#define FFT_TYPE                            uint8_t
-#define FFT_FMA(a, b)                       b
-#include <private/dsp/arch/x86/avx/fft/p_scramble.h>
-
-#define FFT_PSCRAMBLE_SELF_DIRECT_NAME      packed_scramble_self_direct16_fma3
-#define FFT_PSCRAMBLE_SELF_REVERSE_NAME     packed_scramble_self_reverse16_fma3
-#define FFT_PSCRAMBLE_COPY_DIRECT_NAME      packed_scramble_copy_direct16_fma3
-#define FFT_PSCRAMBLE_COPY_REVERSE_NAME     packed_scramble_copy_reverse16_fma3
-#define FFT_TYPE                            uint16_t
-#define FFT_FMA(a, b)                       b
-#include <private/dsp/arch/x86/avx/fft/p_scramble.h>
+#define FFT_PSCRAMBLE_SELF_DIRECT_NAME  packed_scramble_self_direct16
+#define FFT_PSCRAMBLE_SELF_REVERSE_NAME packed_scramble_self_reverse16
+#define FFT_PSCRAMBLE_COPY_DIRECT_NAME  packed_scramble_copy_direct16
+#define FFT_PSCRAMBLE_COPY_REVERSE_NAME packed_scramble_copy_reverse16
+#define FFT_TYPE                        uint16_t
+#include <private/dsp/arch/x86/avx512/fft/p_scramble.h>
 
 namespace lsp
 {
-    namespace avx
+    namespace avx512
     {
+
         static void packed_small_direct_fft(float *dst, const float *src, size_t rank)
         {
             if (rank == 2)
@@ -160,7 +143,7 @@ namespace lsp
                 return;
             }
 
-            if ((dst == src) || (rank < 4))
+            if ((dst == src) || (rank < 5))
             {
                 dsp::move(dst, src, 2 << rank); // 1 << rank + 1
                 if (rank <= 8)
@@ -170,14 +153,14 @@ namespace lsp
             }
             else
             {
-                if (rank <= 12)
-                    packed_scramble_copy_direct8(dst, src, rank-4);
+                if (rank <= 13)
+                    packed_scramble_copy_direct8(dst, src, rank - 5);
                 else
-                    packed_scramble_copy_direct16(dst, src, rank-4);
+                    packed_scramble_copy_direct16(dst, src, rank - 5);
             }
 
-            for (size_t i=3; i < rank; ++i)
-                packed_butterfly_direct8p(dst, i, 1 << (rank - i - 1));
+            for (size_t i=4; i < rank; ++i)
+                packed_butterfly_direct16p(dst, i, 1 << (rank - i - 1));
 
             packed_fft_repack(dst, rank);
         }
@@ -190,7 +173,7 @@ namespace lsp
                 return;
             }
 
-            if ((dst == src) || (rank < 4))
+            if ((dst == src) || (rank < 5))
             {
                 dsp::move(dst, src, 2 << rank); // 1 << rank + 1
                 if (rank <= 8)
@@ -200,78 +183,21 @@ namespace lsp
             }
             else
             {
-                if (rank <= 12)
-                    packed_scramble_copy_reverse8(dst, src, rank-4);
+                if (rank <= 13)
+                    packed_scramble_copy_reverse8(dst, src, rank - 5);
                 else
-                    packed_scramble_copy_reverse16(dst, src, rank-4);
+                    packed_scramble_copy_reverse16(dst, src, rank - 5);
             }
 
-            for (size_t i=3; i < rank; ++i)
-                packed_butterfly_reverse8p(dst, i, 1 << (rank - i - 1));
+            for (size_t i=4; i < rank; ++i)
+                packed_butterfly_reverse16p(dst, i, 1 << (rank - i - 1));
 
             packed_fft_repack_normalize(dst, rank);
         }
 
-        void packed_direct_fft_fma3(float *dst, const float *src, size_t rank)
-        {
-            if (rank <= 2)
-            {
-                packed_small_direct_fft(dst, src, rank);
-                return;
-            }
+    } /* namespace avx512 */
+} /* namespace lsp */
 
-            if ((dst == src) || (rank < 4))
-            {
-                dsp::move(dst, src, 2 << rank); // 1 << rank + 1
-                if (rank <= 8)
-                    packed_scramble_self_direct8_fma3(dst, rank);
-                else
-                    packed_scramble_self_direct16_fma3(dst, rank);
-            }
-            else
-            {
-                if (rank <= 12)
-                    packed_scramble_copy_direct8_fma3(dst, src, rank-4);
-                else
-                    packed_scramble_copy_direct16_fma3(dst, src, rank-4);
-            }
 
-            for (size_t i=3; i < rank; ++i)
-                packed_butterfly_direct8p_fma3(dst, i, 1 << (rank - i - 1));
 
-            packed_fft_repack(dst, rank);
-        }
-
-        void packed_reverse_fft_fma3(float *dst, const float *src, size_t rank)
-        {
-            if (rank <= 2)
-            {
-                packed_small_reverse_fft(dst, src, rank);
-                return;
-            }
-
-            if ((dst == src) || (rank < 4))
-            {
-                dsp::move(dst, src, 2 << rank); // 1 << rank + 1
-                if (rank <= 8)
-                    packed_scramble_self_reverse8_fma3(dst, rank);
-                else
-                    packed_scramble_self_reverse16_fma3(dst, rank);
-            }
-            else
-            {
-                if (rank <= 12)
-                    packed_scramble_copy_reverse8_fma3(dst, src, rank-4);
-                else
-                    packed_scramble_copy_reverse16_fma3(dst, src, rank-4);
-            }
-
-            for (size_t i=3; i < rank; ++i)
-                packed_butterfly_reverse8p_fma3(dst, i, 1 << (rank - i - 1));
-
-            packed_fft_repack_normalize(dst, rank);
-        }
-    }
-}
-
-#endif /* PRIVATE_DSP_ARCH_X86_AVX_PFFT_H_ */
+#endif /* PRIVATE_DSP_ARCH_X86_AVX512_PFFT_H_ */
