@@ -46,15 +46,15 @@ namespace lsp
             void ms_pamax2(float *dst, const float *src, size_t count);
         }
 
-//        namespace avx
-//        {
-//            void ms_pmin2(float *dst, const float *src, size_t count);
-//            void ms_pmax2(float *dst, const float *src, size_t count);
-//            void ms_psmin2(float *dst, const float *src, size_t count);
-//            void ms_psmax2(float *dst, const float *src, size_t count);
-//            void ms_pamin2(float *dst, const float *src, size_t count);
-//            void ms_pamax2(float *dst, const float *src, size_t count);
-//        }
+        namespace avx
+        {
+            void ms_pmin2(float *dst, const float *src, size_t count);
+            void ms_pmax2(float *dst, const float *src, size_t count);
+            void ms_psmin2(float *dst, const float *src, size_t count);
+            void ms_psmax2(float *dst, const float *src, size_t count);
+            void ms_pamin2(float *dst, const float *src, size_t count);
+            void ms_pamax2(float *dst, const float *src, size_t count);
+        }
 //
 //        namespace avx512
 //        {
@@ -152,12 +152,12 @@ UTEST_BEGIN("dsp.pmath", ms_minmax2)
         IF_ARCH_X86(CALL(generic::ms_pamin2, sse::ms_pamin2, 16));
         IF_ARCH_X86(CALL(generic::ms_pamax2, sse::ms_pamax2, 16));
 
-//        IF_ARCH_X86(CALL(generic::ms_pmin2, avx::ms_pmin2, 32));
-//        IF_ARCH_X86(CALL(generic::ms_pmax2, avx::ms_pmax2, 32));
-//        IF_ARCH_X86(CALL(generic::ms_psmin2, avx::ms_psmin2, 32));
-//        IF_ARCH_X86(CALL(generic::ms_psmax2, avx::ms_psmax2, 32));
-//        IF_ARCH_X86(CALL(generic::ms_pamin2, avx::ms_pamin2, 32));
-//        IF_ARCH_X86(CALL(generic::ms_pamax2, avx::ms_pamax2, 32));
+        IF_ARCH_X86(CALL(generic::ms_pmin2, avx::ms_pmin2, 32));
+        IF_ARCH_X86(CALL(generic::ms_pmax2, avx::ms_pmax2, 32));
+        IF_ARCH_X86(CALL(generic::ms_psmin2, avx::ms_psmin2, 32));
+        IF_ARCH_X86(CALL(generic::ms_psmax2, avx::ms_psmax2, 32));
+        IF_ARCH_X86(CALL(generic::ms_pamin2, avx::ms_pamin2, 32));
+        IF_ARCH_X86(CALL(generic::ms_pamax2, avx::ms_pamax2, 32));
 //
 //        IF_ARCH_X86(CALL(generic::ms_pmin2, avx512::ms_pmin2, 64));
 //        IF_ARCH_X86(CALL(generic::ms_pmax2, avx512::ms_pmax2, 64));
