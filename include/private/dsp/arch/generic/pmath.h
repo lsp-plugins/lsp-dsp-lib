@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -36,6 +36,7 @@
 #include <private/dsp/arch/generic/pmath/log.h>
 #include <private/dsp/arch/generic/pmath/lramp.h>
 #include <private/dsp/arch/generic/pmath/minmax.h>
+#include <private/dsp/arch/generic/pmath/ms_minmax.h>
 #include <private/dsp/arch/generic/pmath/normalize.h>
 #include <private/dsp/arch/generic/pmath/op_kx.h>
 #include <private/dsp/arch/generic/pmath/op_vv.h>

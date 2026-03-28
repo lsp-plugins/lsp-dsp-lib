@@ -262,6 +262,19 @@ namespace lsp
             EXPORT1(pamin3);
             EXPORT1(pamax3);
 
+            EXPORT1(ms_pmin2);
+            EXPORT1(ms_pmax2);
+            EXPORT1(ms_psmin2);
+            EXPORT1(ms_psmax2);
+            EXPORT1(ms_pamin2);
+            EXPORT1(ms_pamax2);
+            EXPORT1(ms_pmin3);
+            EXPORT1(ms_pmax3);
+            EXPORT1(ms_psmin3);
+            EXPORT1(ms_psmax3);
+            EXPORT1(ms_pamin3);
+            EXPORT1(ms_pamax3);
+
             EXPORT1(pmix_v1);
             EXPORT1(pmix_v2);
             EXPORT1(pmix_k1);
