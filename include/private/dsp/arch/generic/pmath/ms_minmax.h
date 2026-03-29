@@ -138,7 +138,7 @@ namespace lsp
             for (size_t i=0; i<count; ++i)
             {
                 const float l   = a[i];
-                const float r   = b[i];;
+                const float r   = b[i];
                 const float m   = l + r;
                 const float s   = l - r;
                 const float out = (fabsf(m) < fabsf(s)) ? m : s;
@@ -204,6 +204,171 @@ namespace lsp
                 const float out = (am < as) ? as : am;
 
                 dst[i]          = out * 0.5f;
+            }
+        }
+
+
+        void lr_pmin2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float m   = dst[i];
+                const float s   = src[i];
+                const float l   = m + s;
+                const float r   = m - s;
+
+                dst[i]          = (l < r) ? l : r;
+            }
+        }
+
+        void lr_psmin2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float m   = dst[i];
+                const float s   = src[i];
+                const float l   = m + s;
+                const float r   = m - s;
+
+                dst[i]          = (fabsf(l) < fabsf(r)) ? l : r;
+            }
+        }
+
+        void lr_pamin2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float m   = dst[i];
+                const float s   = src[i];
+                const float l   = m + s;
+                const float r   = m - s;
+                const float al  = fabsf(l);
+                const float ar  = fabsf(r);
+
+                dst[i]          = (al < ar) ? al : ar;
+            }
+        }
+
+        void lr_pmax2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float m   = dst[i];
+                const float s   = src[i];
+                const float l   = m + s;
+                const float r   = m - s;
+
+                dst[i]          = (l < r) ? r : l;
+            }
+        }
+
+        void lr_psmax2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float m   = dst[i];
+                const float s   = src[i];
+                const float l   = m + s;
+                const float r   = m - s;
+
+                dst[i]          = (fabsf(l) < fabsf(r)) ? r : l;
+            }
+        }
+
+        void lr_pamax2(float *dst, const float *src, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float m   = dst[i];
+                const float s   = src[i];
+                const float l   = m + s;
+                const float r   = m - s;
+                const float al  = fabsf(l);
+                const float ar  = fabsf(r);
+
+                dst[i]          = (al < ar) ? ar : al;
+            }
+        }
+
+        void lr_pmin3(float *dst, const float *a, const float *b, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float m   = a[i];
+                const float s   = b[i];
+                const float l   = m + s;
+                const float r   = m - s;
+
+                dst[i]          = (l < r) ? l : r;
+            }
+        }
+
+        void lr_psmin3(float *dst, const float *a, const float *b, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float m   = a[i];
+                const float s   = b[i];
+                const float l   = m + s;
+                const float r   = m - s;
+
+                dst[i]          = (fabsf(l) < fabsf(r)) ? l : r;
+            }
+        }
+
+        void lr_pamin3(float *dst, const float *a, const float *b, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float m   = a[i];
+                const float s   = b[i];
+                const float l   = m + s;
+                const float r   = m - s;
+                const float al  = fabsf(l);
+                const float ar  = fabsf(r);
+
+                dst[i]          = (al < ar) ? al : ar;
+            }
+        }
+
+        void lr_pmax3(float *dst, const float *a, const float *b, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float m   = a[i];
+                const float s   = b[i];
+                const float l   = m + s;
+                const float r   = m - s;
+
+                dst[i]          = (l < r) ? r : l;
+            }
+        }
+
+        void lr_psmax3(float *dst, const float *a, const float *b, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float m   = a[i];
+                const float s   = b[i];
+                const float l   = m + s;
+                const float r   = m - s;
+
+                dst[i]          = (fabsf(l) < fabsf(r)) ? r : l;
+            }
+        }
+
+        void lr_pamax3(float *dst, const float *a, const float *b, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float m   = a[i];
+                const float s   = b[i];
+                const float l   = m + s;
+                const float r   = m - s;
+                const float al  = fabsf(l);
+                const float ar  = fabsf(r);
+
+                dst[i]          = (al < ar) ? ar : al;
             }
         }
     } /* namespace generic */
