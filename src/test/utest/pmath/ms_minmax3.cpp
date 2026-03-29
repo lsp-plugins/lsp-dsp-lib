@@ -79,17 +79,17 @@ namespace lsp
         }
     )
 
-//    IF_ARCH_AARCH64(
-//        namespace asimd
-//        {
-//            void ms_pmin3(float *dst, const float *a, const float *b, size_t count);
-//            void ms_pmax3(float *dst, const float *a, const float *b, size_t count);
-//            void ms_psmin3(float *dst, const float *a, const float *b, size_t count);
-//            void ms_psmax3(float *dst, const float *a, const float *b, size_t count);
-//            void ms_pamin3(float *dst, const float *a, const float *b, size_t count);
-//            void ms_pamax3(float *dst, const float *a, const float *b, size_t count);
-//        }
-//    )
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void ms_pmin3(float *dst, const float *a, const float *b, size_t count);
+            void ms_pmax3(float *dst, const float *a, const float *b, size_t count);
+            void ms_psmin3(float *dst, const float *a, const float *b, size_t count);
+            void ms_psmax3(float *dst, const float *a, const float *b, size_t count);
+            void ms_pamin3(float *dst, const float *a, const float *b, size_t count);
+            void ms_pamax3(float *dst, const float *a, const float *b, size_t count);
+        }
+    )
 }
 
 typedef void (* ms_poper3_t)(float *dst, const float *a, const float *b, size_t count);
@@ -173,12 +173,12 @@ UTEST_BEGIN("dsp.pmath", ms_minmax3)
         IF_ARCH_ARM(CALL(generic::ms_pamin3, neon_d32::ms_pamin3, 16));
         IF_ARCH_ARM(CALL(generic::ms_pamax3, neon_d32::ms_pamax3, 16));
 
-//        IF_ARCH_AARCH64(CALL(generic::ms_pmin3, asimd::ms_pmin3, 16));
-//        IF_ARCH_AARCH64(CALL(generic::ms_pmax3, asimd::ms_pmax3, 16));
-//        IF_ARCH_AARCH64(CALL(generic::ms_psmin3, asimd::ms_psmin3, 16));
-//        IF_ARCH_AARCH64(CALL(generic::ms_psmax3, asimd::ms_psmax3, 16));
-//        IF_ARCH_AARCH64(CALL(generic::ms_pamin3, asimd::ms_pamin3, 16));
-//        IF_ARCH_AARCH64(CALL(generic::ms_pamax3, asimd::ms_pamax3, 16));
+        IF_ARCH_AARCH64(CALL(generic::ms_pmin3, asimd::ms_pmin3, 16));
+        IF_ARCH_AARCH64(CALL(generic::ms_pmax3, asimd::ms_pmax3, 16));
+        IF_ARCH_AARCH64(CALL(generic::ms_psmin3, asimd::ms_psmin3, 16));
+        IF_ARCH_AARCH64(CALL(generic::ms_psmax3, asimd::ms_psmax3, 16));
+        IF_ARCH_AARCH64(CALL(generic::ms_pamin3, asimd::ms_pamin3, 16));
+        IF_ARCH_AARCH64(CALL(generic::ms_pamax3, asimd::ms_pamax3, 16));
     }
 UTEST_END
 

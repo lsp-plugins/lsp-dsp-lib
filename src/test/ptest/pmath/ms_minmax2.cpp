@@ -84,17 +84,17 @@ namespace lsp
         }
     )
 
-//    IF_ARCH_AARCH64(
-//        namespace asimd
-//        {
-//            void ms_pmin2(float *dst, const float *src, size_t count);
-//            void ms_pmax2(float *dst, const float *src, size_t count);
-//            void ms_psmin2(float *dst, const float *src, size_t count);
-//            void ms_psmax2(float *dst, const float *src, size_t count);
-//            void ms_pamin2(float *dst, const float *src, size_t count);
-//            void ms_pamax2(float *dst, const float *src, size_t count);
-//        }
-//    )
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void ms_pmin2(float *dst, const float *src, size_t count);
+            void ms_pmax2(float *dst, const float *src, size_t count);
+            void ms_psmin2(float *dst, const float *src, size_t count);
+            void ms_psmax2(float *dst, const float *src, size_t count);
+            void ms_pamin2(float *dst, const float *src, size_t count);
+            void ms_pamax2(float *dst, const float *src, size_t count);
+        }
+    )
 }
 
 typedef void (* ms_poper2_t)(float *dst, const float *src, size_t count);
@@ -140,7 +140,7 @@ PTEST_BEGIN("dsp.pmath", ms_minmax2, 2, 2000)
             IF_ARCH_X86(CALL(avx::ms_pmin2));
             IF_ARCH_X86(CALL(avx512::ms_pmin2));
             IF_ARCH_ARM(CALL(neon_d32::ms_pmin2));
-//            IF_ARCH_AARCH64(CALL(asimd::ms_pmin2));
+            IF_ARCH_AARCH64(CALL(asimd::ms_pmin2));
             PTEST_SEPARATOR;
 
             CALL(generic::ms_pmax2);
@@ -148,7 +148,7 @@ PTEST_BEGIN("dsp.pmath", ms_minmax2, 2, 2000)
             IF_ARCH_X86(CALL(avx::ms_pmax2));
             IF_ARCH_X86(CALL(avx512::ms_pmax2));
             IF_ARCH_ARM(CALL(neon_d32::ms_pmax2));
-//            IF_ARCH_AARCH64(CALL(asimd::ms_pmax2));
+            IF_ARCH_AARCH64(CALL(asimd::ms_pmax2));
             PTEST_SEPARATOR;
 
             CALL(generic::ms_psmin2);
@@ -156,7 +156,7 @@ PTEST_BEGIN("dsp.pmath", ms_minmax2, 2, 2000)
             IF_ARCH_X86(CALL(avx::ms_psmin2));
             IF_ARCH_X86(CALL(avx512::ms_psmin2));
             IF_ARCH_ARM(CALL(neon_d32::ms_psmin2));
-//            IF_ARCH_AARCH64(CALL(asimd::ms_psmin2));
+            IF_ARCH_AARCH64(CALL(asimd::ms_psmin2));
             PTEST_SEPARATOR;
 
             CALL(generic::ms_psmax2);
@@ -164,7 +164,7 @@ PTEST_BEGIN("dsp.pmath", ms_minmax2, 2, 2000)
             IF_ARCH_X86(CALL(avx::ms_psmax2));
             IF_ARCH_X86(CALL(avx512::ms_psmax2));
             IF_ARCH_ARM(CALL(neon_d32::ms_psmax2));
-//            IF_ARCH_AARCH64(CALL(asimd::ms_psmax2));
+            IF_ARCH_AARCH64(CALL(asimd::ms_psmax2));
             PTEST_SEPARATOR;
 
             CALL(generic::ms_pamin2);
@@ -172,7 +172,7 @@ PTEST_BEGIN("dsp.pmath", ms_minmax2, 2, 2000)
             IF_ARCH_X86(CALL(avx::ms_pamin2));
             IF_ARCH_X86(CALL(avx512::ms_pamin2));
             IF_ARCH_ARM(CALL(neon_d32::ms_pamin2));
-//            IF_ARCH_AARCH64(CALL(asimd::ms_pamin2));
+            IF_ARCH_AARCH64(CALL(asimd::ms_pamin2));
             PTEST_SEPARATOR;
 
             CALL(generic::ms_pamax2);
@@ -180,7 +180,7 @@ PTEST_BEGIN("dsp.pmath", ms_minmax2, 2, 2000)
             IF_ARCH_X86(CALL(avx::ms_pamax2));
             IF_ARCH_X86(CALL(avx512::ms_pamax2));
             IF_ARCH_ARM(CALL(neon_d32::ms_pamax2));
-//            IF_ARCH_AARCH64(CALL(asimd::ms_pamax2));
+            IF_ARCH_AARCH64(CALL(asimd::ms_pamax2));
             PTEST_SEPARATOR2;
         }
 
