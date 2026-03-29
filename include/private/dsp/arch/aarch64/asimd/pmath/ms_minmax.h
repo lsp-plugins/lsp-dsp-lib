@@ -37,12 +37,15 @@ namespace lsp
             };
         )
 
+        #define MS_MUL(x)       __ASM_EMIT(x)
+        #define MS_NOMUL(x)
+
         #define INC_ON(cmd)     cmd
         #define INC_OFF(cmd)
 
-        #define MS_MINMAX_CORE(DST, A, B, OP, INCA) \
+        #define MS_MINMAX_CORE(DST, A, B, OP, INCA, IF_MUL) \
             __ASM_EMIT("subs        %[count], %[count], #32") \
-            __ASM_EMIT("ldr         q31, [%[CC], #0x00]")               /* v31 = 0.5f */ \
+            IF_MUL("ldr             q31, [%[CC], #0x00]")               /* v31 = 0.5f */ \
             __ASM_EMIT("b.lo        2f") \
             /* 32x blocks */ \
             __ASM_EMIT("1:") \
@@ -78,14 +81,14 @@ namespace lsp
             __ASM_EMIT(OP "         v5.4s, v5.4s, v13.4s") \
             __ASM_EMIT(OP "         v6.4s, v6.4s, v14.4s") \
             __ASM_EMIT(OP "         v7.4s, v7.4s, v15.4s") \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
-            __ASM_EMIT("fmul        v1.4s, v1.4s, v31.4s") \
-            __ASM_EMIT("fmul        v2.4s, v2.4s, v31.4s") \
-            __ASM_EMIT("fmul        v3.4s, v3.4s, v31.4s") \
-            __ASM_EMIT("fmul        v4.4s, v4.4s, v31.4s") \
-            __ASM_EMIT("fmul        v5.4s, v5.4s, v31.4s") \
-            __ASM_EMIT("fmul        v6.4s, v6.4s, v31.4s") \
-            __ASM_EMIT("fmul        v7.4s, v7.4s, v31.4s") \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v1.4s, v1.4s, v31.4s") \
+            IF_MUL("fmul            v2.4s, v2.4s, v31.4s") \
+            IF_MUL("fmul            v3.4s, v3.4s, v31.4s") \
+            IF_MUL("fmul            v4.4s, v4.4s, v31.4s") \
+            IF_MUL("fmul            v5.4s, v5.4s, v31.4s") \
+            IF_MUL("fmul            v6.4s, v6.4s, v31.4s") \
+            IF_MUL("fmul            v7.4s, v7.4s, v31.4s") \
             __ASM_EMIT("subs        %[count], %[count], #32") \
             __ASM_EMIT("stp         q0, q1, [%[" DST "], #0x00]") \
             __ASM_EMIT("stp         q2, q3, [%[" DST "], #0x20]") \
@@ -115,10 +118,10 @@ namespace lsp
             __ASM_EMIT(OP "         v1.4s, v1.4s, v9.4s") \
             __ASM_EMIT(OP "         v2.4s, v2.4s, v10.4s") \
             __ASM_EMIT(OP "         v3.4s, v3.4s, v11.4s") \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
-            __ASM_EMIT("fmul        v1.4s, v1.4s, v31.4s") \
-            __ASM_EMIT("fmul        v2.4s, v2.4s, v31.4s") \
-            __ASM_EMIT("fmul        v3.4s, v3.4s, v31.4s") \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v1.4s, v1.4s, v31.4s") \
+            IF_MUL("fmul            v2.4s, v2.4s, v31.4s") \
+            IF_MUL("fmul            v3.4s, v3.4s, v31.4s") \
             __ASM_EMIT("sub         %[count], %[count], #16") \
             __ASM_EMIT("stp         q0, q1, [%[" DST "], #0x00]") \
             __ASM_EMIT("stp         q2, q3, [%[" DST "], #0x20]") \
@@ -137,8 +140,8 @@ namespace lsp
             __ASM_EMIT("fadd        v1.4s, v1.4s, v17.4s") \
             __ASM_EMIT(OP "         v0.4s, v0.4s, v8.4s")               /* v0 = O = OP(m, s) */ \
             __ASM_EMIT(OP "         v1.4s, v1.4s, v9.4s") \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
-            __ASM_EMIT("fmul        v1.4s, v1.4s, v31.4s") \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v1.4s, v1.4s, v31.4s") \
             __ASM_EMIT("sub         %[count], %[count], #8") \
             __ASM_EMIT("stp         q0, q1, [%[" DST "], #0x00]") \
             __ASM_EMIT(INCA("add    %[" A "], %[" A "], #0x20")) \
@@ -153,7 +156,7 @@ namespace lsp
             __ASM_EMIT("fsub        v8.4s, v0.4s, v16.4s")              /* v8 = s = l - r */ \
             __ASM_EMIT("fadd        v0.4s, v0.4s, v16.4s")              /* v0 = m = l + r */ \
             __ASM_EMIT(OP "         v0.4s, v0.4s, v8.4s")               /* v0 = O = OP(m, s) */ \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
             __ASM_EMIT("sub         %[count], %[count], #4") \
             __ASM_EMIT("str         q0, [%[" DST "], #0x00]") \
             __ASM_EMIT(INCA("add    %[" A "], %[" A "], #0x10")) \
@@ -169,7 +172,7 @@ namespace lsp
             __ASM_EMIT("fsub        v8.4s, v0.4s, v16.4s")              /* v8 = s = l - r */ \
             __ASM_EMIT("fadd        v0.4s, v0.4s, v16.4s")              /* v0 = m = l + r */ \
             __ASM_EMIT(OP "         v0.4s, v0.4s, v8.4s")               /* v0 = O = OP(m, s) */ \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
             __ASM_EMIT("subs        %[count], %[count], #1") \
             __ASM_EMIT("st1         {v0.s}[0], [%[" DST "]]") \
             __ASM_EMIT(INCA("add    %[" A "], %[" A "], #0x04")) \
@@ -182,7 +185,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
-                MS_MINMAX_CORE("dst", "dst", "src", "fmin", INC_OFF)
+                MS_MINMAX_CORE("dst", "dst", "src", "fmin", INC_OFF, MS_MUL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -201,7 +204,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
-                MS_MINMAX_CORE("dst", "a", "b", "fmin", INC_ON)
+                MS_MINMAX_CORE("dst", "a", "b", "fmin", INC_ON, MS_MUL)
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -220,7 +223,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
-                MS_MINMAX_CORE("dst", "dst", "src", "fmax", INC_OFF)
+                MS_MINMAX_CORE("dst", "dst", "src", "fmax", INC_OFF, MS_MUL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -239,7 +242,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
-                MS_MINMAX_CORE("dst", "a", "b", "fmax", INC_ON)
+                MS_MINMAX_CORE("dst", "a", "b", "fmax", INC_ON, MS_MUL)
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -254,11 +257,83 @@ namespace lsp
             );
         }
 
+        void lr_pmin2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                MS_MINMAX_CORE("dst", "dst", "src", "fmin", INC_OFF, MS_NOMUL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
+            );
+        }
+
+        void lr_pmin3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                MS_MINMAX_CORE("dst", "a", "b", "fmin", INC_ON, MS_NOMUL)
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
+            );
+        }
+
+        void lr_pmax2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                MS_MINMAX_CORE("dst", "dst", "src", "fmax", INC_OFF, MS_NOMUL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
+            );
+        }
+
+        void lr_pmax3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                MS_MINMAX_CORE("dst", "a", "b", "fmax", INC_ON, MS_NOMUL)
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
+            );
+        }
+
         #undef MS_MINMAX_CORE
 
-        #define MS_SIGN_MINMAX_CORE(DST, A, B, OP, INCA) \
+        #define MS_SIGN_MINMAX_CORE(DST, A, B, OP, INCA, IF_MUL) \
             __ASM_EMIT("subs        %[count], %[count], #32") \
-            __ASM_EMIT("ldr         q31, [%[CC], #0x00]")               /* v31 = 0.5f */ \
+            IF_MUL("ldr             q31, [%[CC], #0x00]")               /* v31 = 0.5f */ \
             __ASM_EMIT("b.lo        2f") \
             /* 32x blocks */ \
             __ASM_EMIT("1:") \
@@ -302,14 +377,14 @@ namespace lsp
             __ASM_EMIT(OP "         v5.16b, v13.16b, v21.16b") \
             __ASM_EMIT(OP "         v6.16b, v14.16b, v22.16b") \
             __ASM_EMIT(OP "         v7.16b, v15.16b, v23.16b") \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
-            __ASM_EMIT("fmul        v1.4s, v1.4s, v31.4s") \
-            __ASM_EMIT("fmul        v2.4s, v2.4s, v31.4s") \
-            __ASM_EMIT("fmul        v3.4s, v3.4s, v31.4s") \
-            __ASM_EMIT("fmul        v4.4s, v4.4s, v31.4s") \
-            __ASM_EMIT("fmul        v5.4s, v5.4s, v31.4s") \
-            __ASM_EMIT("fmul        v6.4s, v6.4s, v31.4s") \
-            __ASM_EMIT("fmul        v7.4s, v7.4s, v31.4s") \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v1.4s, v1.4s, v31.4s") \
+            IF_MUL("fmul            v2.4s, v2.4s, v31.4s") \
+            IF_MUL("fmul            v3.4s, v3.4s, v31.4s") \
+            IF_MUL("fmul            v4.4s, v4.4s, v31.4s") \
+            IF_MUL("fmul            v5.4s, v5.4s, v31.4s") \
+            IF_MUL("fmul            v6.4s, v6.4s, v31.4s") \
+            IF_MUL("fmul            v7.4s, v7.4s, v31.4s") \
             __ASM_EMIT("subs        %[count], %[count], #32") \
             __ASM_EMIT("stp         q0, q1, [%[" DST "], #0x00]") \
             __ASM_EMIT("stp         q2, q3, [%[" DST "], #0x20]") \
@@ -343,10 +418,10 @@ namespace lsp
             __ASM_EMIT(OP "         v1.16b, v9.16b, v17.16b") \
             __ASM_EMIT(OP "         v2.16b, v10.16b, v18.16b") \
             __ASM_EMIT(OP "         v3.16b, v11.16b, v19.16b") \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
-            __ASM_EMIT("fmul        v1.4s, v1.4s, v31.4s") \
-            __ASM_EMIT("fmul        v2.4s, v2.4s, v31.4s") \
-            __ASM_EMIT("fmul        v3.4s, v3.4s, v31.4s") \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v1.4s, v1.4s, v31.4s") \
+            IF_MUL("fmul            v2.4s, v2.4s, v31.4s") \
+            IF_MUL("fmul            v3.4s, v3.4s, v31.4s") \
             __ASM_EMIT("sub         %[count], %[count], #16") \
             __ASM_EMIT("stp         q0, q1, [%[" DST "], #0x00]") \
             __ASM_EMIT("stp         q2, q3, [%[" DST "], #0x20]") \
@@ -367,8 +442,8 @@ namespace lsp
             __ASM_EMIT("facgt       v17.4s, v9.4s, v1.4s") \
             __ASM_EMIT(OP "         v0.16b, v8.16b, v16.16b")           /* v0 = O = OP(fabsf(s) > fabsf(m)) ? s : m */ \
             __ASM_EMIT(OP "         v1.16b, v9.16b, v17.16b") \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
-            __ASM_EMIT("fmul        v1.4s, v1.4s, v31.4s") \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v1.4s, v1.4s, v31.4s") \
             __ASM_EMIT("sub         %[count], %[count], #8") \
             __ASM_EMIT("stp         q0, q1, [%[" DST "], #0x00]") \
             __ASM_EMIT(INCA("add    %[" A "], %[" A "], #0x20")) \
@@ -384,7 +459,7 @@ namespace lsp
             __ASM_EMIT("fadd        v0.4s, v0.4s, v16.4s")              /* v0 = m = l + r */ \
             __ASM_EMIT("facgt       v16.4s, v8.4s, v0.4s")              /* v16 = fabsf(s) > fabsf(m) */ \
             __ASM_EMIT(OP "         v0.16b, v8.16b, v16.16b")           /* v0 = O = OP(fabsf(s) > fabsf(m)) ? s : m */ \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
             __ASM_EMIT("sub         %[count], %[count], #4") \
             __ASM_EMIT("str         q0, [%[" DST "], #0x00]") \
             __ASM_EMIT(INCA("add    %[" A "], %[" A "], #0x10")) \
@@ -401,7 +476,7 @@ namespace lsp
             __ASM_EMIT("fadd        v0.4s, v0.4s, v16.4s")              /* v0 = m = l + r */ \
             __ASM_EMIT("facgt       v16.4s, v8.4s, v0.4s")              /* v16 = fabsf(s) > fabsf(m) */ \
             __ASM_EMIT(OP "         v0.16b, v8.16b, v16.16b")           /* v0 = O = OP(fabsf(s) > fabsf(m)) ? s : m */ \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
             __ASM_EMIT("subs        %[count], %[count], #1") \
             __ASM_EMIT("st1         {v0.s}[0], [%[" DST "]]") \
             __ASM_EMIT(INCA("add    %[" A "], %[" A "], #0x04")) \
@@ -414,7 +489,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
-                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "bif", INC_OFF)
+                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "bif", INC_OFF, MS_MUL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -433,7 +508,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
-                MS_SIGN_MINMAX_CORE("dst", "a", "b", "bif", INC_ON)
+                MS_SIGN_MINMAX_CORE("dst", "a", "b", "bif", INC_ON, MS_MUL)
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -452,7 +527,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
-                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "bit", INC_OFF)
+                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "bit", INC_OFF, MS_MUL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -471,7 +546,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
-                MS_SIGN_MINMAX_CORE("dst", "a", "b", "bit", INC_ON)
+                MS_SIGN_MINMAX_CORE("dst", "a", "b", "bit", INC_ON, MS_MUL)
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -486,11 +561,83 @@ namespace lsp
             );
         }
 
+        void lr_psmin2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "bif", INC_OFF, MS_NOMUL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
+            );
+        }
+
+        void lr_psmin3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                MS_SIGN_MINMAX_CORE("dst", "a", "b", "bif", INC_ON, MS_NOMUL)
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
+            );
+        }
+
+        void lr_psmax2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "bit", INC_OFF, MS_NOMUL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
+            );
+        }
+
+        void lr_psmax3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                MS_SIGN_MINMAX_CORE("dst", "a", "b", "bit", INC_ON, MS_NOMUL)
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
+            );
+        }
+
         #undef MS_SIGN_MINMAX_CORE
 
-        #define MM_ABS_MINMAX_CORE(DST, A, B, OP, INCA) \
+        #define MM_ABS_MINMAX_CORE(DST, A, B, OP, INCA, IF_MUL) \
             __ASM_EMIT("subs        %[count], %[count], #32") \
-            __ASM_EMIT("ldr         q31, [%[CC], #0x00]")               /* v31 = 0.5f */ \
+            IF_MUL("ldr             q31, [%[CC], #0x00]")               /* v31 = 0.5f */ \
             __ASM_EMIT("b.lo        2f") \
             /* 32x blocks */ \
             __ASM_EMIT("1:") \
@@ -542,14 +689,14 @@ namespace lsp
             __ASM_EMIT(OP "         v5.4s, v5.4s, v13.4s") \
             __ASM_EMIT(OP "         v6.4s, v6.4s, v14.4s") \
             __ASM_EMIT(OP "         v7.4s, v7.4s, v15.4s") \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
-            __ASM_EMIT("fmul        v1.4s, v1.4s, v31.4s") \
-            __ASM_EMIT("fmul        v2.4s, v2.4s, v31.4s") \
-            __ASM_EMIT("fmul        v3.4s, v3.4s, v31.4s") \
-            __ASM_EMIT("fmul        v4.4s, v4.4s, v31.4s") \
-            __ASM_EMIT("fmul        v5.4s, v5.4s, v31.4s") \
-            __ASM_EMIT("fmul        v6.4s, v6.4s, v31.4s") \
-            __ASM_EMIT("fmul        v7.4s, v7.4s, v31.4s") \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v1.4s, v1.4s, v31.4s") \
+            IF_MUL("fmul            v2.4s, v2.4s, v31.4s") \
+            IF_MUL("fmul            v3.4s, v3.4s, v31.4s") \
+            IF_MUL("fmul            v4.4s, v4.4s, v31.4s") \
+            IF_MUL("fmul            v5.4s, v5.4s, v31.4s") \
+            IF_MUL("fmul            v6.4s, v6.4s, v31.4s") \
+            IF_MUL("fmul            v7.4s, v7.4s, v31.4s") \
             __ASM_EMIT("subs        %[count], %[count], #32") \
             __ASM_EMIT("stp         q0, q1, [%[" DST "], #0x00]") \
             __ASM_EMIT("stp         q2, q3, [%[" DST "], #0x20]") \
@@ -587,10 +734,10 @@ namespace lsp
             __ASM_EMIT(OP "         v1.4s, v1.4s, v9.4s") \
             __ASM_EMIT(OP "         v2.4s, v2.4s, v10.4s") \
             __ASM_EMIT(OP "         v3.4s, v3.4s, v11.4s") \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
-            __ASM_EMIT("fmul        v1.4s, v1.4s, v31.4s") \
-            __ASM_EMIT("fmul        v2.4s, v2.4s, v31.4s") \
-            __ASM_EMIT("fmul        v3.4s, v3.4s, v31.4s") \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v1.4s, v1.4s, v31.4s") \
+            IF_MUL("fmul            v2.4s, v2.4s, v31.4s") \
+            IF_MUL("fmul            v3.4s, v3.4s, v31.4s") \
             __ASM_EMIT("sub         %[count], %[count], #16") \
             __ASM_EMIT("stp         q0, q1, [%[" DST "], #0x00]") \
             __ASM_EMIT("stp         q2, q3, [%[" DST "], #0x20]") \
@@ -613,8 +760,8 @@ namespace lsp
             __ASM_EMIT("fabs        v1.4s, v1.4s") \
             __ASM_EMIT(OP "         v0.4s, v0.4s, v8.4s")               /* v0 = O = OP(fabsf(m), fabsf(s)) */ \
             __ASM_EMIT(OP "         v1.4s, v1.4s, v9.4s") \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
-            __ASM_EMIT("fmul        v1.4s, v1.4s, v31.4s") \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v1.4s, v1.4s, v31.4s") \
             __ASM_EMIT("sub         %[count], %[count], #8") \
             __ASM_EMIT("stp         q0, q1, [%[" DST "], #0x00]") \
             __ASM_EMIT(INCA("add    %[" A "], %[" A "], #0x20")) \
@@ -631,7 +778,7 @@ namespace lsp
             __ASM_EMIT("fabs        v8.4s, v8.4s")                      /* v8 = fabsf(s) */ \
             __ASM_EMIT("fabs        v0.4s, v0.4s")                      /* v0 = fabsf(m) */ \
             __ASM_EMIT(OP "         v0.4s, v0.4s, v8.4s")               /* v0 = O = OP(fabsf(m), fabsf(s)) */ \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
             __ASM_EMIT("sub         %[count], %[count], #4") \
             __ASM_EMIT("str         q0, [%[" DST "], #0x00]") \
             __ASM_EMIT(INCA("add    %[" A "], %[" A "], #0x10")) \
@@ -649,7 +796,7 @@ namespace lsp
             __ASM_EMIT("fabs        v8.4s, v8.4s")                      /* v8 = fabsf(s) */ \
             __ASM_EMIT("fabs        v0.4s, v0.4s")                      /* v0 = fabsf(m) */ \
             __ASM_EMIT(OP "         v0.4s, v0.4s, v8.4s")               /* v0 = O = OP(fabsf(m), fabsf(s)) */ \
-            __ASM_EMIT("fmul        v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
+            IF_MUL("fmul            v0.4s, v0.4s, v31.4s")              /* v0 = O * 0.5f */ \
             __ASM_EMIT("subs        %[count], %[count], #1") \
             __ASM_EMIT("st1         {v0.s}[0], [%[" DST "]]") \
             __ASM_EMIT(INCA("add    %[" A "], %[" A "], #0x04")) \
@@ -662,7 +809,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
-                MM_ABS_MINMAX_CORE("dst", "dst", "src", "fmin", INC_OFF)
+                MM_ABS_MINMAX_CORE("dst", "dst", "src", "fmin", INC_OFF, MS_MUL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -681,7 +828,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
-                MM_ABS_MINMAX_CORE("dst", "a", "b", "fmin", INC_ON)
+                MM_ABS_MINMAX_CORE("dst", "a", "b", "fmin", INC_ON, MS_MUL)
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -700,7 +847,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
-                MM_ABS_MINMAX_CORE("dst", "dst", "src", "fmax", INC_OFF)
+                MM_ABS_MINMAX_CORE("dst", "dst", "src", "fmax", INC_OFF, MS_MUL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -719,7 +866,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM
             (
-                MM_ABS_MINMAX_CORE("dst", "a", "b", "fmax", INC_ON)
+                MM_ABS_MINMAX_CORE("dst", "a", "b", "fmax", INC_ON, MS_MUL)
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -734,10 +881,86 @@ namespace lsp
             );
         }
 
+        void lr_pamin2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                MM_ABS_MINMAX_CORE("dst", "dst", "src", "fmin", INC_OFF, MS_NOMUL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                : [CC] "r" (&ms_minmax_abs[0])
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23",
+                  "v31"
+            );
+        }
+
+        void lr_pamin3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                MM_ABS_MINMAX_CORE("dst", "a", "b", "fmin", INC_ON, MS_NOMUL)
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
+            );
+        }
+
+        void lr_pamax2(float *dst, const float *src, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                MM_ABS_MINMAX_CORE("dst", "dst", "src", "fmax", INC_OFF, MS_NOMUL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
+            );
+        }
+
+        void lr_pamax3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_AARCH64_ASM
+            (
+                MM_ABS_MINMAX_CORE("dst", "a", "b", "fmax", INC_ON, MS_NOMUL)
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
+                  "v8", "v9", "v10", "v11",
+                  "v12", "v13", "v14", "v15",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
+            );
+        }
+
         #undef MM_ABS_MINMAX_CORE
 
         #undef INC_ON
         #undef INC_OFF
+
+        #undef MS_MUL
+        #undef MS_NOMUL
     } /* namespace asimd */
 } /* namespace lsp */
 
