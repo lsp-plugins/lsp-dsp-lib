@@ -67,23 +67,23 @@ namespace lsp
         }
     )
 
-//    IF_ARCH_ARM(
-//        namespace neon_d32
-//        {
-//            void pmin2(float *dst, const float *src, size_t count);
-//            void pmax2(float *dst, const float *src, size_t count);
-//            void ms_psmin2(float *dst, const float *src, size_t count);
-//            void ms_psmax2(float *dst, const float *src, size_t count);
-//            void ms_pamin2(float *dst, const float *src, size_t count);
-//            void ms_pamax2(float *dst, const float *src, size_t count);
-//        }
-//    )
-//
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void ms_pmin2(float *dst, const float *src, size_t count);
+            void ms_pmax2(float *dst, const float *src, size_t count);
+            void ms_psmin2(float *dst, const float *src, size_t count);
+            void ms_psmax2(float *dst, const float *src, size_t count);
+            void ms_pamin2(float *dst, const float *src, size_t count);
+            void ms_pamax2(float *dst, const float *src, size_t count);
+        }
+    )
+
 //    IF_ARCH_AARCH64(
 //        namespace asimd
 //        {
-//            void pmin2(float *dst, const float *src, size_t count);
-//            void pmax2(float *dst, const float *src, size_t count);
+//            void ms_pmin2(float *dst, const float *src, size_t count);
+//            void ms_pmax2(float *dst, const float *src, size_t count);
 //            void ms_psmin2(float *dst, const float *src, size_t count);
 //            void ms_psmax2(float *dst, const float *src, size_t count);
 //            void ms_pamin2(float *dst, const float *src, size_t count);
@@ -166,13 +166,13 @@ UTEST_BEGIN("dsp.pmath", ms_minmax2)
         IF_ARCH_X86(CALL(generic::ms_pamin2, avx512::ms_pamin2, 64));
         IF_ARCH_X86(CALL(generic::ms_pamax2, avx512::ms_pamax2, 64));
 
-//        IF_ARCH_ARM(CALL(generic::ms_pmin2, neon_d32::ms_pmin2, 16));
-//        IF_ARCH_ARM(CALL(generic::ms_pmax2, neon_d32::ms_pmax2, 16));
-//        IF_ARCH_ARM(CALL(generic::ms_psmin2, neon_d32::ms_psmin2, 16));
-//        IF_ARCH_ARM(CALL(generic::ms_psmax2, neon_d32::ms_psmax2, 16));
-//        IF_ARCH_ARM(CALL(generic::ms_pamin2, neon_d32::ms_pamin2, 16));
-//        IF_ARCH_ARM(CALL(generic::ms_pamax2, neon_d32::ms_pamax2, 16));
-//
+        IF_ARCH_ARM(CALL(generic::ms_pmin2, neon_d32::ms_pmin2, 16));
+        IF_ARCH_ARM(CALL(generic::ms_pmax2, neon_d32::ms_pmax2, 16));
+        IF_ARCH_ARM(CALL(generic::ms_psmin2, neon_d32::ms_psmin2, 16));
+        IF_ARCH_ARM(CALL(generic::ms_psmax2, neon_d32::ms_psmax2, 16));
+        IF_ARCH_ARM(CALL(generic::ms_pamin2, neon_d32::ms_pamin2, 16));
+        IF_ARCH_ARM(CALL(generic::ms_pamax2, neon_d32::ms_pamax2, 16));
+
 //        IF_ARCH_AARCH64(CALL(generic::ms_pmin2, asimd::ms_pmin2, 16));
 //        IF_ARCH_AARCH64(CALL(generic::ms_pmax2, asimd::ms_pmax2, 16));
 //        IF_ARCH_AARCH64(CALL(generic::ms_psmin2, asimd::ms_psmin2, 16));

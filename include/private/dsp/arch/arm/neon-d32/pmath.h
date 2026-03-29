@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 13 апр. 2025 г.
@@ -36,6 +36,7 @@
 #include <private/dsp/arch/arm/neon-d32/pmath/log.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/lramp.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/minmax.h>
+#include <private/dsp/arch/arm/neon-d32/pmath/ms_minmax.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/op_kx.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/op_vv.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/pmix.h>

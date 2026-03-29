@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -225,6 +225,19 @@
                 EXPORT1(psmax3);
                 EXPORT1(pamin3);
                 EXPORT1(pamax3);
+
+                EXPORT1(ms_pmin2);
+                EXPORT1(ms_pmax2);
+                EXPORT1(ms_psmin2);
+                EXPORT1(ms_psmax2);
+                EXPORT1(ms_pamin2);
+                EXPORT1(ms_pamax2);
+                EXPORT1(ms_pmin3);
+                EXPORT1(ms_pmax3);
+                EXPORT1(ms_psmin3);
+                EXPORT1(ms_psmax3);
+                EXPORT1(ms_pamin3);
+                EXPORT1(ms_pamax3);
 
                 EXPORT1(fmadd_k3);
                 EXPORT1(fmsub_k3);
