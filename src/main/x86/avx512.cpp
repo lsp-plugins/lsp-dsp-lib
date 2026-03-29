@@ -243,6 +243,19 @@
                 CEXPORT1(vl, ms_pamin3);
                 CEXPORT1(vl, ms_pamax3);
 
+                CEXPORT1(vl, lr_pmin2);
+                CEXPORT1(vl, lr_pmax2);
+                CEXPORT1(vl, lr_psmin2);
+                CEXPORT1(vl, lr_psmax2);
+                CEXPORT1(vl, lr_pamin2);
+                CEXPORT1(vl, lr_pamax2);
+                CEXPORT1(vl, lr_pmin3);
+                CEXPORT1(vl, lr_pmax3);
+                CEXPORT1(vl, lr_psmin3);
+                CEXPORT1(vl, lr_psmax3);
+                CEXPORT1(vl, lr_pamin3);
+                CEXPORT1(vl, lr_pamax3);
+
                 CEXPORT2(vl, normalize, normalize2);
                 CEXPORT1(vl, normalize1);
                 CEXPORT1(vl, normalize2);

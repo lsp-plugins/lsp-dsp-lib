@@ -38,10 +38,13 @@ namespace lsp
             };
         )
 
-        #define MS_MINMAX_CORE(DST, A, B, OP) \
+        #define MS_MUL(x)       __ASM_EMIT(x)
+        #define MS_NOMUL(x)
+
+        #define MS_MINMAX_CORE(DST, A, B, OP, IF_MUL) \
             __ASM_EMIT("xor         %[off], %[off]") \
             __ASM_EMIT("sub         $8, %[count]") \
-            __ASM_EMIT("movaps      0x10 + %[CC], %%xmm6")              /* xmm6 = 0.5f */ \
+            IF_MUL("movaps          0x10 + %[CC], %%xmm6")              /* xmm6 = 0.5f */ \
             __ASM_EMIT("jb          2f")    \
             /* 8x blocks */ \
             __ASM_EMIT("1:") \
@@ -57,8 +60,8 @@ namespace lsp
             __ASM_EMIT("subps       %%xmm5, %%xmm3") \
             __ASM_EMIT(OP "         %%xmm2, %%xmm0")                    /* xmm0 = OP(m, s) */ \
             __ASM_EMIT(OP "         %%xmm3, %%xmm1") \
-            __ASM_EMIT("mulps       %%xmm6, %%xmm0")                    /* xmm0 = OP(m, s) * 0.5f */ \
-            __ASM_EMIT("mulps       %%xmm6, %%xmm1") \
+            IF_MUL("mulps           %%xmm6, %%xmm0")                    /* xmm0 = OP(m, s) * 0.5f */ \
+            IF_MUL("mulps           %%xmm6, %%xmm1") \
             __ASM_EMIT("movups      %%xmm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("movups      %%xmm1, 0x10(%[" DST "], %[off])") \
             __ASM_EMIT("add         $0x20, %[off]") \
@@ -74,7 +77,7 @@ namespace lsp
             __ASM_EMIT("addps       %%xmm4, %%xmm0")                    /* xmm0 = m = l + r */ \
             __ASM_EMIT("subps       %%xmm4, %%xmm2")                    /* xmm2 = s = l - r */ \
             __ASM_EMIT(OP "         %%xmm2, %%xmm0")                    /* xmm0 = OP(m, s) */ \
-            __ASM_EMIT("mulps       %%xmm6, %%xmm0")                    /* xmm0 = OP(m, s) * 0.5f */ \
+            IF_MUL("mulps           %%xmm6, %%xmm0")                    /* xmm0 = OP(m, s) * 0.5f */ \
             __ASM_EMIT("movups      %%xmm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("sub         $4, %[count]") \
             __ASM_EMIT("add         $0x10, %[off]") \
@@ -89,7 +92,7 @@ namespace lsp
             __ASM_EMIT("addss       %%xmm4, %%xmm0")                    /* xmm0 = m = l + r */ \
             __ASM_EMIT("subss       %%xmm4, %%xmm2")                    /* xmm2 = s = l - r */ \
             __ASM_EMIT(OP "         %%xmm2, %%xmm0")                    /* xmm0 = OP(m, s) */ \
-            __ASM_EMIT("mulss       %%xmm6, %%xmm0")                    /* xmm0 = OP(m, s) * 0.5f */ \
+            IF_MUL("mulss           %%xmm6, %%xmm0")                    /* xmm0 = OP(m, s) * 0.5f */ \
             __ASM_EMIT("movss       %%xmm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("add         $0x04, %[off]") \
             __ASM_EMIT("dec         %[count]") \
@@ -101,7 +104,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                MS_MINMAX_CORE("dst", "dst", "src", "minps")
+                MS_MINMAX_CORE("dst", "dst", "src", "minps", MS_MUL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src),
                   [CC] "o" (ms_minmax_abs)
@@ -116,7 +119,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                MS_MINMAX_CORE("dst", "a", "b", "minps")
+                MS_MINMAX_CORE("dst", "a", "b", "minps", MS_MUL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
                   [CC] "o" (ms_minmax_abs)
@@ -131,7 +134,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                MS_MINMAX_CORE("dst", "dst", "src", "maxps")
+                MS_MINMAX_CORE("dst", "dst", "src", "maxps", MS_MUL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src),
                   [CC] "o" (ms_minmax_abs)
@@ -146,7 +149,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                MS_MINMAX_CORE("dst", "a", "b", "maxps")
+                MS_MINMAX_CORE("dst", "a", "b", "maxps", MS_MUL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
                   [CC] "o" (ms_minmax_abs)
@@ -156,14 +159,74 @@ namespace lsp
             );
         }
 
+        void lr_pmin2(float *dst, const float *src, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                MS_MINMAX_CORE("dst", "dst", "src", "minps", MS_NOMUL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [src] "r" (src),
+                  [CC] "o" (ms_minmax_abs)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5"
+            );
+        }
+
+        void lr_pmin3(float *dst, const float *a, const float *b, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                MS_MINMAX_CORE("dst", "a", "b", "minps", MS_NOMUL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
+                  [CC] "o" (ms_minmax_abs)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5"
+            );
+        }
+
+        void lr_pmax2(float *dst, const float *src, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                MS_MINMAX_CORE("dst", "dst", "src", "maxps", MS_NOMUL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [src] "r" (src),
+                  [CC] "o" (ms_minmax_abs)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5"
+            );
+        }
+
+        void lr_pmax3(float *dst, const float *a, const float *b, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                MS_MINMAX_CORE("dst", "a", "b", "maxps", MS_NOMUL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
+                  [CC] "o" (ms_minmax_abs)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5"
+            );
+        }
+
         #undef MS_MINMAX_CORE
 
 
-        #define MS_SIGN_MINMAX_CORE(DST, A, B, CMP) \
+        #define MS_SIGN_MINMAX_CORE(DST, A, B, CMP, IF_MUL) \
             __ASM_EMIT("xor         %[off], %[off]") \
             __ASM_EMIT("sub         $4, %[count]") \
             __ASM_EMIT("movaps      0x00 + %[CC], %%xmm6")              /* xmm6 = MASK */ \
-            __ASM_EMIT("movaps      0x10 + %[CC], %%xmm7")              /* xmm7 = 0.5f */ \
+            IF_MUL("movaps          0x10 + %[CC], %%xmm7")              /* xmm7 = 0.5f */ \
             __ASM_EMIT("jb          2f")    \
             /* 4x blocks */ \
             __ASM_EMIT("1:") \
@@ -180,7 +243,7 @@ namespace lsp
             __ASM_EMIT("andps       %%xmm2, %%xmm0")                    /* xmm0 = m & (abs(m) <=> abs(s)) */ \
             __ASM_EMIT("andnps      %%xmm1, %%xmm2")                    /* xmm2 = s & ~(abs(m) <=> abs(s)) */ \
             __ASM_EMIT("orps        %%xmm2, %%xmm0")                    /* xmm0 = O = (m & (abs(m) <=> abs(s))) | (s & ~(abs(m) <=> abs(s))) */ \
-            __ASM_EMIT("mulps       %%xmm7, %%xmm0")                    /* xmm0 = O + 0.5f */ \
+            IF_MUL("mulps           %%xmm7, %%xmm0")                    /* xmm0 = O + 0.5f */ \
             __ASM_EMIT("movups      %%xmm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("add         $0x10, %[off]") \
             __ASM_EMIT("sub         $4, %[count]") \
@@ -203,7 +266,7 @@ namespace lsp
             __ASM_EMIT("andps       %%xmm2, %%xmm0")                    /* xmm0 = m & (abs(m) <=> abs(s)) */ \
             __ASM_EMIT("andnps      %%xmm1, %%xmm2")                    /* xmm2 = s & ~(abs(m) <=> abs(s)) */ \
             __ASM_EMIT("orps        %%xmm2, %%xmm0")                    /* xmm0 = O = (m & (abs(m) <=> abs(s))) | (s & ~(abs(m) <=> abs(s))) */ \
-            __ASM_EMIT("mulss       %%xmm7, %%xmm0")                    /* xmm0 = O + 0.5f */ \
+            IF_MUL("mulss           %%xmm7, %%xmm0")                    /* xmm0 = O + 0.5f */ \
             __ASM_EMIT("movss       %%xmm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("add         $0x04, %[off]") \
             __ASM_EMIT("dec         %[count]") \
@@ -215,7 +278,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "$1")
+                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "$1", MS_MUL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src),
                   [CC] "o" (ms_minmax_abs)
@@ -230,7 +293,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                MS_SIGN_MINMAX_CORE("dst", "a", "b", "$1")
+                MS_SIGN_MINMAX_CORE("dst", "a", "b", "$1", MS_MUL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
                   [CC] "o" (ms_minmax_abs)
@@ -245,7 +308,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "$6")
+                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "$6", MS_MUL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src),
                   [CC] "o" (ms_minmax_abs)
@@ -260,7 +323,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                MS_SIGN_MINMAX_CORE("dst", "a", "b", "$6")
+                MS_SIGN_MINMAX_CORE("dst", "a", "b", "$6", MS_MUL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
                   [CC] "o" (ms_minmax_abs)
@@ -270,13 +333,72 @@ namespace lsp
             );
         }
 
+        void lr_psmin2(float *dst, const float *src, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "$1", MS_NOMUL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [src] "r" (src),
+                  [CC] "o" (ms_minmax_abs)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm6"
+            );
+        }
+
+        void lr_psmin3(float *dst, const float *a, const float *b, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                MS_SIGN_MINMAX_CORE("dst", "a", "b", "$1", MS_NOMUL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
+                  [CC] "o" (ms_minmax_abs)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm6"
+            );
+        }
+
+        void lr_psmax2(float *dst, const float *src, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "$6", MS_NOMUL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [src] "r" (src),
+                  [CC] "o" (ms_minmax_abs)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm6"
+            );
+        }
+
+        void lr_psmax3(float *dst, const float *a, const float *b, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                MS_SIGN_MINMAX_CORE("dst", "a", "b", "$6", MS_NOMUL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
+                  [CC] "o" (ms_minmax_abs)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm6"
+            );
+        }
         #undef MS_SIGN_MINMAX_CORE
 
-        #define MS_ABS_MINMAX_CORE(DST, A, B, OP) \
+        #define MS_ABS_MINMAX_CORE(DST, A, B, OP, IF_MUL) \
             __ASM_EMIT("xor         %[off], %[off]") \
             __ASM_EMIT("sub         $8, %[count]") \
             __ASM_EMIT("movaps      0x00 + %[CC], %%xmm6")              /* xmm6 = MASK */ \
-            __ASM_EMIT("movaps      0x10 + %[CC], %%xmm7")              /* xmm7 = 0.5f */ \
+            IF_MUL("movaps          0x10 + %[CC], %%xmm7")              /* xmm7 = 0.5f */ \
             __ASM_EMIT("jb          2f")    \
             /* 8x blocks */ \
             __ASM_EMIT("1:") \
@@ -296,8 +418,8 @@ namespace lsp
             __ASM_EMIT("andps       %%xmm6, %%xmm3") \
             __ASM_EMIT(OP "         %%xmm2, %%xmm0")                    /* xmm0 = OP(m, s) */ \
             __ASM_EMIT(OP "         %%xmm3, %%xmm1") \
-            __ASM_EMIT("mulps       %%xmm7, %%xmm0")                    /* xmm0 = OP(m, s) * 0.5f */ \
-            __ASM_EMIT("mulps       %%xmm7, %%xmm1") \
+            IF_MUL("mulps           %%xmm7, %%xmm0")                    /* xmm0 = OP(m, s) * 0.5f */ \
+            IF_MUL("mulps           %%xmm7, %%xmm1") \
             __ASM_EMIT("movups      %%xmm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("movups      %%xmm1, 0x10(%[" DST "], %[off])") \
             __ASM_EMIT("add         $0x20, %[off]") \
@@ -315,7 +437,7 @@ namespace lsp
             __ASM_EMIT("andps       %%xmm6, %%xmm0")                    /* xmm0 = fabsf(m) */ \
             __ASM_EMIT("andps       %%xmm6, %%xmm2")                    /* xmm2 = fabsf(s) */ \
             __ASM_EMIT(OP "         %%xmm2, %%xmm0")                    /* xmm0 = OP(m, s) */ \
-            __ASM_EMIT("mulps       %%xmm7, %%xmm0")                    /* xmm0 = OP(m, s) * 0.5f */ \
+            IF_MUL("mulps           %%xmm7, %%xmm0")                    /* xmm0 = OP(m, s) * 0.5f */ \
             __ASM_EMIT("movups      %%xmm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("sub         $4, %[count]") \
             __ASM_EMIT("add         $0x10, %[off]") \
@@ -332,7 +454,7 @@ namespace lsp
             __ASM_EMIT("andps       %%xmm6, %%xmm0")                    /* xmm0 = fabsf(m) */ \
             __ASM_EMIT("andps       %%xmm6, %%xmm2")                    /* xmm2 = fabsf(s) */ \
             __ASM_EMIT(OP "         %%xmm2, %%xmm0")                    /* xmm0 = OP(m, s) */ \
-            __ASM_EMIT("mulss       %%xmm7, %%xmm0")                    /* xmm0 = OP(m, s) * 0.5f */ \
+            IF_MUL("mulss           %%xmm7, %%xmm0")                    /* xmm0 = OP(m, s) * 0.5f */ \
             __ASM_EMIT("movss       %%xmm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("add         $0x04, %[off]") \
             __ASM_EMIT("dec         %[count]") \
@@ -344,7 +466,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                MS_ABS_MINMAX_CORE("dst", "dst", "src", "minps")
+                MS_ABS_MINMAX_CORE("dst", "dst", "src", "minps", MS_MUL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src),
                   [CC] "o" (ms_minmax_abs)
@@ -359,7 +481,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                MS_ABS_MINMAX_CORE("dst", "a", "b", "minps")
+                MS_ABS_MINMAX_CORE("dst", "a", "b", "minps", MS_MUL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
                   [CC] "o" (ms_minmax_abs)
@@ -374,7 +496,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                MS_ABS_MINMAX_CORE("dst", "dst", "src", "maxps")
+                MS_ABS_MINMAX_CORE("dst", "dst", "src", "maxps", MS_MUL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src),
                   [CC] "o" (ms_minmax_abs)
@@ -389,7 +511,7 @@ namespace lsp
             IF_ARCH_X86(size_t off);
             ARCH_X86_ASM
             (
-                MS_ABS_MINMAX_CORE("dst", "a", "b", "maxps")
+                MS_ABS_MINMAX_CORE("dst", "a", "b", "maxps", MS_MUL)
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
                   [CC] "o" (ms_minmax_abs)
@@ -399,7 +521,71 @@ namespace lsp
             );
         }
 
+
+        void lr_pamin2(float *dst, const float *src, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                MS_ABS_MINMAX_CORE("dst", "dst", "src", "minps", MS_NOMUL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [src] "r" (src),
+                  [CC] "o" (ms_minmax_abs)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6"
+            );
+        }
+
+        void lr_pamin3(float *dst, const float *a, const float *b, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                MS_ABS_MINMAX_CORE("dst", "a", "b", "minps", MS_NOMUL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
+                  [CC] "o" (ms_minmax_abs)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6"
+            );
+        }
+
+        void lr_pamax2(float *dst, const float *src, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                MS_ABS_MINMAX_CORE("dst", "dst", "src", "maxps", MS_NOMUL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [src] "r" (src),
+                  [CC] "o" (ms_minmax_abs)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6"
+            );
+        }
+
+        void lr_pamax3(float *dst, const float *a, const float *b, size_t count)
+        {
+            IF_ARCH_X86(size_t off);
+            ARCH_X86_ASM
+            (
+                MS_ABS_MINMAX_CORE("dst", "a", "b", "maxps", MS_NOMUL)
+                : [off] "=&r" (off), [count] "+r" (count)
+                : [dst] "r" (dst), [a] "r" (a), [b] "r" (b),
+                  [CC] "o" (ms_minmax_abs)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6"
+            );
+        }
+
         #undef MS_ABS_MINMAX_CORE
+
+        #undef MS_MUL
+        #undef MS_NOMUL
 
     } /* namespace sse */
 } /* namespace lsp */
