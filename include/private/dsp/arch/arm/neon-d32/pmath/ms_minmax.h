@@ -37,9 +37,12 @@ namespace lsp
             };
         )
 
-        #define MS_MINMAX_CORE(DST, A, B, OP, INCA) \
+        #define MS_MUL(x)       __ASM_EMIT(x)
+        #define MS_NOMUL(x)
+
+        #define MS_MINMAX_CORE(DST, A, B, OP, INCA, IF_MUL) \
             __ASM_EMIT("subs        %[count], #16") \
-            __ASM_EMIT("vldm        %[CC], {q12}")              /* q12 = 0.5f */ \
+            IF_MUL("vldm            %[CC], {q12}")              /* q12 = 0.5f */ \
             __ASM_EMIT("blo         2f") \
             /* 16x blocks */ \
             __ASM_EMIT("1:") \
@@ -57,10 +60,10 @@ namespace lsp
             __ASM_EMIT(OP ".f32     q1, q1, q5") \
             __ASM_EMIT(OP ".f32     q2, q2, q6") \
             __ASM_EMIT(OP ".f32     q3, q3, q7") \
-            __ASM_EMIT("vmul.f32    q0, q0, q12")               /* q0 = O * 0.5f */ \
-            __ASM_EMIT("vmul.f32    q1, q1, q12") \
-            __ASM_EMIT("vmul.f32    q2, q2, q12") \
-            __ASM_EMIT("vmul.f32    q3, q3, q12") \
+            IF_MUL("vmul.f32        q0, q0, q12")               /* q0 = O * 0.5f */ \
+            IF_MUL("vmul.f32        q1, q1, q12") \
+            IF_MUL("vmul.f32        q2, q2, q12") \
+            IF_MUL("vmul.f32        q3, q3, q12") \
             __ASM_EMIT("subs        %[count], #16") \
             __ASM_EMIT("vstm        %[" DST "]!, {q0-q3}") \
             __ASM_EMIT("bhs         1b") \
@@ -76,8 +79,8 @@ namespace lsp
             __ASM_EMIT("vadd.f32    q1, q1, q9") \
             __ASM_EMIT(OP ".f32     q0, q0, q4")                /* q0 = O = OP(m, s) */ \
             __ASM_EMIT(OP ".f32     q1, q1, q5") \
-            __ASM_EMIT("vmul.f32    q0, q0, q12")               /* q0 = O * 0.5f */ \
-            __ASM_EMIT("vmul.f32    q1, q1, q12") \
+            IF_MUL("vmul.f32        q0, q0, q12")               /* q0 = O * 0.5f */ \
+            IF_MUL("vmul.f32        q1, q1, q12") \
             __ASM_EMIT("sub         %[count], #8") \
             __ASM_EMIT("vstm        %[" DST "]!, {q0-q1}") \
             /* 4x block */ \
@@ -89,7 +92,7 @@ namespace lsp
             __ASM_EMIT("vsub.f32    q4, q0, q8")                /* q4 = s = l - r */ \
             __ASM_EMIT("vadd.f32    q0, q0, q8")                /* q0 = m = l + r */ \
             __ASM_EMIT(OP ".f32     q0, q0, q4")                /* q0 = O = OP(m, s) */ \
-            __ASM_EMIT("vmul.f32    q0, q0, q12")               /* q0 = O * 0.5f */ \
+            IF_MUL("vmul.f32        q0, q0, q12")               /* q0 = O * 0.5f */ \
             __ASM_EMIT("sub         %[count], #4") \
             __ASM_EMIT("vstm        %[" DST "]!, {q0}") \
             /* 1x block */ \
@@ -102,7 +105,7 @@ namespace lsp
             __ASM_EMIT("vsub.f32    q4, q0, q8")                /* q4 = s = l - r */ \
             __ASM_EMIT("vadd.f32    q0, q0, q8")                /* q0 = m = l + r */ \
             __ASM_EMIT(OP ".f32     q0, q0, q4")                /* q0 = O = OP(m, s) */ \
-            __ASM_EMIT("vmul.f32    q0, q0, q12")               /* q0 = O * 0.5f */ \
+            IF_MUL("vmul.f32        q0, q0, q12")               /* q0 = O * 0.5f */ \
             __ASM_EMIT("subs        %[count], #1") \
             __ASM_EMIT("vst1.32     {d0[0]}, [%[" DST "]]!") \
             __ASM_EMIT("bge         7b") \
@@ -112,7 +115,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                MS_MINMAX_CORE("dst", "dst", "src", "vmin", "")
+                MS_MINMAX_CORE("dst", "dst", "src", "vmin", "", MS_MUL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -128,7 +131,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                MS_MINMAX_CORE("dst", "a", "b", "vmin", "!")
+                MS_MINMAX_CORE("dst", "a", "b", "vmin", "!", MS_MUL)
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -144,7 +147,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                MS_MINMAX_CORE("dst", "dst", "src", "vmax", "")
+                MS_MINMAX_CORE("dst", "dst", "src", "vmax", "", MS_MUL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -160,7 +163,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                MS_MINMAX_CORE("dst", "a", "b", "vmax", "!")
+                MS_MINMAX_CORE("dst", "a", "b", "vmax", "!", MS_MUL)
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -172,11 +175,72 @@ namespace lsp
             );
         }
 
+
+        void lr_pmin2(float *dst, const float *src, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                MS_MINMAX_CORE("dst", "dst", "src", "vmin", "", MS_NOMUL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
+        void lr_pmin3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                MS_MINMAX_CORE("dst", "a", "b", "vmin", "!", MS_NOMUL)
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
+        void lr_pmax2(float *dst, const float *src, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                MS_MINMAX_CORE("dst", "dst", "src", "vmax", "", MS_NOMUL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
+        void lr_pmax3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                MS_MINMAX_CORE("dst", "a", "b", "vmax", "!", MS_NOMUL)
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
         #undef MS_MINMAX_CORE
 
-        #define MS_SIGN_MINMAX_CORE(DST, A, B, OP, INCA) \
-            __ASM_EMIT("vldm        %[CC], {q12}")              /* q12 = 0.5f */ \
+        #define MS_SIGN_MINMAX_CORE(DST, A, B, OP, INCA, IF_MUL) \
             __ASM_EMIT("subs        %[count], #16") \
+            IF_MUL("vldm            %[CC], {q12}")              /* q12 = 0.5f */ \
             __ASM_EMIT("blo         2f") \
             /* 16x blocks */ \
             __ASM_EMIT("1:") \
@@ -198,10 +262,10 @@ namespace lsp
             __ASM_EMIT(OP "         q1,  q5, q9") \
             __ASM_EMIT(OP "         q2,  q6, q10") \
             __ASM_EMIT(OP "         q3,  q7, q11") \
-            __ASM_EMIT("vmul.f32    q0, q0, q12")               /* q0 = O * 0.5f */ \
-            __ASM_EMIT("vmul.f32    q1, q1, q12") \
-            __ASM_EMIT("vmul.f32    q2, q2, q12") \
-            __ASM_EMIT("vmul.f32    q3, q3, q12") \
+            IF_MUL("vmul.f32        q0, q0, q12")               /* q0 = O * 0.5f */ \
+            IF_MUL("vmul.f32        q1, q1, q12") \
+            IF_MUL("vmul.f32        q2, q2, q12") \
+            IF_MUL("vmul.f32        q3, q3, q12") \
             __ASM_EMIT("subs        %[count], #16") \
             __ASM_EMIT("vstm        %[" DST "]!, {q0-q3}") \
             __ASM_EMIT("bhs         1b") \
@@ -219,8 +283,8 @@ namespace lsp
             __ASM_EMIT("vacgt.f32   q9,  q5, q1") \
             __ASM_EMIT(OP "         q0,  q4, q8")               /* q0 = O */ \
             __ASM_EMIT(OP "         q1,  q5, q9") \
-            __ASM_EMIT("vmul.f32    q0, q0, q12")               /* q0 = O * 0.5f */ \
-            __ASM_EMIT("vmul.f32    q1, q1, q12") \
+            IF_MUL("vmul.f32        q0, q0, q12")               /* q0 = O * 0.5f */ \
+            IF_MUL("vmul.f32        q1, q1, q12") \
             __ASM_EMIT("sub         %[count], #8") \
             __ASM_EMIT("vstm        %[" DST "]!, {q0-q1}") \
             /* 4x block */ \
@@ -233,7 +297,7 @@ namespace lsp
             __ASM_EMIT("vadd.f32    q0, q0, q8")                /* q0 = m = l + r */ \
             __ASM_EMIT("vacgt.f32   q8,  q4, q0")               /* q8 = fabsf(s) > fabsf(m) */ \
             __ASM_EMIT(OP "         q0,  q4, q8")               /* q0 = O */ \
-            __ASM_EMIT("vmul.f32    q0, q0, q12")               /* q0 = O * 0.5f */ \
+            IF_MUL("vmul.f32        q0, q0, q12")               /* q0 = O * 0.5f */ \
             __ASM_EMIT("sub         %[count], #4") \
             __ASM_EMIT("vstm        %[" DST "]!, {q0}") \
             /* 1x block */ \
@@ -247,7 +311,7 @@ namespace lsp
             __ASM_EMIT("vadd.f32    q0, q0, q8")                /* q0 = m = l + r */ \
             __ASM_EMIT("vacgt.f32   q8,  q4, q0")               /* q8 = fabsf(s) > fabsf(m) */ \
             __ASM_EMIT(OP "         q0,  q4, q8")               /* q0 = O */ \
-            __ASM_EMIT("vmul.f32    q0, q0, q12")               /* q0 = O * 0.5f */ \
+            IF_MUL("vmul.f32        q0, q0, q12")               /* q0 = O * 0.5f */ \
             __ASM_EMIT("subs        %[count], #1") \
             __ASM_EMIT("vst1.32     {d0[0]}, [%[" DST "]]!") \
             __ASM_EMIT("bge         7b") \
@@ -257,7 +321,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "vbif", "")
+                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "vbif", "", MS_MUL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -273,7 +337,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                MS_SIGN_MINMAX_CORE("dst", "a", "b", "vbif", "!")
+                MS_SIGN_MINMAX_CORE("dst", "a", "b", "vbif", "!", MS_MUL)
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -289,7 +353,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "vbit", "")
+                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "vbit", "", MS_MUL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -305,7 +369,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                MS_SIGN_MINMAX_CORE("dst", "a", "b", "vbit", "!")
+                MS_SIGN_MINMAX_CORE("dst", "a", "b", "vbit", "!", MS_MUL)
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -317,11 +381,71 @@ namespace lsp
             );
         }
 
+        void lr_psmin2(float *dst, const float *src, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "vbif", "", MS_NOMUL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
+        void lr_psmin3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                MS_SIGN_MINMAX_CORE("dst", "a", "b", "vbif", "!", MS_NOMUL)
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
+        void lr_psmax2(float *dst, const float *src, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                MS_SIGN_MINMAX_CORE("dst", "dst", "src", "vbit", "", MS_NOMUL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
+        void lr_psmax3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                MS_SIGN_MINMAX_CORE("dst", "a", "b", "vbit", "!", MS_NOMUL)
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
         #undef MS_SIGN_MINMAX_CORE
 
-        #define MS_ABS_MINMAX_CORE(DST, A, B, OP, INCA) \
-            __ASM_EMIT("vldm        %[CC], {q12}")              /* q12 = 0.5f */ \
+        #define MS_ABS_MINMAX_CORE(DST, A, B, OP, INCA, IF_MUL) \
             __ASM_EMIT("subs        %[count], #16") \
+            IF_MUL("vldm            %[CC], {q12}")              /* q12 = 0.5f */ \
             __ASM_EMIT("blo         2f") \
             /* 16x blocks */ \
             __ASM_EMIT("1:") \
@@ -347,10 +471,10 @@ namespace lsp
             __ASM_EMIT(OP ".f32     q1, q1, q5") \
             __ASM_EMIT(OP ".f32     q2, q2, q6") \
             __ASM_EMIT(OP ".f32     q3, q3, q7") \
-            __ASM_EMIT("vmul.f32    q0, q0, q12")               /* q0 = O * 0.5f */ \
-            __ASM_EMIT("vmul.f32    q1, q1, q12") \
-            __ASM_EMIT("vmul.f32    q2, q2, q12") \
-            __ASM_EMIT("vmul.f32    q3, q3, q12") \
+            IF_MUL("vmul.f32        q0, q0, q12")               /* q0 = O * 0.5f */ \
+            IF_MUL("vmul.f32        q1, q1, q12") \
+            IF_MUL("vmul.f32        q2, q2, q12") \
+            IF_MUL("vmul.f32        q3, q3, q12") \
             __ASM_EMIT("subs        %[count], #16") \
             __ASM_EMIT("vstm        %[" DST "]!, {q0-q3}") \
             __ASM_EMIT("bhs         1b") \
@@ -370,8 +494,8 @@ namespace lsp
             __ASM_EMIT("vabs.f32    q1, q1") \
             __ASM_EMIT(OP ".f32     q0, q0, q4")                /* q0 = O = OP(fabsf(m), fabsf(s)) */ \
             __ASM_EMIT(OP ".f32     q1, q1, q5") \
-            __ASM_EMIT("vmul.f32    q0, q0, q12")               /* q0 = O * 0.5f */ \
-            __ASM_EMIT("vmul.f32    q1, q1, q12") \
+            IF_MUL("vmul.f32        q0, q0, q12")               /* q0 = O * 0.5f */ \
+            IF_MUL("vmul.f32        q1, q1, q12") \
             __ASM_EMIT("sub         %[count], #8") \
             __ASM_EMIT("vstm        %[" DST "]!, {q0-q1}") \
             /* 4x block */ \
@@ -385,7 +509,7 @@ namespace lsp
             __ASM_EMIT("vabs.f32    q4, q4")                    /* q4 = fabsf(s) */ \
             __ASM_EMIT("vabs.f32    q0, q0")                    /* q0 = fabsf(m) */ \
             __ASM_EMIT(OP ".f32     q0, q0, q4")                /* q0 = O = OP(fabsf(m), fabsf(s)) */ \
-            __ASM_EMIT("vmul.f32    q0, q0, q12")               /* q0 = O * 0.5f */ \
+            IF_MUL("vmul.f32        q0, q0, q12")               /* q0 = O * 0.5f */ \
             __ASM_EMIT("sub         %[count], #4") \
             __ASM_EMIT("vstm        %[" DST "]!, {q0}") \
             /* 1x block */ \
@@ -400,7 +524,7 @@ namespace lsp
             __ASM_EMIT("vabs.f32    q4, q4")                    /* q4 = fabsf(s) */ \
             __ASM_EMIT("vabs.f32    q0, q0")                    /* q0 = fabsf(m) */ \
             __ASM_EMIT(OP ".f32     q0, q0, q4")                /* q0 = O = OP(fabsf(m), fabsf(s)) */ \
-            __ASM_EMIT("vmul.f32    q0, q0, q12")               /* q0 = O * 0.5f */ \
+            IF_MUL("vmul.f32        q0, q0, q12")               /* q0 = O * 0.5f */ \
             __ASM_EMIT("subs        %[count], #1") \
             __ASM_EMIT("vst1.32     {d0[0]}, [%[" DST "]]!") \
             __ASM_EMIT("bge         7b") \
@@ -410,7 +534,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                MS_ABS_MINMAX_CORE("dst", "dst", "src", "vmin", "")
+                MS_ABS_MINMAX_CORE("dst", "dst", "src", "vmin", "", MS_MUL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -426,7 +550,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                MS_ABS_MINMAX_CORE("dst", "a", "b", "vmin", "!")
+                MS_ABS_MINMAX_CORE("dst", "a", "b", "vmin", "!", MS_MUL)
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -442,7 +566,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                MS_ABS_MINMAX_CORE("dst", "dst", "src", "vmax", "")
+                MS_ABS_MINMAX_CORE("dst", "dst", "src", "vmax", "", MS_MUL)
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -458,7 +582,7 @@ namespace lsp
         {
             ARCH_ARM_ASM
             (
-                MS_ABS_MINMAX_CORE("dst", "a", "b", "vmax", "!")
+                MS_ABS_MINMAX_CORE("dst", "a", "b", "vmax", "!", MS_MUL)
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count)
                 : [CC] "r" (&ms_minmax_abs[0])
@@ -470,7 +594,70 @@ namespace lsp
             );
         }
 
+        void lr_pamin2(float *dst, const float *src, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                MS_ABS_MINMAX_CORE("dst", "dst", "src", "vmin", "", MS_NOMUL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
+        void lr_pamin3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                MS_ABS_MINMAX_CORE("dst", "a", "b", "vmin", "!", MS_NOMUL)
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
+        void lr_pamax2(float *dst, const float *src, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                MS_ABS_MINMAX_CORE("dst", "dst", "src", "vmax", "", MS_NOMUL)
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
+        void lr_pamax3(float *dst, const float *a, const float *b, size_t count)
+        {
+            ARCH_ARM_ASM
+            (
+                MS_ABS_MINMAX_CORE("dst", "a", "b", "vmax", "!", MS_NOMUL)
+                : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
+                  [count] "+r" (count)
+                :
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11"
+            );
+        }
+
         #undef MS_ABS_MINMAX_CORE
+
+        #undef MS_MUL
+        #undef MS_NOMUL
     } /* namespace neon_d32 */
 } /* namespace lsp */
 
