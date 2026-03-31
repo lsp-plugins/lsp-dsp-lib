@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.36 ===
+
+
 === 1.0.35 ===
 * Implemented AVX512-optimized pcomplex_rcp functions.
 * Optimized packed direct and reverse FFT functions.
