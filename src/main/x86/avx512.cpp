@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 24 мая 2023 г.
@@ -48,6 +48,7 @@
         #include <private/dsp/arch/x86/avx512/dynamics.h>
         #include <private/dsp/arch/x86/avx512/float.h>
         #include <private/dsp/arch/x86/avx512/fft.h>
+        #include <private/dsp/arch/x86/avx512/pfft.h>
         #include <private/dsp/arch/x86/avx512/graphics/axis.h>
         #include <private/dsp/arch/x86/avx512/hmath.h>
         #include <private/dsp/arch/x86/avx512/msmatrix.h>
@@ -229,6 +230,32 @@
                 CEXPORT1(vl, pamin3);
                 CEXPORT1(vl, pamax3);
 
+                CEXPORT1(vl, ms_pmin2);
+                CEXPORT1(vl, ms_pmax2);
+                CEXPORT1(vl, ms_psmin2);
+                CEXPORT1(vl, ms_psmax2);
+                CEXPORT1(vl, ms_pamin2);
+                CEXPORT1(vl, ms_pamax2);
+                CEXPORT1(vl, ms_pmin3);
+                CEXPORT1(vl, ms_pmax3);
+                CEXPORT1(vl, ms_psmin3);
+                CEXPORT1(vl, ms_psmax3);
+                CEXPORT1(vl, ms_pamin3);
+                CEXPORT1(vl, ms_pamax3);
+
+                CEXPORT1(vl, lr_pmin2);
+                CEXPORT1(vl, lr_pmax2);
+                CEXPORT1(vl, lr_psmin2);
+                CEXPORT1(vl, lr_psmax2);
+                CEXPORT1(vl, lr_pamin2);
+                CEXPORT1(vl, lr_pamax2);
+                CEXPORT1(vl, lr_pmin3);
+                CEXPORT1(vl, lr_pmax3);
+                CEXPORT1(vl, lr_psmin3);
+                CEXPORT1(vl, lr_psmax3);
+                CEXPORT1(vl, lr_pamin3);
+                CEXPORT1(vl, lr_pamax3);
+
                 CEXPORT2(vl, normalize, normalize2);
                 CEXPORT1(vl, normalize1);
                 CEXPORT1(vl, normalize2);
@@ -288,6 +315,8 @@
                 CEXPORT1(vl, pcomplex_r2c_div2);
                 CEXPORT1(vl, pcomplex_c2r);
                 CEXPORT1(vl, pcomplex_corr);
+                CEXPORT1(vl, pcomplex_rcp1);
+                CEXPORT1(vl, pcomplex_rcp2);
 
                 CEXPORT1(vl, min);
                 CEXPORT1(vl, max);
@@ -353,6 +382,8 @@
 
                 CEXPORT1(vl, direct_fft);
                 CEXPORT1(vl, reverse_fft);
+                CEXPORT1(vl, packed_direct_fft);
+                CEXPORT1(vl, packed_reverse_fft);
                 CEXPORT1(vl, normalize_fft2);
                 CEXPORT1(vl, normalize_fft3);
 

@@ -198,6 +198,32 @@
                 CEXPORT1(favx, pamin3);
                 CEXPORT1(favx, pamax3);
 
+                EXPORT1(ms_pmin2);
+                EXPORT1(ms_pmax2);
+                EXPORT1(ms_psmin2);
+                EXPORT1(ms_psmax2);
+                EXPORT1(ms_pamin2);
+                EXPORT1(ms_pamax2);
+                EXPORT1(ms_pmin3);
+                EXPORT1(ms_pmax3);
+                EXPORT1(ms_psmin3);
+                EXPORT1(ms_psmax3);
+                EXPORT1(ms_pamin3);
+                EXPORT1(ms_pamax3);
+
+                EXPORT1(lr_pmin2);
+                EXPORT1(lr_pmax2);
+                EXPORT1(lr_psmin2);
+                EXPORT1(lr_psmax2);
+                EXPORT1(lr_pamin2);
+                EXPORT1(lr_pamax2);
+                EXPORT1(lr_pmin3);
+                EXPORT1(lr_pmax3);
+                EXPORT1(lr_psmin3);
+                EXPORT1(lr_psmax3);
+                EXPORT1(lr_pamin3);
+                EXPORT1(lr_pamax3);
+
                 CEXPORT1(favx, fmadd_k3);
                 CEXPORT1(favx, fmsub_k3);
                 CEXPORT1(favx, fmrsub_k3);

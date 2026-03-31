@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2022 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2022 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 6 нояб. 2022 г.
@@ -32,6 +32,7 @@
 #include <private/dsp/arch/x86/avx/pmath/fmop_vv.h>
 #include <private/dsp/arch/x86/avx/pmath/lramp.h>
 #include <private/dsp/arch/x86/avx/pmath/minmax.h>
+#include <private/dsp/arch/x86/avx/pmath/ms_minmax.h>
 #include <private/dsp/arch/x86/avx/pmath/normalize.h>
 #include <private/dsp/arch/x86/avx/pmath/op_kx.h>
 #include <private/dsp/arch/x86/avx/pmath/op_vv.h>

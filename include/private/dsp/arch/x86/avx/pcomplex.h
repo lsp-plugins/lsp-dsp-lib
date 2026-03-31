@@ -507,7 +507,7 @@ namespace lsp
             __ASM_EMIT("vmovups     0x20(%[" SRC "], %[off]), %%ymm1") \
             __ASM_EMIT("vmovups     0x40(%[" SRC "], %[off]), %%ymm2") \
             __ASM_EMIT("vmovups     0x60(%[" SRC "], %[off]), %%ymm3") \
-            __ASM_EMIT("vmulps      %%ymm0, %%ymm0, %%ymm4")                /* ymm0 = r0*r0 + i0*i0 */ \
+            __ASM_EMIT("vmulps      %%ymm0, %%ymm0, %%ymm4")                /* ymm0 = r0*r0 i0*i0 */ \
             __ASM_EMIT("vmulps      %%ymm1, %%ymm1, %%ymm5") \
             __ASM_EMIT("vmulps      %%ymm2, %%ymm2, %%ymm6") \
             __ASM_EMIT("vmulps      %%ymm3, %%ymm3, %%ymm7") \
