@@ -3,7 +3,9 @@
 *******************************************************************************
 
 === 1.0.36 ===
-* Updated build scripts.
+* Updated build system: ASAN, CROSS_COMPILE, DEBUG, DEVEL, PROFILE, STRICT,
+  TEST, TRACE makefile flags replaced with 'asan', 'crosscompile', 'debug',
+  'devel', 'profile', 'strict', 'test' and 'trace' FEATURE flags.
 
 === 1.0.35 ===
 * Implemented AVX512-optimized pcomplex_rcp functions.

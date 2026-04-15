@@ -1,6 +1,6 @@
 #
-# Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
-#           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+# Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+#           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
 #
 # This file is part of lsp-dsp-lib
 #
@@ -23,10 +23,7 @@ endif
 
 BASEDIR                    := $(CURDIR)
 ROOTDIR                    := $(CURDIR)
-TEST                       := 0
-DEBUG                      := 0
-PROFILE                    := 0
-TRACE                      := 0
+BUILD_FEATURES              = $(sort $(call subtraction,$(SUB_FEATURES),$(if $(FEATURES),$(FEATURES),$(DEFAULT_FEATURES)) $(ADD_FEATURES)))           
 
 # Configure system settings
 include $(BASEDIR)/project.mk
@@ -37,7 +34,7 @@ include $(BASEDIR)/make/tools.mk
 include $(BASEDIR)/modules.mk
 include $(BASEDIR)/dependencies.mk
 
-ifeq ($(DEVEL),1)
+ifeq ($(call fcheck,devel,$(BUILD_FEATURES),ON),ON)
   X_URL_SUFFIX                = _RW
 else
   X_URL_SUFFIX                = _RO
@@ -49,7 +46,6 @@ MERGED_DEPENDENCIES        := \
   $(TEST_DEPENDENCIES)
 UNIQ_MERGED_DEPENDENCIES   := $(call uniq, $(MERGED_DEPENDENCIES))
 DEPENDENCIES                = $(UNIQ_MERGED_DEPENDENCIES)
-BUILD_FEATURES             := $(sort $(call subtraction,$(SUB_FEATURES),$(if $(FEATURES),$(FEATURES),$(DEFAULT_FEATURES)) $(ADD_FEATURES)))
 
 # Determine versions
 ifeq ($(findstring -devel,$(ARTIFACT_VERSION)),-devel)
@@ -212,10 +208,10 @@ ifndef HOST_$(ARTIFACT_ID)_PATH
 endif
 
 ROOT_ARTIFACT_ID           := $(ARTIFACT_ID)
-$(ARTIFACT_ID)_TESTING      = $(TEST)
+$(ARTIFACT_ID)_TESTING      = $(call fcheck,test,$(BUILD_FEATURES),1,0)
 
 OVERALL_DEPS := $(call uniq,$(DEPENDENCIES) $(ARTIFACT_ID))
-__tmp := $(foreach dep,$(OVERALL_DEPS),$(call vardef, $(dep)))
+override __tmp := $(foreach dep,$(OVERALL_DEPS),$(call vardef, $(dep)))
 
 CONFIG_VARS = \
   $(PATH_VARS) \
@@ -268,6 +264,7 @@ $(CONFIG_VARS): prepare
 	echo "$(@)=$($(@))" >> "$(CONFIG)"
 
 config: $(CONFIG_VARS)
+	echo "Platform:          $(PLATFORM)"
 	echo "Host architecture: $(HOST_ARCHITECTURE_FAMILY)/$(HOST_ARCHITECTURE) ($(HOST_ARCHITECTURE_CFLAGS))"
 	echo "Architecture:      $(ARCHITECTURE_FAMILY)/$(ARCHITECTURE) ($(ARCHITECTURE_CFLAGS))"
 	echo "Features:          $(BUILD_FEATURES)"
