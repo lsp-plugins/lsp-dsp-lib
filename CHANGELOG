@@ -7,6 +7,7 @@
   TEST, TRACE makefile flags replaced with 'asan', 'crosscompile', 'debug',
   'devel', 'profile', 'strict', 'test' and 'trace' FEATURE flags.
 * Updated build scripts.
+* Updated module versions in dependencies.
 
 === 1.0.35 ===
 * Implemented AVX512-optimized pcomplex_rcp functions.
