@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.37 ===
+
+
 === 1.0.36 ===
 * Updated build system: ASAN, CROSS_COMPILE, DEBUG, DEVEL, PROFILE, STRICT,
   TEST, TRACE makefile flags replaced with 'asan', 'crosscompile', 'debug',
