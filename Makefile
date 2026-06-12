@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 #
-# Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
-#           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+# Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+#           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
 #
 # This file is part of lsp-dsp-lib
 #
@@ -80,9 +80,6 @@ prune: clean
 # Configuration-related targets
 .PHONY: config help chkconfig
 
-testconfig:
-	$(MAKE) -f "$(BASEDIR)/make/configure.mk" $(@) VERBOSE="$(VERBOSE)" CONFIG="$(CONFIG)" TEST="1" -$(MAKEFLAGS)
-
 config:
 	$(MAKE) -f "$(BASEDIR)/make/configure.mk" $(@) VERBOSE="$(VERBOSE)" CONFIG="$(CONFIG)" -$(MAKEFLAGS)
 
@@ -91,7 +88,7 @@ config:
 distsrc:
 	echo "Building source code archive"
 	mkdir -p "$(DISTSRC)/modules"
-	$(MAKE) -f "$(BASEDIR)/make/modules.mk" tree VERBOSE="$(VERBOSE)" BASEDIR="$(BASEDIR)" MODULES="$(DISTSRC)/modules" TREE="1"
+	$(MAKE) -f "$(BASEDIR)/make/modules.mk" tree TREE="1" BUILD_FEATURES="$(FEATURES)" VERBOSE="$(VERBOSE)" BASEDIR="$(BASEDIR)" MODULES="$(DISTSRC)/modules"
 	cp -R $(BASEDIR)/include $(BASEDIR)/make $(BASEDIR)/src "$(DISTSRC)/"
 	cp $(BASEDIR)/CHANGELOG $(BASEDIR)/COPYING* $(BASEDIR)/Makefile $(BASEDIR)/*.mk "$(DISTSRC)/"
 	find "$(DISTSRC)" -iname '.git' | xargs rm -rf {}
@@ -118,4 +115,5 @@ help:
 	echo "  uninstall                 Uninstall binaries"
 	echo ""
 	$(MAKE) -f "$(BASEDIR)/make/configure.mk" $(@) VERBOSE="$(VERBOSE)"
-	echo ""
+
+	
