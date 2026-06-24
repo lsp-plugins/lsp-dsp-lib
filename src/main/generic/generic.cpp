@@ -506,6 +506,14 @@ namespace lsp
             EXPORT1(downsample_6x);
             EXPORT1(downsample_8x);
 
+            EXPORT1(lerp_vvv);
+            EXPORT1(lerp_vvk);
+            EXPORT1(lerp_vkv);
+            EXPORT1(lerp_vkk);
+            EXPORT1(lerp_kvv);
+            EXPORT1(lerp_kvk);
+            EXPORT1(lerp_kkv);
+
             // 3D math
             EXPORT1(init_point_xyz);
             EXPORT1(init_point);

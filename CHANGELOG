@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.37 ===
-
+* Added lerp functions.
 
 === 1.0.36 ===
 * Updated build system: ASAN, CROSS_COMPILE, DEBUG, DEVEL, PROFILE, STRICT,
