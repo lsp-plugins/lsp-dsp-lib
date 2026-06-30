@@ -3,6 +3,8 @@
 *******************************************************************************
 
 === 1.0.37 ===
+* Fixed lanczos kernel generation functions to make buildable by MacOS on
+  x86_64 architecture.
 * Added lerp functions.
 
 === 1.0.36 ===

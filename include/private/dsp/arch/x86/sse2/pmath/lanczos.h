@@ -56,21 +56,21 @@ namespace lsp
             /* xmm0 = x1 */ \
             __ASM_EMIT("movaps          %%xmm0, %%xmm4")                /* xmm4     = x1 */ \
             __ASM_EMIT("movaps          %%xmm0, %%xmm2")                /* xmm2     = x1 */ \
-            __ASM_EMIT("mulps           0x20 + %[state], %%xmm4")       /* xmm4     = x2 = x1*a */ \
-            __ASM_EMIT("movaps          %%xmm0, 0x40 + %[state]")       /* *x       = x1 */ \
+            __ASM_EMIT("mulps           0x20(%[state]), %%xmm4")        /* xmm4     = x2 = x1*a */ \
+            __ASM_EMIT("movaps          %%xmm0, 0x40(%[state])")        /* *x       = x1 */ \
             __ASM_EMIT("mulps           %%xmm4, %%xmm2")                /* xmm2     = d = x1 * x2 */ \
             __ASM_EMIT("addps           0x00 + %[S2C], %%xmm0")         /* xmm0     = x1 + PI/2 */ \
             __ASM_EMIT("addps           0x00 + %[S2C], %%xmm4")         /* xmm4     = x2 + PI/2 */ \
-            __ASM_EMIT("movaps          %%xmm2, 0x50 + %[state]")       /* *d       = d */ \
+            __ASM_EMIT("movaps          %%xmm2, 0x50(%[state])")        /* *d       = d */ \
             SINF_X_PLUS_PI_2_CORE_X8                                    /* xmm0     = sinf(x1), xmm4 = sinf(x2) */ \
-            __ASM_EMIT("movaps          0x40 + %[state], %%xmm1")       /* xmm1     = x */ \
+            __ASM_EMIT("movaps          0x40(%[state]), %%xmm1")        /* xmm1     = x */ \
             __ASM_EMIT("mulps           %%xmm4, %%xmm0")                /* xmm0     = sinf(x1)*sinf(x2) */ \
             __ASM_EMIT("andps           0x00 + %[LC], %%xmm1")          /* xmm1     = fabsf(x) */ \
-            __ASM_EMIT("divps           0x50 + %[state], %%xmm0")       /* xmm0     = F = (sinf(x1)*sinf(x2)) / (x1 * x2) */ \
+            __ASM_EMIT("divps           0x50(%[state]), %%xmm0")        /* xmm0     = F = (sinf(x1)*sinf(x2)) / (x1 * x2) */ \
             __ASM_EMIT("movaps          %%xmm1, %%xmm2")                /* xmm2     = fabsf(x) */ \
             __ASM_EMIT("cmpps           $5, 0x10 + %[LC], %%xmm1")      /* xmm1     = [ fabsf(x) >= 1e-4 ] */ \
             __ASM_EMIT("andps           %%xmm1, %%xmm0")                /* xmm0     = [ fabsf(x) >= 1e-4 ] & f */ \
-            __ASM_EMIT("cmpps           $1, 0x60 + %[state], %%xmm2")   /* xmm2     = [ fabsf(x) < t ] */ \
+            __ASM_EMIT("cmpps           $1, 0x60(%[state]), %%xmm2")    /* xmm2     = [ fabsf(x) < t ] */ \
             __ASM_EMIT("andnps          0x20 + %[LC], %%xmm1")          /* xmm1     = [ fabsf(x) < 1e-4 ] & 1.0 */ \
             __ASM_EMIT("orps            %%xmm1, %%xmm0")                /* xmm0     = [ fabsf(x) >= 1e-4 ] ? f : 1.0 */ \
             __ASM_EMIT("andps           %%xmm2, %%xmm0")                /* xmm0     = [ fabsf(x) < t ] ? ([ fabsf(x) >= 1e-4 ] ? f : 1.0) : 0.0 */
@@ -92,22 +92,22 @@ namespace lsp
                 __ASM_EMIT("shufps          $0x00, %%xmm5, %%xmm5")         // xmm5     = p p p p
                 __ASM_EMIT("shufps          $0x00, %%xmm6, %%xmm6")         // xmm6     = a a a a
                 __ASM_EMIT("shufps          $0x00, %%xmm7, %%xmm7")         // xmm7     = t t t t
-                __ASM_EMIT("movaps          %%xmm4, 0x00 + %[state]")
-                __ASM_EMIT("movaps          %%xmm5, 0x10 + %[state]")
-                __ASM_EMIT("movaps          %%xmm6, 0x20 + %[state]")
-                __ASM_EMIT("movaps          %%xmm7, 0x60 + %[state]")
+                __ASM_EMIT("movaps          %%xmm4, 0x00(%[state])")
+                __ASM_EMIT("movaps          %%xmm5, 0x10(%[state])")
+                __ASM_EMIT("movaps          %%xmm6, 0x20(%[state])")
+                __ASM_EMIT("movaps          %%xmm7, 0x60(%[state])")
                 __ASM_EMIT("movaps          0x00 + %[LGEN], %%xmm1")        // xmm1     = i = 0 1 2 3
                 // x4 blocks
                 __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("jb              2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("movaps          %%xmm1, %%xmm0")                // xmm0     = i
-                __ASM_EMIT("mulps           0x00 + %[state], %%xmm0")       // xmm0     = k*i
+                __ASM_EMIT("mulps           0x00(%[state]), %%xmm0")        // xmm0     = k*i
                 __ASM_EMIT("addps           0x10 + %[LGEN], %%xmm1")        // xmm1     = i' = i + step
-                __ASM_EMIT("subps           0x10 + %[state], %%xmm0")       // xmm0     = x1 = k*i - p
-                __ASM_EMIT("movaps          %%xmm1, 0x30 + %[state]")       // *i       = i'
+                __ASM_EMIT("subps           0x10(%[state]), %%xmm0")        // xmm0     = x1 = k*i - p
+                __ASM_EMIT("movaps          %%xmm1, 0x30(%[state])")        // *i       = i'
                 LANCZOS_GEN_FUNC_X4
-                __ASM_EMIT("movaps          0x30 + %[state], %%xmm1")       // xmm1     = i'
+                __ASM_EMIT("movaps          0x30(%[state]), %%xmm1")        // xmm1     = i'
                 __ASM_EMIT("movups          %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
@@ -117,8 +117,8 @@ namespace lsp
                 __ASM_EMIT("add             $4, %[count]")
                 __ASM_EMIT("jle             6f")
                 __ASM_EMIT("movaps          %%xmm1, %%xmm0")                // xmm0     = i
-                __ASM_EMIT("mulps           0x00 + %[state], %%xmm0")       // xmm0     = k*i
-                __ASM_EMIT("subps           0x10 + %[state], %%xmm0")       // xmm0     = x1 = k*i - p
+                __ASM_EMIT("mulps           0x00(%[state]), %%xmm0")        // xmm0     = k*i
+                __ASM_EMIT("subps           0x10(%[state]), %%xmm0")        // xmm0     = x1 = k*i - p
                 LANCZOS_GEN_FUNC_X4
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              4f")
@@ -133,7 +133,7 @@ namespace lsp
                 __ASM_EMIT("6:")
 
                 : [dst] "+r" (dst), [count] "+r" (count)
-                : [state] "o" (state),
+                : [state] "r" (&state),
                   [S2C] "o" (sinf_const),
                   [LGEN] "o" (kp_gen_const),
                   [LC] "o" (lanczos_const),
