@@ -396,6 +396,15 @@
                 CEXPORT1(vl, pmix_v2);
                 CEXPORT1(vl, pmix_k1);
                 CEXPORT1(vl, pmix_k2);
+
+                CEXPORT1(vl, lerp_vvv);
+                CEXPORT1(vl, lerp_vvk);
+                CEXPORT1(vl, lerp_vkv);
+                CEXPORT1(vl, lerp_vkk);
+                CEXPORT1(vl, lerp_kvv);
+                CEXPORT1(vl, lerp_kvk);
+                CEXPORT1(vl, lerp_kkv);
+
             }
         } /* namespace avx2 */
     } /* namespace lsp */

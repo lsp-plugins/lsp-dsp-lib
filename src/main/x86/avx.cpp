@@ -669,6 +669,9 @@
                     CEXPORT2(favx, lerp_vvk, lerp_vvk_fma3);
                     CEXPORT2(favx, lerp_vkv, lerp_vkv_fma3);
                     CEXPORT2(favx, lerp_vkk, lerp_vkk_fma3);
+                    CEXPORT2(favx, lerp_kvv, lerp_kvv_fma3);
+                    CEXPORT2(favx, lerp_kvk, lerp_kvk_fma3);
+                    CEXPORT2(favx, lerp_kkv, lerp_kkv_fma3);
                 }
             }
 
