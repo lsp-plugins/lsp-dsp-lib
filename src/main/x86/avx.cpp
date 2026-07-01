@@ -362,6 +362,14 @@
                 CEXPORT1(favx, mix_copy4);
                 CEXPORT1(favx, mix_add4);
 
+                CEXPORT1(favx, lerp_vvv);
+                CEXPORT1(favx, lerp_vvk);
+                CEXPORT1(favx, lerp_vkv);
+                CEXPORT1(favx, lerp_vkk);
+                CEXPORT1(favx, lerp_kvv);
+                CEXPORT1(favx, lerp_kvk);
+                CEXPORT1(favx, lerp_kkv);
+
                 CEXPORT1(favx, depan_lin);
                 CEXPORT1(favx, depan_eqpow);
 

@@ -5,7 +5,7 @@
 === 1.0.37 ===
 * Fixed lanczos kernel generation functions to make buildable by MacOS on
   x86_64 architecture.
-* Added three-operand lerp functions optimized with SSE.
+* Added three-operand lerp functions optimized with SSE, AVX.
 
 === 1.0.36 ===
 * Updated build system: ASAN, CROSS_COMPILE, DEBUG, DEVEL, PROFILE, STRICT,

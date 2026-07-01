@@ -37,12 +37,12 @@ namespace lsp
             void lerp_kvk(float *dst, float a, const float *b, float k, size_t count);
         }
 
-//        namespace avx
-//        {
-//            void lerp_kvk(float *dst, float a, const float *b, float k, size_t count);
+        namespace avx
+        {
+            void lerp_kvk(float *dst, float a, const float *b, float k, size_t count);
 //            void lerp_kvk_fma3(float *dst, float a, const float *b, float k, size_t count);
-//        }
-//
+        }
+
 //        namespace avx512
 //        {
 //            void lerp_kvk(float *dst, float a, const float *b, float k, size_t count);
@@ -114,7 +114,7 @@ UTEST_BEGIN("dsp.pmath", lerp_kvk)
             call(#func, align, generic::lerp_kvk, func)
 
         IF_ARCH_X86(CALL(sse::lerp_kvk, 16));
-//        IF_ARCH_X86(CALL(avx::lerp_kvk, 32));
+        IF_ARCH_X86(CALL(avx::lerp_kvk, 32));
 //        IF_ARCH_X86(CALL(avx::lerp_kvk_fma3, 32));
 //        IF_ARCH_X86(CALL(avx512::lerp_kvk, 32));
 //        IF_ARCH_ARM(CALL(neon_d32::lerp_kvk, 16));
