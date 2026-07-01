@@ -312,6 +312,14 @@
                 EXPORT1(mix_copy4);
                 EXPORT1(mix_add4);
 
+                EXPORT1(lerp_vvv);
+                EXPORT1(lerp_vvk);
+                EXPORT1(lerp_vkv);
+                EXPORT1(lerp_vkk);
+                EXPORT1(lerp_kvv);
+                EXPORT1(lerp_kvk);
+                EXPORT1(lerp_kkv);
+
                 EXPORT1(depan_lin);
                 EXPORT1(depan_eqpow);
 
