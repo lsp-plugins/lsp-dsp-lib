@@ -53,13 +53,13 @@ namespace lsp
         }
     )
 
-//    IF_ARCH_ARM(
-//        namespace neon_d32
-//        {
-//            void lerp_vkv(float *dst, const float *a, float b, const float *k, size_t count);
-//        }
-//    )
-//
+    IF_ARCH_ARM(
+        namespace neon_d32
+        {
+            void lerp_vkv(float *dst, const float *a, float b, const float *k, size_t count);
+        }
+    )
+
 //    IF_ARCH_AARCH64(
 //        namespace asimd
 //        {
@@ -112,7 +112,7 @@ PTEST_BEGIN("dsp.pmath", lerp_vkv, 5, 1000)
             IF_ARCH_X86(CALL(avx::lerp_vkv));
             IF_ARCH_X86(CALL(avx::lerp_vkv_fma3));
             IF_ARCH_X86(CALL(avx512::lerp_vkv));
-//            IF_ARCH_ARM(CALL(neon_d32::lerp_vkv));
+            IF_ARCH_ARM(CALL(neon_d32::lerp_vkv));
 //            IF_ARCH_AARCH64(CALL(asimd::lerp_vkv));
             PTEST_SEPARATOR;
         }
