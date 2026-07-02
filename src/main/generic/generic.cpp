@@ -289,9 +289,9 @@ namespace lsp
             EXPORT1(lr_pamax3);
 
             EXPORT1(pmix_v1);
-            EXPORT1(pmix_v2);
+            EXPORT2(pmix_v2, lerp_vvv);
             EXPORT1(pmix_k1);
-            EXPORT1(pmix_k2);
+            EXPORT2(pmix_k2, lerp_vvk);
 
             EXPORT1(h_sum);
             EXPORT1(h_sqr_sum);

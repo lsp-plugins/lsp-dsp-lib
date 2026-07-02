@@ -393,9 +393,9 @@
                 CEXPORT1(vl, clamp_kk2);
 
                 CEXPORT1(vl, pmix_v1);
-                CEXPORT1(vl, pmix_v2);
+                CEXPORT2(vl, pmix_v2, lerp_vvv);
                 CEXPORT1(vl, pmix_k1);
-                CEXPORT1(vl, pmix_k2);
+                CEXPORT2(vl, pmix_k2, lerp_vvk);
 
                 CEXPORT1(vl, lerp_vvv);
                 CEXPORT1(vl, lerp_vvk);

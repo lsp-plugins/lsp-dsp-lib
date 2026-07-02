@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -362,14 +362,6 @@
                 CEXPORT1(favx, mix_copy4);
                 CEXPORT1(favx, mix_add4);
 
-                CEXPORT1(favx, lerp_vvv);
-                CEXPORT1(favx, lerp_vvk);
-                CEXPORT1(favx, lerp_vkv);
-                CEXPORT1(favx, lerp_vkk);
-                CEXPORT1(favx, lerp_kvv);
-                CEXPORT1(favx, lerp_kvk);
-                CEXPORT1(favx, lerp_kkv);
-
                 CEXPORT1(favx, depan_lin);
                 CEXPORT1(favx, depan_eqpow);
 
@@ -459,6 +451,24 @@
                 CEXPORT1(favx, normalize1);
                 CEXPORT1(favx, normalize2);
 
+                EXPORT1(clamp_vv1);
+                EXPORT1(clamp_vv2);
+                EXPORT1(clamp_kk1);
+                EXPORT1(clamp_kk2);
+
+                EXPORT1(pmix_v1);
+                EXPORT2(pmix_v2, lerp_vvv);
+                EXPORT1(pmix_k1);
+                EXPORT2(pmix_k2, lerp_vvk);
+
+                CEXPORT1(favx, lerp_vvv);
+                CEXPORT1(favx, lerp_vvk);
+                CEXPORT1(favx, lerp_vkv);
+                CEXPORT1(favx, lerp_vkk);
+                CEXPORT1(favx, lerp_kvv);
+                CEXPORT1(favx, lerp_kvk);
+                CEXPORT1(favx, lerp_kkv);
+
                 // 3D math
                 EXPORT1(init_point_xyz);
                 EXPORT1(init_point);
@@ -524,16 +534,6 @@
 
                 EXPORT1(check_point3d_on_triangle_p3p);
                 EXPORT1(check_point3d_on_triangle_pvp);
-
-                EXPORT1(clamp_vv1);
-                EXPORT1(clamp_vv2);
-                EXPORT1(clamp_kk1);
-                EXPORT1(clamp_kk2);
-
-                EXPORT1(pmix_v1);
-                EXPORT1(pmix_v2);
-                EXPORT1(pmix_k1);
-                EXPORT1(pmix_k2);
 
                 // FMA3 support?
                 if (f->features & CPU_OPTION_FMA3)
@@ -661,9 +661,9 @@
                     CEXPORT2(favx, check_point3d_on_triangle_pvp, check_point3d_on_triangle_pvp_fma3);
 
                     CEXPORT2(favx, pmix_v1, pmix_v1_fma3);
-                    CEXPORT2(favx, pmix_v2, pmix_v2_fma3);
+                    CEXPORT2(favx, pmix_v2, lerp_vvv_fma3);
                     CEXPORT2(favx, pmix_k1, pmix_k1_fma3);
-                    CEXPORT2(favx, pmix_k2, pmix_k2_fma3);
+                    CEXPORT2(favx, pmix_k2, lerp_vvk_fma3);
 
                     CEXPORT2(favx, lerp_vvv, lerp_vvv_fma3);
                     CEXPORT2(favx, lerp_vvk, lerp_vvk_fma3);

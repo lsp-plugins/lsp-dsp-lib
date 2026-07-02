@@ -332,9 +332,9 @@
                 EXPORT1(clamp_kk2);
 
                 EXPORT1(pmix_v1);
-                EXPORT1(pmix_v2);
+                EXPORT2(pmix_v2, lerp_vvv);
                 EXPORT1(pmix_k1);
-                EXPORT1(pmix_k2);
+                EXPORT2(pmix_k2, lerp_vvk);
 
                 EXPORT1(direct_fft);
                 EXPORT1(reverse_fft);
