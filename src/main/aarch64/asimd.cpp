@@ -516,6 +516,14 @@
                 EXPORT1(pmix_v2);
                 EXPORT1(pmix_k1);
                 EXPORT1(pmix_k2);
+
+                EXPORT1(lerp_vvv);
+                EXPORT1(lerp_vvk);
+                EXPORT1(lerp_vkv);
+                EXPORT1(lerp_vkk);
+                EXPORT1(lerp_kvv);
+                EXPORT1(lerp_kvk);
+                EXPORT1(lerp_kkv);
             }
         } /* namespace asimd */
     } /* namespace lsp */

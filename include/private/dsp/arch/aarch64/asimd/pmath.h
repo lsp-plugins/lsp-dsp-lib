@@ -33,6 +33,7 @@
 #include <private/dsp/arch/aarch64/asimd/pmath/fmop_kx.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/fmop_vv.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/lanczos.h>
+#include <private/dsp/arch/aarch64/asimd/pmath/lerp.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/log.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/lramp.h>
 #include <private/dsp/arch/aarch64/asimd/pmath/minmax.h>

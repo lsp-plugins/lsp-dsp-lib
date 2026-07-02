@@ -60,12 +60,12 @@ namespace lsp
         }
     )
 
-//    IF_ARCH_AARCH64(
-//        namespace asimd
-//        {
-//            void lerp_vvv(float *dst, const float *a, const float *b, const float *k, size_t count);
-//        }
-//    )
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            void lerp_vvv(float *dst, const float *a, const float *b, const float *k, size_t count);
+        }
+    )
 
     typedef void (* lerp_vvv_t)(float *dst, const float *a, const float *b, const float *k, size_t count);
 }
@@ -114,7 +114,7 @@ PTEST_BEGIN("dsp.pmath", lerp_vvv, 5, 1000)
             IF_ARCH_X86(CALL(avx::lerp_vvv_fma3));
             IF_ARCH_X86(CALL(avx512::lerp_vvv));
             IF_ARCH_ARM(CALL(neon_d32::lerp_vvv));
-//            IF_ARCH_AARCH64(CALL(asimd::lerp_vvv));
+            IF_ARCH_AARCH64(CALL(asimd::lerp_vvv));
             PTEST_SEPARATOR;
         }
 
