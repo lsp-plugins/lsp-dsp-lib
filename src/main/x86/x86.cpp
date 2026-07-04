@@ -170,6 +170,8 @@
                     if (info.edx & X86_CPUID1_INTEL_EDX_SSE2)
                         f->features     |= CPU_OPTION_SSE2;
 
+                    if (info.ecx & X86_CPUID1_INTEL_ECX_MOVBE)
+                        f->features     |= CPU_OPTION_MOVBE;
                     if (info.ecx & X86_CPUID1_INTEL_ECX_SSE3)
                         f->features     |= CPU_OPTION_SSE3;
                     if (info.ecx & X86_CPUID1_INTEL_ECX_SSSE3)
@@ -261,6 +263,8 @@
                     if (info.edx & X86_CPUID1_AMD_EDX_SSE2)
                         f->features     |= CPU_OPTION_SSE2;
 
+                    if (info.ecx & X86_CPUID1_INTEL_ECX_MOVBE)
+                        f->features     |= CPU_OPTION_MOVBE;
                     if (info.ecx & X86_CPUID1_AMD_ECX_SSE3)
                         f->features     |= CPU_OPTION_SSE3;
                     if (info.ecx & X86_CPUID1_AMD_ECX_SSSE3)
@@ -451,7 +455,7 @@
 
             static const char *cpu_features[] =
             {
-                "FPU", "CMOV", "MMX", "FXSAVE",
+                "FPU", "CMOV", "MOVBE", "MMX", "FXSAVE",
                 "SSE", "SSE2", "SSE3", "SSSE3",
                 "SSE4.1", "SSE4.2", "SSE4A", "XSAVE",
                 "FMA3", "FMA4", "AVX", "AVX2",

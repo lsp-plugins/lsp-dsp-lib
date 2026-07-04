@@ -34,35 +34,36 @@
                 // Different legacy feature set
                 CPU_OPTION_FPU              = 1 << 0,
                 CPU_OPTION_CMOV             = 1 << 1,
-                CPU_OPTION_MMX              = 1 << 2,
+                CPU_OPTION_MOVBE            = 1 << 2,
+                CPU_OPTION_MMX              = 1 << 3,
 
                 // SSE feature set
-                CPU_OPTION_FXSAVE           = 1 << 3,
-                CPU_OPTION_SSE              = 1 << 4,
-                CPU_OPTION_SSE2             = 1 << 5,
-                CPU_OPTION_SSE3             = 1 << 6,
-                CPU_OPTION_SSSE3            = 1 << 7,
-                CPU_OPTION_SSE4_1           = 1 << 8,
-                CPU_OPTION_SSE4_2           = 1 << 9,
-                CPU_OPTION_SSE4A            = 1 << 10,
+                CPU_OPTION_FXSAVE           = 1 << 4,
+                CPU_OPTION_SSE              = 1 << 5,
+                CPU_OPTION_SSE2             = 1 << 6,
+                CPU_OPTION_SSE3             = 1 << 7,
+                CPU_OPTION_SSSE3            = 1 << 8,
+                CPU_OPTION_SSE4_1           = 1 << 9,
+                CPU_OPTION_SSE4_2           = 1 << 10,
+                CPU_OPTION_SSE4A            = 1 << 11,
 
                 // AVX and FMA feature set
-                CPU_OPTION_OSXSAVE          = 1 << 11,
-                CPU_OPTION_FMA3             = 1 << 12,
-                CPU_OPTION_FMA4             = 1 << 13,
-                CPU_OPTION_AVX              = 1 << 14,
-                CPU_OPTION_AVX2             = 1 << 15,
+                CPU_OPTION_OSXSAVE          = 1 << 12,
+                CPU_OPTION_FMA3             = 1 << 13,
+                CPU_OPTION_FMA4             = 1 << 14,
+                CPU_OPTION_AVX              = 1 << 15,
+                CPU_OPTION_AVX2             = 1 << 16,
 
                 // AVX-512 feature set
-                CPU_OPTION_AVX512F          = 1 << 16,
-                CPU_OPTION_AVX512DQ         = 1 << 17,
-                CPU_OPTION_AVX512IFMA       = 1 << 18,
-                CPU_OPTION_AVX512PF         = 1 << 19,
-                CPU_OPTION_AVX512ER         = 1 << 20,
-                CPU_OPTION_AVX512CD         = 1 << 21,
-                CPU_OPTION_AVX512BW         = 1 << 22,
-                CPU_OPTION_AVX512VL         = 1 << 23,
-                CPU_OPTION_AVX512VBMI       = 1 << 24
+                CPU_OPTION_AVX512F          = 1 << 17,
+                CPU_OPTION_AVX512DQ         = 1 << 18,
+                CPU_OPTION_AVX512IFMA       = 1 << 19,
+                CPU_OPTION_AVX512PF         = 1 << 20,
+                CPU_OPTION_AVX512ER         = 1 << 21,
+                CPU_OPTION_AVX512CD         = 1 << 22,
+                CPU_OPTION_AVX512BW         = 1 << 23,
+                CPU_OPTION_AVX512VL         = 1 << 24,
+                CPU_OPTION_AVX512VBMI       = 1 << 25
             };
 
             enum cpu_vendor_enum

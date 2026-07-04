@@ -43,6 +43,7 @@
 #define X86_CPUID1_INTEL_ECX_FMA3               (1 << 12)
 #define X86_CPUID1_INTEL_ECX_SSE4_1             (1 << 19)
 #define X86_CPUID1_INTEL_ECX_SSE4_2             (1 << 20)
+#define X86_CPUID1_INTEL_ECX_MOVBE              (1 << 22)
 #define X86_CPUID1_INTEL_ECX_XSAVE              (1 << 26)
 #define X86_CPUID1_INTEL_ECX_OSXSAVE            (1 << 27)
 #define X86_CPUID1_INTEL_ECX_AVX                (1 << 28)
