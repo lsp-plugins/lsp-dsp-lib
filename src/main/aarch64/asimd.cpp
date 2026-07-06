@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #ifdef ARCH_AARCH64
     #include <private/dsp/exports.h>
@@ -35,7 +36,6 @@
 
     // Include common architectural definitions
     #define PRIVATE_DSP_ARCH_AARCH64_IMPL
-        #include <private/dsp/arch/aarch64/features.h>
         #include <private/dsp/arch/aarch64/fpcr.h>
     #undef PRIVATE_DSP_ARCH_AARCH64_IMPL
 
@@ -115,9 +115,9 @@
                 dsp_finish(ctx);
             }
 
-            void dsp_init(const aarch64::cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
-                if ((f->hwcap & (HWCAP_AARCH64_ASIMD)) != (HWCAP_AARCH64_ASIMD))
+                if ((f->hwcap[0] & (CPU_HWCAP0_ASIMD)) != (CPU_HWCAP0_ASIMD))
                     return;
 
                 // Save previous entry points

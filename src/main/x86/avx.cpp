@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #ifdef ARCH_X86
     #include <private/dsp/exports.h>
@@ -37,7 +38,7 @@
     // Feature detection
     #define PRIVATE_DSP_ARCH_X86_IMPL
         #include <private/dsp/arch/x86/defs.h>
-        #include <private/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/init.h>
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
     // AVX-specific function implementations
@@ -125,9 +126,9 @@
                             dsp::export = avx::export; \
                     );
 
-            void dsp_init(const cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
-                if (!(f->features & CPU_OPTION_AVX))
+                if (!(f->hwcap[0] & CPU_HWCAP0_AVX))
                     return;
 
                 // This routine sucks on AMD Bulldozer processor family but is pretty great on Intel
@@ -536,7 +537,7 @@
                 EXPORT1(check_point3d_on_triangle_pvp);
 
                 // FMA3 support?
-                if (f->features & CPU_OPTION_FMA3)
+                if (f->hwcap[0] & CPU_HWCAP0_FMA3)
                 {
                     // Conditional export, depending on fast AVX implementation
                     CEXPORT2(favx, mod2, mod2_fma3);

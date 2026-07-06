@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #ifdef ARCH_X86
     #include <private/dsp/exports.h>
@@ -38,7 +39,7 @@
     // Feature detection
     #define PRIVATE_DSP_ARCH_X86_IMPL
         #include <private/dsp/arch/x86/defs.h>
-        #include <private/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/init.h>
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
     #define PRIVATE_DSP_ARCH_X86_AVX512_IMPL
@@ -85,15 +86,15 @@
                 IF_ARCH_X86_64(CEXPORT1(cond, export))
 
 
-            void dsp_init(const cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
                 // Enable AVX-512 only for CPUs that really support it well
                 const bool favx512  = feature_check(f, FEAT_FAST_AVX512);
                 if (!favx512)
                     return;
 
-                const bool vl = (f->features & (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL)) ==
-                                (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL);
+                const bool vl = (f->hwcap[0] & (CPU_HWCAP0_AVX512F | CPU_HWCAP0_AVX512VL)) ==
+                                (CPU_HWCAP0_AVX512F | CPU_HWCAP0_AVX512VL);
 
                 CEXPORT1(vl, copy);
                 CEXPORT1(vl, move);

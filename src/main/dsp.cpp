@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -20,14 +20,15 @@
  */
 
 #include <lsp-plug.in/common/atomic.h>
+#include <lsp-plug.in/common/cpuid.h>
 #include <lsp-plug.in/common/finally.h>
 #include <lsp-plug.in/common/singletone.h>
 #include <lsp-plug.in/common/types.h>
 
-#include <private/dsp/arch/aarch64/features.h>
-#include <private/dsp/arch/arm/features.h>
-#include <private/dsp/arch/generic/features.h>
-#include <private/dsp/arch/x86/features.h>
+#include <private/dsp/arch/aarch64/init.h>
+#include <private/dsp/arch/arm/init.h>
+#include <private/dsp/arch/generic/init.h>
+#include <private/dsp/arch/x86/init.h>
 
 
 #define LSP_DSP_LIB_SYMBOL(ret, name, ...) \
@@ -45,6 +46,7 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 
+// Determine the initializing function
 #ifndef LSP_DSP_CPU_NAMESPACE
     #define IF_ARCH_SPECIFIC_INIT(...)
 #else
@@ -67,8 +69,8 @@ namespace lsp
 
             // Dectect CPU options
             IF_ARCH_SPECIFIC_INIT(
-                LSP_DSP_CPU_NAMESPACE::cpu_features_t f;
-                LSP_DSP_CPU_NAMESPACE::detect_cpu_features(&f);
+                cpuid_t f;
+                cpuid(&f);
             );
 
             // Write architecture-optimized pointers to functions
@@ -77,7 +79,9 @@ namespace lsp
                 generic::dsp_init();
 
                 // Initialize architecture-dependent functions that utilize architecture-specific features
-                IF_ARCH_SPECIFIC_INIT(LSP_DSP_CPU_NAMESPACE::dsp_init(&f));
+                IF_ARCH_SPECIFIC_INIT(
+                    LSP_DSP_CPU_NAMESPACE::dsp_init(&f)
+                );
             };
         }
 
@@ -89,7 +93,7 @@ namespace lsp
                 dsp::init();
             }
         }
-    }
-}
+    } /* namespace dsp */
+} /* namespace lsp */
 
 
