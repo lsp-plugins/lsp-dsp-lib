@@ -34,7 +34,6 @@
     #endif
 
     #define PRIVATE_DSP_ARCH_ARM_IMPL
-        #include <private/dsp/arch/arm/features.h>
         #include <private/dsp/arch/arm/fpscr.h>
     #undef PRIVATE_DSP_ARCH_ARM_IMPL
 
@@ -90,9 +89,9 @@
     {
         namespace neon_d32
         {
-            void dsp_init(const arm::cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
-                if ((f->hwcap & (HWCAP_ARM_NEON | HWCAP_ARM_VFPD32)) != (HWCAP_ARM_NEON | HWCAP_ARM_VFPD32))
+                if ((f->hwcap[0] & (CPU_HWCAP0_VFPD32 | CPU_HWCAP0_NEON)) != (CPU_HWCAP0_VFPD32 | CPU_HWCAP0_NEON))
                     return;
 
                 EXPORT1(copy);

@@ -115,9 +115,9 @@
                 dsp_finish(ctx);
             }
 
-            void dsp_init(const aarch64::cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
-                if ((f->hwcap & (HWCAP_AARCH64_ASIMD)) != (HWCAP_AARCH64_ASIMD))
+                if ((f->hwcap[0] & (CPU_HWCAP0_ASIMD)) != (CPU_HWCAP0_ASIMD))
                     return;
 
                 // Save previous entry points
