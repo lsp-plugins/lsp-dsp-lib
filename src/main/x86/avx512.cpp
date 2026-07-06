@@ -85,15 +85,15 @@
                 IF_ARCH_X86_64(CEXPORT1(cond, export))
 
 
-            void dsp_init(const cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
                 // Enable AVX-512 only for CPUs that really support it well
                 const bool favx512  = feature_check(f, FEAT_FAST_AVX512);
                 if (!favx512)
                     return;
 
-                const bool vl = (f->features & (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL)) ==
-                                (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL);
+                const bool vl = (f->hwcap[0] & (CPU_HWCAP0_AVX512F | CPU_HWCAP0_AVX512VL)) ==
+                                (CPU_HWCAP0_AVX512F | CPU_HWCAP0_AVX512VL);
 
                 CEXPORT1(vl, copy);
                 CEXPORT1(vl, move);

@@ -110,13 +110,13 @@
             }
             #define EXPORT1(function)                   EXPORT2(function, function);
 
-            void dsp_init(const cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
-                if (((f->features) & (CPU_OPTION_SSE | CPU_OPTION_SSE2)) != (CPU_OPTION_SSE | CPU_OPTION_SSE2))
+                if ((f->hwcap[0] & CPU_HWCAP0_SSE) != CPU_HWCAP0_SSE)
                     return;
 
                 // Initialize MXCSR mask
-                if (f->features & CPU_OPTION_FXSAVE)
+                if (f->hwcap[0] & CPU_HWCAP0_FXSAVE)
                     init_mxcsr_mask();
                 else
                     mxcsr_mask  = MXCSR_DEFAULT;

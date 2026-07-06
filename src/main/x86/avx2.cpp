@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -100,9 +100,9 @@ namespace lsp
                         dsp::export = avx2::export; \
                 );
 
-        void dsp_init(const cpu_features_t *f)
+        void dsp_init(const cpuid_t *f)
         {
-            if ((f->features & (CPU_OPTION_AVX | CPU_OPTION_AVX2)) != (CPU_OPTION_AVX | CPU_OPTION_AVX2))
+            if ((f->hwcap[0] & (CPU_HWCAP0_AVX | CPU_HWCAP0_AVX2)) != (CPU_HWCAP0_AVX | CPU_HWCAP0_AVX2))
                 return;
 
             bool favx   = feature_check(f, FEAT_FAST_AVX);
@@ -233,7 +233,7 @@ namespace lsp
             CEXPORT2_X64(favx, dexpander_x1_gain, x64_dexpander_x1_gain);
             CEXPORT2_X64(favx, dexpander_x1_curve, x64_dexpander_x1_curve);
 
-            if (f->features & CPU_OPTION_FMA3)
+            if (f->hwcap[0] & CPU_HWCAP0_FMA3)
             {
                 CEXPORT2(favx, mod_k2, mod_k2_fma3);
                 CEXPORT2(favx, rmod_k2, rmod_k2_fma3);

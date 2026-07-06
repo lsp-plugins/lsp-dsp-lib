@@ -26,6 +26,10 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_GENERIC_IMPL */
 
+#include <lsp-plug.in/common/alloc.h>
+#include <lsp-plug.in/common/cpuid.h>
+#include <lsp-plug.in/stdlib/string.h>
+
 namespace lsp
 {
     namespace generic
@@ -44,31 +48,39 @@ namespace lsp
 
         dsp::info_t *info()
         {
-            size_t szof_dsp_info    = sizeof(dsp::info_t);
-            size_t size             =
-                    szof_dsp_info +
-                    strlen(ARCH_STRING) + 1 +
-                    strlen("native cpu") + 1 +
-                    strlen("unknown") + 1;
-
-            uint8_t *ptr        = static_cast<uint8_t *>(malloc(size));
-            if (ptr == NULL)
+            // Obtain information about processor
+            cpuid_t f;
+            cpuid(&f);
+            lsp::cpuinfo_t * const info = cpuinfo(&f);
+            if (info == NULL)
                 return NULL;
+            lsp_finally { free(info); };
 
-            dsp::info_t *res    = reinterpret_cast<dsp::info_t *>(ptr);
-            ptr                += szof_dsp_info;
+            const size_t size     =
+                sizeof(dsp::info_t) +
+                strlen(info->arch) + 1 +
+                strlen(info->name) + 1 +
+                strlen(info->model) + 1 +
+                strlen(info->features) + 1;
 
-            char *text          = reinterpret_cast<char *>(ptr);
-            res->arch           = text;
-            text                = stpcpy(text, ARCH_STRING) + 1;
-            res->cpu            = text;
-            text                = stpcpy(text, "native cpu") + 1;
-            res->model          = text;
-            text                = stpcpy(text, "unknown");
-            res->features       = text; // Empty string
+            // Build the output data structure
+            dsp::info_t * const res = malloc_bytes<dsp::info_t>(size);
+            if (res == NULL)
+                return res;
+
+            char *text      = reinterpret_cast<char *>(&res[1]);
+            res->arch       = text;
+            text            = stpcpy(text, info->arch) + 1;
+            res->cpu        = text;
+            text            = stpcpy(text, info->name) + 1;
+            res->model      = text;
+            text            = stpcpy(text, info->model) + 1;
+            res->features   = text;
+            text            = stpcpy(text, info->features) + 1;
 
             return res;
         }
+
     } /* namespace generic */
 } /* namespace lsp */
 
