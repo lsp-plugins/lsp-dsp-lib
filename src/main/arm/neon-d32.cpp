@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #if defined(ARCH_ARM6) || defined(ARCH_ARM7)
     #include <private/dsp/exports.h>

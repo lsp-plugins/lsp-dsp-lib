@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #if defined(ARCH_ARM6) || defined(ARCH_ARM7)
 
@@ -43,11 +44,14 @@ namespace lsp
 {
     namespace neon_d32
     {
-        extern void dsp_init(const arm::cpu_features_t *f);
+        extern void dsp_init(const cpuid_t *f);
     }
 
     namespace arm
     {
+        static dsp::start_t     dsp_start       = NULL;
+        static dsp::finish_t    dsp_finish      = NULL;
+
         void start(dsp::context_t *ctx)
         {
             dsp_start(ctx);

@@ -19,13 +19,15 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PRIVATE_DSP_ARCH_X86_FEATURES_H_
-#define PRIVATE_DSP_ARCH_X86_FEATURES_H_
+#ifndef PRIVATE_DSP_ARCH_X86_INIT_H_
+#define PRIVATE_DSP_ARCH_X86_INIT_H_
 
 #include <lsp-plug.in/common/types.h>
 #include <lsp-plug.in/common/cpuid.h>
 
 #ifdef ARCH_X86
+
+#define LSP_DSP_CPU_NAMESPACE           x86
 
 namespace lsp
 {
@@ -53,8 +55,6 @@ namespace lsp
     } /* namespace x86 */
 } /* namespace lsp */
 
-#define LSP_DSP_CPU_NAMESPACE           x86
-
 #endif /* ARCH_X86 */
 
-#endif /* PRIVATE_DSP_ARCH_X86_FEATURES_H_ */
+#endif /* PRIVATE_DSP_ARCH_X86_INIT_H_ */

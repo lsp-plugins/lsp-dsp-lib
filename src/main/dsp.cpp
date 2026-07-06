@@ -20,14 +20,15 @@
  */
 
 #include <lsp-plug.in/common/atomic.h>
+#include <lsp-plug.in/common/cpuid.h>
 #include <lsp-plug.in/common/finally.h>
 #include <lsp-plug.in/common/singletone.h>
 #include <lsp-plug.in/common/types.h>
 
-#include <private/dsp/arch/aarch64/features.h>
-#include <private/dsp/arch/arm/features.h>
-#include <private/dsp/arch/generic/features.h>
-#include <private/dsp/arch/x86/features.h>
+#include <private/dsp/arch/aarch64/init.h>
+#include <private/dsp/arch/arm/init.h>
+#include <private/dsp/arch/generic/init.h>
+#include <private/dsp/arch/x86/init.h>
 
 
 #define LSP_DSP_LIB_SYMBOL(ret, name, ...) \
@@ -45,6 +46,7 @@
 
 #include <lsp-plug.in/dsp/dsp.h>
 
+// Determine the initializing function
 #ifndef LSP_DSP_CPU_NAMESPACE
     #define IF_ARCH_SPECIFIC_INIT(...)
 #else

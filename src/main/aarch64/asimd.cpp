@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #ifdef ARCH_AARCH64
     #include <private/dsp/exports.h>
@@ -35,7 +36,6 @@
 
     // Include common architectural definitions
     #define PRIVATE_DSP_ARCH_AARCH64_IMPL
-        #include <private/dsp/arch/aarch64/features.h>
         #include <private/dsp/arch/aarch64/fpcr.h>
     #undef PRIVATE_DSP_ARCH_AARCH64_IMPL
 

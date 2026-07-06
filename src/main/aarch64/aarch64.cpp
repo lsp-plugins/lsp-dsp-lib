@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #ifdef ARCH_AARCH64
     #include <private/dsp/exports.h>
@@ -43,7 +44,7 @@ namespace lsp
 {
     namespace asimd
     {
-        extern void dsp_init(const aarch64::cpu_features_t *f);
+        extern void dsp_init(const cpuid_t *f);
     }
 
     namespace aarch64
@@ -56,7 +57,7 @@ namespace lsp
         }
         #define EXPORT1(function)                   EXPORT2(function, function)
 
-        void dsp_init(const cpu_features_t *f)
+        void dsp_init(const cpuid_t *f)
         {
             // Initialize Advanced SIMD support
             asimd::dsp_init(f);
