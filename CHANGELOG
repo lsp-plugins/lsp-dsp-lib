@@ -10,6 +10,7 @@
 * Replaced implementation for mix_v2 and mix_k2 functions with lerp_vvv and
   lerp_vvk respectively.
 * CPU features detection was moved to the lsp-common-lib library.
+* Updated build scripts.
 
 === 1.0.36 ===
 * Updated build system: ASAN, CROSS_COMPILE, DEBUG, DEVEL, PROFILE, STRICT,
