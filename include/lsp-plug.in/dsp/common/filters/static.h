@@ -29,8 +29,9 @@
  *
  * @param dst destination samples
  * @param src source samples
+ * @param d filter memory, should be 4-byte aligned
  * @param count number of samples to process
- * @param f bi-quadratic filter structure
+ * @param f bi-quadratic filter structure, should be 4-byte aligned
  */
 LSP_DSP_LIB_SYMBOL(void, biquad_process_x1, float *dst, const float *src, float *d, size_t count, const LSP_DSP_LIB_TYPE(biquad_x1_t) *f);
 
@@ -38,8 +39,9 @@ LSP_DSP_LIB_SYMBOL(void, biquad_process_x1, float *dst, const float *src, float 
  *
  * @param dst destination samples
  * @param src source samples
+ * @param d filter memory, should be 8-byte aligned
  * @param count number of samples to process
- * @param f bi-quadratic filter structure
+ * @param f bi-quadratic filter structure, should be 8-byte aligned
  */
 LSP_DSP_LIB_SYMBOL(void, biquad_process_x2, float *dst, const float *src, float *d, size_t count, const LSP_DSP_LIB_TYPE(biquad_x2_t) *f);
 
@@ -47,8 +49,9 @@ LSP_DSP_LIB_SYMBOL(void, biquad_process_x2, float *dst, const float *src, float 
  *
  * @param dst destination samples
  * @param src source samples
+ * @param d filter memory, should be 16-byte aligned
  * @param count number of samples to process
- * @param f bi-quadratic filter structure
+ * @param f bi-quadratic filter structure, should be 16-byte aligned
  */
 LSP_DSP_LIB_SYMBOL(void, biquad_process_x4, float *dst, const float *src, float *d, size_t count, const LSP_DSP_LIB_TYPE(biquad_x4_t) *f);
 
@@ -56,9 +59,21 @@ LSP_DSP_LIB_SYMBOL(void, biquad_process_x4, float *dst, const float *src, float 
  *
  * @param dst destination samples
  * @param src source samples
+ * @param d filter memory, should be 32-byte aligned
  * @param count number of samples to process
- * @param f bi-quadratic filter structure
+ * @param f bi-quadratic filter structure, should be 32-byte aligned
  */
 LSP_DSP_LIB_SYMBOL(void, biquad_process_x8, float *dst, const float *src, float *d, size_t count, const LSP_DSP_LIB_TYPE(biquad_x8_t) *f);
+
+/** Process sixteen bi-quadratic filters for multiple samples simultaneously
+ *
+ * @param dst destination samples
+ * @param src source samples
+ * @param d filter memory, should be 64-byte aligned
+ * @param count number of samples to process
+ * @param f bi-quadratic filter structure, should be 64-byte aligned
+ */
+LSP_DSP_LIB_SYMBOL(void, biquad_process_x16, float *dst, const float *src, float *d, size_t count, const LSP_DSP_LIB_TYPE(biquad_x16_t) *f);
+
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_FILTERS_STATIC_H_ */

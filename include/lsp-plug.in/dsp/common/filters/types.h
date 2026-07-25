@@ -213,7 +213,7 @@ typedef struct LSP_DSP_LIB_TYPE(f_cascade_t)
 
 /**
  * Biquad filter bank for 1 digital biquad filter
- * Non-used elements should be filled with zeros
+ * Non-used elements should be filled with zeros.
  */
 typedef struct LSP_DSP_LIB_TYPE(biquad_x1_t)
 {
@@ -259,6 +259,18 @@ typedef struct LSP_DSP_LIB_TYPE(biquad_x8_t)
     float   a1[8];
     float   a2[8];
 } LSP_DSP_LIB_TYPE(biquad_x8_t);
+
+/**
+ * Biquad filter bank for 16 digital biquad filters
+ */
+typedef struct LSP_DSP_LIB_TYPE(biquad_x16_t)
+{
+    float   b0[16];
+    float   b1[16];
+    float   b2[16];
+    float   a1[16];
+    float   a2[16];
+} LSP_DSP_LIB_TYPE(biquad_x16_t);
 
 #pragma pack(pop)
 

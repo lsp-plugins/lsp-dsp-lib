@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -123,7 +123,7 @@ namespace lsp
                 // x2 loop
                 __ASM_EMIT("movups      0x00(%[d]), %%xmm6")                        // xmm6 = d0 e0 d1 e1
                 __ASM_EMIT("xorps       %%xmm7, %%xmm7")                            // xmm7 = 0 0 0 0
-                __ASM_EMIT(".align      16")
+                __ASM_EMIT(".p2align    4")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("movss       (%[src]), %%xmm4")                          // xmm4 = s0
                 __ASM_EMIT("movlps      0x00(%[f]), %%xmm1")                        // xmm1 = a0 i0
@@ -194,6 +194,10 @@ namespace lsp
                 __ASM_EMIT64("test      %[count], %[count]")
                 __ASM_EMIT("jz          8f")
 
+                // Load delay buffer
+                __ASM_EMIT("movups      0x00(%[d]), %%xmm6")                        // xmm6     = d0
+                __ASM_EMIT("movups      0x10(%[d]), %%xmm7")                        // xmm7     = d1
+
                 // Initialize mask
                 // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
                 __ASM_EMIT("mov         $1, %[mask]")
@@ -201,12 +205,8 @@ namespace lsp
                 __ASM_EMIT("xorps       %%xmm1, %%xmm1")
                 __ASM_EMIT("movaps      %%xmm0, %[MASK]")
 
-                // Load delay buffer
-                __ASM_EMIT("movups      0x00(%[d]), %%xmm6")                        // xmm6     = d0
-                __ASM_EMIT("movups      0x10(%[d]), %%xmm7")                        // xmm7     = d1
-
                 // Process first 3 steps
-                __ASM_EMIT(".align 16")
+                __ASM_EMIT(".p2align    4")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
@@ -253,7 +253,7 @@ namespace lsp
                 __ASM_EMIT("jne         1b")
 
                 // 4x filter processing without mask
-                __ASM_EMIT(".align 16")
+                __ASM_EMIT(".p2align    4")
                 __ASM_EMIT("3:")
                 __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
@@ -293,7 +293,7 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm2, %%xmm0")                            // xmm0     = 0 m[0] m[1] m[2]
 
                 // Process steps
-                __ASM_EMIT(".align 16")
+                __ASM_EMIT(".p2align    4")
                 __ASM_EMIT("5:")
                 __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            // xmm2     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            // xmm3     = s
@@ -392,7 +392,7 @@ namespace lsp
                 __ASM_EMIT("movaps      %%xmm0, %[MASK]")
 
                 // Process first 3 steps
-                __ASM_EMIT(".align 16")
+                __ASM_EMIT(".p2align    4")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
@@ -438,7 +438,7 @@ namespace lsp
                 __ASM_EMIT("jne         1b")
 
                 // 4x filter processing without mask
-                __ASM_EMIT(".align 16")
+                __ASM_EMIT(".p2align    4")
                 __ASM_EMIT("3:")
                 __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
@@ -477,7 +477,7 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm2, %%xmm0")                            // xmm0     = 0 m[0] m[1] m[2]
 
                 // Process steps
-                __ASM_EMIT(".align 16")
+                __ASM_EMIT(".p2align    4")
                 __ASM_EMIT("5:")
                 __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            // xmm2     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            // xmm3     = s
@@ -550,7 +550,7 @@ namespace lsp
                 __ASM_EMIT("movaps      %%xmm0, %[MASK]")
 
                 // Process first 3 steps
-                __ASM_EMIT(".align 16")
+                __ASM_EMIT(".p2align    4")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
@@ -596,7 +596,7 @@ namespace lsp
                 __ASM_EMIT("jne         1b")
 
                 // 4x filter processing without mask
-                __ASM_EMIT(".align 16")
+                __ASM_EMIT(".p2align    4")
                 __ASM_EMIT("3:")
                 __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
@@ -635,7 +635,7 @@ namespace lsp
                 __ASM_EMIT("movss       %%xmm2, %%xmm0")                            // xmm0     = 0 m[0] m[1] m[2]
 
                 // Process steps
-                __ASM_EMIT(".align 16")
+                __ASM_EMIT(".p2align    4")
                 __ASM_EMIT("5:")
                 __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            // xmm2     = s
                 __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            // xmm3     = s

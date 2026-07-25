@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -421,11 +421,13 @@ namespace lsp
             EXPORT1(biquad_process_x2);
             EXPORT1(biquad_process_x4);
             EXPORT1(biquad_process_x8);
+            EXPORT1(biquad_process_x16);
 
             EXPORT1(dyn_biquad_process_x1);
             EXPORT1(dyn_biquad_process_x2);
             EXPORT1(dyn_biquad_process_x4);
             EXPORT1(dyn_biquad_process_x8);
+            EXPORT1(dyn_biquad_process_x16);
 
             EXPORT1(filter_transfer_calc_ri);
             EXPORT1(filter_transfer_apply_ri);

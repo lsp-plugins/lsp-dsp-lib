@@ -94,6 +94,53 @@ namespace lsp
             i               = count;
             GENERIC_BIQUAD_X4_CORE(dp, dst, d, i, bq, 8, ++bq);
         }
+
+        void dyn_biquad_process_x16(float *dst, const float *src, float *d, size_t count, const biquad_x16_t *f)
+        {
+            // This code already works worse than biquad_process_x4
+            if (count <= 0)
+                return;
+
+            size_t mask;
+            float s[4], s2[4], p1[4], p2[4];
+            s[0]            = 0.0f;
+            s[1]            = 0.0f;
+            s[2]            = 0.0f;
+            s[3]            = 0.0f;
+            s2[0]           = 0.0f;
+            s2[1]           = 0.0f;
+            s2[2]           = 0.0f;
+            s2[3]           = 0.0f;
+
+            // Step 1
+            float *dp       = dst;
+            const biquad_x16_t *bq = f;
+            size_t i        = count;
+            GENERIC_BIQUAD_X4_CORE(dp, src, d, i, bq, 16, ++bq);
+            d              += 4;
+
+            // Step 2
+            bq              = reinterpret_cast<const biquad_x16_t *>(&f[4].b0[4]);
+            const float *sp = dst;
+            dp              = dst;
+            i               = count;
+            GENERIC_BIQUAD_X4_CORE(dp, sp, d, i, bq, 16, );
+            d              += 4;
+
+            // Step 3
+            bq              = reinterpret_cast<const biquad_x16_t *>(&f[8].b0[8]);
+            sp              = dst;
+            dp              = dst;
+            i               = count;
+            GENERIC_BIQUAD_X4_CORE(dp, sp, d, i, bq, 16, );
+            d              += 4;
+
+            // Step 4
+            bq              = reinterpret_cast<const biquad_x16_t *>(&f[12].b0[12]);
+            dp              = dst;
+            i               = count;
+            GENERIC_BIQUAD_X4_CORE(dp, dst, d, i, bq, 16, );
+        }
     } /* namespace generic */
 } /* namespace lsp */
 

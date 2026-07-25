@@ -30,18 +30,20 @@ namespace lsp
     namespace generic
     {
         void biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
-//        void biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
-//        void biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f);
-//        void biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+        void biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
+        void biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f);
+        void biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+        void biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
             void biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
-//            void biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
-//            void biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f);
-//            void biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+            void biquad_process_x2(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
+            void biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f);
+            void biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+            void biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
         }
 
 //        namespace sse3
@@ -86,6 +88,10 @@ namespace lsp
 //    )
 
     typedef void (* biquad_process_x1_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
+    typedef void (* biquad_process_x2_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
+    typedef void (* biquad_process_x4_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f);
+    typedef void (* biquad_process_x8_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+    typedef void (* biquad_process_x16_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
 
     static dsp::biquad_x1_t bq_normal =
     {
@@ -116,15 +122,16 @@ PTEST_BEGIN("dsp.filters", static, 10, 1000)
         dsp::biquad_x1_t x1 __lsp_aligned64;
         float d[d_buffer_size] __lsp_aligned64;
 
+        // Filers x1
         x1 = bq_normal;
         dsp::fill_zero(d, d_buffer_size);
 
         PTEST_LOOP(text,
-            process(out, in, &d[0], FTEST_BUF_SIZE, &x1);
-            process(out, out, &d[2], FTEST_BUF_SIZE, &x1);
-            process(out, out, &d[4], FTEST_BUF_SIZE, &x1);
-            process(out, out, &d[6], FTEST_BUF_SIZE, &x1);
-            process(out, out, &d[8], FTEST_BUF_SIZE, &x1);
+            process(out, in,  &d[0],  FTEST_BUF_SIZE, &x1);
+            process(out, out, &d[2],  FTEST_BUF_SIZE, &x1);
+            process(out, out, &d[4],  FTEST_BUF_SIZE, &x1);
+            process(out, out, &d[6],  FTEST_BUF_SIZE, &x1);
+            process(out, out, &d[8],  FTEST_BUF_SIZE, &x1);
             process(out, out, &d[10], FTEST_BUF_SIZE, &x1);
             process(out, out, &d[12], FTEST_BUF_SIZE, &x1);
             process(out, out, &d[14], FTEST_BUF_SIZE, &x1);
@@ -139,87 +146,117 @@ PTEST_BEGIN("dsp.filters", static, 10, 1000)
         );
     }
 
-//    void process_4x2(const char *text, float *out, const float *in, size_t count, biquad_process_t process)
-//    {
-//        if (!PTEST_SUPPORTED(process))
-//            return;
-//        printf("Testing %s static filters on input buffer of %d samples ...\n", text, int(count));
-//
-//        dsp::biquad_t x2 __lsp_aligned64;
-//
-//        // Filters x 2
-//        for (size_t i=0; i<2; ++i)
-//        {
-//            f.x2.b0[i]      = bq_normal.b0;
-//            f.x2.b1[i]      = bq_normal.b1;
-//            f.x2.b2[i]      = bq_normal.b2;
-//            f.x2.a1[i]      = bq_normal.a1;
-//            f.x2.a2[i]      = bq_normal.a2;
-//            f.x2.p[i]       = 0.0f;
-//        }
-//
-//        for (size_t i=0; i<8; ++i)
-//            f.d[i]          = 0.0f;
-//
-//        PTEST_LOOP(text,
-//            process(out, in, count, &f);
-//            process(out, out, count, &f);
-//            process(out, out, count, &f);
-//            process(out, out, count, &f);
-//        );
-//    }
-//
-//    void process_2x4(const char *text, float *out, const float *in, size_t count, biquad_process_t process)
-//    {
-//        if (!PTEST_SUPPORTED(process))
-//            return;
-//        printf("Testing %s static filters on input buffer of %d samples ...\n", text, int(count));
-//
-//        dsp::biquad_t f __lsp_aligned64;
-//
-//        // Filters x 4
-//        for (size_t i=0; i<4; ++i)
-//        {
-//            f.x4.b0[i]     = bq_normal.b0;
-//            f.x4.b1[i]     = bq_normal.b1;
-//            f.x4.b2[i]     = bq_normal.b2;
-//            f.x4.a1[i]     = bq_normal.a1;
-//            f.x4.a2[i]     = bq_normal.a2;
-//        }
-//
-//        for (size_t i=0; i<8; ++i)
-//            f.d[i]          = 0.0f;
-//
-//        PTEST_LOOP(text,
-//            process(out, in, count, &f);
-//            process(out, out, count, &f);
-//        );
-//    }
-//
-//    void process_1x8(const char *text, float *out, const float *in, size_t count, biquad_process_t process)
-//    {
-//        if (!PTEST_SUPPORTED(process))
-//            return;
-//        printf("Testing %s static filters on input buffer of %d samples ...\n", text, int(count));
-//
-//        dsp::biquad_t f __lsp_aligned64;
-//        // Filters x 8
-//        for (size_t i=0; i<8; ++i)
-//        {
-//            f.x8.b0[i]     = bq_normal.b0;
-//            f.x8.b1[i]     = bq_normal.b1;
-//            f.x8.b2[i]     = bq_normal.b2;
-//            f.x8.a1[i]     = bq_normal.a1;
-//            f.x8.a2[i]     = bq_normal.a2;
-//        }
-//
-//        for (size_t i=0; i<8; ++i)
-//            f.d[i]          = 0.0f;
-//
-//        PTEST_LOOP(text,
-//            process(out, in, count, &f);
-//        );
-//    }
+    void process_8x2(const char *text, float *out, const float *in, biquad_process_x2_t process)
+    {
+        if (!PTEST_SUPPORTED(process))
+            return;
+        printf("Testing %s static filters on input buffer of %d samples ...\n", text, int(FTEST_BUF_SIZE));
+
+        dsp::biquad_x2_t x2 __lsp_aligned64;
+        float d[d_buffer_size] __lsp_aligned64;
+
+        // Filters x2
+        for (size_t i=0; i<2; ++i)
+        {
+            x2.b0[i]        = bq_normal.b0;
+            x2.b1[i]        = bq_normal.b1;
+            x2.b2[i]        = bq_normal.b2;
+            x2.a1[i]        = bq_normal.a1;
+            x2.a2[i]        = bq_normal.a2;
+            x2.p[i]         = 0.0f;
+        }
+        dsp::fill_zero(d, d_buffer_size);
+
+        PTEST_LOOP(text,
+            process(out, in,  &d[0],  FTEST_BUF_SIZE, &x2);
+            process(out, out, &d[4],  FTEST_BUF_SIZE, &x2);
+            process(out, out, &d[8],  FTEST_BUF_SIZE, &x2);
+            process(out, out, &d[12], FTEST_BUF_SIZE, &x2);
+            process(out, out, &d[16], FTEST_BUF_SIZE, &x2);
+            process(out, out, &d[20], FTEST_BUF_SIZE, &x2);
+            process(out, out, &d[24], FTEST_BUF_SIZE, &x2);
+            process(out, out, &d[28], FTEST_BUF_SIZE, &x2);
+        );
+    }
+
+    void process_4x4(const char *text, float *out, const float *in, biquad_process_x4_t process)
+    {
+        if (!PTEST_SUPPORTED(process))
+            return;
+        printf("Testing %s static filters on input buffer of %d samples ...\n", text, int(FTEST_BUF_SIZE));
+
+        dsp::biquad_x4_t x4 __lsp_aligned64;
+        float d[d_buffer_size] __lsp_aligned64;
+
+        // Filters x8
+        for (size_t i=0; i<4; ++i)
+        {
+            x4.b0[i]        = bq_normal.b0;
+            x4.b1[i]        = bq_normal.b1;
+            x4.b2[i]        = bq_normal.b2;
+            x4.a1[i]        = bq_normal.a1;
+            x4.a2[i]        = bq_normal.a2;
+        }
+        dsp::fill_zero(d, d_buffer_size);
+
+        PTEST_LOOP(text,
+            process(out, in,  &d[0],  FTEST_BUF_SIZE, &x4);
+            process(out, out, &d[8],  FTEST_BUF_SIZE, &x4);
+            process(out, out, &d[16], FTEST_BUF_SIZE, &x4);
+            process(out, out, &d[24], FTEST_BUF_SIZE, &x4);
+        );
+    }
+
+    void process_2x8(const char *text, float *out, const float *in, biquad_process_x8_t process)
+    {
+        if (!PTEST_SUPPORTED(process))
+            return;
+        printf("Testing %s static filters on input buffer of %d samples ...\n", text, int(FTEST_BUF_SIZE));
+
+        dsp::biquad_x8_t x8 __lsp_aligned64;
+        float d[d_buffer_size] __lsp_aligned64;
+
+        // Filters x8
+        for (size_t i=0; i<8; ++i)
+        {
+            x8.b0[i]        = bq_normal.b0;
+            x8.b1[i]        = bq_normal.b1;
+            x8.b2[i]        = bq_normal.b2;
+            x8.a1[i]        = bq_normal.a1;
+            x8.a2[i]        = bq_normal.a2;
+        }
+        dsp::fill_zero(d, d_buffer_size);
+
+        PTEST_LOOP(text,
+            process(out, in,  &d[0],  FTEST_BUF_SIZE, &x8);
+            process(out, out, &d[16], FTEST_BUF_SIZE, &x8);
+        );
+    }
+
+    void process_1x16(const char *text, float *out, const float *in, biquad_process_x16_t process)
+    {
+        if (!PTEST_SUPPORTED(process))
+            return;
+        printf("Testing %s static filters on input buffer of %d samples ...\n", text, int(FTEST_BUF_SIZE));
+
+        dsp::biquad_x16_t x16 __lsp_aligned64;
+        float d[d_buffer_size] __lsp_aligned64;
+
+        // Filters x16
+        for (size_t i=0; i<16; ++i)
+        {
+            x16.b0[i]       = bq_normal.b0;
+            x16.b1[i]       = bq_normal.b1;
+            x16.b2[i]       = bq_normal.b2;
+            x16.a1[i]       = bq_normal.a1;
+            x16.a2[i]       = bq_normal.a2;
+        }
+        dsp::fill_zero(d, d_buffer_size);
+
+        PTEST_LOOP(text,
+            process(out, in,  &d[0],  FTEST_BUF_SIZE, &x16);
+        );
+    }
 
     PTEST_MAIN
     {
@@ -240,29 +277,38 @@ PTEST_BEGIN("dsp.filters", static, 10, 1000)
 //        IF_ARCH_AARCH64(process_16x1("asimd::biquad_process_x1 x16", out, in, asimd::biquad_process_x1));
 //        PTEST_SEPARATOR;
 
-//        process_4x2("generic::biquad_process_x2 x4", out, in, generic::biquad_process_x2);
-//        IF_ARCH_X86(process_4x2("sse::biquad_process_x2 x4", out, in, sse::biquad_process_x2));
-//        IF_ARCH_X86(process_4x2("avx::biquad_process_x2 x4", out, in, avx::biquad_process_x2));
-//        IF_ARCH_X86(process_4x2("avx::biquad_process_x2_fma3 x4", out, in, avx::biquad_process_x2_fma3));
-//        IF_ARCH_ARM(process_4x2("neon_d32::biquad_process_x2 x4", out, in, neon_d32::biquad_process_x2));
-//        IF_ARCH_AARCH64(process_4x2("asimd::biquad_process_x2 x4", out, in, asimd::biquad_process_x2));
+        process_8x2("generic::biquad_process_x2 x8", out, in, generic::biquad_process_x2);
+        IF_ARCH_X86(process_8x2("sse::biquad_process_x2 x8", out, in, sse::biquad_process_x2));
+//        IF_ARCH_X86(process_8x2("avx::biquad_process_x2 x8", out, in, avx::biquad_process_x2));
+//        IF_ARCH_X86(process_8x2("avx::biquad_process_x2_fma3 x8", out, in, avx::biquad_process_x2_fma3));
+//        IF_ARCH_ARM(process_8x2("neon_d32::biquad_process_x2 x8", out, in, neon_d32::biquad_process_x2));
+//        IF_ARCH_AARCH64(process_8x2("asimd::biquad_process_x2 x8", out, in, asimd::biquad_process_x2));
 //        PTEST_SEPARATOR;
-//
-//        process_2x4("generic::biquad_process_x4 x2", out, in, generic::biquad_process_x4);
-//        IF_ARCH_X86(process_2x4("sse::biquad_process_x4 x2", out, in, sse::biquad_process_x4));
-//        IF_ARCH_X86(process_2x4("avx::biquad_process_x4 x2", out, in, avx::biquad_process_x4));
-//        IF_ARCH_X86(process_2x4("avx::biquad_process_x4_fma3 x2", out, in, avx::biquad_process_x4_fma3));
-//        IF_ARCH_ARM(process_2x4("neon_d32::biquad_process_x4 x2", out, in, neon_d32::biquad_process_x4));
-//        IF_ARCH_AARCH64(process_2x4("asimd::biquad_process_x4 x2", out, in, asimd::biquad_process_x4));
+
+        process_4x4("generic::biquad_process_x4 x4", out, in, generic::biquad_process_x4);
+        IF_ARCH_X86(process_4x4("sse::biquad_process_x4 x4", out, in, sse::biquad_process_x4));
+//        IF_ARCH_X86(process_4x4("avx::biquad_process_x4 x4", out, in, avx::biquad_process_x4));
+//        IF_ARCH_X86(process_4x4("avx::biquad_process_x4_fma3 x4", out, in, avx::biquad_process_x4_fma3));
+//        IF_ARCH_ARM(process_4x4("neon_d32::biquad_process_x4 x4", out, in, neon_d32::biquad_process_x4));
+//        IF_ARCH_AARCH64(process_4x4("asimd::biquad_process_x4 x4", out, in, asimd::biquad_process_x4));
 //        PTEST_SEPARATOR;
-//
-//        process_1x8("generic::biquad_process_x8 x1", out, in, generic::biquad_process_x8);
-//        IF_ARCH_X86(process_1x8("sse::biquad_process_x8 x1", out, in, sse::biquad_process_x8));
-//        IF_ARCH_X86(process_1x8("sse3::x64_biquad_process_x8 x1", out, in, sse3::x64_biquad_process_x8));
-//        IF_ARCH_X86(process_1x8("avx::x64_biquad_process_x8 x1", out, in, avx::x64_biquad_process_x8));
-//        IF_ARCH_X86(process_1x8("avx::biquad_process_x8_fma3 x1", out, in, avx::biquad_process_x8_fma3));
-//        IF_ARCH_ARM(process_1x8("neon_d32::biquad_process_x8 x1", out, in, neon_d32::biquad_process_x8));
-//        IF_ARCH_AARCH64(process_1x8("asimd::biquad_process_x8 x1", out, in, asimd::biquad_process_x8));
+
+        process_2x8("generic::biquad_process_x8 x2", out, in, generic::biquad_process_x8);
+        IF_ARCH_X86(process_2x8("sse::biquad_process_x8 x2", out, in, sse::biquad_process_x8));
+//        IF_ARCH_X86(process_2x8("sse3::x64_biquad_process_x8 x2", out, in, sse3::x64_biquad_process_x8));
+//        IF_ARCH_X86(process_2x8("avx::x64_biquad_process_x8 x2", out, in, avx::x64_biquad_process_x8));
+//        IF_ARCH_X86(process_2x8("avx::biquad_process_x8_fma3 x2", out, in, avx::biquad_process_x8_fma3));
+//        IF_ARCH_ARM(process_2x8("neon_d32::biquad_process_x8 x2", out, in, neon_d32::biquad_process_x8));
+//        IF_ARCH_AARCH64(process_2x8("asimd::biquad_process_x8 x2", out, in, asimd::biquad_process_x8));
+//        PTEST_SEPARATOR;
+
+        process_1x16("generic::biquad_process_x16 x1", out, in, generic::biquad_process_x16);
+        IF_ARCH_X86(process_1x16("sse::biquad_process_x16 x1", out, in, sse::biquad_process_x16));
+//        IF_ARCH_X86(process_1x16("sse3::x64_biquad_process_x16 x2", out, in, sse3::x64_biquad_process_x16));
+//        IF_ARCH_X86(process_1x16("avx::x64_biquad_process_x16 x2", out, in, avx::x64_biquad_process_x16));
+//        IF_ARCH_X86(process_1x16("avx::biquad_process_x16_fma3 x2", out, in, avx::biquad_process_x16_fma3));
+//        IF_ARCH_ARM(process_1x16("neon_d32::biquad_process_x16 x2", out, in, neon_d32::biquad_process_x16));
+//        IF_ARCH_AARCH64(process_1x16("asimd::biquad_process_x16 x2", out, in, asimd::biquad_process_x16));
 //        PTEST_SEPARATOR;
 
         delete [] out;
