@@ -37,7 +37,7 @@ namespace lsp
             };
         );
 
-        void x64_biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f)
+        void x64_biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_x8_t *f)
         {
             IF_ARCH_X86_64(
                 float MASK0[4] __lsp_aligned16;

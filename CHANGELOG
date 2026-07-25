@@ -3,6 +3,8 @@
 *******************************************************************************
 
 === 1.0.37 ===
+* Significant refactoring of static and dynamic filter functions.
+* Added support of 16 biquad filter processing at the same time.
 * Fixed lanczos kernel generation functions to make buildable by MacOS on
   x86_64 architecture.
 * Added three-operand lerp functions optimized with SSE, AVX, FMA3, AVX-512,

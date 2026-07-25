@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -30,7 +30,7 @@ namespace lsp
 {
     namespace avx
     {
-        void biquad_process_x1(float *dst, const float *src, size_t count, dsp::biquad_t *f)
+        void biquad_process_x1(float *dst, const float *src, size_t count, dsp::biquad_x1_t *f)
         {
             IF_ARCH_X86(size_t off);
 
@@ -79,7 +79,7 @@ namespace lsp
             );
         }
 
-        void biquad_process_x1_fma3(float *dst, const float *src, size_t count, dsp::biquad_t *f)
+        void biquad_process_x1_fma3(float *dst, const float *src, size_t count, dsp::biquad_x1_t *f)
         {
             IF_ARCH_X86(size_t off);
 
@@ -126,7 +126,7 @@ namespace lsp
             );
         }
 
-        void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f)
+        void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_x2_t *f)
         {
             ARCH_X86_ASM
             (
@@ -199,7 +199,7 @@ namespace lsp
             );
         }
 
-        void biquad_process_x2_fma3(float *dst, const float *src, size_t count, dsp::biquad_t *f)
+        void biquad_process_x2_fma3(float *dst, const float *src, size_t count, dsp::biquad_x2_t *f)
         {
             ARCH_X86_ASM
             (
@@ -274,7 +274,7 @@ namespace lsp
             };
         )
 
-        void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f)
+        void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_x4_t *f)
         {
             IF_ARCH_X86(
                 float   MASK[4] __lsp_aligned16;
@@ -397,7 +397,7 @@ namespace lsp
             );
         }
 
-        void biquad_process_x4_fma3(float *dst, const float *src, size_t count, dsp::biquad_t *f)
+        void biquad_process_x4_fma3(float *dst, const float *src, size_t count, dsp::biquad_x4_t *f)
         {
             IF_ARCH_X86(
                 size_t  mask;
@@ -513,7 +513,7 @@ namespace lsp
         )
 
         // This function is tested, works and delivers high performance
-        void x64_biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f)
+        void x64_biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_x8_t *f)
         {
             IF_ARCH_X86_64(size_t mask);
             ARCH_X86_64_ASM
@@ -646,7 +646,7 @@ namespace lsp
         }
 
         // This function is FMA3 implementation of biquad_process_x8
-        void biquad_process_x8_fma3(float *dst, const float *src, size_t count, dsp::biquad_t *f)
+        void biquad_process_x8_fma3(float *dst, const float *src, size_t count, dsp::biquad_x8_t *f)
         {
             IF_ARCH_X86(size_t mask);
             ARCH_X86_ASM
@@ -778,7 +778,7 @@ namespace lsp
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
-    }
-}
+    } /* namespace avx */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX_FILTERS_STATIC_H_ */

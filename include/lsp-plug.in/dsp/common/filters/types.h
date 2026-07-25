@@ -260,25 +260,6 @@ typedef struct LSP_DSP_LIB_TYPE(biquad_x8_t)
     float   a2[8];
 } LSP_DSP_LIB_TYPE(biquad_x8_t);
 
-/**
- * This is main filter structure with memory elements
- * It should be aligned at least to 16-byte boundary due to
- * alignment restrictions of some different hardware architectures
- * For best purpose it should be aligned to 64-byte boundary
- */
-typedef struct LSP_DSP_LIB_TYPE(biquad_t)
-{
-    float   d[LSP_DSP_BIQUAD_D_ITEMS];
-    union
-    {
-        LSP_DSP_LIB_TYPE(biquad_x1_t) x1;
-        LSP_DSP_LIB_TYPE(biquad_x2_t) x2;
-        LSP_DSP_LIB_TYPE(biquad_x4_t) x4;
-        LSP_DSP_LIB_TYPE(biquad_x8_t) x8;
-    };
-    float   __pad[8];
-} __lsp_aligned(LSP_DSP_BIQUAD_ALIGN) LSP_DSP_LIB_TYPE(biquad_t);
-
 #pragma pack(pop)
 
 LSP_DSP_LIB_END_NAMESPACE

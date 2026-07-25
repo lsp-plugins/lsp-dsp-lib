@@ -26,6 +26,8 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_IMPL */
 
+#include <private/dsp/arch/x86/sse/filters/common.h>
+
 namespace lsp
 {
     namespace sse
@@ -177,12 +179,6 @@ namespace lsp
             );
         }
 
-        IF_ARCH_X86(
-            static const uint32_t dyn_biquad_const[] __lsp_aligned16 =
-            {
-                0xffffffff, 0, 0, 0
-            };
-        );
 
         void dyn_biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f)
         {
@@ -351,7 +347,7 @@ namespace lsp
                   [f] "+r" (f), [mask] "=&r"(mask),
                   [count] X86_PGREG (count)
                 : [d] "r" (d),
-                  [X_MASK] "m" (dyn_biquad_const),
+                  [X_MASK] "m" (biquad_mask_const),
                   [MASK] "m" (MASK)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
@@ -380,13 +376,6 @@ namespace lsp
                 __ASM_EMIT("mov         %[dst], %[X_D]")
                 __ASM_EMIT("mov         %[count], %[X_COUNT]")
 
-                // Initialize mask
-                // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
-                __ASM_EMIT("mov         $1, %[mask]")
-                __ASM_EMIT("movaps      %[X_MASK], %%xmm0")
-                __ASM_EMIT("xorps       %%xmm1, %%xmm1")
-                __ASM_EMIT("movaps      %%xmm0, %[MASK]")
-
                 // Load delay buffer
                 __ASM_EMIT32("mov       %[d], %[f]")
                 __ASM_EMIT32("movups    0x00(%[f]), %%xmm6")                        // xmm6     = d0
@@ -394,6 +383,13 @@ namespace lsp
                 __ASM_EMIT32("mov       %[X_F], %[f]")
                 __ASM_EMIT64("movups    0x00(%[d]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT64("movups    0x20(%[d]), %%xmm7")                        // xmm7     = d1
+
+                // Initialize mask
+                // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
+                __ASM_EMIT("mov         $1, %[mask]")
+                __ASM_EMIT("movaps      %[X_MASK], %%xmm0")
+                __ASM_EMIT("xorps       %%xmm1, %%xmm1")
+                __ASM_EMIT("movaps      %%xmm0, %[MASK]")
 
                 // Process first 3 steps
                 __ASM_EMIT(".align 16")
@@ -539,19 +535,19 @@ namespace lsp
                 __ASM_EMIT("mov         %[X_COUNT], %[count]")
                 __ASM_EMIT("mov         %[dst], %[src]")                            // Chaining filter groups
 
-                // Initialize mask
-                // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
-                __ASM_EMIT("mov         $1, %[mask]")
-                __ASM_EMIT("movaps      %[X_MASK], %%xmm0")
-                __ASM_EMIT("xorps       %%xmm1, %%xmm1")
-                __ASM_EMIT("movaps      %%xmm0, %[MASK]")
-
                 // Load delay buffer
                 __ASM_EMIT32("movups    0x10(%[f]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT32("movups    0x30(%[f]), %%xmm7")                        // xmm7     = d1
                 __ASM_EMIT64("movups    0x10(%[d]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT64("movups    0x30(%[d]), %%xmm7")                        // xmm7     = d1
                 __ASM_EMIT("mov         %[X_F], %[f]")
+
+                // Initialize mask
+                // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
+                __ASM_EMIT("mov         $1, %[mask]")
+                __ASM_EMIT("movaps      %[X_MASK], %%xmm0")
+                __ASM_EMIT("xorps       %%xmm1, %%xmm1")
+                __ASM_EMIT("movaps      %%xmm0, %[MASK]")
 
                 // Process first 3 steps
                 __ASM_EMIT(".align 16")
@@ -697,7 +693,7 @@ namespace lsp
                 : [dst] "+r" (dst), [src] "+r" (src),
                   [mask] "=&r" (mask), [count] "+r" (count), [f] "+r" (f)
                 : [d] X86_GREG (d),
-                  [X_MASK] "m" (dyn_biquad_const),
+                  [X_MASK] "m" (biquad_mask_const),
                   [MASK] "m" (MASK),
                   [X_F] "m" (X_F),
                   [X_D] "m" (X_D),
