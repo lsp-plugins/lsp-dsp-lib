@@ -243,8 +243,8 @@
 //
 //    UTEST_MAIN
 //    {
-//        #define CALL(func, count) \
-//            call(#func, func, count)
+        #define CALL(func, count) \
+            call(#func, func, count)
 //
 //        // PART 1, overall check
 //        CALL(generic::biquad_process_x1, 1);
@@ -276,9 +276,9 @@
 //        IF_ARCH_ARM(CALL(neon_d32::biquad_process_x8, 8));
 //        IF_ARCH_AARCH64(CALL(asimd::biquad_process_x8, 8));
 //
-//        #undef CALL
-//        #define CALL(generic, func) \
-//            call(#func, &bq, generic, func)
+        #undef CALL
+        #define CALL(generic, func) \
+            call(#func, &bq, generic, func)
 //
 //        // PART 2
 //        dsp::biquad_t bq __lsp_aligned64;
