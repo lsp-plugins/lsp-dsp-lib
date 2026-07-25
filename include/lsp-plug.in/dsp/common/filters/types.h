@@ -192,7 +192,7 @@
 #define LSP_DSP_BIQUAD_XN_OFF           0x40
 #define LSP_DSP_BIQUAD_XN_SOFF          "0x40"
 #define LSP_DSP_BIQUAD_ALIGN            0x40
-#define LSP_DSP_BIQUAD_D_ITEMS          16
+#define LSP_DSP_BIQUAD_D_ITEMS          32
 
 LSP_DSP_LIB_BEGIN_NAMESPACE
 
@@ -261,6 +261,18 @@ typedef struct LSP_DSP_LIB_TYPE(biquad_x8_t)
 } LSP_DSP_LIB_TYPE(biquad_x8_t);
 
 /**
+ * Biquad filter bank for 16 digital biquad filters
+ */
+typedef struct LSP_DSP_LIB_TYPE(biquad_x16_t)
+{
+    float   b0[16];
+    float   b1[16];
+    float   b2[16];
+    float   a1[16];
+    float   a2[16];
+} LSP_DSP_LIB_TYPE(biquad_x16_t);
+
+/**
  * This is main filter structure with memory elements
  * It should be aligned at least to 16-byte boundary due to
  * alignment restrictions of some different hardware architectures
@@ -275,8 +287,8 @@ typedef struct LSP_DSP_LIB_TYPE(biquad_t)
         LSP_DSP_LIB_TYPE(biquad_x2_t) x2;
         LSP_DSP_LIB_TYPE(biquad_x4_t) x4;
         LSP_DSP_LIB_TYPE(biquad_x8_t) x8;
+        LSP_DSP_LIB_TYPE(biquad_x16_t) x16;
     };
-    float   __pad[8];
 } __lsp_aligned(LSP_DSP_BIQUAD_ALIGN) LSP_DSP_LIB_TYPE(biquad_t);
 
 #pragma pack(pop)

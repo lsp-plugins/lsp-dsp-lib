@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -236,7 +236,7 @@ namespace lsp
 
         void biquad_process_x8(float *dst, const float *src, size_t count, biquad_t *f)
         {
-            // This code already works badly instead of biquad_process_x4
+            // This code already works worse than biquad_process_x4
             if (count <= 0)
                 return;
 
@@ -388,7 +388,163 @@ namespace lsp
                 d          += 4;
             }
         }
-    }
-}
+
+        void biquad_process_x16(float *dst, const float *src, size_t count, biquad_t *f)
+        {
+            // This code already works worse than biquad_process_x4
+            if (count <= 0)
+                return;
+
+            float s[4], s2[4], p1[4], p2[4];
+            s[0]            = 0.0f;
+            s[1]            = 0.0f;
+            s[2]            = 0.0f;
+            s[3]            = 0.0f;
+            s2[0]           = 0.0f;
+            s2[1]           = 0.0f;
+            s2[2]           = 0.0f;
+            s2[3]           = 0.0f;
+
+            const float *sp = src;
+            float *d        = f->d;
+
+            // Calculate as four passes of x4 filters
+            for (size_t n=0; n <= 4; n += 4)
+            {
+                // two x4 filters are in parallel, shift by 4 floats stride
+                biquad_x16_t * const bq = reinterpret_cast<biquad_x16_t *>(&f->x16.b0[n]);
+                size_t mask             = 1;
+                size_t i                = 0;
+                float *dp               = dst;
+
+                // Start filters, mask enables the specific filter
+                do
+                {
+                    // Push sample
+                    s[0]        = *(sp++);
+
+                    // Calculate filters by mask and shift buffers
+                    s2[0]       = bq->b0[0]*s[0] + d[0];
+                    p1[0]       = bq->b1[0]*s[0] + bq->a1[0]*s2[0];
+                    p2[0]       = bq->b2[0]*s[0] + bq->a2[0]*s2[0];
+                    d[0]        = d[8]   + p1[0];
+                    d[8]        = p2[0];
+
+                    if (mask & 0x2)
+                    {
+                        s2[1]       = bq->b0[1]*s[1] + d[1];
+                        p1[1]       = bq->b1[1]*s[1] + bq->a1[1]*s2[1];
+                        p2[1]       = bq->b2[1]*s[1] + bq->a2[1]*s2[1];
+                        d[1]        = d[9]   + p1[1];
+                        d[9]        = p2[1];
+                    }
+                    if (mask & 0x4)
+                    {
+                        s2[2]       = bq->b0[2]*s[2] + d[2];
+                        p1[2]       = bq->b1[2]*s[2] + bq->a1[2]*s2[2];
+                        p2[2]       = bq->b2[2]*s[2] + bq->a2[2]*s2[2];
+                        d[2]        = d[10]  + p1[2];
+                        d[10]       = p2[2];
+                    }
+
+                    // Shift buffer
+                    s[3]        = s2[2];
+                    s[2]        = s2[1];
+                    s[1]        = s2[0];
+
+                    // Update mask
+                    if ((++i) >= count)
+                        break;
+                    mask        = (mask << 1) | 1;
+                } while (mask != 0x0f);
+
+                // Process all filters simultaneously
+                for ( ; i < count; ++i)
+                {
+                    // Push sample
+                    s[0]        = *(sp++);
+
+                    // Calculate filters by mask and shift buffers
+                    s2[0]       = bq->b0[0]*s[0] + d[0];
+                    s2[1]       = bq->b0[1]*s[1] + d[1];
+                    s2[2]       = bq->b0[2]*s[2] + d[2];
+                    s2[3]       = bq->b0[3]*s[3] + d[3];
+
+                    p1[0]       = bq->b1[0]*s[0] + bq->a1[0]*s2[0];
+                    p1[1]       = bq->b1[1]*s[1] + bq->a1[1]*s2[1];
+                    p1[2]       = bq->b1[2]*s[2] + bq->a1[2]*s2[2];
+                    p1[3]       = bq->b1[3]*s[3] + bq->a1[3]*s2[3];
+
+                    p2[0]       = bq->b2[0]*s[0] + bq->a2[0]*s2[0];
+                    p2[1]       = bq->b2[1]*s[1] + bq->a2[1]*s2[1];
+                    p2[2]       = bq->b2[2]*s[2] + bq->a2[2]*s2[2];
+                    p2[3]       = bq->b2[3]*s[3] + bq->a2[3]*s2[3];
+
+                    d[0]        = d[8]   + p1[0];
+                    d[1]        = d[9]   + p1[1];
+                    d[2]        = d[10]  + p1[2];
+                    d[3]        = d[11]  + p1[3];
+
+                    d[8]        = p2[0];
+                    d[9]        = p2[1];
+                    d[10]       = p2[2];
+                    d[11]       = p2[3];
+
+                    // Shift buffer
+                    *(dp++)     = s2[3];
+                    s[3]        = s2[2];
+                    s[2]        = s2[1];
+                    s[1]        = s2[0];
+                }
+
+                // Finish processing
+                mask      <<= 1;
+                do
+                {
+                    // Calculate filters by mask and shift buffers
+                    if (mask & 0x2)
+                    {
+                        s2[1]       = bq->b0[1]*s[1] + d[1];
+                        p1[1]       = bq->b1[1]*s[1] + bq->a1[1]*s2[1];
+                        p2[1]       = bq->b2[1]*s[1] + bq->a2[1]*s2[1];
+                        d[1]        = d[9]   + p1[1];
+                        d[9]        = p2[1];
+                    }
+                    if (mask & 0x4)
+                    {
+                        s2[2]       = bq->b0[2]*s[2] + d[2];
+                        p1[2]       = bq->b1[2]*s[2] + bq->a1[2]*s2[2];
+                        p2[2]       = bq->b2[2]*s[2] + bq->a2[2]*s2[2];
+                        d[2]        = d[10]  + p1[2];
+                        d[10]       = p2[2];
+                    }
+                    if (mask & 0x08)
+                    {
+                        s2[3]       = bq->b0[3]*s[3] + d[3];
+                        p1[3]       = bq->b1[3]*s[3] + bq->a1[3]*s2[3];
+                        p2[3]       = bq->b2[3]*s[3] + bq->a2[3]*s2[3];
+                        d[3]        = d[11]  + p1[3];
+                        d[11]       = p2[3];
+
+                        *(dp++)     = s2[3];
+                    }
+
+                    // Shift buffer
+                    s[3]        = s2[2];
+                    s[2]        = s2[1];
+                    s[1]        = s2[0];
+
+                    // Update mask
+                    mask      <<= 1;
+                } while (mask & 0x0f);
+
+                // Now all data is in the destination buffer
+                sp          = dst;
+                d          += 4;
+            }
+        }
+
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_FILTERS_STATIC_H_ */

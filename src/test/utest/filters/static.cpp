@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -37,6 +37,7 @@ namespace lsp
         void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f);
         void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f);
         void biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+        void biquad_process_x16(float *dst, const float *src, size_t count, dsp::biquad_t *f);
     }
 
     IF_ARCH_X86(
@@ -46,11 +47,13 @@ namespace lsp
             void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f);
             void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f);
             void biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x16(float *dst, const float *src, size_t count, dsp::biquad_t *f);
         }
 
         namespace sse3
         {
             void x64_biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void x64_biquad_process_x16(float *dst, const float *src, size_t count, dsp::biquad_t *f);
         }
 
         namespace avx
@@ -66,6 +69,8 @@ namespace lsp
 
             void x64_biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f);
             void biquad_process_x8_fma3(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void x64_biquad_process_x16(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x16_fma3(float *dst, const float *src, size_t count, dsp::biquad_t *f);
         }
     )
 
@@ -76,6 +81,7 @@ namespace lsp
             void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f);
             void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f);
             void biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x16(float *dst, const float *src, size_t count, dsp::biquad_t *f);
         }
     )
 
@@ -86,6 +92,7 @@ namespace lsp
             void biquad_process_x2(float *dst, const float *src, size_t count, dsp::biquad_t *f);
             void biquad_process_x4(float *dst, const float *src, size_t count, dsp::biquad_t *f);
             void biquad_process_x8(float *dst, const float *src, size_t count, dsp::biquad_t *f);
+            void biquad_process_x16(float *dst, const float *src, size_t count, dsp::biquad_t *f);
         }
     )
 
@@ -358,7 +365,7 @@ UTEST_BEGIN("dsp.filters", static)
         IF_ARCH_AARCH64(CALL(generic::biquad_process_x4, asimd::biquad_process_x4));
 
         // Prepare simple 16 zero, 16 pole filter
-        dsp::biquad_x8_t *x8 = &bq.x8;
+        dsp::biquad_x8_t * const x8 = &bq.x8;
 
         x8->b0[0]   = 1.79906213f;
         x8->b0[1]   = 1.16191483f;
@@ -411,6 +418,101 @@ UTEST_BEGIN("dsp.filters", static)
         IF_ARCH_X86(CALL(generic::biquad_process_x8, avx::biquad_process_x8_fma3));
         IF_ARCH_ARM(CALL(generic::biquad_process_x8, neon_d32::biquad_process_x8));
         IF_ARCH_AARCH64(CALL(generic::biquad_process_x8, asimd::biquad_process_x8));
+
+        // Prepare simple 32 zero, 32 pole filter
+//        dsp::biquad_x8_t * const x16 = &bq.x16;
+//
+//        x16->b0[0]  = 1.79906213f;
+//        x16->b0[1]  = 1.16191483f;
+//        x16->b0[2]  = 1.13150513f;
+//        x16->b0[3]  = 1.11161804f;
+//        x16->b0[4]  = 1.79906213f;
+//        x16->b0[5]  = 1.16191483f;
+//        x16->b0[6]  = 1.13150513f;
+//        x16->b0[7]  = 1.11161804f;
+//        x16->b0[8]  = 1.79906213f;
+//        x16->b0[9]  = 1.16191483f;
+//        x16->b0[10] = 1.13150513f;
+//        x16->b0[11] = 1.11161804f;
+//        x16->b0[12] = 1.79906213f;
+//        x16->b0[13] = 1.16191483f;
+//        x16->b0[14] = 1.13150513f;
+//        x16->b0[15] = 1.11161804f;
+//
+//        x16->b1[0]  = -3.38381839f;
+//        x16->b1[1]  = -2.20469999f;
+//        x16->b1[2]  = -2.18261695f;
+//        x16->b1[3]  = -2.19184852f;
+//        x16->b1[4]  = -3.38381839f;
+//        x16->b1[5]  = -2.20469999f;
+//        x16->b1[6]  = -2.18261695f;
+//        x16->b1[7]  = -2.19184852f;
+//        x16->b1[8]  = -3.38381839f;
+//        x16->b1[9]  = -2.20469999f;
+//        x16->b1[10] = -2.18261695f;
+//        x16->b1[11] = -2.19184852f;
+//        x16->b1[12] = -3.38381839f;
+//        x16->b1[13] = -2.20469999f;
+//        x16->b1[14] = -2.18261695f;
+//        x16->b1[15] = -2.19184852f;
+//
+//        x16->b2[0]  = 1.59139514f;
+//        x16->b2[1]  = 1.04720736f;
+//        x16->b2[2]  = 1.05562544f;
+//        x16->b2[3]  = 1.08485937f;
+//        x16->b2[4]  = 1.59139514f;
+//        x16->b2[5]  = 1.04720736f;
+//        x16->b2[6]  = 1.05562544f;
+//        x16->b2[7]  = 1.08485937f;
+//        x16->b2[8]  = 1.59139514f;
+//        x16->b2[9]  = 1.04720736f;
+//        x16->b2[10] = 1.05562544f;
+//        x16->b2[11] = 1.08485937f;
+//        x16->b2[12] = 1.59139514f;
+//        x16->b2[13] = 1.04720736f;
+//        x16->b2[14] = 1.05562544f;
+//        x16->b2[15] = 1.08485937f;
+//
+//        x16->a1[0]  = 1.8580488f;
+//        x16->a1[1]  = 1.88010871f;
+//        x16->a1[2]  = 1.91898823f;
+//        x16->a1[3]  = 1.96808743f;
+//        x16->a1[4]  = 1.8580488f;
+//        x16->a1[5]  = 1.88010871f;
+//        x16->a1[6]  = 1.91898823f;
+//        x16->a1[7]  = 1.96808743f;
+//        x16->a1[8]  = 1.8580488f;
+//        x16->a1[9]  = 1.88010871f;
+//        x16->a1[10] = 1.91898823f;
+//        x16->a1[11] = 1.96808743f;
+//        x16->a1[12] = 1.8580488f;
+//        x16->a1[13] = 1.88010871f;
+//        x16->a1[14] = 1.91898823f;
+//        x16->a1[15] = 1.96808743f;
+//
+//        x16->a2[0]  = -0.863286555f;
+//        x16->a2[1]  = -0.88529253f;
+//        x16->a2[2]  = -0.924120247f;
+//        x16->a2[3]  = -0.97324127f;
+//        x16->a2[4]  = -0.863286555f;
+//        x16->a2[5]  = -0.88529253f;
+//        x16->a2[6]  = -0.924120247f;
+//        x16->a2[7]  = -0.97324127f;
+//        x16->a2[8]  = -0.863286555f;
+//        x16->a2[9]  = -0.88529253f;
+//        x16->a2[10] = -0.924120247f;
+//        x16->a2[11] = -0.97324127f;
+//        x16->a2[12] = -0.863286555f;
+//        x16->a2[13] = -0.88529253f;
+//        x16->a2[14] = -0.924120247f;
+//        x16->a2[15] = -0.97324127f;
+//
+//        IF_ARCH_X86(CALL(generic::biquad_process_x16, sse::biquad_process_x16));
+//        IF_ARCH_X86(CALL(generic::biquad_process_x16, sse3::x64_biquad_process_x16));
+//        IF_ARCH_X86(CALL(generic::biquad_process_x16, avx::x64_biquad_process_x16));
+//        IF_ARCH_X86(CALL(generic::biquad_process_x16, avx::biquad_process_x16_fma3));
+//        IF_ARCH_ARM(CALL(generic::biquad_process_x16, neon_d32::biquad_process_x16));
+//        IF_ARCH_AARCH64(CALL(generic::biquad_process_x16, asimd::biquad_process_x16));
     }
 
 UTEST_END

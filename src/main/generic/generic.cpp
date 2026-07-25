@@ -421,6 +421,7 @@ namespace lsp
             EXPORT1(biquad_process_x2);
             EXPORT1(biquad_process_x4);
             EXPORT1(biquad_process_x8);
+            EXPORT1(biquad_process_x16);
 
             EXPORT1(dyn_biquad_process_x1);
             EXPORT1(dyn_biquad_process_x2);
