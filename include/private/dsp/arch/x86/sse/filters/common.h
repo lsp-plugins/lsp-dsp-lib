@@ -43,14 +43,14 @@ namespace lsp
             /* Clobber: xmm4, xmm5 */ \
             __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            /* xmm2     = s */ \
             __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            /* xmm3     = s */ \
-            __ASM_EMIT("mulps       " A0 " + 0x000(%[f]), %%xmm1")              /* xmm1     = s*a0 */ \
-            __ASM_EMIT("mulps       " A1 " + 0x040(%[f]), %%xmm2")              /* xmm2     = s*a1 */ \
+            __ASM_EMIT("mulps       " A0 "(%[f]), %%xmm1")                      /* xmm1     = s*a0 */ \
+            __ASM_EMIT("mulps       " A1 "(%[f]), %%xmm2")                      /* xmm2     = s*a1 */ \
             __ASM_EMIT("addps       %%xmm6, %%xmm1")                            /* xmm1     = s2 = s*a0+d0 */ \
-            __ASM_EMIT("mulps       " A2 " + 0x080(%[f]), %%xmm3")              /* xmm3     = s*a2 */ \
+            __ASM_EMIT("mulps       " A2 "(%[f]), %%xmm3")                      /* xmm3     = s*a2 */ \
             __ASM_EMIT("movaps      %%xmm1, %%xmm4")                            /* xmm4     = s2 */ \
             __ASM_EMIT("movaps      %%xmm1, %%xmm5")                            /* xmm5     = s2 */ \
-            __ASM_EMIT("mulps       " B1 " + 0x0c0(%[f]), %%xmm4")              /* xmm4     = s2*b1 */ \
-            __ASM_EMIT("mulps       " B2 " + 0x100(%[f]), %%xmm5")              /* xmm5     = s2*b2 */ \
+            __ASM_EMIT("mulps       " B1 "(%[f]), %%xmm4")                      /* xmm4     = s2*b1 */ \
+            __ASM_EMIT("mulps       " B2 "(%[f]), %%xmm5")                      /* xmm5     = s2*b2 */ \
             __ASM_EMIT("addps       %%xmm4, %%xmm2")                            /* xmm2     = s*a1 + s2*b1 = p1 */ \
             __ASM_EMIT("addps       %%xmm5, %%xmm3")                            /* xmm3     = s*a2 + s2*b2 = p2 */
 

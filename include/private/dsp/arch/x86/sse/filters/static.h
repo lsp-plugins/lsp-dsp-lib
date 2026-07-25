@@ -208,10 +208,8 @@ namespace lsp
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 FILTER_X4_CORE
-
                 // Shift buffer
                 __ASM_EMIT("shufps      $0x90, %%xmm1, %%xmm1")                     // xmm1     = s2[0] s2[0] s2[1] s2[2]
-
                 // Update delay only by mask
                 FILTER_X4_PRE_MEMSYNC
 
@@ -337,10 +335,8 @@ namespace lsp
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 FILTER_X8P1_CORE
-
                 // Shift buffer
                 __ASM_EMIT("shufps      $0x90, %%xmm1, %%xmm1")                     // xmm1     = s2[0] s2[0] s2[1] s2[2]
-
                 // Update delay only by mask
                 FILTER_X4_PRE_MEMSYNC
 
@@ -436,10 +432,8 @@ namespace lsp
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 FILTER_X8P2_CORE
-
                 // Shift buffer
                 __ASM_EMIT("shufps      $0x90, %%xmm1, %%xmm1")                     // xmm1     = s2[0] s2[0] s2[1] s2[2]
-
                 // Update delay only by mask
                 FILTER_X4_PRE_MEMSYNC
 
@@ -568,10 +562,8 @@ namespace lsp
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 FILTER_X16P1_CORE
-
                 // Shift buffer
                 __ASM_EMIT("shufps      $0x90, %%xmm1, %%xmm1")                     // xmm1     = s2[0] s2[0] s2[1] s2[2]
-
                 // Update delay only by mask
                 FILTER_X4_PRE_MEMSYNC
 
@@ -667,10 +659,8 @@ namespace lsp
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 FILTER_X16P2_CORE
-
                 // Shift buffer
                 __ASM_EMIT("shufps      $0x90, %%xmm1, %%xmm1")                     // xmm1     = s2[0] s2[0] s2[1] s2[2]
-
                 // Update delay only by mask
                 FILTER_X4_PRE_MEMSYNC
 
@@ -766,10 +756,8 @@ namespace lsp
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 FILTER_X16P3_CORE
-
                 // Shift buffer
                 __ASM_EMIT("shufps      $0x90, %%xmm1, %%xmm1")                     // xmm1     = s2[0] s2[0] s2[1] s2[2]
-
                 // Update delay only by mask
                 FILTER_X4_PRE_MEMSYNC
 
@@ -865,10 +853,8 @@ namespace lsp
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 FILTER_X16P4_CORE
-
                 // Shift buffer
                 __ASM_EMIT("shufps      $0x90, %%xmm1, %%xmm1")                     // xmm1     = s2[0] s2[0] s2[1] s2[2]
-
                 // Update delay only by mask
                 FILTER_X4_PRE_MEMSYNC
 
