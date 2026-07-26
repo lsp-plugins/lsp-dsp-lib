@@ -309,7 +309,7 @@ namespace lsp
 
                 //---------------------------------------------------------------------
                 // Cycle 1
-                __ASM_EMIT("mov         %[f], %[X_F]")
+                __ASM_EMIT32("mov       %[f], %[X_F]")
                 __ASM_EMIT("mov         %[dst], %[X_D]")
                 __ASM_EMIT("mov         %[count], %[X_COUNT]")
 
@@ -414,9 +414,9 @@ namespace lsp
                 // Load delay buffer
                 __ASM_EMIT32("movups    0x10(%[f]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT32("movups    0x30(%[f]), %%xmm7")                        // xmm7     = d1
+                __ASM_EMIT32("mov       %[X_F], %[f]")
                 __ASM_EMIT64("movups    0x10(%[d]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT64("movups    0x30(%[d]), %%xmm7")                        // xmm7     = d1
-                __ASM_EMIT("mov         %[X_F], %[f]")
 
                 // Initialize mask
                 // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
@@ -536,7 +536,7 @@ namespace lsp
 
                 //---------------------------------------------------------------------
                 // Cycle 1
-                __ASM_EMIT("mov         %[f], %[X_F]")
+                __ASM_EMIT32("mov       %[f], %[X_F]")
                 __ASM_EMIT("mov         %[dst], %[X_D]")
                 __ASM_EMIT("mov         %[count], %[X_COUNT]")
 
@@ -641,9 +641,9 @@ namespace lsp
                 // Load delay buffer
                 __ASM_EMIT32("movups    0x10(%[f]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT32("movups    0x50(%[f]), %%xmm7")                        // xmm7     = d1
+                __ASM_EMIT32("mov       %[X_F], %[f]")
                 __ASM_EMIT64("movups    0x10(%[d]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT64("movups    0x50(%[d]), %%xmm7")                        // xmm7     = d1
-                __ASM_EMIT("mov         %[X_F], %[f]")
 
                 // Initialize mask
                 // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
@@ -738,9 +738,9 @@ namespace lsp
                 // Load delay buffer
                 __ASM_EMIT32("movups    0x20(%[f]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT32("movups    0x60(%[f]), %%xmm7")                        // xmm7     = d1
+                __ASM_EMIT32("mov       %[X_F], %[f]")
                 __ASM_EMIT64("movups    0x20(%[d]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT64("movups    0x60(%[d]), %%xmm7")                        // xmm7     = d1
-                __ASM_EMIT("mov         %[X_F], %[f]")
 
                 // Initialize mask
                 // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
@@ -835,9 +835,9 @@ namespace lsp
                 // Load delay buffer
                 __ASM_EMIT32("movups    0x30(%[f]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT32("movups    0x70(%[f]), %%xmm7")                        // xmm7     = d1
+                __ASM_EMIT32("mov       %[X_F], %[f]")
                 __ASM_EMIT64("movups    0x30(%[d]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT64("movups    0x70(%[d]), %%xmm7")                        // xmm7     = d1
-                __ASM_EMIT("mov         %[X_F], %[f]")
 
                 // Initialize mask
                 // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]

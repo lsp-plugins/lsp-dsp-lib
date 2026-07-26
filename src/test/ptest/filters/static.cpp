@@ -46,10 +46,6 @@ namespace lsp
             void biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
         }
 
-        namespace sse3
-        {
-            void x64_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
-        }
 //
 //        namespace avx
 //        {
@@ -65,6 +61,14 @@ namespace lsp
 //            void x64_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
 //            void biquad_process_x8_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
 //        }
+    )
+
+    IF_ARCH_X86_64(
+        namespace sse3
+        {
+            void x64_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+            void x64_biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
+        }
     )
 
 //    IF_ARCH_ARM(
@@ -303,7 +307,7 @@ PTEST_BEGIN("dsp.filters", static, 5, 1000)
 
         process_1x16("generic::biquad_process_x16 x1", out, in, generic::biquad_process_x16);
         IF_ARCH_X86(process_1x16("sse::biquad_process_x16 x1", out, in, sse::biquad_process_x16));
-//        IF_ARCH_X86(process_1x16("sse3::x64_biquad_process_x16 x2", out, in, sse3::x64_biquad_process_x16));
+        IF_ARCH_X86_64(process_1x16("sse3::x64_biquad_process_x16 x2", out, in, sse3::x64_biquad_process_x16));
 //        IF_ARCH_X86(process_1x16("avx::x64_biquad_process_x16 x2", out, in, avx::x64_biquad_process_x16));
 //        IF_ARCH_X86(process_1x16("avx::biquad_process_x16_fma3 x2", out, in, avx::biquad_process_x16_fma3));
 //        IF_ARCH_ARM(process_1x16("neon_d32::biquad_process_x16 x2", out, in, neon_d32::biquad_process_x16));

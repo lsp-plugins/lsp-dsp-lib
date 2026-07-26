@@ -45,16 +45,18 @@ namespace lsp
             void biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
         }
 
-        namespace sse3
-        {
-            void x64_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
-        }
-
 //        namespace avx
 //        {
 //            void biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_t *f);
 //            void biquad_process_x8_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_t *f);
 //        }
+    )
+
+    IF_ARCH_X86_64(
+        namespace sse3
+        {
+            void x64_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+        }
     )
 //
 //    IF_ARCH_ARM(
