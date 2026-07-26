@@ -37,22 +37,22 @@ namespace lsp
             };
         );
 
-        #define FILTER_X4_CORE_BASE(A0, A1, A2, B1, B2) \
+        #define FILTER_X4_CORE_BASE(B0, B1, B2, A1, A2) \
             /* In: xmm1 = s */ \
             /* Out: xmm1 = s2, xmm2 = p1, xmm3 = p2 */ \
             /* Clobber: xmm4, xmm5 */ \
             __ASM_EMIT("movaps      %%xmm1, %%xmm2")                            /* xmm2     = s */ \
             __ASM_EMIT("movaps      %%xmm1, %%xmm3")                            /* xmm3     = s */ \
-            __ASM_EMIT("mulps       " A0 "(%[f]), %%xmm1")                      /* xmm1     = s*a0 */ \
-            __ASM_EMIT("mulps       " A1 "(%[f]), %%xmm2")                      /* xmm2     = s*a1 */ \
-            __ASM_EMIT("addps       %%xmm6, %%xmm1")                            /* xmm1     = s2 = s*a0+d0 */ \
-            __ASM_EMIT("mulps       " A2 "(%[f]), %%xmm3")                      /* xmm3     = s*a2 */ \
+            __ASM_EMIT("mulps       " B0 "(%[f]), %%xmm1")                      /* xmm1     = s*b0 */ \
+            __ASM_EMIT("mulps       " B1 "(%[f]), %%xmm2")                      /* xmm2     = s*b1 */ \
+            __ASM_EMIT("addps       %%xmm6, %%xmm1")                            /* xmm1     = s2 = s*b0+d0 */ \
+            __ASM_EMIT("mulps       " B2 "(%[f]), %%xmm3")                      /* xmm3     = s*b2 */ \
             __ASM_EMIT("movaps      %%xmm1, %%xmm4")                            /* xmm4     = s2 */ \
             __ASM_EMIT("movaps      %%xmm1, %%xmm5")                            /* xmm5     = s2 */ \
-            __ASM_EMIT("mulps       " B1 "(%[f]), %%xmm4")                      /* xmm4     = s2*b1 */ \
-            __ASM_EMIT("mulps       " B2 "(%[f]), %%xmm5")                      /* xmm5     = s2*b2 */ \
-            __ASM_EMIT("addps       %%xmm4, %%xmm2")                            /* xmm2     = s*a1 + s2*b1 = p1 */ \
-            __ASM_EMIT("addps       %%xmm5, %%xmm3")                            /* xmm3     = s*a2 + s2*b2 = p2 */
+            __ASM_EMIT("mulps       " A1 "(%[f]), %%xmm4")                      /* xmm4     = s2*a1 */ \
+            __ASM_EMIT("mulps       " A2 "(%[f]), %%xmm5")                      /* xmm5     = s2*a2 */ \
+            __ASM_EMIT("addps       %%xmm4, %%xmm2")                            /* xmm2     = s*b1 + s2*a1 = p1 */ \
+            __ASM_EMIT("addps       %%xmm5, %%xmm3")                            /* xmm3     = s*b2 + s2*a2 = p2 */
 
         #define FILTER_X4_PRE_MEMSYNC \
             /* In:  xmm2 = p1, xmm3 = p2, xmm6 = d0, xmm7 = d1 */ \
