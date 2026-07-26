@@ -45,11 +45,10 @@ namespace lsp
             void biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
         }
 
-//        namespace avx
-//        {
-//            void biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_t *f);
-//            void biquad_process_x16_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_t *f);
-//        }
+        namespace avx
+        {
+            void biquad_process_x16_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
+        }
     )
 
     IF_ARCH_X86_64(
@@ -62,25 +61,25 @@ namespace lsp
 //    IF_ARCH_ARM(
 //        namespace neon_d32
 //        {
-//            void biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_t *f);
+//            void biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
 //        }
 //    )
 //
 //    IF_ARCH_AARCH64(
 //        namespace asimd
 //        {
-//            void biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_t *f);
+//            void biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
 //        }
 //    )
 
     typedef void (* biquad_process_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
 
     const dsp::biquad_x1_t filter = {
-        .b0     = 0.992303491f,
-        .b1     = -1.98460698f,
-        .b2     = 0.992303491f,
-        .a1     = 1.98398674f,
-        .a2     = -0.985227287f,
+        .b0     = 0.0963056013f,
+        .b1     = 0.0f,
+        .b2     = -0.0963056013f,
+        .a1     = 1.80482113f,
+        .a2     = -0.807388783f,
         .p0     = 0.0f,
         .p1     = 0.0f,
         .p2     = 0.0f,
@@ -206,8 +205,7 @@ UTEST_BEGIN("dsp.filters", biquad_x16)
         CALL(generic::biquad_process_x16);
         IF_ARCH_X86(CALL(sse::biquad_process_x16));
         IF_ARCH_X86_64(CALL(sse3::x64_biquad_process_x16));
-//        IF_ARCH_X86(CALL(avx::biquad_process_x16));
-//        IF_ARCH_X86(CALL(avx::biquad_process_x16_fma3));
+        IF_ARCH_X86(CALL(avx::biquad_process_x16_fma3));
 //        IF_ARCH_ARM(CALL(neon_d32::biquad_process_x16));
 //        IF_ARCH_AARCH64(CALL(asimd::biquad_process_x16));
 
@@ -216,99 +214,97 @@ UTEST_BEGIN("dsp.filters", biquad_x16)
         // PART 2
         // Prepare 16 zero, 16 pole filter
         dsp::biquad_x16_t x16 __lsp_aligned64;
+        x16.b0[0]  = 0.994689345f;
+        x16.b0[1]  = 0.0515707545f;
+        x16.b0[2]  = 0.996944368f;
+        x16.b0[3]  = 0.0782599151f;
+        x16.b0[4]  = 0.99859494f;
+        x16.b0[5]  = 0.121481627f;
+        x16.b0[6]  = 0.999593794f;
+        x16.b0[7]  = 0.1664754f;
+        x16.b0[8]  = 0.994689345f;
+        x16.b0[9]  = 0.0515707545f;
+        x16.b0[10] = 0.996944368f;
+        x16.b0[11] = 0.0782599151f;
+        x16.b0[12] = 0.99859494f;
+        x16.b0[13] = 0.121481627f;
+        x16.b0[14] = 0.999593794f;
+        x16.b0[15] = 0.1664754f;
 
-        x16.b0[0]    = 1.79906213f;
-        x16.b0[1]    = 1.16191483f;
-        x16.b0[2]    = 1.13150513f;
-        x16.b0[3]    = 1.11161804f;
-        x16.b0[4]    = 1.79906213f;
-        x16.b0[5]    = 1.16191483f;
-        x16.b0[6]    = 1.13150513f;
-        x16.b0[7]    = 1.11161804f;
-        x16.b0[8]    = 1.79906213f;
-        x16.b0[9]    = 1.16191483f;
-        x16.b0[10]   = 1.13150513f;
-        x16.b0[11]   = 1.11161804f;
-        x16.b0[12]   = 1.79906213f;
-        x16.b0[13]   = 1.16191483f;
-        x16.b0[14]   = 1.13150513f;
-        x16.b0[15]   = 1.11161804f;
+        x16.b1[0]  = -1.98937869f;
+        x16.b1[1]  = 0.103141509f;
+        x16.b1[2]  = -1.99388874f;
+        x16.b1[3]  = 0.15651983f;
+        x16.b1[4]  = -1.99718988f;
+        x16.b1[5]  = 0.242963254f;
+        x16.b1[6]  = -1.99918759f;
+        x16.b1[7]  = 0.332950801f;
+        x16.b1[8]  = -1.98937869f;
+        x16.b1[9]  = 0.103141509f;
+        x16.b1[10] = -1.99388874f;
+        x16.b1[11] = 0.15651983f;
+        x16.b1[12] = -1.99718988f;
+        x16.b1[13] = 0.242963254f;
+        x16.b1[14] = -1.99918759f;
+        x16.b1[15] = 0.332950801f;
 
-        x16.b1[0]    = -3.38381839f;
-        x16.b1[1]    = -2.20469999f;
-        x16.b1[2]    = -2.18261695f;
-        x16.b1[3]    = -2.19184852f;
-        x16.b1[4]    = -3.38381839f;
-        x16.b1[5]    = -2.20469999f;
-        x16.b1[6]    = -2.18261695f;
-        x16.b1[7]    = -2.19184852f;
-        x16.b1[8]    = -3.38381839f;
-        x16.b1[9]    = -2.20469999f;
-        x16.b1[10]   = -2.18261695f;
-        x16.b1[11]   = -2.19184852f;
-        x16.b1[12]   = -3.38381839f;
-        x16.b1[13]   = -2.20469999f;
-        x16.b1[14]   = -2.18261695f;
-        x16.b1[15]   = -2.19184852f;
+        x16.b2[0]  = 0.994689345f;
+        x16.b2[1]  = 0.0515707545f;
+        x16.b2[2]  = 0.996944368f;
+        x16.b2[3]  = 0.0782599151f;
+        x16.b2[4]  = 0.99859494f;
+        x16.b2[5]  = 0.121481627f;
+        x16.b2[6]  = 0.999593794f;
+        x16.b2[7]  = 0.1664754f;
+        x16.b2[8]  = 0.994689345f;
+        x16.b2[9]  = 0.0515707545f;
+        x16.b2[10] = 0.996944368f;
+        x16.b2[11] = 0.0782599151f;
+        x16.b2[12] = 0.99859494f;
+        x16.b2[13] = 0.121481627f;
+        x16.b2[14] = 0.999593794f;
+        x16.b2[15] = 0.1664754f;
 
-        x16.b2[0]    = 1.59139514f;
-        x16.b2[1]    = 1.04720736f;
-        x16.b2[2]    = 1.05562544f;
-        x16.b2[3]    = 1.08485937f;
-        x16.b2[4]    = 1.59139514f;
-        x16.b2[5]    = 1.04720736f;
-        x16.b2[6]    = 1.05562544f;
-        x16.b2[7]    = 1.08485937f;
-        x16.b2[8]    = 1.59139514f;
-        x16.b2[9]    = 1.04720736f;
-        x16.b2[10]   = 1.05562544f;
-        x16.b2[11]   = 1.08485937f;
-        x16.b2[12]   = 1.59139514f;
-        x16.b2[13]   = 1.04720736f;
-        x16.b2[14]   = 1.05562544f;
-        x16.b2[15]   = 1.08485937f;
+        x16.a1[0]  = 1.98936296f;
+        x16.a1[1]  = 1.12061095f;
+        x16.a1[2]  = 1.99387801f;
+        x16.a1[3]  = 1.10071564f;
+        x16.a1[4]  = 1.99718249f;
+        x16.a1[5]  = 1.09668112f;
+        x16.a1[6]  = 1.99918151f;
+        x16.a1[7]  = 1.16969597f;
+        x16.a1[8]  = 1.98936296f;
+        x16.a1[9]  = 1.12061095f;
+        x16.a1[10] = 1.99387801f;
+        x16.a1[11] = 1.10071564f;
+        x16.a1[12] = 1.99718249f;
+        x16.a1[13] = 1.09668112f;
+        x16.a1[14] = 1.99918151f;
+        x16.a1[15] = 1.16969597f;
 
-        x16.a1[0]    = 1.8580488f;
-        x16.a1[1]    = 1.88010871f;
-        x16.a1[2]    = 1.91898823f;
-        x16.a1[3]    = 1.96808743f;
-        x16.a1[4]    = 1.8580488f;
-        x16.a1[5]    = 1.88010871f;
-        x16.a1[6]    = 1.91898823f;
-        x16.a1[7]    = 1.96808743f;
-        x16.a1[8]    = 1.8580488f;
-        x16.a1[9]    = 1.88010871f;
-        x16.a1[10]   = 1.91898823f;
-        x16.a1[11]   = 1.96808743f;
-        x16.a1[12]   = 1.8580488f;
-        x16.a1[13]   = 1.88010871f;
-        x16.a1[14]   = 1.91898823f;
-        x16.a1[15]   = 1.96808743f;
-
-        x16.a2[0]    = -0.863286555f;
-        x16.a2[1]    = -0.88529253f;
-        x16.a2[2]    = -0.924120247f;
-        x16.a2[3]    = -0.97324127f;
-        x16.a2[4]    = -0.863286555f;
-        x16.a2[5]    = -0.88529253f;
-        x16.a2[6]    = -0.924120247f;
-        x16.a2[7]    = -0.97324127f;
-        x16.a2[8]    = -0.863286555f;
-        x16.a2[9]    = -0.88529253f;
-        x16.a2[10]   = -0.924120247f;
-        x16.a2[11]   = -0.97324127f;
-        x16.a2[12]   = -0.863286555f;
-        x16.a2[13]   = -0.88529253f;
-        x16.a2[14]   = -0.924120247f;
-        x16.a2[15]   = -0.97324127f;
+        x16.a2[0]  = -0.989394486f;
+        x16.a2[1]  = -0.326893955f;
+        x16.a2[2]  = -0.993899345f;
+        x16.a2[3]  = -0.413755238f;
+        x16.a2[4]  = -0.997197211f;
+        x16.a2[5]  = -0.582607687f;
+        x16.a2[6]  = -0.999193609f;
+        x16.a2[7]  = -0.835597515f;
+        x16.a2[8]  = -0.989394486f;
+        x16.a2[9]  = -0.326893955f;
+        x16.a2[10] = -0.993899345f;
+        x16.a2[11] = -0.413755238f;
+        x16.a2[12] = -0.997197211f;
+        x16.a2[13] = -0.582607687f;
+        x16.a2[14] = -0.999193609f;
+        x16.a2[15] = -0.835597515f;
 
         #define CALL(func) \
             call(#func, &x16, generic::biquad_process_x16, func)
 
         IF_ARCH_X86(CALL(sse::biquad_process_x16));
         IF_ARCH_X86_64(CALL(sse3::x64_biquad_process_x16));
-//        IF_ARCH_X86(CALL(avx::biquad_process_x16));
-//        IF_ARCH_X86(CALL(avx::biquad_process_x16_fma3));
+        IF_ARCH_X86(CALL(avx::biquad_process_x16_fma3));
 //        IF_ARCH_ARM(CALL(neon_d32::biquad_process_x16));
 //        IF_ARCH_AARCH64(CALL(asimd::biquad_process_x16));
 

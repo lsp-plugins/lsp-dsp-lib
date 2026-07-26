@@ -42,24 +42,24 @@ namespace lsp
             void biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
         }
 
-//        namespace avx
-//        {
-//            void biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_t *f);
-//            void biquad_process_x1_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_t *f);
-//        }
+        namespace avx
+        {
+            void biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
+            void biquad_process_x1_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
+        }
     )
 //
 //    IF_ARCH_ARM(
 //        namespace neon_d32
 //        {
-//            void biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_t *f);
+//            void biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
 //        }
 //    )
 //
 //    IF_ARCH_AARCH64(
 //        namespace asimd
 //        {
-//            void biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_t *f);
+//            void biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
 //        }
 //    )
 
@@ -182,8 +182,8 @@ UTEST_BEGIN("dsp.filters", biquad_x1)
         // PART 1, overall check correctness
         CALL(generic::biquad_process_x1);
         IF_ARCH_X86(CALL(sse::biquad_process_x1));
-//        IF_ARCH_X86(CALL(avx::biquad_process_x1));
-//        IF_ARCH_X86(CALL(avx::biquad_process_x1_fma3));
+        IF_ARCH_X86(CALL(avx::biquad_process_x1));
+        IF_ARCH_X86(CALL(avx::biquad_process_x1_fma3));
 //        IF_ARCH_ARM(CALL(neon_d32::biquad_process_x1));
 //        IF_ARCH_AARCH64(CALL(asimd::biquad_process_x1));
 
@@ -206,8 +206,8 @@ UTEST_BEGIN("dsp.filters", biquad_x1)
             call(#func, &x1, generic::biquad_process_x1, func)
 
         IF_ARCH_X86(CALL(sse::biquad_process_x1));
-//        IF_ARCH_X86(CALL(avx::biquad_process_x1));
-//        IF_ARCH_X86(CALL(avx::biquad_process_x1_fma3));
+        IF_ARCH_X86(CALL(avx::biquad_process_x1));
+        IF_ARCH_X86(CALL(avx::biquad_process_x1_fma3));
 //        IF_ARCH_ARM(CALL(neon_d32::biquad_process_x1));
 //        IF_ARCH_AARCH64(CALL(asimd::biquad_process_x1));
 

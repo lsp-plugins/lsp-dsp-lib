@@ -330,10 +330,10 @@
                 CEXPORT1(favx, pcomplex_r2c_rdiv2);
                 CEXPORT1(favx, pcomplex_corr);
 
-//                CEXPORT1(favx, biquad_process_x1);
-//                CEXPORT1(favx, biquad_process_x2);
-//                CEXPORT1(favx, biquad_process_x4);
-//                EXPORT2_X64(biquad_process_x8, x64_biquad_process_x8);
+                CEXPORT1(favx, biquad_process_x1);
+                CEXPORT1(favx, biquad_process_x2);
+                CEXPORT1(favx, biquad_process_x4);
+                EXPORT2_X64(biquad_process_x8, x64_biquad_process_x8);
 
                 CEXPORT1(favx, dyn_biquad_process_x1);
                 CEXPORT1(favx, dyn_biquad_process_x2);
@@ -617,10 +617,11 @@
 
                     CEXPORT2(favx, axis_apply_lin1, axis_apply_lin1_fma3);
 
-//                    CEXPORT2(favx, biquad_process_x1, biquad_process_x1_fma3);
-//                    CEXPORT2(favx, biquad_process_x2, biquad_process_x2_fma3);
-//                    CEXPORT2(favx, biquad_process_x4, biquad_process_x4_fma3);
-//                    CEXPORT2(ffma, biquad_process_x8, biquad_process_x8_fma3);
+                    CEXPORT2(favx, biquad_process_x1, biquad_process_x1_fma3);
+                    CEXPORT2(favx, biquad_process_x2, biquad_process_x2_fma3);
+                    CEXPORT2(favx, biquad_process_x4, biquad_process_x4_fma3);
+                    CEXPORT2(ffma, biquad_process_x8, biquad_process_x8_fma3);
+                    CEXPORT2(ffma, biquad_process_x16, biquad_process_x16_fma3);
 
                     CEXPORT2(ffma, dyn_biquad_process_x1, dyn_biquad_process_x1_fma3);
                     CEXPORT2(favx, dyn_biquad_process_x2, dyn_biquad_process_x2_fma3);

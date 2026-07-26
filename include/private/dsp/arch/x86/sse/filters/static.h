@@ -77,10 +77,10 @@ namespace lsp
                 // Exit label
                 __ASM_EMIT("2:")
 
-                : [off] "=&r"(off), [f] "+r" (f)
+                : [off] "=&r"(off)
                 : [dst] "r" (dst), [src] "r" (src),
-                  [count] __ASM_ARG_RO (count),
-                  [d] "r" (d)
+                  [count] X86_GREG (count),
+                  [f] "r" (f), [d] "r" (d)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm6", "%xmm7"
@@ -168,8 +168,9 @@ namespace lsp
                 // Exit label
                 __ASM_EMIT("4:")
 
-                : [dst] "+r" (dst), [src] "+r" (src), [f] "+r" (f)
-                : [count] "r" (count), [d] "r" (d)
+                : [dst] "+r" (dst), [src] "+r" (src)
+                : [count] "r" (count),
+                  [f] "r" (f), [d] "r" (d)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -281,9 +282,9 @@ namespace lsp
                 __ASM_EMIT("8:")
 
                 : [dst] "+r" (dst), [src] "+r" (src),
-                  [f] "+r" (f), [mask] "=&r"(mask),
+                  [mask] "=&r"(mask),
                   [count] X86_PGREG (count)
-                : [d] "r" (d),
+                : [f] "r" (f), [d] "r" (d),
                   [X_MASK] "m" (biquad_mask_const),
                   [MASK] "m" (MASK)
                 : "cc", "memory",
@@ -506,8 +507,8 @@ namespace lsp
                 __ASM_EMIT("10:")
 
                 : [dst] "+r" (dst), [src] "+r" (src),
-                  [mask] "=&r" (mask), [count] "+r" (count), [f] "+r" (f)
-                : [d] X86_GREG (d),
+                  [mask] "=&r" (mask), [count] "+r" (count)
+                : [f] "r" (f), [d] X86_GREG (d),
                   [X_MASK] "m" (biquad_mask_const),
                   [MASK] "m" (MASK),
                   [X_F] "m" (X_F),
@@ -927,8 +928,8 @@ namespace lsp
                 __ASM_EMIT("10:")
 
                 : [dst] "+r" (dst), [src] "+r" (src),
-                  [mask] "=&r" (mask), [count] "+r" (count), [f] "+r" (f)
-                : [d] X86_GREG (d),
+                  [mask] "=&r" (mask), [count] "+r" (count)
+                : [f] "r" (f), [d] X86_GREG (d),
                   [X_MASK] "m" (biquad_mask_const),
                   [MASK] "m" (MASK),
                   [X_F] "m" (X_F),
