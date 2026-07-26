@@ -192,7 +192,6 @@ UTEST_BEGIN("dsp.filters", dynamic)
                     f2[i].b2[j] = bq_normal.b2;
                     f2[i].a1[j] = bq_normal.a1;
                     f2[i].a2[j] = bq_normal.a2;
-                    f2[i].p[j]  = 0.0f;
                 }
             }
 

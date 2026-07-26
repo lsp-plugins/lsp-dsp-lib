@@ -233,7 +233,6 @@ typedef struct LSP_DSP_LIB_TYPE(biquad_x2_t)
     float   b2[2];
     float   a1[2];
     float   a2[2];
-    float   p[2];           // padding (not used), SHOULD be zero
 } LSP_DSP_LIB_TYPE(biquad_x2_t);
 
 /**

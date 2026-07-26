@@ -117,9 +117,6 @@ namespace lsp
                 bf->a2[0]        = (B[1] - B[2] - B[0]) * N[0]; // Sign negated
                 bf->a2[1]        = (B[5] - B[6] - B[4]) * N[1]; // Sign negated
 
-                bf->p[0]        = 0.0f;
-                bf->p[1]        = 0.0f;
-
                 // Increment pointers
                 bc             += 2;
                 bf              ++;
@@ -501,9 +498,6 @@ namespace lsp
                 bf->a1[1]   = -bc[1].b[1] * N2[1]; // Sign negated
                 bf->a2[0]   = -bc[0].b[2] * N2[0]; // Sign negated
                 bf->a2[1]   = -bc[1].b[2] * N2[1]; // Sign negated
-
-                bf->p[0]    = 0.0f;
-                bf->p[1]    = 0.0f;
 
                 // Move to next filter
                 bf          ++;

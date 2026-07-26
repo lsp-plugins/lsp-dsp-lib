@@ -163,7 +163,6 @@ PTEST_BEGIN("dsp.filters", static, 5, 1000)
             x2.b2[i]        = bq_normal.b2;
             x2.a1[i]        = bq_normal.a1;
             x2.a2[i]        = bq_normal.a2;
-            x2.p[i]         = 0.0f;
         }
         dsp::fill_zero(d, d_buffer_size);
 
