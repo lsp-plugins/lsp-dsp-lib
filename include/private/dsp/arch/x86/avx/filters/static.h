@@ -108,10 +108,10 @@ namespace lsp
                 __ASM_EMIT("vfmadd132ss         0x00(%[f]), %%xmm6, %%xmm0")                        // xmm0 = s' = d0 + b0*s
                 __ASM_EMIT("vfmadd231ss         0x0c(%[f]), %%xmm0, %%xmm2")                        // xmm2 = b1*s + a1*s'
                 __ASM_EMIT("vmovss              %%xmm0, (%[dst], %[off], 4)")                       // *dst = s'
-                __ASM_EMIT("vfmadd231ss         0x10(%[f]), %%xmm0, %%xmm7")                        // xmm7 = d1' = b2*s + a2*s'
                 __ASM_EMIT("add                 $1, %[off]")
-                __ASM_EMIT("vaddss              %%xmm5, %%xmm2, %%xmm6")                            // xmm6 = d0' = d1 + b1*s + a1*s'
+                __ASM_EMIT("vfmadd231ss         0x10(%[f]), %%xmm0, %%xmm7")                        // xmm7 = d1' = b2*s + a2*s'
                 __ASM_EMIT("cmp                 %[count], %[off]")
+                __ASM_EMIT("vaddss              %%xmm5, %%xmm2, %%xmm6")                            // xmm6 = d0' = d1 + b1*s + a1*s'
                 __ASM_EMIT("jb                  1b")
 
                 // Store the updated buffer state
@@ -701,10 +701,10 @@ namespace lsp
                 __ASM_EMIT("vblendps            $0x01, %%ymm0, %%ymm1, %%ymm1")                     // ymm1     = s
                 FILTER_X8_FMA3
                 __ASM_EMIT("vaddps              %%ymm7, %%ymm2, %%ymm6")                            // ymm6     = p1 + d1
-                __ASM_EMIT("vmovaps             %%ymm3, %%ymm7")                                    // ymm7     = s*b2 + s2*a2 = p2
 
                 // Rotate buffer, AVX2 has better option for it
                 __ASM_EMIT("vpermilps           $0x93, %%ymm1, %%ymm1")                             // ymm1     = s2[3] s2[0] s2[1] s2[2] s2[7] s2[4] s2[5] s2[6]
+                __ASM_EMIT("vmovaps             %%ymm3, %%ymm7")                                    // ymm7     = s*b2 + s2*a2 = p2
                 __ASM_EMIT("vperm2f128          $0x01, %%ymm1, %%ymm1, %%ymm0")                     // ymm0     = s2[7] s2[4] s2[5] s2[6] s2[3] s2[0] s2[1] s2[2]
                 __ASM_EMIT("vblendps            $0x11, %%ymm0, %%ymm1, %%ymm1")                     // ymm1     = s2[7] s2[0] s2[1] s2[2] s2[3] s2[4] s2[5] s2[6]
                 __ASM_EMIT("vmovss              %%xmm1, (%[dst])")                                  // *dst     = s2[7]
@@ -836,10 +836,10 @@ namespace lsp
                 __ASM_EMIT("vblendps            $0x01, %%ymm0, %%ymm1, %%ymm1")                     // ymm1     = s
                 FILTER_X16P1_FMA3
                 __ASM_EMIT("vaddps              %%ymm7, %%ymm2, %%ymm6")                            // ymm6     = p1 + d1
-                __ASM_EMIT("vmovaps             %%ymm3, %%ymm7")                                    // ymm7     = s*b2 + s2*a2 = p2
 
                 // Rotate buffer, AVX2 has better option for it
                 __ASM_EMIT("vpermilps           $0x93, %%ymm1, %%ymm1")                             // ymm1     = s2[3] s2[0] s2[1] s2[2] s2[7] s2[4] s2[5] s2[6]
+                __ASM_EMIT("vmovaps             %%ymm3, %%ymm7")                                    // ymm7     = s*b2 + s2*a2 = p2
                 __ASM_EMIT("vperm2f128          $0x01, %%ymm1, %%ymm1, %%ymm0")                     // ymm0     = s2[7] s2[4] s2[5] s2[6] s2[3] s2[0] s2[1] s2[2]
                 __ASM_EMIT("vblendps            $0x11, %%ymm0, %%ymm1, %%ymm1")                     // ymm1     = s2[7] s2[0] s2[1] s2[2] s2[3] s2[4] s2[5] s2[6]
                 __ASM_EMIT("vmovss              %%xmm1, (%[dst])")                                  // *dst     = s2[7]
@@ -946,10 +946,10 @@ namespace lsp
                 __ASM_EMIT("vblendps            $0x01, %%ymm0, %%ymm1, %%ymm1")                     // ymm1     = s
                 FILTER_X16P2_FMA3
                 __ASM_EMIT("vaddps              %%ymm7, %%ymm2, %%ymm6")                            // ymm6     = p1 + d1
-                __ASM_EMIT("vmovaps             %%ymm3, %%ymm7")                                    // ymm7     = s*b2 + s2*a2 = p2
 
                 // Rotate buffer, AVX2 has better option for it
                 __ASM_EMIT("vpermilps           $0x93, %%ymm1, %%ymm1")                             // ymm1     = s2[3] s2[0] s2[1] s2[2] s2[7] s2[4] s2[5] s2[6]
+                __ASM_EMIT("vmovaps             %%ymm3, %%ymm7")                                    // ymm7     = s*b2 + s2*a2 = p2
                 __ASM_EMIT("vperm2f128          $0x01, %%ymm1, %%ymm1, %%ymm0")                     // ymm0     = s2[7] s2[4] s2[5] s2[6] s2[3] s2[0] s2[1] s2[2]
                 __ASM_EMIT("vblendps            $0x11, %%ymm0, %%ymm1, %%ymm1")                     // ymm1     = s2[7] s2[0] s2[1] s2[2] s2[3] s2[4] s2[5] s2[6]
                 __ASM_EMIT("vmovss              %%xmm1, (%[dst])")                                  // *dst     = s2[7]
