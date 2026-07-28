@@ -80,7 +80,7 @@ namespace lsp
 
                 : [off] "=&r"(off), [f] "+r" (f)
                 : [dst] "r" (dst), [src] "r" (src),
-                  [count] __ASM_ARG_RO (count),
+                  [count] X86_GREG (count),
                   [d] "r" (d)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
@@ -115,7 +115,7 @@ namespace lsp
                 __ASM_EMIT("addss       %%xmm3, %%xmm1")                            // xmm1 = d1' = a2*s + b2*s'
                 __ASM_EMIT("addss       0x08(%[d]), %%xmm2")                        // xmm6 = d0' = d1 + a1*s + b1*s'
                 __ASM_EMIT("add         $0x04, %[src]")                             // src++
-                __ASM_EMIT("add         $0x30, %[f]")                               // f++
+                __ASM_EMIT("add         $0x28, %[f]")                               // f++
                 __ASM_EMIT("dec         %[count]")
                 __ASM_EMIT("movss       %%xmm2, 0x00(%[d])")
                 __ASM_EMIT("movss       %%xmm1, 0x08(%[d])")
@@ -141,7 +141,7 @@ namespace lsp
                 __ASM_EMIT("shufps      $0xb1, %%xmm0, %%xmm0")                     // shift
                 __ASM_EMIT("addps       %%xmm3, %%xmm6")                            // xmm6 = d0' e0' d1' e1' = d1+a1*s0+b1*s0' e1+i1*s1+j1*s1' a2*s0+b2*s0' i2*s1+j2*s1'
                 __ASM_EMIT("movss       %%xmm0, (%[dst])")
-                __ASM_EMIT("add         $0x30, %[f]")                               // f++
+                __ASM_EMIT("add         $0x28, %[f]")                               // f++
                 __ASM_EMIT("add         $0x04, %[src]")
                 __ASM_EMIT("add         $0x04, %[dst]")
                 __ASM_EMIT("dec         %[count]")

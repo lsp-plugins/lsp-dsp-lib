@@ -61,8 +61,8 @@ namespace lsp
                 __ASM_EMIT("vmovss              %%xmm0, (%[dst], %[off], 4)")                       // *dst = s'
                 __ASM_EMIT("vaddss              %%xmm4, %%xmm2, %%xmm6")                            // xmm6 = d0' = d1 + b1*s + a1*s'
                 __ASM_EMIT("add                 $1, %[off]")
-                __ASM_EMIT("vaddss              %%xmm5, %%xmm3, %%xmm7")                            // xmm7 = d1' = b2*s + a2*s'
                 __ASM_EMIT("cmp                 %[count], %[off]")
+                __ASM_EMIT("vaddss              %%xmm5, %%xmm3, %%xmm7")                            // xmm7 = d1' = b2*s + a2*s'
                 __ASM_EMIT("jb                  1b")
 
                 // Store the updated buffer state

@@ -37,8 +37,8 @@ namespace lsp
             ARCH_X86_ASM
             (
                 // Check count
-                __ASM_EMIT64("test              %[count], %[count]")
                 __ASM_EMIT32("cmpl              $0, %[count]")
+                __ASM_EMIT64("test              %[count], %[count]")
                 __ASM_EMIT("jz                  2f")
 
                 // Load permanent data
@@ -49,19 +49,19 @@ namespace lsp
                 // Start loop
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vmovss              (%[src], %[off], 4), %%xmm0")                       // xmm0 = s ? ? ?
-                __ASM_EMIT("vmulss              0x00(%[f]), %%xmm0, %%xmm1")                        // xmm1 = a0*s
-                __ASM_EMIT("vmulss              0x04(%[f]), %%xmm0, %%xmm2")                        // xmm2 = a1*s
-                __ASM_EMIT("vmulss              0x08(%[f]), %%xmm0, %%xmm3")                        // xmm3 = a2*s
-                __ASM_EMIT("vaddss              %%xmm6, %%xmm1, %%xmm0")                            // xmm0 = s' = d0 + a0*s
-                __ASM_EMIT("vaddss              %%xmm7, %%xmm2, %%xmm2")                            // xmm2 = d1 + a1*s
-                __ASM_EMIT("vmulss              0x0c(%[f]), %%xmm0, %%xmm4")                        // xmm4 = b1*s'
-                __ASM_EMIT("vmulss              0x10(%[f]), %%xmm0, %%xmm5")                        // xmm5 = b2*s'
+                __ASM_EMIT("vmulss              0x00(%[f]), %%xmm0, %%xmm1")                        // xmm1 = b0*s
+                __ASM_EMIT("vmulss              0x04(%[f]), %%xmm0, %%xmm2")                        // xmm2 = b1*s
+                __ASM_EMIT("vmulss              0x08(%[f]), %%xmm0, %%xmm3")                        // xmm3 = b2*s
+                __ASM_EMIT("vaddss              %%xmm6, %%xmm1, %%xmm0")                            // xmm0 = s' = d0 + b0*s
+                __ASM_EMIT("vaddss              %%xmm7, %%xmm2, %%xmm2")                            // xmm2 = d1 + b1*s
+                __ASM_EMIT("vmulss              0x0c(%[f]), %%xmm0, %%xmm4")                        // xmm4 = a1*s'
+                __ASM_EMIT("vmulss              0x10(%[f]), %%xmm0, %%xmm5")                        // xmm5 = a2*s'
                 __ASM_EMIT("vmovss              %%xmm0, (%[dst], %[off], 4)")                       // *dst = s'
-                __ASM_EMIT("add                 $0x20, %[f]")
-                __ASM_EMIT("vaddss              %%xmm4, %%xmm2, %%xmm6")                            // xmm6 = d0' = d1 + a1*s + b1*s'
+                __ASM_EMIT("vaddss              %%xmm4, %%xmm2, %%xmm6")                            // xmm6 = d0' = d1 + b1*s + a1*s'
                 __ASM_EMIT("add                 $1, %[off]")
-                __ASM_EMIT("vaddss              %%xmm5, %%xmm3, %%xmm7")                            // xmm7 = d1' = a2*s + b2*s'
+                __ASM_EMIT("add                 $0x20, %[f]")
                 __ASM_EMIT("cmp                 %[count], %[off]")
+                __ASM_EMIT("vaddss              %%xmm5, %%xmm3, %%xmm7")                            // xmm7 = d1' = b2*s + a2*s'
                 __ASM_EMIT("jb                  1b")
 
                 // Store the updated buffer state
@@ -73,7 +73,7 @@ namespace lsp
 
                 : [off] "=&r"(off), [f] "+r" (f)
                 : [dst] "r" (dst), [src] "r" (src),
-                  [count] "r" (count),
+                  [count] __ASM_ARG_RO (count),
                   [d] "r" (d)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
@@ -88,8 +88,8 @@ namespace lsp
             ARCH_X86_ASM
             (
                 // Check count
-                __ASM_EMIT64("test              %[count], %[count]")
                 __ASM_EMIT32("cmpl              $0, %[count]")
+                __ASM_EMIT64("test              %[count], %[count]")
                 __ASM_EMIT("jz                  2f")
 
                 // Load permanent data
@@ -101,16 +101,16 @@ namespace lsp
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vmovss              (%[src], %[off], 4), %%xmm0")                       // xmm0 = s ? ? ?
                 __ASM_EMIT("vmovaps             %%xmm7, %%xmm5")                                    // xmm5 = d1
-                __ASM_EMIT("vmulss              0x04(%[f]), %%xmm0, %%xmm2")                        // xmm2 = a1*s
-                __ASM_EMIT("vmulss              0x08(%[f]), %%xmm0, %%xmm7")                        // xmm7 = a2*s
-                __ASM_EMIT("vfmadd132ss         0x00(%[f]), %%xmm6, %%xmm0")                        // xmm0 = s' = d0 + a0*s
-                __ASM_EMIT("vfmadd231ss         0x0c(%[f]), %%xmm0, %%xmm2")                        // xmm2 = a1*s + b1*s'
+                __ASM_EMIT("vmulss              0x04(%[f]), %%xmm0, %%xmm2")                        // xmm2 = b1*s
+                __ASM_EMIT("vmulss              0x08(%[f]), %%xmm0, %%xmm7")                        // xmm7 = b2*s
+                __ASM_EMIT("vfmadd132ss         0x00(%[f]), %%xmm6, %%xmm0")                        // xmm0 = s' = d0 + b0*s
+                __ASM_EMIT("vfmadd231ss         0x0c(%[f]), %%xmm0, %%xmm2")                        // xmm2 = b1*s + a1*s'
                 __ASM_EMIT("vmovss              %%xmm0, (%[dst], %[off], 4)")                       // *dst = s'
-                __ASM_EMIT("vfmadd231ss         0x10(%[f]), %%xmm0, %%xmm7")                        // xmm7 = d1' = a2*s + b2*s'
                 __ASM_EMIT("add                 $1, %[off]")
+                __ASM_EMIT("vfmadd231ss         0x10(%[f]), %%xmm0, %%xmm7")                        // xmm7 = d1' = b2*s + a2*s'
                 __ASM_EMIT("add                 $0x20, %[f]")
-                __ASM_EMIT("vaddss              %%xmm5, %%xmm2, %%xmm6")                            // xmm6 = d0' = d1 + a1*s + b1*s'
                 __ASM_EMIT("cmp                 %[count], %[off]")
+                __ASM_EMIT("vaddss              %%xmm5, %%xmm2, %%xmm6")                            // xmm6 = d0' = d1 + b1*s + a1*s'
                 __ASM_EMIT("jb                  1b")
 
                 // Store the updated buffer state
@@ -122,7 +122,7 @@ namespace lsp
 
                 : [off] "=&r"(off), [f] "+r" (f)
                 : [dst] "r" (dst), [src] "r" (src),
-                  [count] "r" (count),
+                  [count] __ASM_ARG_RO (count),
                   [d] "r" (d)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
