@@ -92,7 +92,7 @@ UTEST_BEGIN("dsp.filters", dyn_biquad_x4)
         float d2[2 * FILTER_TIMES] __lsp_aligned64;
 
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-            0x1f, 0x20, 0x2f, 0x3f, 0x40, 0x41, 0x4f, 0x7f, 0x1ff)
+            0x1f, 0x20, 0x2f, 0x3f, 0x40, 0x41, 0x4f, 0x7f, 0x1ff, 0x200)
         {
             printf("Testing %s on input buffer size=%d...\n", label, int(count));
 
@@ -109,19 +109,35 @@ UTEST_BEGIN("dsp.filters", dyn_biquad_x4)
             UTEST_ASSERT_MSG(f1 != NULL, "Out of memory while allocating f1");
             UTEST_ASSERT_MSG(f2 != NULL, "Out of memory while allocating f2");
 
+            // Filter with changing gain
+            const float step    = 1.0f / lsp_max(count - 1, 1u);
             for (size_t i=0; i<count; ++i)
-                f1[i]       = bq_normal;
+            {
+                const float g       = 1.0f + float(i) * step;
+                dsp::biquad_x1_t *f = &f1[i];
+                f->b0               = bq_normal.b0 * g;
+                f->b1               = bq_normal.b1 * g;
+                f->b2               = bq_normal.b2 * g;
+                f->a1               = bq_normal.a1;
+                f->a2               = bq_normal.a2;
+                f->p0               = 0.0f;
+                f->p1               = 0.0f;
+                f->p2               = 0.0f;
+            }
+
             bzero(f2, total * sizeof(dsp::biquad_x4_t));
             for (size_t j=0; j<FILTER_TIMES; ++j)
             {
                 dsp::biquad_x4_t *f = &f2[j];
                 for (size_t i=0; i<count; ++i, ++f)
                 {
-                    f->b0[j] = bq_normal.b0;
-                    f->b1[j] = bq_normal.b1;
-                    f->b2[j] = bq_normal.b2;
-                    f->a1[j] = bq_normal.a1;
-                    f->a2[j] = bq_normal.a2;
+                    const float g       = 1.0f + float(i) * step;
+
+                    f->b0[j]            = bq_normal.b0 * g;
+                    f->b1[j]            = bq_normal.b1 * g;
+                    f->b2[j]            = bq_normal.b2 * g;
+                    f->a1[j]            = bq_normal.a1;
+                    f->a2[j]            = bq_normal.a2;
                 }
             }
 
