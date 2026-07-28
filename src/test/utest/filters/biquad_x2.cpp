@@ -69,11 +69,11 @@ namespace lsp
     typedef void (* biquad_process_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x2_t *f);
 
     const dsp::biquad_x1_t filter = {
-        .b0     = 0.992303491f,
-        .b1     = -1.98460698f,
-        .b2     = 0.992303491f,
-        .a1     = 1.98398674f,
-        .a2     = -0.985227287f,
+        .b0     = 0.0963056013f,
+        .b1     = 0.0f,
+        .b2     = -0.0963056013f,
+        .a1     = 1.80482113f,
+        .a2     = -0.807388783f,
         .p0     = 0.0f,
         .p1     = 0.0f,
         .p2     = 0.0f,

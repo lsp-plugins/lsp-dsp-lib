@@ -65,13 +65,13 @@ namespace lsp
 
     typedef void (* dyn_biquad_process_x1_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
 
-    static dsp::biquad_x1_t bq_normal =
+    static dsp::biquad_x1_t filter =
     {
-        .b0     = 0.992303491f,
-        .b1     = -1.98460698f,
-        .b2     = 0.992303491f,
-        .a1     = 1.98398674f,
-        .a2     = -0.985227287f,
+        .b0     = 0.0963056013f,
+        .b1     = 0.0f,
+        .b2     = -0.0963056013f,
+        .a1     = 1.80482113f,
+        .a2     = -0.807388783f,
         .p0     = 0.0f,
         .p1     = 0.0f,
         .p2     = 0.0f,
@@ -105,16 +105,16 @@ UTEST_BEGIN("dsp.filters", dyn_biquad_x1)
             UTEST_ASSERT_MSG(f2 != NULL, "Out of memory while allocating f2");
 
             // Filter with changing gain
-            const float step    = 1.0f / lsp_max(count - 1, 1u);
+            const float step    = 1.0f / (lsp_max(count, 2u) - 1);
             for (size_t i=0; i<count; ++i)
             {
                 const float g       = 1.0f + float(i) * step;
                 dsp::biquad_x1_t *f = &f1[i];
-                f->b0               = bq_normal.b0 * g;
-                f->b1               = bq_normal.b1 * g;
-                f->b2               = bq_normal.b2 * g;
-                f->a1               = bq_normal.a1;
-                f->a2               = bq_normal.a2;
+                f->b0               = filter.b0 * g;
+                f->b1               = filter.b1 * g;
+                f->b2               = filter.b2 * g;
+                f->a1               = filter.a1;
+                f->a2               = filter.a2;
                 f->p0               = 0.0f;
                 f->p1               = 0.0f;
                 f->p2               = 0.0f;
@@ -124,11 +124,11 @@ UTEST_BEGIN("dsp.filters", dyn_biquad_x1)
             {
                 const float g       = 1.0f + float(i) * step;
                 dsp::biquad_x1_t *f = &f2[i];
-                f->b0               = bq_normal.b0 * g;
-                f->b1               = bq_normal.b1 * g;
-                f->b2               = bq_normal.b2 * g;
-                f->a1               = bq_normal.a1;
-                f->a2               = bq_normal.a2;
+                f->b0               = filter.b0 * g;
+                f->b1               = filter.b1 * g;
+                f->b2               = filter.b2 * g;
+                f->a1               = filter.a1;
+                f->a2               = filter.a2;
                 f->p0               = 0.0f;
                 f->p1               = 0.0f;
                 f->p2               = 0.0f;
