@@ -140,9 +140,6 @@ UTEST_BEGIN("dsp.filters", biquad_x1)
         FloatBuffer dst1(BUF_SIZE);
         FloatBuffer dst2(BUF_SIZE);
 
-    //        for (size_t i=0; i<BUF_SIZE; ++i)
-    //            src[i] = (i & 1) ? -0.001 * float(i+1) : 0.001 * float(i+1);
-
         for (size_t i=0; i<BUF_SIZE; i += BUF_STEP)
         {
             size_t count = BUF_SIZE - i;

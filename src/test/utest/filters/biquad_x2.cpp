@@ -156,9 +156,6 @@ UTEST_BEGIN("dsp.filters", biquad_x2)
         dsp::fill_zero(d1, 2 * FILTER_TIMES);
         dsp::fill_zero(d2, 2 * FILTER_TIMES);
 
-    //        for (size_t i=0; i<BUF_SIZE; ++i)
-    //            src[i] = (i & 1) ? -0.001 * float(i+1) : 0.001 * float(i+1);
-
         for (size_t i=0; i<BUF_SIZE; i += BUF_STEP)
         {
             size_t count = BUF_SIZE - i;
