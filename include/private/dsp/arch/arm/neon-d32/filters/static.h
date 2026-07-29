@@ -26,6 +26,8 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_IMPL */
 
+#include <private/dsp/arch/arm/neon-d32/filters/common.h>
+
 namespace lsp
 {
     namespace neon_d32
@@ -35,7 +37,7 @@ namespace lsp
             ARCH_ARM_ASM
             (
                 // Check count
-                __ASM_EMIT("vldm            %[d],  {s14-s15}")
+                __ASM_EMIT("vldm            %[d], {s14-s15}")
                 __ASM_EMIT("vldm            %[f], {s8-s12}")
                 // s8   = b0
                 // s9   = b1
@@ -153,14 +155,6 @@ namespace lsp
             );
         }
 
-        IF_ARCH_ARM(
-            static const uint32_t biquad_x4_mask[8] __lsp_aligned16 =
-            {
-                0xffffffff, 0x00000000, 0x00000000, 0x00000000,
-                0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
-            };
-        )
-
         void biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f)
         {
             IF_ARCH_ARM(
@@ -256,16 +250,6 @@ namespace lsp
                   "q13", "q14", "q15"
             );
         }
-
-        IF_ARCH_ARM(
-            static const uint32_t biquad_x8_mask[16] __lsp_aligned16 =
-            {
-                0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
-                0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
-                0xffffffff, 0x00000000, 0x00000000, 0x00000000,
-                0x00000000, 0x00000000, 0x00000000, 0x00000000,
-            };
-        )
 
         void biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f)
         {
@@ -724,14 +708,14 @@ namespace lsp
                 __ASM_EMIT("6:")
                 __ASM_EMIT("vst1.32     {q2-q3}, [%[d]], %[stride]")
                 __ASM_EMIT("vst1.32     {q4-q5}, [%[d]]")
+                __ASM_EMIT("sub         %[d], %[d], #0x60")
 
                 // End
                 __ASM_EMIT("10:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count),
-                  [mask] "=&r" (mask), [stride] "=&r" (stride),
-                  [f] "+r" (f), [d] "+r" (d)
-                : [vmask] "r" (&mem),
+                  [mask] "=&r" (mask), [stride] "=&r" (stride)
+                : [f] "r" (f), [d] "r" (d), [vmask] "r" (&mem),
                   [X_MASK] "r" (&biquad_x8_mask[0])
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
