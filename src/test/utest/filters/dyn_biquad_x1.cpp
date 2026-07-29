@@ -85,7 +85,7 @@ UTEST_BEGIN("dsp.filters", dyn_biquad_x1)
         if (!UTEST_SUPPORTED(func))
             return;
 
-        float d[LSP_DSP_BIQUAD_D_ITEMS];
+        float d[2];
 
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
             0x1f, 0x20, 0x2f, 0x3f, 0x40, 0x41, 0x4f, 0x7f, 0x1ff, 0x200)
@@ -135,10 +135,10 @@ UTEST_BEGIN("dsp.filters", dyn_biquad_x1)
             }
 
             // Apply processing
-            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, 2);
             generic::dyn_biquad_process_x1(dst1, src, d, count, f1);
 
-            dsp::fill_zero(d, LSP_DSP_BIQUAD_D_ITEMS);
+            dsp::fill_zero(d, 2);
             func(dst2, src, d, count, f2);
 
             // Perform validation
