@@ -420,6 +420,7 @@
                 EXPORT1(dyn_biquad_process_x2);
                 EXPORT1(dyn_biquad_process_x4);
                 EXPORT1(dyn_biquad_process_x8);
+                EXPORT1(dyn_biquad_process_x16);
 
                 EXPORT1(filter_transfer_calc_ri);
                 EXPORT1(filter_transfer_apply_ri);

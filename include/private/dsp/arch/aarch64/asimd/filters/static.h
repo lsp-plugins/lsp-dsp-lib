@@ -26,6 +26,8 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_IMPL */
 
+#include <private/dsp/arch/aarch64/asimd/filters/common.h>
+
 namespace lsp
 {
     namespace asimd
@@ -43,7 +45,7 @@ namespace lsp
                 __ASM_EMIT("subs            %[count], %[count], #2")
                 __ASM_EMIT("b.lt            2f")
                 __ASM_EMIT("1:")
-                __ASM_EMIT("ldp             s0, s1, [%[src]]")                      // v0   = s0, v1 = s1
+                __ASM_EMIT("ldp             s0, s1, [%[src]], #0x08")               // v0   = s0, v1 = s1
                 __ASM_EMIT("fmadd           s2, s16, s0, s22")                      // v2   = s' = b0*s0+d0
                 __ASM_EMIT("fmul            s4, s17, s0")                           // v4   = b1*s0
                 __ASM_EMIT("fmadd           s6, s19, s2, s23")                      // v6   = a1*s' + d1
@@ -57,9 +59,7 @@ namespace lsp
                 __ASM_EMIT("fadd            s22, s5, s7")                           // v22  = d0' = d1 + b1*s1 + a1*s3
                 __ASM_EMIT("fmadd           s23, s20, s3, s1")                      // v23  = d1' = b2*s1 + a2*s0
                 __ASM_EMIT("subs            %[count], %[count], #2")
-                __ASM_EMIT("stp             s2, s3, [%[dst]]")
-                __ASM_EMIT("add             %[src], %[src], #0x08")
-                __ASM_EMIT("add             %[dst], %[dst], #0x08")
+                __ASM_EMIT("stp             s2, s3, [%[dst]], #0x08")
                 __ASM_EMIT("b.ge            1b")
                 __ASM_EMIT("2:")
                 // X1 block:
@@ -152,14 +152,6 @@ namespace lsp
                   "v20", "v21", "v22", "v23"
             );
         }
-
-        IF_ARCH_AARCH64(
-            static const uint32_t biquad_x4_mask[8] __lsp_aligned16 =
-            {
-                0xffffffff, 0x00000000, 0x00000000, 0x00000000,
-                0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff
-            };
-        )
 
         void biquad_process_x4(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x4_t *f)
         {
@@ -257,16 +249,6 @@ namespace lsp
                   "v24", "v25"
             );
         }
-
-        IF_ARCH_AARCH64(
-            static const uint32_t biquad_x8_mask[16] __lsp_aligned16 =
-            {
-                0xffffffff, 0x00000000, 0x00000000, 0x00000000,
-                0x00000000, 0x00000000, 0x00000000, 0x00000000,
-                0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
-                0x00000000, 0x00000000, 0x00000000, 0x00000000,
-            };
-        )
 
         void biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f)
         {
