@@ -628,6 +628,8 @@
                     CEXPORT2(favx, dyn_biquad_process_x2, dyn_biquad_process_x2_fma3);
                     CEXPORT2(favx, dyn_biquad_process_x4, dyn_biquad_process_x4_fma3);
                     CEXPORT2(ffma, dyn_biquad_process_x8, dyn_biquad_process_x8_fma3);
+                    CEXPORT2(ffma, dyn_biquad_process_x16, dyn_biquad_process_x16_fma3);
+                    CEXPORT2_X64(ffma, dyn_biquad_process_x16, x64_dyn_biquad_process_x16_fma3);
 
                     CEXPORT2(favx, depan_eqpow, depan_eqpow_fma3);
 

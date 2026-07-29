@@ -347,7 +347,7 @@ namespace lsp
                 __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
-                X64_FILTER_X16P1
+                X64_FILTER_X16P2
 
                 // Shift buffer and update delay
                 __ASM_EMIT("shufps      $0x93, %%xmm9, %%xmm9")                     // xmm9     = r2[3] r2[0] r2[1] r2[2]
@@ -381,7 +381,7 @@ namespace lsp
                 __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
                 __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
                 __ASM_EMIT("add         $4, %[src]")                                // src      ++
-                X64_FILTER_X16P1
+                X64_FILTER_X16P2
 
                 // Shift buffer and update delay
                 X64_FILTER_X8_NOMASK_MEMSYNC
@@ -409,7 +409,7 @@ namespace lsp
                 // Process last steps
                 __ASM_EMIT(".p2align    4")
                 __ASM_EMIT("5:")
-                X64_FILTER_X16P1
+                X64_FILTER_X16P2
 
                 // Shift buffer and update delay
                 __ASM_EMIT("shufps      $0x93, %%xmm9, %%xmm9")                     // xmm9     = r2[3] r2[0] r2[1] r2[2]

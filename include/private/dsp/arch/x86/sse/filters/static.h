@@ -502,6 +502,7 @@ namespace lsp
                 __ASM_EMIT32("movups    %%xmm7, 0x30(%[f])")                        // xmm7     = d1
                 __ASM_EMIT64("movups    %%xmm6, 0x10(%[d])")                        // xmm6     = d0
                 __ASM_EMIT64("movups    %%xmm7, 0x30(%[d])")                        // xmm7     = d1
+                __ASM_EMIT32("mov       %[X_F], %[f]")
 
                 // Exit label
                 __ASM_EMIT("10:")
@@ -923,6 +924,7 @@ namespace lsp
                 __ASM_EMIT32("movups    %%xmm7, 0x70(%[f])")                        // xmm7     = d1
                 __ASM_EMIT64("movups    %%xmm6, 0x30(%[d])")                        // xmm6     = d0
                 __ASM_EMIT64("movups    %%xmm7, 0x70(%[d])")                        // xmm7     = d1
+                __ASM_EMIT32("mov       %[X_F], %[f]")
 
                 // Exit label
                 __ASM_EMIT("10:")

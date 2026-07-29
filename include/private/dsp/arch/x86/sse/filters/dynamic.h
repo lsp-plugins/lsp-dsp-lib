@@ -426,9 +426,9 @@ namespace lsp
                 // Load delay buffer
                 __ASM_EMIT32("movups    0x10(%[f]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT32("movups    0x30(%[f]), %%xmm7")                        // xmm7     = d1
-                __ASM_EMIT("mov         %[X_F], %[f]")
                 __ASM_EMIT64("movups    0x10(%[d]), %%xmm6")                        // xmm6     = d0
                 __ASM_EMIT64("movups    0x30(%[d]), %%xmm7")                        // xmm7     = d1
+                __ASM_EMIT("mov         %[X_F], %[f]")
 
                 // Initialize mask
                 // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
@@ -517,6 +517,444 @@ namespace lsp
                 __ASM_EMIT32("movups    %%xmm7, 0x30(%[f])")                        // xmm7     = d1
                 __ASM_EMIT64("movups    %%xmm6, 0x10(%[d])")                        // xmm6     = d0
                 __ASM_EMIT64("movups    %%xmm7, 0x30(%[d])")                        // xmm7     = d1
+                __ASM_EMIT("mov         %[X_F], %[f]")
+
+                // Exit label
+                __ASM_EMIT("10:")
+
+                : [dst] "+r" (dst), [src] "+r" (src),
+                  [mask] "=&r" (mask), [count] "+r" (count)
+                : [f] "r" (f), [d] X86_GREG (d),
+                  [X_MASK] "m" (biquad_mask_const),
+                  [MASK] "m" (MASK),
+                  [X_F] "m" (X_F),
+                  [X_D] "m" (X_D),
+                  [X_COUNT] "m" (X_COUNT)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+            );
+        }
+
+        void dyn_biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f)
+        {
+            IF_ARCH_X86(
+                float   MASK[4] __lsp_aligned16;
+                float  *X_F, *X_D;
+                size_t  X_COUNT;
+                size_t  mask;
+            )
+
+            ARCH_X86_ASM
+            (
+                // Check count
+                __ASM_EMIT("test        %[count], %[count]")
+                __ASM_EMIT("jz          10f")
+
+                //---------------------------------------------------------------------
+                // Cycle 1
+                __ASM_EMIT("mov         %[f], %[X_F]")
+                __ASM_EMIT("mov         %[dst], %[X_D]")
+                __ASM_EMIT("mov         %[count], %[X_COUNT]")
+
+                // Load delay buffer
+                __ASM_EMIT32("mov       %[d], %[f]")
+                __ASM_EMIT32("movups    0x00(%[f]), %%xmm6")                        // xmm6     = d0
+                __ASM_EMIT32("movups    0x40(%[f]), %%xmm7")                        // xmm7     = d1
+                __ASM_EMIT32("mov       %[X_F], %[f]")
+                __ASM_EMIT64("movups    0x00(%[d]), %%xmm6")                        // xmm6     = d0
+                __ASM_EMIT64("movups    0x40(%[d]), %%xmm7")                        // xmm7     = d1
+
+                // Initialize mask
+                // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
+                __ASM_EMIT("mov         $1, %[mask]")
+                __ASM_EMIT("movaps      %[X_MASK], %%xmm0")
+                __ASM_EMIT("xorps       %%xmm1, %%xmm1")
+                __ASM_EMIT("movaps      %%xmm0, %[MASK]")
+
+                // Process first 3 steps
+                __ASM_EMIT(".p2align    4")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
+                __ASM_EMIT("add         $4, %[src]")                                // src      ++
+                __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
+                FILTER_X16P1_CORE
+                // Shift buffer
+                __ASM_EMIT("shufps      $0x90, %%xmm1, %%xmm1")                     // xmm1     = s2[0] s2[0] s2[1] s2[2]
+                // Update delay only by mask
+                __ASM_EMIT("add         $0x140, %[f]")                              // ++f
+                FILTER_X4_PRE_MEMSYNC
+
+                // Repeat loop
+                __ASM_EMIT("dec         %[count]")
+                __ASM_EMIT("jz          4f")                                        // jump to completion
+                __ASM_EMIT("lea         0x01(,%[mask], 2), %[mask]")                // mask     = (mask << 1) | 1
+                __ASM_EMIT("shufps      $0x90, %%xmm0, %%xmm0")                     // xmm0     = m[0] m[0] m[1] m[2]
+                __ASM_EMIT("movaps      %%xmm0, %[MASK]")                           // store mask
+                __ASM_EMIT("cmp         $0x0f, %[mask]")
+                __ASM_EMIT("jne         1b")
+
+                // 4x filter processing without mask
+                __ASM_EMIT(".p2align    4")
+                __ASM_EMIT("3:")
+                __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
+                __ASM_EMIT("add         $4, %[src]")                                // src      ++
+                __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
+                FILTER_X16P1_CORE
+                __ASM_EMIT("add         $0x140, %[f]")                              // ++f
+                FILTER_X4_MEMSYNC
+
+                // Shift buffer and repeat loop
+                __ASM_EMIT("shufps      $0x93, %%xmm1, %%xmm1")                     // xmm1     = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("movss       %%xmm1, (%[dst])")                          // *dst     = s2[3]
+                __ASM_EMIT("add         $4, %[dst]")                                // dst      ++
+                __ASM_EMIT("dec         %[count]")
+                __ASM_EMIT("jnz         3b")
+
+                // Prepare last loop
+                __ASM_EMIT("4:")
+                __ASM_EMIT("movaps      %[MASK], %%xmm0")                           // xmm0     = m[0] m[1] m[2] m[3]
+                __ASM_EMIT("xorps       %%xmm2, %%xmm2")                            // xmm2     = 0 0 0 0
+                __ASM_EMIT("shl         $1, %[mask]")                               // mask     = mask << 1
+                __ASM_EMIT("shufps      $0x90, %%xmm0, %%xmm0")                     // xmm0     = m[0] m[0] m[1] m[2]
+                __ASM_EMIT("and         $0x0f, %[mask]")                            // mask     = (mask << 1) & 0x0f
+                __ASM_EMIT("movss       %%xmm2, %%xmm0")                            // xmm0     = 0 m[0] m[1] m[2]
+
+                // Process steps
+                __ASM_EMIT(".p2align    4")
+                __ASM_EMIT("5:")
+                FILTER_X16P1_CORE
+
+                // Shift buffer and store
+                __ASM_EMIT("test        $0x8, %[mask]")
+                __ASM_EMIT("shufps      $0x93, %%xmm1, %%xmm1")                     // xmm1     = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("jz          7f")
+                __ASM_EMIT("movss       %%xmm1, (%[dst])")                          // *dst     = s2[3]
+                __ASM_EMIT("add         $4, %[dst]")                                // dst      ++
+                __ASM_EMIT("7:")
+
+                // Update delay only by mask
+                __ASM_EMIT("add         $0x140, %[f]")                              // ++f
+                FILTER_X4_POST_MEMSYNC
+
+                // Repeat loop
+                __ASM_EMIT("xorps       %%xmm2, %%xmm2")                            // xmm2     = 0 0 0 0
+                __ASM_EMIT("shl         $1, %[mask]")                               // mask     = mask << 1
+                __ASM_EMIT("shufps      $0x90, %%xmm0, %%xmm0")                     // xmm0     = m[0] m[0] m[1] m[2]
+                __ASM_EMIT("and         $0x0f, %[mask]")                            // mask     = (mask << 1) & 0x0f
+                __ASM_EMIT("movss       %%xmm2, %%xmm0")                            // xmm0     = 0 m[0] m[1] m[2]
+                __ASM_EMIT("jnz         5b")                                        // check that mask is not zero
+
+                // Store delay buffer
+                __ASM_EMIT32("mov       %[d], %[f]")
+                __ASM_EMIT32("movups    %%xmm6, 0x00(%[f])")                        // xmm6     = d0
+                __ASM_EMIT32("movups    %%xmm7, 0x40(%[f])")                        // xmm7     = d1
+                __ASM_EMIT64("movups    %%xmm6, 0x00(%[d])")                        // xmm6     = d0
+                __ASM_EMIT64("movups    %%xmm7, 0x40(%[d])")                        // xmm7     = d1
+
+                //---------------------------------------------------------------------
+                // Cycle 2
+                __ASM_EMIT("mov         %[X_D], %[dst]")
+                __ASM_EMIT("mov         %[X_COUNT], %[count]")
+                __ASM_EMIT("mov         %[dst], %[src]")                            // Chaining filter groups
+
+                // Load delay buffer
+                __ASM_EMIT32("movups    0x10(%[f]), %%xmm6")                        // xmm6     = d0
+                __ASM_EMIT32("movups    0x50(%[f]), %%xmm7")                        // xmm7     = d1
+                __ASM_EMIT64("movups    0x10(%[d]), %%xmm6")                        // xmm6     = d0
+                __ASM_EMIT64("movups    0x50(%[d]), %%xmm7")                        // xmm7     = d1
+                __ASM_EMIT("mov         %[X_F], %[f]")
+
+                // Initialize mask
+                // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
+                __ASM_EMIT("mov         $1, %[mask]")
+                __ASM_EMIT("movaps      %[X_MASK], %%xmm0")
+                __ASM_EMIT("xorps       %%xmm1, %%xmm1")
+                __ASM_EMIT("movaps      %%xmm0, %[MASK]")
+                __ASM_EMIT("add         $0x500, %[f]")                              // f       += 4 * sizeof(*f)
+
+                // Process first 3 steps
+                __ASM_EMIT(".p2align    4")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
+                __ASM_EMIT("add         $4, %[src]")                                // src      ++
+                __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
+                FILTER_X16P2_CORE
+                // Shift buffer
+                __ASM_EMIT("shufps      $0x90, %%xmm1, %%xmm1")                     // xmm1     = s2[0] s2[0] s2[1] s2[2]
+                // Update delay only by mask
+                __ASM_EMIT("add         $0x140, %[f]")                              // ++f
+                FILTER_X4_PRE_MEMSYNC
+
+                // Repeat loop
+                __ASM_EMIT("dec         %[count]")
+                __ASM_EMIT("jz          4f")                                        // jump to completion
+                __ASM_EMIT("lea         0x01(,%[mask], 2), %[mask]")                // mask     = (mask << 1) | 1
+                __ASM_EMIT("shufps      $0x90, %%xmm0, %%xmm0")                     // xmm0     = m[0] m[0] m[1] m[2]
+                __ASM_EMIT("movaps      %%xmm0, %[MASK]")                           // store mask
+                __ASM_EMIT("cmp         $0x0f, %[mask]")
+                __ASM_EMIT("jne         1b")
+
+                // 4x filter processing without mask
+                __ASM_EMIT(".p2align    4")
+                __ASM_EMIT("3:")
+                __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
+                __ASM_EMIT("add         $4, %[src]")                                // src      ++
+                __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
+                FILTER_X16P2_CORE
+                __ASM_EMIT("add         $0x140, %[f]")                              // ++f
+                FILTER_X4_MEMSYNC
+
+                // Shift buffer and repeat loop
+                __ASM_EMIT("shufps      $0x93, %%xmm1, %%xmm1")                     // xmm1     = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("movss       %%xmm1, (%[dst])")                          // *dst     = s2[3]
+                __ASM_EMIT("add         $4, %[dst]")                                // dst      ++
+                __ASM_EMIT("dec         %[count]")
+                __ASM_EMIT("jnz         3b")
+
+                // Prepare last loop
+                __ASM_EMIT("4:")
+                __ASM_EMIT("movaps      %[MASK], %%xmm0")                           // xmm0     = m[0] m[1] m[2] m[3]
+                __ASM_EMIT("xorps       %%xmm2, %%xmm2")                            // xmm2     = 0 0 0 0
+                __ASM_EMIT("shl         $1, %[mask]")                               // mask     = mask << 1
+                __ASM_EMIT("shufps      $0x90, %%xmm0, %%xmm0")                     // xmm0     = m[0] m[0] m[1] m[2]
+                __ASM_EMIT("and         $0x0f, %[mask]")                            // mask     = (mask << 1) & 0x0f
+                __ASM_EMIT("movss       %%xmm2, %%xmm0")                            // xmm0     = 0 m[0] m[1] m[2]
+
+                // Process steps
+                __ASM_EMIT(".p2align    4")
+                __ASM_EMIT("5:")
+                FILTER_X16P2_CORE
+
+                // Shift buffer and store
+                __ASM_EMIT("test        $0x8, %[mask]")
+                __ASM_EMIT("shufps      $0x93, %%xmm1, %%xmm1")                     // xmm1     = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("jz          7f")
+                __ASM_EMIT("movss       %%xmm1, (%[dst])")                          // *dst     = s2[3]
+                __ASM_EMIT("add         $4, %[dst]")                                // dst      ++
+                __ASM_EMIT("7:")
+
+                // Update delay only by mask
+                __ASM_EMIT("add         $0x140, %[f]")                              // ++f
+                FILTER_X4_POST_MEMSYNC
+
+                // Repeat loop
+                __ASM_EMIT("xorps       %%xmm2, %%xmm2")                            // xmm2     = 0 0 0 0
+                __ASM_EMIT("shl         $1, %[mask]")                               // mask     = mask << 1
+                __ASM_EMIT("shufps      $0x90, %%xmm0, %%xmm0")                     // xmm0     = m[0] m[0] m[1] m[2]
+                __ASM_EMIT("and         $0x0f, %[mask]")                            // mask     = (mask << 1) & 0x0f
+                __ASM_EMIT("movss       %%xmm2, %%xmm0")                            // xmm0     = 0 m[0] m[1] m[2]
+                __ASM_EMIT("jnz         5b")                                        // check that mask is not zero
+
+                // Store delay buffer
+                __ASM_EMIT32("mov       %[d], %[f]")
+                __ASM_EMIT32("movups    %%xmm6, 0x10(%[f])")                        // xmm6     = d0
+                __ASM_EMIT32("movups    %%xmm7, 0x50(%[f])")                        // xmm7     = d1
+                __ASM_EMIT64("movups    %%xmm6, 0x10(%[d])")                        // xmm6     = d0
+                __ASM_EMIT64("movups    %%xmm7, 0x50(%[d])")                        // xmm7     = d1
+
+                //---------------------------------------------------------------------
+                // Cycle 3
+                __ASM_EMIT("mov         %[X_D], %[dst]")
+                __ASM_EMIT("mov         %[X_COUNT], %[count]")
+                __ASM_EMIT("mov         %[dst], %[src]")                            // Chaining filter groups
+
+                // Load delay buffer
+                __ASM_EMIT32("movups    0x20(%[f]), %%xmm6")                        // xmm6     = d0
+                __ASM_EMIT32("movups    0x60(%[f]), %%xmm7")                        // xmm7     = d1
+                __ASM_EMIT64("movups    0x20(%[d]), %%xmm6")                        // xmm6     = d0
+                __ASM_EMIT64("movups    0x60(%[d]), %%xmm7")                        // xmm7     = d1
+                __ASM_EMIT("mov         %[X_F], %[f]")
+
+                // Initialize mask
+                // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
+                __ASM_EMIT("mov         $1, %[mask]")
+                __ASM_EMIT("movaps      %[X_MASK], %%xmm0")
+                __ASM_EMIT("xorps       %%xmm1, %%xmm1")
+                __ASM_EMIT("movaps      %%xmm0, %[MASK]")
+                __ASM_EMIT("add         $0xa00, %[f]")                              // f       += 8 * sizeof(*f)
+
+                // Process first 3 steps
+                __ASM_EMIT(".p2align    4")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
+                __ASM_EMIT("add         $4, %[src]")                                // src      ++
+                __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
+                FILTER_X16P3_CORE
+                // Shift buffer
+                __ASM_EMIT("shufps      $0x90, %%xmm1, %%xmm1")                     // xmm1     = s2[0] s2[0] s2[1] s2[2]
+                // Update delay only by mask
+                __ASM_EMIT("add         $0x140, %[f]")                              // ++f
+                FILTER_X4_PRE_MEMSYNC
+
+                // Repeat loop
+                __ASM_EMIT("dec         %[count]")
+                __ASM_EMIT("jz          4f")                                        // jump to completion
+                __ASM_EMIT("lea         0x01(,%[mask], 2), %[mask]")                // mask     = (mask << 1) | 1
+                __ASM_EMIT("shufps      $0x90, %%xmm0, %%xmm0")                     // xmm0     = m[0] m[0] m[1] m[2]
+                __ASM_EMIT("movaps      %%xmm0, %[MASK]")                           // store mask
+                __ASM_EMIT("cmp         $0x0f, %[mask]")
+                __ASM_EMIT("jne         1b")
+
+                // 4x filter processing without mask
+                __ASM_EMIT(".p2align    4")
+                __ASM_EMIT("3:")
+                __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
+                __ASM_EMIT("add         $4, %[src]")                                // src      ++
+                __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
+                FILTER_X16P3_CORE
+                __ASM_EMIT("add         $0x140, %[f]")                              // ++f
+                FILTER_X4_MEMSYNC
+
+                // Shift buffer and repeat loop
+                __ASM_EMIT("shufps      $0x93, %%xmm1, %%xmm1")                     // xmm1     = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("movss       %%xmm1, (%[dst])")                          // *dst     = s2[3]
+                __ASM_EMIT("add         $4, %[dst]")                                // dst      ++
+                __ASM_EMIT("dec         %[count]")
+                __ASM_EMIT("jnz         3b")
+
+                // Prepare last loop
+                __ASM_EMIT("4:")
+                __ASM_EMIT("movaps      %[MASK], %%xmm0")                           // xmm0     = m[0] m[1] m[2] m[3]
+                __ASM_EMIT("xorps       %%xmm2, %%xmm2")                            // xmm2     = 0 0 0 0
+                __ASM_EMIT("shl         $1, %[mask]")                               // mask     = mask << 1
+                __ASM_EMIT("shufps      $0x90, %%xmm0, %%xmm0")                     // xmm0     = m[0] m[0] m[1] m[2]
+                __ASM_EMIT("and         $0x0f, %[mask]")                            // mask     = (mask << 1) & 0x0f
+                __ASM_EMIT("movss       %%xmm2, %%xmm0")                            // xmm0     = 0 m[0] m[1] m[2]
+
+                // Process steps
+                __ASM_EMIT(".p2align    4")
+                __ASM_EMIT("5:")
+                FILTER_X16P3_CORE
+
+                // Shift buffer and store
+                __ASM_EMIT("test        $0x8, %[mask]")
+                __ASM_EMIT("shufps      $0x93, %%xmm1, %%xmm1")                     // xmm1     = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("jz          7f")
+                __ASM_EMIT("movss       %%xmm1, (%[dst])")                          // *dst     = s2[3]
+                __ASM_EMIT("add         $4, %[dst]")                                // dst      ++
+                __ASM_EMIT("7:")
+
+                // Update delay only by mask
+                __ASM_EMIT("add         $0x140, %[f]")                              // ++f
+                FILTER_X4_POST_MEMSYNC
+
+                // Repeat loop
+                __ASM_EMIT("xorps       %%xmm2, %%xmm2")                            // xmm2     = 0 0 0 0
+                __ASM_EMIT("shl         $1, %[mask]")                               // mask     = mask << 1
+                __ASM_EMIT("shufps      $0x90, %%xmm0, %%xmm0")                     // xmm0     = m[0] m[0] m[1] m[2]
+                __ASM_EMIT("and         $0x0f, %[mask]")                            // mask     = (mask << 1) & 0x0f
+                __ASM_EMIT("movss       %%xmm2, %%xmm0")                            // xmm0     = 0 m[0] m[1] m[2]
+                __ASM_EMIT("jnz         5b")                                        // check that mask is not zero
+
+                // Store delay buffer
+                __ASM_EMIT32("mov       %[d], %[f]")
+                __ASM_EMIT32("movups    %%xmm6, 0x20(%[f])")                        // xmm6     = d0
+                __ASM_EMIT32("movups    %%xmm7, 0x60(%[f])")                        // xmm7     = d1
+                __ASM_EMIT64("movups    %%xmm6, 0x20(%[d])")                        // xmm6     = d0
+                __ASM_EMIT64("movups    %%xmm7, 0x60(%[d])")                        // xmm7     = d1
+
+                //---------------------------------------------------------------------
+                // Cycle 4
+                __ASM_EMIT("mov         %[X_D], %[dst]")
+                __ASM_EMIT("mov         %[X_COUNT], %[count]")
+                __ASM_EMIT("mov         %[dst], %[src]")                            // Chaining filter groups
+
+                // Load delay buffer
+                __ASM_EMIT32("movups    0x30(%[f]), %%xmm6")                        // xmm6     = d0
+                __ASM_EMIT32("movups    0x70(%[f]), %%xmm7")                        // xmm7     = d1
+                __ASM_EMIT64("movups    0x30(%[d]), %%xmm6")                        // xmm6     = d0
+                __ASM_EMIT64("movups    0x70(%[d]), %%xmm7")                        // xmm7     = d1
+                __ASM_EMIT("mov         %[X_F], %[f]")
+
+                // Initialize mask
+                // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
+                __ASM_EMIT("mov         $1, %[mask]")
+                __ASM_EMIT("movaps      %[X_MASK], %%xmm0")
+                __ASM_EMIT("xorps       %%xmm1, %%xmm1")
+                __ASM_EMIT("movaps      %%xmm0, %[MASK]")
+                __ASM_EMIT("add         $0xf00, %[f]")                              // f       += 12 * sizeof(*f)
+
+                // Process first 3 steps
+                __ASM_EMIT(".p2align    4")
+                __ASM_EMIT("1:")
+                __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
+                __ASM_EMIT("add         $4, %[src]")                                // src      ++
+                __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
+                FILTER_X16P4_CORE
+                // Shift buffer
+                __ASM_EMIT("shufps      $0x90, %%xmm1, %%xmm1")                     // xmm1     = s2[0] s2[0] s2[1] s2[2]
+                // Update delay only by mask
+                __ASM_EMIT("add         $0x140, %[f]")                              // ++f
+                FILTER_X4_PRE_MEMSYNC
+
+                // Repeat loop
+                __ASM_EMIT("dec         %[count]")
+                __ASM_EMIT("jz          4f")                                        // jump to completion
+                __ASM_EMIT("lea         0x01(,%[mask], 2), %[mask]")                // mask     = (mask << 1) | 1
+                __ASM_EMIT("shufps      $0x90, %%xmm0, %%xmm0")                     // xmm0     = m[0] m[0] m[1] m[2]
+                __ASM_EMIT("movaps      %%xmm0, %[MASK]")                           // store mask
+                __ASM_EMIT("cmp         $0x0f, %[mask]")
+                __ASM_EMIT("jne         1b")
+
+                // 4x filter processing without mask
+                __ASM_EMIT(".p2align    4")
+                __ASM_EMIT("3:")
+                __ASM_EMIT("movss       (%[src]), %%xmm0")                          // xmm0     = *src
+                __ASM_EMIT("add         $4, %[src]")                                // src      ++
+                __ASM_EMIT("movss       %%xmm0, %%xmm1")                            // xmm1     = s
+                FILTER_X16P4_CORE
+                __ASM_EMIT("add         $0x140, %[f]")                              // ++f
+                FILTER_X4_MEMSYNC
+
+                // Shift buffer and repeat loop
+                __ASM_EMIT("shufps      $0x93, %%xmm1, %%xmm1")                     // xmm1     = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("movss       %%xmm1, (%[dst])")                          // *dst     = s2[3]
+                __ASM_EMIT("add         $4, %[dst]")                                // dst      ++
+                __ASM_EMIT("dec         %[count]")
+                __ASM_EMIT("jnz         3b")
+
+                // Prepare last loop
+                __ASM_EMIT("4:")
+                __ASM_EMIT("movaps      %[MASK], %%xmm0")                           // xmm0     = m[0] m[1] m[2] m[3]
+                __ASM_EMIT("xorps       %%xmm2, %%xmm2")                            // xmm2     = 0 0 0 0
+                __ASM_EMIT("shl         $1, %[mask]")                               // mask     = mask << 1
+                __ASM_EMIT("shufps      $0x90, %%xmm0, %%xmm0")                     // xmm0     = m[0] m[0] m[1] m[2]
+                __ASM_EMIT("and         $0x0f, %[mask]")                            // mask     = (mask << 1) & 0x0f
+                __ASM_EMIT("movss       %%xmm2, %%xmm0")                            // xmm0     = 0 m[0] m[1] m[2]
+
+                // Process steps
+                __ASM_EMIT(".p2align    4")
+                __ASM_EMIT("5:")
+                FILTER_X16P4_CORE
+
+                // Shift buffer and store
+                __ASM_EMIT("test        $0x8, %[mask]")
+                __ASM_EMIT("shufps      $0x93, %%xmm1, %%xmm1")                     // xmm1     = s2[3] s2[0] s2[1] s2[2]
+                __ASM_EMIT("jz          7f")
+                __ASM_EMIT("movss       %%xmm1, (%[dst])")                          // *dst     = s2[3]
+                __ASM_EMIT("add         $4, %[dst]")                                // dst      ++
+                __ASM_EMIT("7:")
+
+                // Update delay only by mask
+                __ASM_EMIT("add         $0x140, %[f]")                              // ++f
+                FILTER_X4_POST_MEMSYNC
+
+                // Repeat loop
+                __ASM_EMIT("xorps       %%xmm2, %%xmm2")                            // xmm2     = 0 0 0 0
+                __ASM_EMIT("shl         $1, %[mask]")                               // mask     = mask << 1
+                __ASM_EMIT("shufps      $0x90, %%xmm0, %%xmm0")                     // xmm0     = m[0] m[0] m[1] m[2]
+                __ASM_EMIT("and         $0x0f, %[mask]")                            // mask     = (mask << 1) & 0x0f
+                __ASM_EMIT("movss       %%xmm2, %%xmm0")                            // xmm0     = 0 m[0] m[1] m[2]
+                __ASM_EMIT("jnz         5b")                                        // check that mask is not zero
+
+                // Store delay buffer
+                __ASM_EMIT32("mov       %[d], %[f]")
+                __ASM_EMIT32("movups    %%xmm6, 0x30(%[f])")                        // xmm6     = d0
+                __ASM_EMIT32("movups    %%xmm7, 0x70(%[f])")                        // xmm7     = d1
+                __ASM_EMIT64("movups    %%xmm6, 0x30(%[d])")                        // xmm6     = d0
+                __ASM_EMIT64("movups    %%xmm7, 0x70(%[d])")                        // xmm7     = d1
+                __ASM_EMIT("mov         %[X_F], %[f]")
 
                 // Exit label
                 __ASM_EMIT("10:")

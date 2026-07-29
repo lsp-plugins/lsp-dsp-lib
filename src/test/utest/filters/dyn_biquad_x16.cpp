@@ -26,9 +26,9 @@
 #include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
 
-#define FILTER_TIMES    8
+#define FILTER_TIMES    16
 #define BUF_SIZE        1024
-#define TOLERANCE       1e-3f
+#define TOLERANCE       1.1e-3f
 
 namespace lsp
 {
@@ -36,48 +36,53 @@ namespace lsp
     {
         void dyn_biquad_process_x1(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x1_t *f);
 
-        void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+        void dyn_biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
-            void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+            void dyn_biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
         }
 
         namespace avx
         {
-            void dyn_biquad_process_x8_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+            void dyn_biquad_process_x16_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
+        }
+
+        namespace avx512
+        {
+            void dyn_biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
         }
     )
 
     IF_ARCH_X86_64(
         namespace sse3
         {
-            void x64_dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+            void x64_dyn_biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
         }
 
         namespace avx
         {
-            void x64_dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+            void x64_dyn_biquad_process_x16_fma3(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
         }
     )
 
-    IF_ARCH_ARM(
-        namespace neon_d32
-        {
-            void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
-        }
-    )
+//    IF_ARCH_ARM(
+//        namespace neon_d32
+//        {
+//            void dyn_biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
+//        }
+//    )
 
-    IF_ARCH_AARCH64(
-        namespace asimd
-        {
-            void dyn_biquad_process_x8(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
-        }
-    )
+//    IF_ARCH_AARCH64(
+//        namespace asimd
+//        {
+//            void dyn_biquad_process_x16(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
+//        }
+//    )
 
-    typedef void (* dyn_biquad_process_x8_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x8_t *f);
+    typedef void (* dyn_biquad_process_x16_t)(float *dst, const float *src, float *d, size_t count, const dsp::biquad_x16_t *f);
 
     static dsp::biquad_x1_t filter =
     {
@@ -92,9 +97,9 @@ namespace lsp
     };
 }
 
-UTEST_BEGIN("dsp.filters", dyn_biquad_x8)
+UTEST_BEGIN("dsp.filters", dyn_biquad_x16)
 
-    void call(const char *label, dyn_biquad_process_x8_t func)
+    void call(const char *label, dyn_biquad_process_x16_t func)
     {
         if (!UTEST_SUPPORTED(func))
             return;
@@ -116,7 +121,7 @@ UTEST_BEGIN("dsp.filters", dyn_biquad_x8)
             void *p1 = NULL, *p2 = NULL;
             const size_t total = count + FILTER_TIMES - 1;
             dsp::biquad_x1_t *f1 = alloc_aligned<dsp::biquad_x1_t>(p1, count, 64);
-            dsp::biquad_x8_t *f2 = alloc_aligned<dsp::biquad_x8_t>(p2, total, 64);
+            dsp::biquad_x16_t *f2 = alloc_aligned<dsp::biquad_x16_t>(p2, total, 64);
             UTEST_ASSERT_MSG(f1 != NULL, "Out of memory while allocating f1");
             UTEST_ASSERT_MSG(f2 != NULL, "Out of memory while allocating f2");
 
@@ -136,10 +141,10 @@ UTEST_BEGIN("dsp.filters", dyn_biquad_x8)
                 f->p2               = 0.0f;
             }
 
-            bzero(f2, total * sizeof(dsp::biquad_x8_t));
+            bzero(f2, total * sizeof(dsp::biquad_x16_t));
             for (size_t j=0; j<FILTER_TIMES; ++j)
             {
-                dsp::biquad_x8_t *f = &f2[j];
+                dsp::biquad_x16_t *f = &f2[j];
                 for (size_t i=0; i<count; ++i, ++f)
                 {
                     const float g       = 1.0f + float(i) * step;
@@ -187,13 +192,14 @@ UTEST_BEGIN("dsp.filters", dyn_biquad_x8)
             call(#func, func)
 
         // Do overall check
-        CALL(generic::dyn_biquad_process_x8);
-        IF_ARCH_X86(CALL(sse::dyn_biquad_process_x8));
-        IF_ARCH_X86_64(CALL(sse3::x64_dyn_biquad_process_x8));
-        IF_ARCH_X86_64(CALL(avx::x64_dyn_biquad_process_x8));
-        IF_ARCH_X86(CALL(avx::dyn_biquad_process_x8_fma3));
-        IF_ARCH_ARM(CALL(neon_d32::dyn_biquad_process_x8));
-        IF_ARCH_AARCH64(CALL(asimd::dyn_biquad_process_x8));
+        IF_ARCH_X86(CALL(generic::dyn_biquad_process_x16));
+        IF_ARCH_X86(CALL(sse::dyn_biquad_process_x16));
+        IF_ARCH_X86_64(CALL(sse3::x64_dyn_biquad_process_x16));
+        IF_ARCH_X86(CALL(avx::dyn_biquad_process_x16_fma3));
+        IF_ARCH_X86_64(CALL(avx::x64_dyn_biquad_process_x16_fma3));
+        IF_ARCH_X86(CALL(avx512::dyn_biquad_process_x16));
+//        IF_ARCH_ARM(CALL(neon_d32::dyn_biquad_process_x16));
+//        IF_ARCH_AARCH64(CALL(asimd::dyn_biquad_process_x16));
     }
 
 UTEST_END

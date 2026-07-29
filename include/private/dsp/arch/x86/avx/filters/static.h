@@ -1033,7 +1033,7 @@ namespace lsp
                 __ASM_EMIT("vmovaps             0x40(%[d]), %%ymm7")                                // ymm7     = d1[0..7]
                 __ASM_EMIT("vmovaps             0x60(%[d]), %%ymm15")                               // ymm15    = d1[8..15]
 
-                // Process first 3 steps
+                // Process first steps
                 __ASM_EMIT(".p2align            4")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("vmovss              (%[src]), %%xmm0")                                  // xmm0     = *src
@@ -1103,8 +1103,8 @@ namespace lsp
                 __ASM_EMIT("vpermilps           $0x93, %%ymm5, %%ymm5")                             // ymm5     = m[3]  m[0]  m[1]  m[2]  m[7]  m[4]  m[5]  m[6]
                 __ASM_EMIT("vpermilps           $0x93, %%ymm13, %%ymm13")                           // ymm13    = m[11] m[8]  m[9]  m[10] m[15] m[12] m[13] m[14]
                 __ASM_EMIT("vperm2f128          $0x21, %%ymm13, %%ymm5, %%ymm3")                    // ymm3     = m[7]  m[4]  m[5]  m[6]  m[11] m[8]  m[9]  m[10]
-                __ASM_EMIT("vperm2f128          $0x08, %%ymm13, %%ymm5, %%ymm11")                   // ymm8     = 0     0     0     0     m[3]  m[0]  m[1]  m[2]
-                __ASM_EMIT("vblendps            $0x11, %%ymm11, %%ymm5, %%ymm5")                    // ymm11    = 0     m[0]  m[1]  m[2]  m[3]  m[4]  m[5]  m[6]
+                __ASM_EMIT("vperm2f128          $0x08, %%ymm13, %%ymm5, %%ymm11")                   // ymm11    = 0     0     0     0     m[3]  m[0]  m[1]  m[2]
+                __ASM_EMIT("vblendps            $0x11, %%ymm11, %%ymm5, %%ymm5")                    // ymm5     = 0     m[0]  m[1]  m[2]  m[3]  m[4]  m[5]  m[6]
                 __ASM_EMIT("vblendps            $0x11, %%ymm3, %%ymm13, %%ymm13")                   // ymm13    = m[7]  m[8]  m[9]  m[10] m[11] m[12] m[13] m[14]
                 __ASM_EMIT("shl                 $1, %[mask]")                                       // mask     = mask << 1
 

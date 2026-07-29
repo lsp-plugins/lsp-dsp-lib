@@ -124,7 +124,7 @@ namespace lsp
             const float *sp = dst;
             dp              = dst;
             i               = count;
-            GENERIC_BIQUAD_X4_CORE(dp, sp, d, i, bq, 16, );
+            GENERIC_BIQUAD_X4_CORE(dp, sp, d, i, bq, 16, ++bq);
             d              += 4;
 
             // Step 3
@@ -132,14 +132,14 @@ namespace lsp
             sp              = dst;
             dp              = dst;
             i               = count;
-            GENERIC_BIQUAD_X4_CORE(dp, sp, d, i, bq, 16, );
+            GENERIC_BIQUAD_X4_CORE(dp, sp, d, i, bq, 16, ++bq);
             d              += 4;
 
             // Step 4
             bq              = reinterpret_cast<const biquad_x16_t *>(&f[12].b0[12]);
             dp              = dst;
             i               = count;
-            GENERIC_BIQUAD_X4_CORE(dp, dst, d, i, bq, 16, );
+            GENERIC_BIQUAD_X4_CORE(dp, dst, d, i, bq, 16, ++bq);
         }
     } /* namespace generic */
 } /* namespace lsp */

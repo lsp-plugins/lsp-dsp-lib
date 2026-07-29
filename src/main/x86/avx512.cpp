@@ -408,6 +408,7 @@
                 CEXPORT1(vl, lerp_kkv);
 
                 CEXPORT1(vl, biquad_process_x16);
+                CEXPORT1(vl, dyn_biquad_process_x16);
             }
         } /* namespace avx2 */
     } /* namespace lsp */
