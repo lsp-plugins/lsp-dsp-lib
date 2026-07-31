@@ -344,6 +344,7 @@
                 CEXPORT1(favx, bilinear_transform_x2);
                 CEXPORT1(favx, bilinear_transform_x4);
                 CEXPORT2_X64(favx, bilinear_transform_x8, x64_bilinear_transform_x8);
+                CEXPORT2_X64(favx, bilinear_transform_x16, x64_bilinear_transform_x16);
 
                 CEXPORT1(favx, h_sum);
                 CEXPORT1(favx, h_sqr_sum);
