@@ -150,7 +150,7 @@ namespace lsp
                 __ASM_EMIT("vaddss              %%xmm4, %%xmm2, %%xmm6")                            // xmm6 = d0' = d1 + b1*s + a1*s'
                 __ASM_EMIT("vaddss              %%xmm5, %%xmm3, %%xmm7")                            // xmm7 = d1' = b2*s + a2*s'
                 __ASM_EMIT("vshufps             $0xb1, %%xmm0, %%xmm0, %%xmm0")                     // shift
-                __ASM_EMIT("add                 $0x28, %[f]")                                       // ++f
+                __ASM_EMIT("add                 $0x30, %[f]")                                       // ++f
                 __ASM_EMIT("add                 $0x04, %[src]")                                     // src++
                 __ASM_EMIT("dec                 %[count]")
                 __ASM_EMIT("vmovss              %%xmm6, 0x00(%[d])")
@@ -173,7 +173,7 @@ namespace lsp
                 __ASM_EMIT("vshufps             $0xb1, %%xmm0, %%xmm0, %%xmm0")                     // shift
                 __ASM_EMIT("vaddps              %%xmm3, %%xmm6, %%xmm6")                            // xmm6 = d0' e0' d1' e1' = d1+b1*s0+a1*s0' e1+j1*s1+i1*s1' b2*s0+a2*s0' j2*s1+i2*s1'
                 __ASM_EMIT("vmovss              %%xmm0, (%[dst])")
-                __ASM_EMIT("add                 $0x28, %[f]")                                       // ++f
+                __ASM_EMIT("add                 $0x30, %[f]")                                       // ++f
                 __ASM_EMIT("add                 $0x04, %[src]")
                 __ASM_EMIT("add                 $0x04, %[dst]")
                 __ASM_EMIT("dec                 %[count]")
@@ -223,7 +223,7 @@ namespace lsp
                 __ASM_EMIT("vfmadd231ss         0x20(%[f]), %%xmm0, %%xmm3")                        // xmm3 = d1' = b2*s + a2*s'
                 __ASM_EMIT("vfmadd231ss         0x18(%[f]), %%xmm0, %%xmm2")                        // xmm2 = d0' = d1 + b1*s + a1*s'
                 __ASM_EMIT("vshufps             $0xb1, %%xmm0, %%xmm0, %%xmm0")                     // shift
-                __ASM_EMIT("add                 $0x28, %[f]")                                       // ++f
+                __ASM_EMIT("add                 $0x30, %[f]")                                       // ++f
                 __ASM_EMIT("add                 $0x04, %[src]")                                     // src++
                 __ASM_EMIT("dec                 %[count]")
                 __ASM_EMIT("vmovss              %%xmm2, 0x00(%[d])")
@@ -245,7 +245,7 @@ namespace lsp
                 __ASM_EMIT("vshufps             $0xb1, %%xmm0, %%xmm0, %%xmm0")                     // shift
                 __ASM_EMIT("vaddps              %%xmm3, %%xmm6, %%xmm6")                            // xmm6 = d0' e0' d1' e1' = d1+b1*s0+a1*s0' e1+j1*s1+i1*s1' b2*s0+a2*s0' j2*s1+i2*s1'
                 __ASM_EMIT("vmovss              %%xmm0, (%[dst])")
-                __ASM_EMIT("add                 $0x28, %[f]")                                       // ++f
+                __ASM_EMIT("add                 $0x30, %[f]")                                       // ++f
                 __ASM_EMIT("add                 $0x04, %[src]")
                 __ASM_EMIT("add                 $0x04, %[dst]")
                 __ASM_EMIT("dec                 %[count]")

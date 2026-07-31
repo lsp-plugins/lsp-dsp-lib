@@ -221,7 +221,7 @@ typedef struct LSP_DSP_LIB_TYPE(biquad_x1_t)
 
 /**
  * Biquad filter bank for 2 digital biquad filters,
- * should be aligned to 8-byte boundary
+ * should be aligned to 16-byte boundary
  */
 typedef struct LSP_DSP_LIB_TYPE(biquad_x2_t)
 {
@@ -230,6 +230,7 @@ typedef struct LSP_DSP_LIB_TYPE(biquad_x2_t)
     float   b2[2];
     float   a1[2];
     float   a2[2];
+    float   p[2];
 } LSP_DSP_LIB_TYPE(biquad_x2_t);
 
 /**

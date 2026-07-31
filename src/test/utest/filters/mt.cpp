@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -30,6 +30,7 @@
 #define BIQUAD_X2_FLOATS    (sizeof(dsp::biquad_x2_t) / sizeof(float))
 #define BIQUAD_X4_FLOATS    (sizeof(dsp::biquad_x4_t) / sizeof(float))
 #define BIQUAD_X8_FLOATS    (sizeof(dsp::biquad_x8_t) / sizeof(float))
+#define BIQUAD_X16_FLOATS   (sizeof(dsp::biquad_x16_t) / sizeof(float))
 #define CASCADE_FLOATS      (sizeof(dsp::f_cascade_t) / sizeof(float))
 
 namespace lsp
@@ -65,10 +66,10 @@ UTEST_BEGIN("dsp.filters", mt)
         dsp::f_cascade_t *bc = src1.data<dsp::f_cascade_t>();
         for (size_t i=0; i<CASCADES; ++i)
         {
-            float kt = i * 0.1;
-            float kb = i * 0.05;
-            bc[i].t[0] = 1 + kt; bc[i].t[1] = 2 + kt;  bc[i].t[2] = 1 - kt; bc[i].t[3] = 0;
-            bc[i].b[0] = 1 + kb; bc[i].b[1] = -2 + kb; bc[i].b[2] = 1 - kb; bc[i].b[3] = 0;
+            float kt = i * 0.1f;
+            float kb = i * 0.05f;
+            bc[i].t[0] = 1.0f + kt; bc[i].t[1] = 2.0f + kt;  bc[i].t[2] = 1.0f - kt; bc[i].t[3] = 0.0f;
+            bc[i].b[0] = 1.0f + kb; bc[i].b[1] = -2.0f + kb; bc[i].b[2] = 1.0f - kb; bc[i].b[3] = 0.0f;
         }
 
         FloatBuffer src2(src1); // Copy of src1

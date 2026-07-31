@@ -97,6 +97,7 @@ UTEST_BEGIN("dsp.filters", biquad_x2)
             f2.b2[i]    = filter.b2;
             f2.a1[i]    = filter.a1;
             f2.a2[i]    = filter.a2;
+            f2.p[i]     = 0.0f;
         }
 
         float d1[2] __lsp_aligned64;

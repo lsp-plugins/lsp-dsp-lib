@@ -438,11 +438,13 @@ namespace lsp
             EXPORT1(bilinear_transform_x2);
             EXPORT1(bilinear_transform_x4);
             EXPORT1(bilinear_transform_x8);
+            EXPORT1(bilinear_transform_x16);
 
             EXPORT1(matched_transform_x1);
             EXPORT1(matched_transform_x2);
             EXPORT1(matched_transform_x4);
             EXPORT1(matched_transform_x8);
+            EXPORT1(matched_transform_x16);
 
             EXPORT1(axis_apply_lin1);
             EXPORT1(axis_apply_log1);

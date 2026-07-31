@@ -41,7 +41,7 @@ LSP_DSP_LIB_SYMBOL(void, biquad_process_x1, float *dst, const float *src, float 
  * @param src source samples
  * @param d filter memory, should be 8-byte aligned
  * @param count number of samples to process
- * @param f bi-quadratic filter structure, should be 8-byte aligned
+ * @param f bi-quadratic filter structure, should be 16-byte aligned
  */
 LSP_DSP_LIB_SYMBOL(void, biquad_process_x2, float *dst, const float *src, float *d, size_t count, const LSP_DSP_LIB_TYPE(biquad_x2_t) *f);
 

@@ -51,13 +51,13 @@ namespace lsp
                 B[2]            = bc->b[2]*kf2;
 
                 // Calculate the convolution
-                N               = 1.0 / (B[0] + B[1] + B[2]);
+                N               = 1.0f / (B[0] + B[1] + B[2]);
 
                 // Initialize filter parameters
                 bf->b0          = (T[0] + T[1] + T[2]) * N;
-                bf->b1          = 2.0 * (T[0] - T[2]) * N;
+                bf->b1          = 2.0f * (T[0] - T[2]) * N;
                 bf->b2          = (T[0] - T[1] + T[2]) * N;
-                bf->a1          = 2.0 * (B[2] - B[0]) * N;  // Sign negated
+                bf->a1          = 2.0f * (B[2] - B[0]) * N; // Sign negated
                 bf->a2          = (B[1] - B[2] - B[0]) * N; // Sign negated
                 bf->p0          = 0.0f;
                 bf->p1          = 0.0f;
@@ -100,22 +100,25 @@ namespace lsp
                 B[6]            = bc[1].b[2]*kf2;
 
                 // Calculate the convolution
-                N[0]            = 1.0 / (B[0] + B[1] + B[2]);
-                N[1]            = 1.0 / (B[4] + B[5] + B[6]);
+                N[0]            = 1.0f / (B[0] + B[1] + B[2]);
+                N[1]            = 1.0f / (B[4] + B[5] + B[6]);
 
                 // Initialize filter top coefficients
-                bf->b0[0]        = (T[0] + T[1] + T[2]) * N[0];
-                bf->b0[1]        = (T[4] + T[5] + T[6]) * N[1];
-                bf->b1[0]        = 2.0f * (T[0] - T[2]) * N[0];
-                bf->b1[1]        = 2.0f * (T[4] - T[6]) * N[1];
-                bf->b2[0]        = (T[0] - T[1] + T[2]) * N[0];
-                bf->b2[1]        = (T[4] - T[5] + T[6]) * N[1];
+                bf->b0[0]       = (T[0] + T[1] + T[2]) * N[0];
+                bf->b0[1]       = (T[4] + T[5] + T[6]) * N[1];
+                bf->b1[0]       = 2.0f * (T[0] - T[2]) * N[0];
+                bf->b1[1]       = 2.0f * (T[4] - T[6]) * N[1];
+                bf->b2[0]       = (T[0] - T[1] + T[2]) * N[0];
+                bf->b2[1]       = (T[4] - T[5] + T[6]) * N[1];
 
                 // Initialize filter bottom coefficients
-                bf->a1[0]        = 2.0 * (B[2] - B[0]) * N[0];  // Sign negated
-                bf->a1[1]        = 2.0 * (B[6] - B[4]) * N[1];  // Sign negated
-                bf->a2[0]        = (B[1] - B[2] - B[0]) * N[0]; // Sign negated
-                bf->a2[1]        = (B[5] - B[6] - B[4]) * N[1]; // Sign negated
+                bf->a1[0]       = 2.0f * (B[2] - B[0]) * N[0];  // Sign negated
+                bf->a1[1]       = 2.0f * (B[6] - B[4]) * N[1];  // Sign negated
+                bf->a2[0]       = (B[1] - B[2] - B[0]) * N[0]; // Sign negated
+                bf->a2[1]       = (B[5] - B[6] - B[4]) * N[1]; // Sign negated
+
+                bf->p[0]        = 0.0f;
+                bf->p[1]        = 0.0f;
 
                 // Increment pointers
                 bc             += 2;
@@ -167,10 +170,10 @@ namespace lsp
                 B2[3]           = bc[3].b[2]*kf2;
 
                 // Calculate the convolution
-                N[0]            = 1.0 / (B0[0] + B1[0] + B2[0]);
-                N[1]            = 1.0 / (B0[1] + B1[1] + B2[1]);
-                N[2]            = 1.0 / (B0[2] + B1[2] + B2[2]);
-                N[3]            = 1.0 / (B0[3] + B1[3] + B2[3]);
+                N[0]            = 1.0f / (B0[0] + B1[0] + B2[0]);
+                N[1]            = 1.0f / (B0[1] + B1[1] + B2[1]);
+                N[2]            = 1.0f / (B0[2] + B1[2] + B2[2]);
+                N[3]            = 1.0f / (B0[3] + B1[3] + B2[3]);
 
                 // Initialize filter parameters
                 bf->b0[0]       = (T0[0] + T1[0] + T2[0]) * N[0];
@@ -178,20 +181,20 @@ namespace lsp
                 bf->b0[2]       = (T0[2] + T1[2] + T2[2]) * N[2];
                 bf->b0[3]       = (T0[3] + T1[3] + T2[3]) * N[3];
 
-                bf->b1[0]       = 2.0 * (T0[0] - T2[0]) * N[0];
-                bf->b1[1]       = 2.0 * (T0[1] - T2[1]) * N[1];
-                bf->b1[2]       = 2.0 * (T0[2] - T2[2]) * N[2];
-                bf->b1[3]       = 2.0 * (T0[3] - T2[3]) * N[3];
+                bf->b1[0]       = 2.0f * (T0[0] - T2[0]) * N[0];
+                bf->b1[1]       = 2.0f * (T0[1] - T2[1]) * N[1];
+                bf->b1[2]       = 2.0f * (T0[2] - T2[2]) * N[2];
+                bf->b1[3]       = 2.0f * (T0[3] - T2[3]) * N[3];
 
                 bf->b2[0]       = (T0[0] - T1[0] + T2[0]) * N[0];
                 bf->b2[1]       = (T0[1] - T1[1] + T2[1]) * N[1];
                 bf->b2[2]       = (T0[2] - T1[2] + T2[2]) * N[2];
                 bf->b2[3]       = (T0[3] - T1[3] + T2[3]) * N[3];
 
-                bf->a1[0]       = 2.0 * (B2[0] - B0[0]) * N[0];     // Sign negated
-                bf->a1[1]       = 2.0 * (B2[1] - B0[1]) * N[1];     // Sign negated
-                bf->a1[2]       = 2.0 * (B2[2] - B0[2]) * N[2];     // Sign negated
-                bf->a1[3]       = 2.0 * (B2[3] - B0[3]) * N[3];     // Sign negated
+                bf->a1[0]       = 2.0f * (B2[0] - B0[0]) * N[0];    // Sign negated
+                bf->a1[1]       = 2.0f * (B2[1] - B0[1]) * N[1];    // Sign negated
+                bf->a1[2]       = 2.0f * (B2[2] - B0[2]) * N[2];    // Sign negated
+                bf->a1[3]       = 2.0f * (B2[3] - B0[3]) * N[3];    // Sign negated
 
                 bf->a2[0]       = (B1[0] - B2[0] - B0[0]) * N[0];   // Sign negated
                 bf->a2[1]       = (B1[1] - B2[1] - B0[1]) * N[1];   // Sign negated
@@ -214,7 +217,7 @@ namespace lsp
             float kf2       = kf * kf;
 
             // Calculate as two passes of x4 filters
-            for (size_t n=0; n<=4; n+=4)
+            for (size_t n=0; n < 8; n += 4)
             {
                 // two x4 filters are in parallel, shift by 4 floats stride
                 biquad_x8_t *bq         = reinterpret_cast<biquad_x8_t *>(&bf->b0[n]);
@@ -255,10 +258,10 @@ namespace lsp
                     B2[3]           = fc[3].b[2]*kf2;
 
                     // Calculate the convolution
-                    N[0]            = 1.0 / (B0[0] + B1[0] + B2[0]);
-                    N[1]            = 1.0 / (B0[1] + B1[1] + B2[1]);
-                    N[2]            = 1.0 / (B0[2] + B1[2] + B2[2]);
-                    N[3]            = 1.0 / (B0[3] + B1[3] + B2[3]);
+                    N[0]            = 1.0f / (B0[0] + B1[0] + B2[0]);
+                    N[1]            = 1.0f / (B0[1] + B1[1] + B2[1]);
+                    N[2]            = 1.0f / (B0[2] + B1[2] + B2[2]);
+                    N[3]            = 1.0f / (B0[3] + B1[3] + B2[3]);
 
                     // Initialize filter parameters
                     bq->b0[0]       = (T0[0] + T1[0] + T2[0]) * N[0];
@@ -266,20 +269,20 @@ namespace lsp
                     bq->b0[2]       = (T0[2] + T1[2] + T2[2]) * N[2];
                     bq->b0[3]       = (T0[3] + T1[3] + T2[3]) * N[3];
 
-                    bq->b1[0]       = 2.0 * (T0[0] - T2[0]) * N[0];
-                    bq->b1[1]       = 2.0 * (T0[1] - T2[1]) * N[1];
-                    bq->b1[2]       = 2.0 * (T0[2] - T2[2]) * N[2];
-                    bq->b1[3]       = 2.0 * (T0[3] - T2[3]) * N[3];
+                    bq->b1[0]       = 2.0f * (T0[0] - T2[0]) * N[0];
+                    bq->b1[1]       = 2.0f * (T0[1] - T2[1]) * N[1];
+                    bq->b1[2]       = 2.0f * (T0[2] - T2[2]) * N[2];
+                    bq->b1[3]       = 2.0f * (T0[3] - T2[3]) * N[3];
 
                     bq->b2[0]       = (T0[0] - T1[0] + T2[0]) * N[0];
                     bq->b2[1]       = (T0[1] - T1[1] + T2[1]) * N[1];
                     bq->b2[2]       = (T0[2] - T1[2] + T2[2]) * N[2];
                     bq->b2[3]       = (T0[3] - T1[3] + T2[3]) * N[3];
 
-                    bq->a1[0]       = 2.0 * (B2[0] - B0[0]) * N[0];     // Sign negated
-                    bq->a1[1]       = 2.0 * (B2[1] - B0[1]) * N[1];     // Sign negated
-                    bq->a1[2]       = 2.0 * (B2[2] - B0[2]) * N[2];     // Sign negated
-                    bq->a1[3]       = 2.0 * (B2[3] - B0[3]) * N[3];     // Sign negated
+                    bq->a1[0]       = 2.0f * (B2[0] - B0[0]) * N[0];    // Sign negated
+                    bq->a1[1]       = 2.0f * (B2[1] - B0[1]) * N[1];    // Sign negated
+                    bq->a1[2]       = 2.0f * (B2[2] - B0[2]) * N[2];    // Sign negated
+                    bq->a1[3]       = 2.0f * (B2[3] - B0[3]) * N[3];    // Sign negated
 
                     bq->a2[0]       = (B1[0] - B2[0] - B0[0]) * N[0];   // Sign negated
                     bq->a2[1]       = (B1[1] - B2[1] - B0[1]) * N[1];   // Sign negated
@@ -288,6 +291,95 @@ namespace lsp
 
                     // Increment pointers
                     fc             += 8;
+                    bq              ++;
+                }
+            }
+        }
+
+        void bilinear_transform_x16(biquad_x16_t *bf, const f_cascade_t *bc, float kf, size_t count)
+        {
+            if (count <= 0)
+                return;
+
+            float T0[4], T1[4], T2[4];
+            float B0[4], B1[4], B2[4], N[4];
+            float kf2       = kf * kf;
+
+            // Calculate as four passes of x4 filters
+            for (size_t n=0; n < 16; n += 4)
+            {
+                // four x4 filters are in parallel, shift by 4 floats stride
+                biquad_x16_t *bq    = reinterpret_cast<biquad_x16_t *>(&bf->b0[n]);
+                const f_cascade_t *fc   = &bc[n];
+
+                for (size_t i=0; i<count; ++i)
+                {
+                    // Calculate top coefficients
+                    T0[0]           = fc[0].t[0];
+                    T0[1]           = fc[1].t[0];
+                    T0[2]           = fc[2].t[0];
+                    T0[3]           = fc[3].t[0];
+
+                    T1[0]           = fc[0].t[1]*kf;
+                    T1[1]           = fc[1].t[1]*kf;
+                    T1[2]           = fc[2].t[1]*kf;
+                    T1[3]           = fc[3].t[1]*kf;
+
+                    T2[0]           = fc[0].t[2]*kf2;
+                    T2[1]           = fc[1].t[2]*kf2;
+                    T2[2]           = fc[2].t[2]*kf2;
+                    T2[3]           = fc[3].t[2]*kf2;
+
+                    // Calculate bottom coefficients
+                    B0[0]           = fc[0].b[0];
+                    B0[1]           = fc[1].b[0];
+                    B0[2]           = fc[2].b[0];
+                    B0[3]           = fc[3].b[0];
+
+                    B1[0]           = fc[0].b[1]*kf;
+                    B1[1]           = fc[1].b[1]*kf;
+                    B1[2]           = fc[2].b[1]*kf;
+                    B1[3]           = fc[3].b[1]*kf;
+
+                    B2[0]           = fc[0].b[2]*kf2;
+                    B2[1]           = fc[1].b[2]*kf2;
+                    B2[2]           = fc[2].b[2]*kf2;
+                    B2[3]           = fc[3].b[2]*kf2;
+
+                    // Calculate the convolution
+                    N[0]            = 1.0f / (B0[0] + B1[0] + B2[0]);
+                    N[1]            = 1.0f / (B0[1] + B1[1] + B2[1]);
+                    N[2]            = 1.0f / (B0[2] + B1[2] + B2[2]);
+                    N[3]            = 1.0f / (B0[3] + B1[3] + B2[3]);
+
+                    // Initialize filter parameters
+                    bq->b0[0]       = (T0[0] + T1[0] + T2[0]) * N[0];
+                    bq->b0[1]       = (T0[1] + T1[1] + T2[1]) * N[1];
+                    bq->b0[2]       = (T0[2] + T1[2] + T2[2]) * N[2];
+                    bq->b0[3]       = (T0[3] + T1[3] + T2[3]) * N[3];
+
+                    bq->b1[0]       = 2.0f * (T0[0] - T2[0]) * N[0];
+                    bq->b1[1]       = 2.0f * (T0[1] - T2[1]) * N[1];
+                    bq->b1[2]       = 2.0f * (T0[2] - T2[2]) * N[2];
+                    bq->b1[3]       = 2.0f * (T0[3] - T2[3]) * N[3];
+
+                    bq->b2[0]       = (T0[0] - T1[0] + T2[0]) * N[0];
+                    bq->b2[1]       = (T0[1] - T1[1] + T2[1]) * N[1];
+                    bq->b2[2]       = (T0[2] - T1[2] + T2[2]) * N[2];
+                    bq->b2[3]       = (T0[3] - T1[3] + T2[3]) * N[3];
+
+                    bq->a1[0]       = 2.0f * (B2[0] - B0[0]) * N[0];    // Sign negated
+                    bq->a1[1]       = 2.0f * (B2[1] - B0[1]) * N[1];    // Sign negated
+                    bq->a1[2]       = 2.0f * (B2[2] - B0[2]) * N[2];    // Sign negated
+                    bq->a1[3]       = 2.0f * (B2[3] - B0[3]) * N[3];    // Sign negated
+
+                    bq->a2[0]       = (B1[0] - B2[0] - B0[0]) * N[0];   // Sign negated
+                    bq->a2[1]       = (B1[1] - B2[1] - B0[1]) * N[1];   // Sign negated
+                    bq->a2[2]       = (B1[2] - B2[2] - B0[2]) * N[2];   // Sign negated
+                    bq->a2[3]       = (B1[3] - B2[3] - B0[3]) * N[3];   // Sign negated
+
+                    // Increment pointers
+                    fc             += 16;
                     bq              ++;
                 }
             }
@@ -338,7 +430,7 @@ namespace lsp
                     // Transfer function
                     b           = p[0] - p[2]*0.01f;
                     c           = p[1]*0.1f;
-                    p[3]        = sqrt(b*b + c*c);
+                    p[3]        = sqrtf(b*b + c*c);
 
                     // Calculate parameters
                     k           = p[2];
@@ -352,11 +444,11 @@ namespace lsp
                         // Transformed form is:
                         //   P[z] = k*(1 - (exp(R0*T) + exp(R1*T))*z^-1 + exp((R0+R1)*T)*z^-2)
                         D           = sqrtf(D);
-                        float R0    = td*(-b - D)/a2;
-                        float R1    = td*(-b + D)/a2;
+                        float R0    = expf(td*(-b - D)/a2);
+                        float R1    = expf(td*(-b + D)/a2);
                         p[0]        = k;
-                        p[1]        = -k * (expf(R0) + expf(R1));
-                        p[2]        = k * expf(R0+R1);
+                        p[1]        = -k * (R0 + R1);
+                        p[2]        = k * R0*R1;
                     }
                     else
                     {
@@ -364,11 +456,11 @@ namespace lsp
                         // Transformed form is:
                         //   P[z] = k*(1 - 2*exp(R*T)*cos(K*T)*z^-1 + exp(2*R*T)*z^-2)
                         D           = sqrtf(-D);
-                        float R     = -(td*b) /a2;
+                        float R     = expf(-(td*b)/a2);
                         float K     = D /a2;
                         p[0]        = k;
-                        p[1]        = -2.0 * k * expf(R) * cosf(K*td);
-                        p[2]        = k * expf(R+R);
+                        p[1]        = -2.0f * k * R * cosf(K*td);
+                        p[2]        = k * R * R;
                     }
 
                     // Update pointer
@@ -387,7 +479,7 @@ namespace lsp
             float cos_w     = cos(w);
             float sin_w     = sin(w);
             float cos_2w    = cos_w*cos_w - sin_w*sin_w; // cos(2x) = cos(x)^2 - sin(x)^2
-            float sin_2w    = 2*sin_w*cos_w; // sin(2x) = 2 * cos(x) * sin(x)
+            float sin_2w    = 2.0f*sin_w*cos_w; // sin(2x) = 2 * cos(x) * sin(x)
 
             // We have to calculate the norming factor of the digital filter
             // To do this, we should get the amplitude of the discrete transfer function
@@ -417,7 +509,7 @@ namespace lsp
 
                  */
                 float AN    = (ab * bc->t[3]) / (at * bc->b[3]); // Normalizing factor for the amplitude to match the analog filter
-                float N2    = 1.0 / bc->b[0];
+                float N2    = 1.0f / bc->b[0];
                 float N1    = AN * N2;
 
                 // Normalize filter parameters
@@ -442,7 +534,7 @@ namespace lsp
             float cos_w     = cos(w);
             float sin_w     = sin(w);
             float cos_2w    = cos_w*cos_w - sin_w*sin_w; // cos(2x) = cos(x)^2 - sin(x)^2
-            float sin_2w    = 2*sin_w*cos_w; // sin(2x) = 2 * cos(x) * sin(x)
+            float sin_2w    = 2.0f*sin_w*cos_w; // sin(2x) = 2 * cos(x) * sin(x)
 
             // Step 1. Solve filters
             for (size_t i=0; i<2; ++i)
@@ -480,8 +572,8 @@ namespace lsp
                 AN[0]       = (ab[0] * bc[0].t[3]) / (at[0] * bc[0].b[3]); // Normalizing factor for the amplitude to match the analog filter
                 AN[1]       = (ab[1] * bc[1].t[3]) / (at[1] * bc[1].b[3]); // Normalizing factor for the amplitude to match the analog filter
 
-                N2[0]       = 1.0 / bc[0].b[0];
-                N2[1]       = 1.0 / bc[1].b[0];
+                N2[0]       = 1.0f / bc[0].b[0];
+                N2[1]       = 1.0f / bc[1].b[0];
                 N1[0]       = AN[0] * N2[0];
                 N1[1]       = AN[1] * N2[1];
 
@@ -613,7 +705,7 @@ namespace lsp
             float cos_w     = cos(w);
             float sin_w     = sin(w);
             float cos_2w    = cos_w*cos_w - sin_w*sin_w; // cos(2x) = cos(x)^2 - sin(x)^2
-            float sin_2w    = 2*sin_w*cos_w; // sin(2x) = 2 * cos(x) * sin(x)
+            float sin_2w    = 2.0f*sin_w*cos_w; // sin(2x) = 2 * cos(x) * sin(x)
 
             // Step 1. Solve filters
             for (size_t i=0; i<8; ++i)
@@ -627,7 +719,7 @@ namespace lsp
 
             float re[8], im[8], at[8], ab[8], AN[8], N1[8], N2[8];
 
-            // Iterate each cascade pair
+            // Iterate each cascade set
             while (count--)
             {
                 // Calculate the discrete transfer function part at specified frequency
@@ -695,14 +787,14 @@ namespace lsp
                 AN[6]       = (ab[6] * bc[6].t[3]) / (at[6] * bc[6].b[3]); // Normalizing factor for the amplitude to match the analog filter
                 AN[7]       = (ab[7] * bc[7].t[3]) / (at[7] * bc[7].b[3]); // Normalizing factor for the amplitude to match the analog filter
 
-                N2[0]       = 1.0 / bc[0].b[0];
-                N2[1]       = 1.0 / bc[1].b[0];
-                N2[2]       = 1.0 / bc[2].b[0];
-                N2[3]       = 1.0 / bc[3].b[0];
-                N2[4]       = 1.0 / bc[4].b[0];
-                N2[5]       = 1.0 / bc[5].b[0];
-                N2[6]       = 1.0 / bc[6].b[0];
-                N2[7]       = 1.0 / bc[7].b[0];
+                N2[0]       = 1.0f / bc[0].b[0];
+                N2[1]       = 1.0f / bc[1].b[0];
+                N2[2]       = 1.0f / bc[2].b[0];
+                N2[3]       = 1.0f / bc[3].b[0];
+                N2[4]       = 1.0f / bc[4].b[0];
+                N2[5]       = 1.0f / bc[5].b[0];
+                N2[6]       = 1.0f / bc[6].b[0];
+                N2[7]       = 1.0f / bc[7].b[0];
 
                 N1[0]       = AN[0] * N2[0];
                 N1[1]       = AN[1] * N2[1];
@@ -764,7 +856,277 @@ namespace lsp
                 bc          += 8;
             } // for i
         }
-    }
-}
+
+        void matched_transform_x16(biquad_x16_t *bf, f_cascade_t *bc, float kf, float td, size_t count)
+        {
+            double w        = kf * td * 0.1;
+            float cos_w     = cos(w);
+            float sin_w     = sin(w);
+            float cos_2w    = cos_w*cos_w - sin_w*sin_w; // cos(2x) = cos(x)^2 - sin(x)^2
+            float sin_2w    = 2.0f*sin_w*cos_w; // sin(2x) = 2 * cos(x) * sin(x)
+
+            // Step 1. Solve filters
+            for (size_t i=0; i<16; ++i)
+            {
+                f_cascade_t *xc = &bc[i*17];
+
+                // Find roots for top and bottom polynoms
+                matched_solve(xc->t, kf, td, count - 15, (16*sizeof(f_cascade_t))/sizeof(float));
+                matched_solve(xc->b, kf, td, count - 15, (16*sizeof(f_cascade_t))/sizeof(float));
+            }
+
+            float re[16], im[16], at[16], ab[16], AN[16], N1[16], N2[16];
+
+            // Iterate each cascade set
+            while (count--)
+            {
+                // Calculate the discrete transfer function part at specified frequency
+                re[0]       = bc[0].t[0]*cos_2w + bc[0].t[1]*cos_w + bc[0].t[2];
+                re[1]       = bc[1].t[0]*cos_2w + bc[1].t[1]*cos_w + bc[1].t[2];
+                re[2]       = bc[2].t[0]*cos_2w + bc[2].t[1]*cos_w + bc[2].t[2];
+                re[3]       = bc[3].t[0]*cos_2w + bc[3].t[1]*cos_w + bc[3].t[2];
+                re[4]       = bc[4].t[0]*cos_2w + bc[4].t[1]*cos_w + bc[4].t[2];
+                re[5]       = bc[5].t[0]*cos_2w + bc[5].t[1]*cos_w + bc[5].t[2];
+                re[6]       = bc[6].t[0]*cos_2w + bc[6].t[1]*cos_w + bc[6].t[2];
+                re[7]       = bc[7].t[0]*cos_2w + bc[7].t[1]*cos_w + bc[7].t[2];
+                re[8]       = bc[8].t[0]*cos_2w + bc[8].t[1]*cos_w + bc[8].t[2];
+                re[9]       = bc[9].t[0]*cos_2w + bc[9].t[1]*cos_w + bc[9].t[2];
+                re[10]      = bc[10].t[0]*cos_2w + bc[10].t[1]*cos_w + bc[10].t[2];
+                re[11]      = bc[11].t[0]*cos_2w + bc[11].t[1]*cos_w + bc[11].t[2];
+                re[12]      = bc[12].t[0]*cos_2w + bc[12].t[1]*cos_w + bc[12].t[2];
+                re[13]      = bc[13].t[0]*cos_2w + bc[13].t[1]*cos_w + bc[13].t[2];
+                re[14]      = bc[14].t[0]*cos_2w + bc[14].t[1]*cos_w + bc[14].t[2];
+                re[15]      = bc[15].t[0]*cos_2w + bc[15].t[1]*cos_w + bc[15].t[2];
+
+                im[0]       = bc[0].t[0]*sin_2w + bc[0].t[1]*sin_w;
+                im[1]       = bc[1].t[0]*sin_2w + bc[1].t[1]*sin_w;
+                im[2]       = bc[2].t[0]*sin_2w + bc[2].t[1]*sin_w;
+                im[3]       = bc[3].t[0]*sin_2w + bc[3].t[1]*sin_w;
+                im[4]       = bc[4].t[0]*sin_2w + bc[4].t[1]*sin_w;
+                im[5]       = bc[5].t[0]*sin_2w + bc[5].t[1]*sin_w;
+                im[6]       = bc[6].t[0]*sin_2w + bc[6].t[1]*sin_w;
+                im[7]       = bc[7].t[0]*sin_2w + bc[7].t[1]*sin_w;
+                im[8]       = bc[8].t[0]*sin_2w + bc[8].t[1]*sin_w;
+                im[9]       = bc[9].t[0]*sin_2w + bc[9].t[1]*sin_w;
+                im[10]      = bc[10].t[0]*sin_2w + bc[10].t[1]*sin_w;
+                im[11]      = bc[11].t[0]*sin_2w + bc[11].t[1]*sin_w;
+                im[12]      = bc[12].t[0]*sin_2w + bc[12].t[1]*sin_w;
+                im[13]      = bc[13].t[0]*sin_2w + bc[13].t[1]*sin_w;
+                im[14]      = bc[14].t[0]*sin_2w + bc[14].t[1]*sin_w;
+                im[15]      = bc[15].t[0]*sin_2w + bc[15].t[1]*sin_w;
+
+                at[0]       = sqrtf(re[0]*re[0] + im[0]*im[0]);
+                at[1]       = sqrtf(re[1]*re[1] + im[1]*im[1]);
+                at[2]       = sqrtf(re[2]*re[2] + im[2]*im[2]);
+                at[3]       = sqrtf(re[3]*re[3] + im[3]*im[3]);
+                at[4]       = sqrtf(re[4]*re[4] + im[4]*im[4]);
+                at[5]       = sqrtf(re[5]*re[5] + im[5]*im[5]);
+                at[6]       = sqrtf(re[6]*re[6] + im[6]*im[6]);
+                at[7]       = sqrtf(re[7]*re[7] + im[7]*im[7]);
+                at[8]       = sqrtf(re[8]*re[8] + im[8]*im[8]);
+                at[9]       = sqrtf(re[9]*re[9] + im[9]*im[9]);
+                at[10]      = sqrtf(re[10]*re[10] + im[10]*im[10]);
+                at[11]      = sqrtf(re[11]*re[11] + im[11]*im[11]);
+                at[12]      = sqrtf(re[12]*re[12] + im[12]*im[12]);
+                at[13]      = sqrtf(re[13]*re[13] + im[13]*im[13]);
+                at[14]      = sqrtf(re[14]*re[14] + im[14]*im[14]);
+                at[15]      = sqrtf(re[15]*re[15] + im[15]*im[15]);
+
+                re[0]       = bc[0].b[0]*cos_2w + bc[0].b[1]*cos_w + bc[0].b[2];
+                re[1]       = bc[1].b[0]*cos_2w + bc[1].b[1]*cos_w + bc[1].b[2];
+                re[2]       = bc[2].b[0]*cos_2w + bc[2].b[1]*cos_w + bc[2].b[2];
+                re[3]       = bc[3].b[0]*cos_2w + bc[3].b[1]*cos_w + bc[3].b[2];
+                re[4]       = bc[4].b[0]*cos_2w + bc[4].b[1]*cos_w + bc[4].b[2];
+                re[5]       = bc[5].b[0]*cos_2w + bc[5].b[1]*cos_w + bc[5].b[2];
+                re[6]       = bc[6].b[0]*cos_2w + bc[6].b[1]*cos_w + bc[6].b[2];
+                re[7]       = bc[7].b[0]*cos_2w + bc[7].b[1]*cos_w + bc[7].b[2];
+                re[8]       = bc[8].b[0]*cos_2w + bc[8].b[1]*cos_w + bc[8].b[2];
+                re[9]       = bc[9].b[0]*cos_2w + bc[9].b[1]*cos_w + bc[9].b[2];
+                re[10]      = bc[10].b[0]*cos_2w + bc[10].b[1]*cos_w + bc[10].b[2];
+                re[11]      = bc[11].b[0]*cos_2w + bc[11].b[1]*cos_w + bc[11].b[2];
+                re[12]      = bc[12].b[0]*cos_2w + bc[12].b[1]*cos_w + bc[12].b[2];
+                re[13]      = bc[13].b[0]*cos_2w + bc[13].b[1]*cos_w + bc[13].b[2];
+                re[14]      = bc[14].b[0]*cos_2w + bc[14].b[1]*cos_w + bc[14].b[2];
+                re[15]      = bc[15].b[0]*cos_2w + bc[15].b[1]*cos_w + bc[15].b[2];
+
+                im[0]       = bc[0].b[0]*sin_2w + bc[0].b[1]*sin_w;
+                im[1]       = bc[1].b[0]*sin_2w + bc[1].b[1]*sin_w;
+                im[2]       = bc[2].b[0]*sin_2w + bc[2].b[1]*sin_w;
+                im[3]       = bc[3].b[0]*sin_2w + bc[3].b[1]*sin_w;
+                im[4]       = bc[4].b[0]*sin_2w + bc[4].b[1]*sin_w;
+                im[5]       = bc[5].b[0]*sin_2w + bc[5].b[1]*sin_w;
+                im[6]       = bc[6].b[0]*sin_2w + bc[6].b[1]*sin_w;
+                im[7]       = bc[7].b[0]*sin_2w + bc[7].b[1]*sin_w;
+                im[8]       = bc[8].b[0]*sin_2w + bc[8].b[1]*sin_w;
+                im[9]       = bc[9].b[0]*sin_2w + bc[9].b[1]*sin_w;
+                im[10]      = bc[10].b[0]*sin_2w + bc[10].b[1]*sin_w;
+                im[11]      = bc[11].b[0]*sin_2w + bc[11].b[1]*sin_w;
+                im[12]      = bc[12].b[0]*sin_2w + bc[12].b[1]*sin_w;
+                im[13]      = bc[13].b[0]*sin_2w + bc[13].b[1]*sin_w;
+                im[14]      = bc[14].b[0]*sin_2w + bc[14].b[1]*sin_w;
+                im[15]      = bc[15].b[0]*sin_2w + bc[15].b[1]*sin_w;
+
+                ab[0]       = sqrtf(re[0]*re[0] + im[0]*im[0]);
+                ab[1]       = sqrtf(re[1]*re[1] + im[1]*im[1]);
+                ab[2]       = sqrtf(re[2]*re[2] + im[2]*im[2]);
+                ab[3]       = sqrtf(re[3]*re[3] + im[3]*im[3]);
+                ab[4]       = sqrtf(re[4]*re[4] + im[4]*im[4]);
+                ab[5]       = sqrtf(re[5]*re[5] + im[5]*im[5]);
+                ab[6]       = sqrtf(re[6]*re[6] + im[6]*im[6]);
+                ab[7]       = sqrtf(re[7]*re[7] + im[7]*im[7]);
+                ab[8]       = sqrtf(re[8]*re[8] + im[8]*im[8]);
+                ab[9]       = sqrtf(re[9]*re[9] + im[9]*im[9]);
+                ab[10]      = sqrtf(re[10]*re[10] + im[10]*im[10]);
+                ab[11]      = sqrtf(re[11]*re[11] + im[11]*im[11]);
+                ab[12]      = sqrtf(re[12]*re[12] + im[12]*im[12]);
+                ab[13]      = sqrtf(re[13]*re[13] + im[13]*im[13]);
+                ab[14]      = sqrtf(re[14]*re[14] + im[14]*im[14]);
+                ab[15]      = sqrtf(re[15]*re[15] + im[15]*im[15]);
+
+                // Now calculate the convolution for the new polynom:
+                AN[0]       = (ab[0] * bc[0].t[3]) / (at[0] * bc[0].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[1]       = (ab[1] * bc[1].t[3]) / (at[1] * bc[1].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[2]       = (ab[2] * bc[2].t[3]) / (at[2] * bc[2].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[3]       = (ab[3] * bc[3].t[3]) / (at[3] * bc[3].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[4]       = (ab[4] * bc[4].t[3]) / (at[4] * bc[4].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[5]       = (ab[5] * bc[5].t[3]) / (at[5] * bc[5].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[6]       = (ab[6] * bc[6].t[3]) / (at[6] * bc[6].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[7]       = (ab[7] * bc[7].t[3]) / (at[7] * bc[7].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[8]       = (ab[8] * bc[8].t[3]) / (at[8] * bc[8].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[9]       = (ab[9] * bc[9].t[3]) / (at[9] * bc[9].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[10]      = (ab[10] * bc[10].t[3]) / (at[10] * bc[10].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[11]      = (ab[11] * bc[11].t[3]) / (at[11] * bc[11].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[12]      = (ab[12] * bc[12].t[3]) / (at[12] * bc[12].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[13]      = (ab[13] * bc[13].t[3]) / (at[13] * bc[13].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[14]      = (ab[14] * bc[14].t[3]) / (at[14] * bc[14].b[3]); // Normalizing factor for the amplitude to match the analog filter
+                AN[15]      = (ab[15] * bc[15].t[3]) / (at[15] * bc[15].b[3]); // Normalizing factor for the amplitude to match the analog filter
+
+                N2[0]       = 1.0f / bc[0].b[0];
+                N2[1]       = 1.0f / bc[1].b[0];
+                N2[2]       = 1.0f / bc[2].b[0];
+                N2[3]       = 1.0f / bc[3].b[0];
+                N2[4]       = 1.0f / bc[4].b[0];
+                N2[5]       = 1.0f / bc[5].b[0];
+                N2[6]       = 1.0f / bc[6].b[0];
+                N2[7]       = 1.0f / bc[7].b[0];
+                N2[8]       = 1.0f / bc[8].b[0];
+                N2[9]       = 1.0f / bc[9].b[0];
+                N2[10]      = 1.0f / bc[10].b[0];
+                N2[11]      = 1.0f / bc[11].b[0];
+                N2[12]      = 1.0f / bc[12].b[0];
+                N2[13]      = 1.0f / bc[13].b[0];
+                N2[14]      = 1.0f / bc[14].b[0];
+                N2[15]      = 1.0f / bc[15].b[0];
+
+                N1[0]       = AN[0] * N2[0];
+                N1[1]       = AN[1] * N2[1];
+                N1[2]       = AN[2] * N2[2];
+                N1[3]       = AN[3] * N2[3];
+                N1[4]       = AN[4] * N2[4];
+                N1[5]       = AN[5] * N2[5];
+                N1[6]       = AN[6] * N2[6];
+                N1[7]       = AN[7] * N2[7];
+                N1[8]       = AN[8] * N2[8];
+                N1[9]       = AN[9] * N2[9];
+                N1[10]      = AN[10] * N2[10];
+                N1[11]      = AN[11] * N2[11];
+                N1[12]      = AN[12] * N2[12];
+                N1[13]      = AN[13] * N2[13];
+                N1[14]      = AN[14] * N2[14];
+                N1[15]      = AN[15] * N2[15];
+
+                // Normalize filter parameters
+                bf->b0[0]   = bc[0].t[0] * N1[0];
+                bf->b0[1]   = bc[1].t[0] * N1[1];
+                bf->b0[2]   = bc[2].t[0] * N1[2];
+                bf->b0[3]   = bc[3].t[0] * N1[3];
+                bf->b0[4]   = bc[4].t[0] * N1[4];
+                bf->b0[5]   = bc[5].t[0] * N1[5];
+                bf->b0[6]   = bc[6].t[0] * N1[6];
+                bf->b0[7]   = bc[7].t[0] * N1[7];
+                bf->b0[8]   = bc[8].t[0] * N1[8];
+                bf->b0[9]   = bc[9].t[0] * N1[9];
+                bf->b0[10]  = bc[10].t[0] * N1[10];
+                bf->b0[11]  = bc[11].t[0] * N1[11];
+                bf->b0[12]  = bc[12].t[0] * N1[12];
+                bf->b0[13]  = bc[13].t[0] * N1[13];
+                bf->b0[14]  = bc[14].t[0] * N1[14];
+                bf->b0[15]  = bc[15].t[0] * N1[15];
+
+                bf->b1[0]   = bc[0].t[1] * N1[0];
+                bf->b1[1]   = bc[1].t[1] * N1[1];
+                bf->b1[2]   = bc[2].t[1] * N1[2];
+                bf->b1[3]   = bc[3].t[1] * N1[3];
+                bf->b1[4]   = bc[4].t[1] * N1[4];
+                bf->b1[5]   = bc[5].t[1] * N1[5];
+                bf->b1[6]   = bc[6].t[1] * N1[6];
+                bf->b1[7]   = bc[7].t[1] * N1[7];
+                bf->b1[8]   = bc[8].t[1] * N1[8];
+                bf->b1[9]   = bc[9].t[1] * N1[9];
+                bf->b1[10]  = bc[10].t[1] * N1[10];
+                bf->b1[11]  = bc[11].t[1] * N1[11];
+                bf->b1[12]  = bc[12].t[1] * N1[12];
+                bf->b1[13]  = bc[13].t[1] * N1[13];
+                bf->b1[14]  = bc[14].t[1] * N1[14];
+                bf->b1[15]  = bc[15].t[1] * N1[15];
+
+                bf->b2[0]   = bc[0].t[2] * N1[0];
+                bf->b2[1]   = bc[1].t[2] * N1[1];
+                bf->b2[2]   = bc[2].t[2] * N1[2];
+                bf->b2[3]   = bc[3].t[2] * N1[3];
+                bf->b2[4]   = bc[4].t[2] * N1[4];
+                bf->b2[5]   = bc[5].t[2] * N1[5];
+                bf->b2[6]   = bc[6].t[2] * N1[6];
+                bf->b2[7]   = bc[7].t[2] * N1[7];
+                bf->b2[8]   = bc[8].t[2] * N1[8];
+                bf->b2[9]   = bc[9].t[2] * N1[9];
+                bf->b2[10]  = bc[10].t[2] * N1[10];
+                bf->b2[11]  = bc[11].t[2] * N1[11];
+                bf->b2[12]  = bc[12].t[2] * N1[12];
+                bf->b2[13]  = bc[13].t[2] * N1[13];
+                bf->b2[14]  = bc[14].t[2] * N1[14];
+                bf->b2[15]  = bc[15].t[2] * N1[15];
+
+                bf->a1[0]   = -bc[0].b[1] * N2[0]; // Sign negated
+                bf->a1[1]   = -bc[1].b[1] * N2[1]; // Sign negated
+                bf->a1[2]   = -bc[2].b[1] * N2[2]; // Sign negated
+                bf->a1[3]   = -bc[3].b[1] * N2[3]; // Sign negated
+                bf->a1[4]   = -bc[4].b[1] * N2[4]; // Sign negated
+                bf->a1[5]   = -bc[5].b[1] * N2[5]; // Sign negated
+                bf->a1[6]   = -bc[6].b[1] * N2[6]; // Sign negated
+                bf->a1[7]   = -bc[7].b[1] * N2[7]; // Sign negated
+                bf->a1[8]   = -bc[8].b[1] * N2[8]; // Sign negated
+                bf->a1[9]   = -bc[9].b[1] * N2[9]; // Sign negated
+                bf->a1[10]  = -bc[10].b[1] * N2[10]; // Sign negated
+                bf->a1[11]  = -bc[11].b[1] * N2[11]; // Sign negated
+                bf->a1[12]  = -bc[12].b[1] * N2[12]; // Sign negated
+                bf->a1[13]  = -bc[13].b[1] * N2[13]; // Sign negated
+                bf->a1[14]  = -bc[14].b[1] * N2[14]; // Sign negated
+                bf->a1[15]  = -bc[15].b[1] * N2[15]; // Sign negated
+
+                bf->a2[0]   = -bc[0].b[2] * N2[0]; // Sign negated
+                bf->a2[1]   = -bc[1].b[2] * N2[1]; // Sign negated
+                bf->a2[2]   = -bc[2].b[2] * N2[2]; // Sign negated
+                bf->a2[3]   = -bc[3].b[2] * N2[3]; // Sign negated
+                bf->a2[4]   = -bc[4].b[2] * N2[4]; // Sign negated
+                bf->a2[5]   = -bc[5].b[2] * N2[5]; // Sign negated
+                bf->a2[6]   = -bc[6].b[2] * N2[6]; // Sign negated
+                bf->a2[7]   = -bc[7].b[2] * N2[7]; // Sign negated
+                bf->a2[8]   = -bc[8].b[2] * N2[8]; // Sign negated
+                bf->a2[9]   = -bc[9].b[2] * N2[9]; // Sign negated
+                bf->a2[10]  = -bc[10].b[2] * N2[10]; // Sign negated
+                bf->a2[11]  = -bc[11].b[2] * N2[11]; // Sign negated
+                bf->a2[12]  = -bc[12].b[2] * N2[12]; // Sign negated
+                bf->a2[13]  = -bc[13].b[2] * N2[13]; // Sign negated
+                bf->a2[14]  = -bc[14].b[2] * N2[14]; // Sign negated
+                bf->a2[15]  = -bc[15].b[2] * N2[15]; // Sign negated
+
+                // Move to next filter
+                bf          ++;
+                bc          += 16;
+            } // for i
+        }
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_FILTERS_TRANSFORM_H_ */

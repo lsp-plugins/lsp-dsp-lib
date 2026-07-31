@@ -108,7 +108,7 @@ namespace lsp
                 __ASM_EMIT("beq             6f")
                 // x1 head block
                 __ASM_EMIT("vldm            %[d], {d14-d15}")                       // d14  = d0 e0, d15 = d1 e1
-                __ASM_EMIT("vldm            %[f]!, {d8-d12}")                       // d8   = b0, d9 = b1, d10 = b2, d11 = a1, d12 = a2
+                __ASM_EMIT("vldm            %[f]!, {d8-d13}")                       // d8   = b0, d9 = b1, d10 = b2, d11 = a1, d12 = a2, d13 = 0
                 __ASM_EMIT("vld1.32         {d0[0]}, [%[src]]!")                    // d0   = s0
                 __ASM_EMIT("vmul.f32        d1, d8, d0")                            // d1   = b0*s0
                 __ASM_EMIT("vadd.f32        d4, d14, d1")                           // d4   = s' = d0+b0*s0
@@ -124,7 +124,7 @@ namespace lsp
                 __ASM_EMIT("subs            %[count], %[count], #1")
                 __ASM_EMIT("bls             2f")
                 __ASM_EMIT("1:")
-                __ASM_EMIT("vldm            %[f]!, {d8-d12}")                       // d8   = b0, d9 = b1, d10 = b2, d11 = a1, d12 = a2
+                __ASM_EMIT("vldm            %[f]!, {d8-d13}")                       // d8   = b0, d9 = b1, d10 = b2, d11 = a1, d12 = a2, d13 = 0
                 __ASM_EMIT("vld1.32         {d0[0]}, [%[src]]!")                    // d0   = s0 j0
                 __ASM_EMIT("vmul.f32        d1, d8, d0")                            // d1   = b0*s0 b0*j0
                 __ASM_EMIT("vadd.f32        d4, d14, d1")                           // d4   = s' j' = d0+b0*s0 e0+b0*j0
@@ -139,7 +139,7 @@ namespace lsp
                 __ASM_EMIT("bhi             1b")
                 __ASM_EMIT("2:")
                 // x1 tail block
-                __ASM_EMIT("vldm            %[f], {d8-d12}")                        // d8   = b0, d9 = b1, d10 = b2, d11 = a1, d12 = a2
+                __ASM_EMIT("vldm            %[f], {d8-d13}")                        // d8   = b0, d9 = b1, d10 = b2, d11 = a1, d12 = a2, d13 = 0
                 __ASM_EMIT("vmul.f32        d1, d8, d0")                            // v1   = b0*j0
                 __ASM_EMIT("vadd.f32        d4, d14, d1")                           // v4   = s' = e0 + b0*j0
                 __ASM_EMIT("vmul.f32        d2, d9, d0")                            // v2   = b1*j0

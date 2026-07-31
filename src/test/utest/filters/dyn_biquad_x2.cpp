@@ -138,6 +138,7 @@ UTEST_BEGIN("dsp.filters", dyn_biquad_x2)
                     f->b2[j]            = filter.b2 * g;
                     f->a1[j]            = filter.a1;
                     f->a2[j]            = filter.a2;
+                    f->p[j]             = 0.0f;
                 }
             }
 

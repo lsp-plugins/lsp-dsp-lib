@@ -108,7 +108,7 @@ namespace lsp
                 __ASM_EMIT("ld1             {v0.s}[0], [%[src]], #0x04")            // v0   = s0
                 __ASM_EMIT("ldp             d19, d20, [%[f]], #0x10")               // v19  = b2, v20 = a1
                 __ASM_EMIT("fmul            v1.2s, v16.2s, v0.2s")                  // v1   = b0*s0
-                __ASM_EMIT("ldr             d21, [%[f]], #0x08")                    // v21  = a2
+                __ASM_EMIT("ldr             d21, [%[f]], #0x10")                    // v21  = a2
                 __ASM_EMIT("fadd            v4.2s, v22.2s, v1.2s")                  // v4   = s' = d0+b0*s0
                 __ASM_EMIT("fmul            v2.2s, v18.2s, v0.2s")                  // v2   = b1*s0
                 __ASM_EMIT("fadd            v5.2s, v23.2s, v2.2s")                  // v5   = d1+b1*s0
@@ -126,7 +126,7 @@ namespace lsp
                 __ASM_EMIT("ld1             {v0.s}[0], [%[src]], #0x04")            // v0   = s0 j0
                 __ASM_EMIT("ldp             d19, d20, [%[f]], #0x10")               // v19  = b2, v20 = a1
                 __ASM_EMIT("fmul            v1.2s, v16.2s, v0.2s")                  // v1   = b0*s0 b0*j0
-                __ASM_EMIT("ldr             d21, [%[f]], #0x08")                    // v21  = a2
+                __ASM_EMIT("ldr             d21, [%[f]], #0x10")                    // v21  = a2
                 __ASM_EMIT("fadd            v4.2s, v22.2s, v1.2s")                  // v4   = s' j' = d0+b0*s0 e0+b0*j0
                 __ASM_EMIT("fmul            v2.2s, v18.2s, v0.2s")                  // v2   = b1*s0 b1*j0
                 __ASM_EMIT("st1             {v4.s}[1], [%[dst]], #0x04")
@@ -142,7 +142,7 @@ namespace lsp
                 __ASM_EMIT("ldp             d16, d18, [%[f]], #0x10")               // v16  = b0, v18 = b1
                 __ASM_EMIT("ldp             d19, d20, [%[f]], #0x10")               // v19  = b2, v20 = a1
                 __ASM_EMIT("fmul            v1.2s, v16.2s, v0.2s")                  // v1   = b0*j0
-                __ASM_EMIT("ldr             d21, [%[f]], #0x08")                    // v21  = a2
+                __ASM_EMIT("ldr             d21, [%[f]], #0x10")                    // v21  = a2
                 __ASM_EMIT("fadd            v4.2s, v22.2s, v1.2s")                  // v4   = s' = e0 + b0*j0
                 __ASM_EMIT("fmul            v2.2s, v18.2s, v0.2s")                  // v2   = b1*j0
                 __ASM_EMIT("fadd            v5.2s, v23.2s, v2.2s")                  // v5   = e1 + b1*j0

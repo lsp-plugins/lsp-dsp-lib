@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -655,7 +655,7 @@ namespace lsp
                     // Transfer function
                     b           = p[0] - p[2]*0.01f;
                     c           = p[1]*0.1f;
-                    p[3]        = sqrt(b*b + c*c);
+                    p[3]        = sqrtf(b*b + c*c);
 
                     // Calculate parameters
                     k           = p[2];
@@ -669,11 +669,11 @@ namespace lsp
                         // Transformed form is:
                         //   P[z] = k*(1 - (exp(R0*T) + exp(R1*T))*z^-1 + exp((R0+R1)*T)*z^-2)
                         D           = sqrtf(D);
-                        float R0    = td*(-b - D)/a2;
-                        float R1    = td*(-b + D)/a2;
+                        float R0    = expf(td*(-b - D)/a2);
+                        float R1    = expf(td*(-b + D)/a2);
                         p[0]        = k;
-                        p[1]        = -k * (expf(R0) + expf(R1));
-                        p[2]        = k * expf(R0+R1);
+                        p[1]        = -k * (R0 + R1);
+                        p[2]        = k * R0*R1;
                     }
                     else
                     {
@@ -681,11 +681,11 @@ namespace lsp
                         // Transformed form is:
                         //   P[z] = k*(1 - 2*exp(R*T)*cos(K*T)*z^-1 + exp(2*R*T)*z^-2)
                         D           = sqrtf(-D);
-                        float R     = -(td*b) /a2;
+                        float R     = expf(-(td*b)/a2);
                         float K     = D /a2;
                         p[0]        = k;
-                        p[1]        = -2.0 * k * expf(R) * cosf(K*td);
-                        p[2]        = k * expf(R+R);
+                        p[1]        = -2.0f * k * R * cosf(K*td);
+                        p[2]        = k * R * R;
                     }
 
                     // Update pointer
@@ -971,7 +971,7 @@ namespace lsp
                 : "cc", "memory"
             );
         }
-    }
-}
+    } /* namespace x86 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_FILTERS_TRANSFORM_H_ */
