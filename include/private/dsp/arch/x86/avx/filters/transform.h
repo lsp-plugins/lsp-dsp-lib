@@ -487,12 +487,12 @@ namespace lsp
             __ASM_EMIT("vshufps         $0x44, %%ymm13, %%ymm12, %%ymm8")   /* ymm8  = t0[4] t0[5] t0[6] t0[7] b0[4] b0[5] b0[6] b0[7] */ \
             __ASM_EMIT("vshufps         $0xee, %%ymm13, %%ymm12, %%ymm10")  /* ymm10 = t1[4] t1[5] t1[6] t1[7] b1[4] b1[5] b1[6] b1[7] */ \
             /* Transpose, step 3 */ \
-            __ASM_EMIT("vperm2f128      $0x31, %%ymm8, %%ymm3, %%ymm5")     /* ymm5  = b0[0] b0[1] b0[2] b0[3] b0[4] b0[5] b0[6] b0[7] */ \
             __ASM_EMIT("vperm2f128      $0x31, %%ymm9, %%ymm2, %%ymm6")     /* ymm6  = b2[0] b2[1] b2[2] b2[3] b2[4] b2[5] b2[6] b2[7] */ \
             __ASM_EMIT("vperm2f128      $0x31, %%ymm10, %%ymm4, %%ymm7")    /* ymm7  = b1[0] b1[1] b1[2] b1[3] b1[4] b1[5] b1[6] b1[7] */ \
-            __ASM_EMIT("vperm2f128      $0x20, %%ymm8, %%ymm3, %%ymm3")     /* ymm3  = t0[0] t0[1] t0[2] t0[3] t0[4] t0[5] t0[6] t0[7] */ \
+            __ASM_EMIT("vperm2f128      $0x31, %%ymm8, %%ymm3, %%ymm5")     /* ymm5  = b0[0] b0[1] b0[2] b0[3] b0[4] b0[5] b0[6] b0[7] */ \
             __ASM_EMIT("vperm2f128      $0x20, %%ymm9, %%ymm2, %%ymm2")     /* ymm2  = t2[0] t2[1] t2[2] t2[3] t2[4] t2[5] t2[6] t2[7] */ \
             __ASM_EMIT("vperm2f128      $0x20, %%ymm10, %%ymm4, %%ymm4")    /* ymm4  = t1[0] t1[1] t1[2] t1[3] t1[4] t1[5] t1[6] t1[7] */ \
+            __ASM_EMIT("vperm2f128      $0x20, %%ymm8, %%ymm3, %%ymm3")     /* ymm3  = t0[0] t0[1] t0[2] t0[3] t0[4] t0[5] t0[6] t0[7] */ \
             /* Now we are ready to perform calculations of top and bottom part */ \
             /* ymm2 = t2, ymm3 = t0 = T0, ymm4 = t1 */ \
             /* ymm5 = b0 = B0, ymm6 = b2, ymm7 = b1 */ \

@@ -67,6 +67,11 @@ namespace lsp
             void x64_bilinear_transform_x8(dsp::biquad_x8_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
             void x64_bilinear_transform_x16(dsp::biquad_x16_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
         }
+
+        namespace avx512
+        {
+            void x64_bilinear_transform_x16(dsp::biquad_x16_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count);
+        }
     )
 
     IF_ARCH_ARM(
@@ -277,6 +282,7 @@ PTEST_BEGIN("dsp.filters", bt, 5, 1000)
             IF_ARCH_X86(CALL(sse::bilinear_transform_x16));
             IF_ARCH_X86_64(CALL(sse3::x64_bilinear_transform_x16));
             IF_ARCH_X86_64(CALL(avx::x64_bilinear_transform_x16));
+            IF_ARCH_X86_64(CALL(avx512::x64_bilinear_transform_x16));
             IF_ARCH_ARM(CALL(neon_d32::bilinear_transform_x16));
             IF_ARCH_AARCH64(CALL(asimd::bilinear_transform_x16));
             PTEST_SEPARATOR2;
