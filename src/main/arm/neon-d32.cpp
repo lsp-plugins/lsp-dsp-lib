@@ -423,6 +423,7 @@
                 EXPORT1(bilinear_transform_x2);
                 EXPORT1(bilinear_transform_x4);
                 EXPORT1(bilinear_transform_x8);
+                EXPORT1(bilinear_transform_x16);
 
                 EXPORT1(direct_fft);
                 EXPORT1(reverse_fft);
