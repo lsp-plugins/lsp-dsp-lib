@@ -98,6 +98,7 @@
                 EXPORT2_X64(dyn_biquad_process_x8, x64_dyn_biquad_process_x8);
                 EXPORT2_X64(dyn_biquad_process_x16, x64_dyn_biquad_process_x16);
                 EXPORT2_X64(bilinear_transform_x8, x64_bilinear_transform_x8);
+                EXPORT2_X64(bilinear_transform_x16, x64_bilinear_transform_x16);
 
                 EXPORT2_X64(axis_apply_log1, x64_axis_apply_log1);
                 EXPORT2_X64(axis_apply_log2, x64_axis_apply_log2);
