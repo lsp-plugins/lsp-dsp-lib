@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -657,10 +657,10 @@ namespace lsp
                 AN[2]       = (ab[2] * bc[2].t[3]) / (at[2] * bc[2].b[3]); // Normalizing factor for the amplitude to match the analog filter
                 AN[3]       = (ab[3] * bc[3].t[3]) / (at[3] * bc[3].b[3]); // Normalizing factor for the amplitude to match the analog filter
 
-                N2[0]       = 1.0 / bc[0].b[0];
-                N2[1]       = 1.0 / bc[1].b[0];
-                N2[2]       = 1.0 / bc[2].b[0];
-                N2[3]       = 1.0 / bc[3].b[0];
+                N2[0]       = 1.0f / bc[0].b[0];
+                N2[1]       = 1.0f / bc[1].b[0];
+                N2[2]       = 1.0f / bc[2].b[0];
+                N2[3]       = 1.0f / bc[3].b[0];
 
                 N1[0]       = AN[0] * N2[0];
                 N1[1]       = AN[1] * N2[1];
