@@ -26,6 +26,8 @@
 
 #include <lsp-plug.in/dsp/common/filters/types.h>
 #include <lsp-plug.in/dsp/common/filters/dynamic.h>
+#include <lsp-plug.in/dsp/common/filters/fill.h>
+#include <lsp-plug.in/dsp/common/filters/pack.h>
 #include <lsp-plug.in/dsp/common/filters/static.h>
 #include <lsp-plug.in/dsp/common/filters/transfer.h>
 #include <lsp-plug.in/dsp/common/filters/transform.h>

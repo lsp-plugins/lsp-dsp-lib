@@ -62,10 +62,7 @@ namespace lsp
 
     #include <private/dsp/arch/generic/search.h>
 
-    #include <private/dsp/arch/generic/filters/static.h>
-    #include <private/dsp/arch/generic/filters/dynamic.h>
-    #include <private/dsp/arch/generic/filters/transform.h>
-    #include <private/dsp/arch/generic/filters/transfer.h>
+    #include <private/dsp/arch/generic/filters.h>
 
     #include <private/dsp/arch/generic/fft.h>
     #include <private/dsp/arch/generic/fastconv.h>
@@ -428,6 +425,16 @@ namespace lsp
             EXPORT1(dyn_biquad_process_x4);
             EXPORT1(dyn_biquad_process_x8);
             EXPORT1(dyn_biquad_process_x16);
+
+            EXPORT1(biquad_pack_x2);
+            EXPORT1(biquad_pack_x4);
+            EXPORT1(biquad_pack_x8);
+            EXPORT1(biquad_pack_x16);
+
+            EXPORT1(fcascade_fill_x2);
+            EXPORT1(fcascade_fill_x4);
+            EXPORT1(fcascade_fill_x8);
+            EXPORT1(fcascade_fill_x16);
 
             EXPORT1(filter_transfer_calc_ri);
             EXPORT1(filter_transfer_apply_ri);
