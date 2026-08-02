@@ -111,7 +111,6 @@ UTEST_BEGIN("dsp.filters", pack_x4)
         #define CALL(func) \
             call(#func, func)
 
-        // PART 1, overall check correctness
         IF_ARCH_X86(CALL(sse::biquad_pack_x4));
 
     }

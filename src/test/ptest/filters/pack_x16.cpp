@@ -42,6 +42,13 @@ namespace lsp
         }
     )
 
+    IF_ARCH_X86_64(
+        namespace sse3
+        {
+            void x64_biquad_pack_x16(dsp::biquad_x16_t *dst, const dsp::biquad_x1_t *src);
+        }
+    )
+
     IF_ARCH_ARM(
         namespace neon_d32
         {
@@ -96,6 +103,7 @@ PTEST_BEGIN("dsp.filters", pack_x16, 5, 1000)
 
         CALL(generic::biquad_pack_x16);
         IF_ARCH_X86(CALL(sse::biquad_pack_x16));
+        IF_ARCH_X86_64(CALL(sse3::x64_biquad_pack_x16));
         PTEST_SEPARATOR;
     }
 
