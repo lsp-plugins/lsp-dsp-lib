@@ -40,6 +40,11 @@ namespace lsp
         {
             void biquad_pack_x2(dsp::biquad_x2_t *dst, const dsp::biquad_x1_t *src);
         }
+
+        namespace avx
+        {
+            void biquad_pack_x2(dsp::biquad_x2_t *dst, const dsp::biquad_x1_t *src);
+        }
     )
 
     IF_ARCH_ARM(
@@ -96,6 +101,7 @@ PTEST_BEGIN("dsp.filters", pack_x2, 5, 1000)
 
         CALL(generic::biquad_pack_x2);
         IF_ARCH_X86(CALL(sse::biquad_pack_x2));
+        IF_ARCH_X86(CALL(avx::biquad_pack_x2));
         PTEST_SEPARATOR;
     }
 

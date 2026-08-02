@@ -35,23 +35,20 @@ namespace lsp
         {
             ARCH_X86_ASM(
                 __ASM_EMIT("movups      0x00(%[src]), %%xmm0")  // xmm0 = b0[0] b1[0] b2[0] a1[0]
-                __ASM_EMIT("movups      0x10(%[src]), %%xmm1")  // xmm1 = a2[0] ? ? ?
+                __ASM_EMIT("movss       0x10(%[src]), %%xmm1")  // xmm1 = a2[0] 0 0 0
                 __ASM_EMIT("movups      0x20(%[src]), %%xmm2")  // xmm2 = b0[1] b1[1] b2[1] a1[1]
-                __ASM_EMIT("movups      0x30(%[src]), %%xmm3")  // xmm3 = a2[1] ? ? ?
-                __ASM_EMIT("movaps      %%xmm0, %%xmm4")        // xmm4 = b0[0] b1[0] b2[0] a1[0]
-                __ASM_EMIT("xorps       %%xmm5, %%xmm5")        // xmm5 = 0 0 0 0
+                __ASM_EMIT("movaps      %%xmm0, %%xmm3")        // xmm3 = b0[0] b1[0] b2[0] a1[0]
+                __ASM_EMIT("movhps      0x30(%[src]), %%xmm1")  // xmm1 = a2[0] 0 a2[1] ?
                 __ASM_EMIT("unpcklps    %%xmm2, %%xmm0")        // xmm0 = b0[0] b0[1] b1[0] b1[1]
-                __ASM_EMIT("unpcklps    %%xmm3, %%xmm1")        // xmm1 = a2[0] a2[1] ? ?
-                __ASM_EMIT("unpckhps    %%xmm2, %%xmm4")        // xmm4 = b2[0] b2[1] a1[0] a1[2]
-                __ASM_EMIT("movlhps     %%xmm5, %%xmm1")        // xmm1 = a2[0] a2[1] 0 0
+                __ASM_EMIT("shufps      $0x58, %%xmm1, %%xmm1") // xmm1 = a2[0] a2[1] 0 0
+                __ASM_EMIT("unpckhps    %%xmm2, %%xmm3")        // xmm3 = b2[0] b2[1] a1[0] a1[2]
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst])")
-                __ASM_EMIT("movups      %%xmm4, 0x10(%[dst])")
+                __ASM_EMIT("movups      %%xmm3, 0x10(%[dst])")
                 __ASM_EMIT("movups      %%xmm1, 0x20(%[dst])")
                 :
                 : [dst] "r" (dst), [src] "r" (src)
                 : "memory",
-                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-                  "%xmm4", "%xmm5"
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3"
             );
         }
 

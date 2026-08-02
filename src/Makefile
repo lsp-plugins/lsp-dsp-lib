@@ -83,6 +83,7 @@ CXX_OBJ_SSE2            = $(ARTIFACT_BIN)/main/x86/sse2.o
 CXX_OBJ_SSE3            = $(ARTIFACT_BIN)/main/x86/sse3.o
 CXX_OBJ_SSE4            = $(ARTIFACT_BIN)/main/x86/sse4.o
 CXX_OBJ_AVX             = $(ARTIFACT_BIN)/main/x86/avx.o
+CXX_OBJ_AVX_NZ          = $(ARTIFACT_BIN)/main/x86/avx_nz.o
 CXX_OBJ_AVX2            = $(ARTIFACT_BIN)/main/x86/avx2.o
 CXX_OBJ_AVX512          = $(ARTIFACT_BIN)/main/x86/avx512.o
 CXX_OBJ_ARM             = $(ARTIFACT_BIN)/main/arm/arm.o
@@ -98,13 +99,35 @@ CXX_OBJ_ALL             = \
   $(CXX_OBJ_NOTEST)
 
 ifeq ($($(HOST)ARCHITECTURE_FAMILY),ia32)
-  CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2) $(CXX_OBJ_AVX512)
+  CXX_OBJ_EXT            += \
+    $(CXX_OBJ_X86) \
+    $(CXX_OBJ_SSE) \
+    $(CXX_OBJ_SSE2) \
+    $(CXX_OBJ_SSE3) \
+    $(CXX_OBJ_SSE4) \
+    $(CXX_OBJ_AVX) \
+    $(CXX_OBJ_AVX_NZ) \
+    $(CXX_OBJ_AVX2) \
+    $(CXX_OBJ_AVX512)
 else ifeq ($($(HOST)ARCHITECTURE_FAMILY),x86_64)
-  CXX_OBJ_EXT            += $(CXX_OBJ_X86) $(CXX_OBJ_SSE) $(CXX_OBJ_SSE2) $(CXX_OBJ_SSE3) $(CXX_OBJ_SSE4) $(CXX_OBJ_AVX) $(CXX_OBJ_AVX2) $(CXX_OBJ_AVX512)
+  CXX_OBJ_EXT            += \
+    $(CXX_OBJ_X86) \
+    $(CXX_OBJ_SSE) \
+    $(CXX_OBJ_SSE2) \
+    $(CXX_OBJ_SSE3) \
+    $(CXX_OBJ_SSE4) \
+    $(CXX_OBJ_AVX) \
+    $(CXX_OBJ_AVX_NZ) \
+    $(CXX_OBJ_AVX2) \
+    $(CXX_OBJ_AVX512)
 else ifeq ($($(HOST)ARCHITECTURE_FAMILY),arm32)
-  CXX_OBJ_EXT            += $(CXX_OBJ_ARM) $(CXX_OBJ_NEON_D32)
+  CXX_OBJ_EXT            += \
+    $(CXX_OBJ_ARM) \
+    $(CXX_OBJ_NEON_D32)
 else ifeq ($($(HOST)ARCHITECTURE_FAMILY),aarch64)
-  CXX_OBJ_EXT            += $(CXX_OBJ_AARCH64) $(CXX_OBJ_ASIMD)
+  CXX_OBJ_EXT            += \
+    $(CXX_OBJ_AARCH64) \
+    $(CXX_OBJ_ASIMD)
 endif
 
 ALL_HEADERS             = $(call rwildcard, $(ARTIFACT_INC), *.h)
@@ -119,6 +142,7 @@ CXX_SSE2_CFLAGS         = $(CXX_SSE_CFLAGS) -msse2
 CXX_SSE3_CFLAGS         = $(CXX_SSE2_CFLAGS) -msse3 -mssse3
 CXX_SSE4_CFLAGS         = $(CXX_SSE3_CFLAGS) -msse4 -msse4a -msse4.1 -msse4.2
 CXX_AVX_CFLAGS          = -mavx -mvzeroupper
+CXX_AVX_NZ_CFLAGS       = -mavx -mno-vzeroupper
 CXX_AVX2_CFLAGS         = $(CXX_AVX_CFLAGS) -mavx2
 CXX_AVX512_CFLAGS       = -mavx512f -mavx512vl
 CXX_NEON_D32_CFLAGS     = -mfpu=neon-vfpv4
@@ -223,6 +247,7 @@ $(CXX_OBJ_SSE2):       $(HOST)EXT_FLAGS=$(CXX_SSE2_CFLAGS)
 $(CXX_OBJ_SSE3):       $(HOST)EXT_FLAGS=$(CXX_SSE3_CFLAGS)
 $(CXX_OBJ_SSE4):       $(HOST)EXT_FLAGS=$(CXX_SSE4_CFLAGS)
 $(CXX_OBJ_AVX):        $(HOST)EXT_FLAGS=$(CXX_AVX_CFLAGS)
+$(CXX_OBJ_AVX_NZ):     $(HOST)EXT_FLAGS=$(CXX_AVX_NZ_CFLAGS)
 $(CXX_OBJ_AVX2):       $(HOST)EXT_FLAGS=$(CXX_AVX2_CFLAGS)
 $(CXX_OBJ_AVX512):     $(HOST)EXT_FLAGS=$(CXX_AVX512_CFLAGS)
 $(CXX_OBJ_NEON_D32):   $(HOST)EXT_FLAGS=$(CXX_NEON_D32_CFLAGS)

@@ -44,6 +44,7 @@
     // AVX-specific function implementations
     #define PRIVATE_DSP_ARCH_X86_AVX_IMPL
         #include <private/dsp/arch/x86/avx/xcr.h>
+        #include <private/dsp/arch/x86/avx/export.h>
 
         #include <private/dsp/arch/x86/avx/copy.h>
         #include <private/dsp/arch/x86/avx/float.h>
@@ -63,10 +64,7 @@
         #include <private/dsp/arch/x86/avx/pfft.h>
         #include <private/dsp/arch/x86/avx/fastconv.h>
 
-        #include <private/dsp/arch/x86/avx/filters/static.h>
-        #include <private/dsp/arch/x86/avx/filters/dynamic.h>
-        #include <private/dsp/arch/x86/avx/filters/transform.h>
-        #include <private/dsp/arch/x86/avx/filters/transfer.h>
+        #include <private/dsp/arch/x86/avx/filters.h>
 
         #include <private/dsp/arch/x86/avx/msmatrix.h>
         #include <private/dsp/arch/x86/avx/resampling.h>
@@ -87,49 +85,14 @@
         {
             using namespace x86;
 
-            #define EXPORT2(function, export) \
-            { \
-                dsp::function                       = avx::export; \
-                dsp::LSP_DSP_LIB_MANGLE(function)   = avx::export; \
-                TEST_EXPORT(avx::export); \
-            }
-            #define EXPORT1(function)                       EXPORT2(function, function)
-
-            #define EXPORT2_X64(function, export)           IF_ARCH_X86_64(EXPORT2(function, export));
-            #define SUPPORT_X64(function)                   IF_ARCH_X86_64(TEST_EXPORT(avx::function))
-
-            #define CEXPORT2(cond, function, export)    \
-            IF_ARCH_X86( \
-                    TEST_EXPORT(avx::export); \
-                    if (cond) \
-                        dsp::function = avx::export; \
-                );
-
-            #define CEXPORT1(cond, export)    \
-            IF_ARCH_X86( \
-                    TEST_EXPORT(avx::export); \
-                    if (cond) \
-                        dsp::export = avx::export; \
-                );
-
-            #define CEXPORT2_X64(cond, function, export)    \
-                IF_ARCH_X86_64( \
-                        TEST_EXPORT(avx::export); \
-                        if (cond) \
-                            dsp::function = avx::export; \
-                    );
-
-            #define CEXPORT1_X64(cond, export)    \
-                IF_ARCH_X86_64( \
-                        TEST_EXPORT(avx::export); \
-                        if (cond) \
-                            dsp::export = avx::export; \
-                    );
+            void dsp_init_nz(const cpuid_t *f);
 
             void dsp_init(const cpuid_t *f)
             {
                 if (!(f->hwcap[0] & CPU_HWCAP0_AVX))
                     return;
+
+                lsp_finally { dsp_init_nz(f); };
 
                 // This routine sucks on AMD Bulldozer processor family but is pretty great on Intel
                 // Not tested on AMD Processors above Bulldozer family
@@ -330,14 +293,7 @@
                 CEXPORT1(favx, pcomplex_r2c_rdiv2);
                 CEXPORT1(favx, pcomplex_corr);
 
-                CEXPORT1(favx, biquad_process_x1);
-                CEXPORT1(favx, biquad_process_x2);
-                CEXPORT1(favx, biquad_process_x4);
                 EXPORT2_X64(biquad_process_x8, x64_biquad_process_x8);
-
-                CEXPORT1(favx, dyn_biquad_process_x1);
-                CEXPORT1(favx, dyn_biquad_process_x2);
-                CEXPORT1(favx, dyn_biquad_process_x4);
                 EXPORT2_X64(dyn_biquad_process_x8, x64_dyn_biquad_process_x8);
 
                 CEXPORT1(favx, bilinear_transform_x1);
@@ -345,6 +301,10 @@
                 CEXPORT1(favx, bilinear_transform_x4);
                 CEXPORT2_X64(favx, bilinear_transform_x8, x64_bilinear_transform_x8);
                 CEXPORT2_X64(favx, bilinear_transform_x16, x64_bilinear_transform_x16);
+
+                CEXPORT2_X64(favx, biquad_pack_x8, x64_biquad_pack_x8);
+                CEXPORT2_X64(favx, biquad_pack_x16, x64_biquad_pack_x16);
+                CEXPORT1(favx, biquad_pack_x16);
 
                 CEXPORT1(favx, h_sum);
                 CEXPORT1(favx, h_sqr_sum);
@@ -618,16 +578,10 @@
 
                     CEXPORT2(favx, axis_apply_lin1, axis_apply_lin1_fma3);
 
-                    CEXPORT2(favx, biquad_process_x1, biquad_process_x1_fma3);
-                    CEXPORT2(favx, biquad_process_x2, biquad_process_x2_fma3);
-                    CEXPORT2(favx, biquad_process_x4, biquad_process_x4_fma3);
                     CEXPORT2(ffma, biquad_process_x8, biquad_process_x8_fma3);
                     CEXPORT2(ffma, biquad_process_x16, biquad_process_x16_fma3);
                     CEXPORT2_X64(ffma, biquad_process_x16, x64_biquad_process_x16_fma3);
 
-                    CEXPORT2(ffma, dyn_biquad_process_x1, dyn_biquad_process_x1_fma3);
-                    CEXPORT2(favx, dyn_biquad_process_x2, dyn_biquad_process_x2_fma3);
-                    CEXPORT2(favx, dyn_biquad_process_x4, dyn_biquad_process_x4_fma3);
                     CEXPORT2(ffma, dyn_biquad_process_x8, dyn_biquad_process_x8_fma3);
                     CEXPORT2(ffma, dyn_biquad_process_x16, dyn_biquad_process_x16_fma3);
                     CEXPORT2_X64(ffma, dyn_biquad_process_x16, x64_dyn_biquad_process_x16_fma3);
@@ -680,9 +634,6 @@
                     CEXPORT2(favx, lerp_kkv, lerp_kkv_fma3);
                 }
             }
-
-            #undef EXPORT1
-            #undef EXPORT2
         } /* namespace avx */
     } /* namespace lsp */
 
