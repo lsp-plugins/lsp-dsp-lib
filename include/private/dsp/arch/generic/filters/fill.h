@@ -38,13 +38,13 @@ namespace lsp
             { 1.0f, 0.0f, 0.0f, 0.0f }
         };
 
-        void fcascade_fill_x2(f_cascade_t *h, f_cascade_t *t)
+        void fcascade_fill_x2(dsp::f_cascade_t *h, dsp::f_cascade_t *t)
         {
             h[1]    = fcascade_normal;
             t[0]    = fcascade_normal;
         }
 
-        void fcascade_fill_x4(f_cascade_t *h, f_cascade_t *t)
+        void fcascade_fill_x4(dsp::f_cascade_t *h, dsp::f_cascade_t *t)
         {
             h[1] = fcascade_normal; h[2] = fcascade_normal; h[3] = fcascade_normal; // row 0
             h[6] = fcascade_normal; h[7] = fcascade_normal; // row 1
@@ -55,7 +55,7 @@ namespace lsp
             t[8] = fcascade_normal; t[9] = fcascade_normal; t[10] = fcascade_normal; // row -1
         }
 
-        void fcascade_fill_x8(f_cascade_t *h, f_cascade_t *t)
+        void fcascade_fill_x8(dsp::f_cascade_t *h, dsp::f_cascade_t *t)
         {
             // row 0
             h[1] = fcascade_normal; h[2] = fcascade_normal; h[3] = fcascade_normal; h[4] = fcascade_normal;
@@ -97,7 +97,7 @@ namespace lsp
             t[52] = fcascade_normal; t[53] = fcascade_normal; t[54] = fcascade_normal;
         }
 
-        void fcascade_fill_x16(f_cascade_t *h, f_cascade_t *t)
+        void fcascade_fill_x16(dsp::f_cascade_t *h, dsp::f_cascade_t *t)
         {
             // row 0
             h[0x01] = fcascade_normal; h[0x02] = fcascade_normal; h[0x03] = fcascade_normal; h[0x04] = fcascade_normal;

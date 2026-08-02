@@ -33,7 +33,7 @@ namespace lsp
     namespace generic
     {
 
-        void biquad_pack_x2(biquad_x2_t *dst, const biquad_x1_t *src)
+        void biquad_pack_x2(dsp::biquad_x2_t *dst, const dsp::biquad_x1_t *src)
         {
             dst->b0[0]  = src[0].b0;
             dst->b0[1]  = src[1].b0;
@@ -51,7 +51,7 @@ namespace lsp
             dst->p[1]   = 0.0f;
         }
 
-        void biquad_pack_x4(biquad_x4_t *dst, const biquad_x1_t *src)
+        void biquad_pack_x4(dsp::biquad_x4_t *dst, const dsp::biquad_x1_t *src)
         {
             dst->b0[0]  = src[0].b0;
             dst->b0[1]  = src[1].b0;
@@ -79,7 +79,7 @@ namespace lsp
             dst->a2[3]  = src[3].a2;
         }
 
-        void biquad_pack_x8(biquad_x8_t *dst, const biquad_x1_t *src)
+        void biquad_pack_x8(dsp::biquad_x8_t *dst, const dsp::biquad_x1_t *src)
         {
             dst->b0[0]  = src[0].b0;
             dst->b0[1]  = src[1].b0;
@@ -127,7 +127,7 @@ namespace lsp
             dst->a2[7]  = src[7].a2;
         }
 
-        void biquad_pack_x16(biquad_x16_t *dst, const biquad_x1_t *src)
+        void biquad_pack_x16(dsp::biquad_x16_t *dst, const dsp::biquad_x1_t *src)
         {
             dst->b0[0]  = src[0].b0;
             dst->b0[1]  = src[1].b0;
