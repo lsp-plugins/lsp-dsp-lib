@@ -410,6 +410,7 @@
                 CEXPORT1(vl, biquad_process_x16);
                 CEXPORT1(vl, dyn_biquad_process_x16);
                 CEXPORT2(vl, bilinear_transform_x16, x64_bilinear_transform_x16);
+                CEXPORT2(vl, biquad_pack_x16, x64_biquad_pack_x16);
             }
         } /* namespace avx2 */
     } /* namespace lsp */
