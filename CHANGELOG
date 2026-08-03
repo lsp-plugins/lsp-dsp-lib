@@ -2,7 +2,7 @@
 * RECENT CHANGES
 *******************************************************************************
 
-=== 1.0.37 ===
+=== 1.1.0 ===
 * Significant refactoring of static and dynamic filter functions.
 * Added support of 16 biquad filter processing at the same time.
 * Fixed lanczos kernel generation functions to make buildable by MacOS on
