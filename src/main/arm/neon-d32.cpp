@@ -55,10 +55,7 @@
         #include <private/dsp/arch/arm/neon-d32/dynamics.h>
         #include <private/dsp/arch/arm/neon-d32/fastconv.h>
         #include <private/dsp/arch/arm/neon-d32/fft.h>
-        #include <private/dsp/arch/arm/neon-d32/filters/dynamic.h>
-        #include <private/dsp/arch/arm/neon-d32/filters/static.h>
-        #include <private/dsp/arch/arm/neon-d32/filters/transfer.h>
-        #include <private/dsp/arch/arm/neon-d32/filters/transform.h>
+        #include <private/dsp/arch/arm/neon-d32/filters.h>
         #include <private/dsp/arch/arm/neon-d32/float.h>
         #include <private/dsp/arch/arm/neon-d32/graphics/axis.h>
         #include <private/dsp/arch/arm/neon-d32/graphics/colors.h>
@@ -407,6 +404,11 @@
                 EXPORT1(biquad_process_x4);
                 EXPORT1(biquad_process_x8);
                 EXPORT1(biquad_process_x16);
+
+                EXPORT1(biquad_pack_x2);
+//                EXPORT1(biquad_pack_x4);
+//                EXPORT1(biquad_pack_x8);
+//                EXPORT1(biquad_pack_x16);
 
                 EXPORT1(dyn_biquad_process_x1);
                 EXPORT1(dyn_biquad_process_x2);
