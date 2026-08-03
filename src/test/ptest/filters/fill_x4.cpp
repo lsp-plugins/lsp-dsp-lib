@@ -26,72 +26,75 @@
 #include <lsp-plug.in/test-fw/helpers.h>
 
 #define NUM_FILTERS     512
+#define FILTER_CYCLES   512
 #define FILTER_TIMES    4
 
 namespace lsp
 {
     namespace generic
     {
-        void biquad_pack_x4(dsp::biquad_x4_t *dst, const dsp::biquad_x1_t *src);
+        void fcascade_fill_x4(dsp::f_cascade_t *h, dsp::f_cascade_t *t);
     }
 
     IF_ARCH_X86(
         namespace sse
         {
-            void biquad_pack_x4(dsp::biquad_x4_t *dst, const dsp::biquad_x1_t *src);
+            void fcascade_fill_x4(dsp::f_cascade_t *h, dsp::f_cascade_t *t);
         }
 
         namespace avx
         {
-            void biquad_pack_x4(dsp::biquad_x4_t *dst, const dsp::biquad_x1_t *src);
+            void fcascade_fill_x4(dsp::f_cascade_t *h, dsp::f_cascade_t *t);
+        }
+
+        namespace avx512
+        {
+            void fcascade_fill_x4(dsp::f_cascade_t *h, dsp::f_cascade_t *t);
         }
     )
 
-    typedef void (*biquad_pack_x4_t)(dsp::biquad_x4_t *dst, const dsp::biquad_x1_t *src);
+    typedef void (*fcascade_fill_x4_t)(dsp::f_cascade_t *h, dsp::f_cascade_t *t);
 }
 
-PTEST_BEGIN("dsp.filters", pack_x4, 5, 1000)
+PTEST_BEGIN("dsp.filters", fill_x4, 5, 1000)
 
-    void call(const char * label, dsp::biquad_x4_t *dst, const dsp::biquad_x1_t *src, biquad_pack_x4_t func)
+    void call(const char * label, dsp::f_cascade_t *dst, fcascade_fill_x4_t func)
     {
         printf("Testing %s...\n", label);
 
+        constexpr size_t tail_offset = (NUM_FILTERS - FILTER_TIMES + 1) * FILTER_TIMES;
+
         PTEST_LOOP(label,
-            dsp::biquad_x4_t *d = dst;
-            const dsp::biquad_x1_t *s = src;
-            for (size_t i=0; i<NUM_FILTERS; ++i, s += FILTER_TIMES)
-                func(&d[i], s);
+            for (size_t i=0; i<FILTER_CYCLES; ++i)
+                func(dst, &dst[tail_offset]);
         );
     }
 
     PTEST_MAIN
     {
-        void *p1 = NULL, *p2 = NULL;
-        dsp::biquad_x4_t * const dst = alloc_aligned<dsp::biquad_x4_t>(p1, NUM_FILTERS, LSP_DSP_BIQUAD_ALIGN);
-        dsp::biquad_x1_t * const src = alloc_aligned<dsp::biquad_x1_t>(p2, NUM_FILTERS * FILTER_TIMES, LSP_DSP_BIQUAD_ALIGN);
-        lsp_finally {
-            free_aligned(p1);
-            free_aligned(p2);
-        };
+        void *p1 = NULL;
+        dsp::f_cascade_t * const dst = alloc_aligned<dsp::f_cascade_t>(p1, NUM_FILTERS * FILTER_TIMES * sizeof(dsp::f_cascade_t));
+        lsp_finally { free_aligned(p1); };
 
         for (size_t i=0; i<NUM_FILTERS * FILTER_TIMES; ++i)
         {
-            src[i].b0       = randf();
-            src[i].b1       = randf();
-            src[i].b2       = randf();
-            src[i].a1       = randf();
-            src[i].a2       = randf();
-            src[i].p0       = randf();
-            src[i].p1       = randf();
-            src[i].p1       = randf();
+            dst[i].t[0]     = randf();
+            dst[i].t[1]     = randf();
+            dst[i].t[2]     = randf();
+            dst[i].t[3]     = randf();
+            dst[i].b[0]     = randf();
+            dst[i].b[1]     = randf();
+            dst[i].b[2]     = randf();
+            dst[i].b[3]     = randf();
         }
 
         #define CALL(func) \
-            call(#func, dst, src, func)
+            call(#func, dst, func)
 
-        CALL(generic::biquad_pack_x4);
-        IF_ARCH_X86(CALL(sse::biquad_pack_x4));
-        IF_ARCH_X86(CALL(avx::biquad_pack_x4));
+        CALL(generic::fcascade_fill_x4);
+        IF_ARCH_X86(CALL(sse::fcascade_fill_x4));
+        IF_ARCH_X86(CALL(avx::fcascade_fill_x4));
+        IF_ARCH_X86(CALL(avx512::fcascade_fill_x4));
         PTEST_SEPARATOR;
     }
 

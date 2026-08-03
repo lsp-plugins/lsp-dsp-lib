@@ -28,6 +28,7 @@
 
 #include <private/dsp/arch/x86/avx512/filters/common.h>
 #include <private/dsp/arch/x86/avx512/filters/dynamic.h>
+#include <private/dsp/arch/x86/avx512/filters/fill.h>
 #include <private/dsp/arch/x86/avx512/filters/pack.h>
 #include <private/dsp/arch/x86/avx512/filters/static.h>
 #include <private/dsp/arch/x86/avx512/filters/transform.h>

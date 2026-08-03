@@ -76,6 +76,10 @@ PTEST_BEGIN("dsp.filters", pack_x8, 5, 1000)
         void *p1 = NULL, *p2 = NULL;
         dsp::biquad_x8_t * const dst = alloc_aligned<dsp::biquad_x8_t>(p1, NUM_FILTERS, LSP_DSP_BIQUAD_ALIGN);
         dsp::biquad_x1_t * const src = alloc_aligned<dsp::biquad_x1_t>(p2, NUM_FILTERS * FILTER_TIMES, LSP_DSP_BIQUAD_ALIGN);
+        lsp_finally {
+            free_aligned(p1);
+            free_aligned(p2);
+        };
 
         for (size_t i=0; i<NUM_FILTERS * FILTER_TIMES; ++i)
         {

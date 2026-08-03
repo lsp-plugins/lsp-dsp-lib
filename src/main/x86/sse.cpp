@@ -385,6 +385,11 @@
                 EXPORT1(ms_to_left);
                 EXPORT1(ms_to_right);
 
+                EXPORT1(fcascade_fill_x2);
+                EXPORT1(fcascade_fill_x4);
+                EXPORT1(fcascade_fill_x8);
+                EXPORT1(fcascade_fill_x16);
+
                 EXPORT1(biquad_process_x1);
                 EXPORT1(biquad_process_x2);
                 EXPORT1(biquad_process_x4);

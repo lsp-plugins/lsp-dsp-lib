@@ -75,6 +75,11 @@
                 CEXPORT1(favx, biquad_pack_x2);
                 CEXPORT1(favx, biquad_pack_x4);
 
+                CEXPORT1(favx, fcascade_fill_x2);
+                CEXPORT1(favx, fcascade_fill_x4);
+                CEXPORT1(favx, fcascade_fill_x8);
+                CEXPORT1(favx, fcascade_fill_x16);
+
                 // FMA3 support?
                 if (f->hwcap[0] & CPU_HWCAP0_FMA3)
                 {

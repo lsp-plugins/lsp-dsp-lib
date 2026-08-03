@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_X86_AVX_IMPL */
 
 #include <private/dsp/arch/x86/avx/filters/common.h>
+#include <private/dsp/arch/x86/avx/filters/fill_nz.h>
 #include <private/dsp/arch/x86/avx/filters/dynamic_nz.h>
 #include <private/dsp/arch/x86/avx/filters/pack_nz.h>
 #include <private/dsp/arch/x86/avx/filters/static_nz.h>

@@ -27,6 +27,7 @@
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_IMPL */
 
 #include <private/dsp/arch/x86/sse/filters/common.h>
+#include <private/dsp/arch/x86/sse/filters/fill.h>
 #include <private/dsp/arch/x86/sse/filters/pack.h>
 #include <private/dsp/arch/x86/sse/filters/dynamic.h>
 #include <private/dsp/arch/x86/sse/filters/static.h>
