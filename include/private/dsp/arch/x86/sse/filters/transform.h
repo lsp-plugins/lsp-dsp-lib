@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -438,6 +438,38 @@ namespace lsp
             );
         }
 
+        #define BILINEAR_TRANSFORM_X4_BLOCK(base, B0, B1, B2, A1, A2) \
+            __ASM_EMIT("movaps      " base " + 0x10(%[bc]), %[x2]")        /* x2 = b0[0] b1[0] b2[0] ? */ \
+            __ASM_EMIT("movaps      " base " + 0x30(%[bc]), %[x3]")        /* x3 = b0[1] b1[1] b2[1] ? */ \
+            __ASM_EMIT("movaps      " base " + 0x50(%[bc]), %[x4]")        /* x4 = b0[2] b1[2] b2[2] ? */ \
+            __ASM_EMIT("movaps      " base " + 0x70(%[bc]), %[x5]")        /* x5 = b0[3] b1[3] b2[3] ? */ \
+            FIL_TRANSPOSE("[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]") \
+            /* x2 = b0[0..3], x4=b1[0..3], x6=b2[0..4] */ \
+            FIL_BILINEAR_X4_BOTTOM("[x0]", "[x1]", "[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]", "[ONE]") \
+            /* Now we need to transpose it back */ \
+            /* x3 = N[k] */ \
+            /* x4 = fb1[0] fb1[1] fb1[2] fb1[3] */ \
+            /* x5 = fb0[0] fb0[1] fb0[2] fb0[3] */ \
+            /* Store bottom part of filters */ \
+            __ASM_EMIT("movaps      %[x3], %[N]") \
+            __ASM_EMIT("movaps      %[x5], " A1 "(%[bf])") \
+            __ASM_EMIT("movaps      %[x4], " A2 "(%[bf])") \
+            /* Load Top part of cascade and transpose */ \
+            __ASM_EMIT("movaps      " base " + 0x00(%[bc]), %[x2]")        /* x2 = a0[0] a1[0] a2[0] ? */ \
+            __ASM_EMIT("movaps      " base " + 0x20(%[bc]), %[x3]")        /* x3 = a0[1] a1[1] a2[1] ? */ \
+            __ASM_EMIT("movaps      " base " + 0x40(%[bc]), %[x4]")        /* x4 = a0[2] a1[2] a2[2] ? */ \
+            __ASM_EMIT("movaps      " base " + 0x60(%[bc]), %[x5]")        /* x5 = a0[3] a1[3] a2[3] ? */ \
+            FIL_TRANSPOSE("[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]") \
+            /* x2 = T0[k] = a0[0..3], x4=a1[0..3], x6=a2[0..4] */ \
+            __ASM_EMIT("movaps      %[N], %[x7]")               /* load N */ \
+            FIL_BILINEAR_X4_TOP("[x0]", "[x1]", "[x2]", "[x3]", "[x4]", "[x6]", "[x7]") \
+            /* Now we need to transpose data */ \
+            /* x2 = fa3[k], x3 = fa2[k], x4 = fa0[k] */ \
+            /* Store top part of filters */ \
+            __ASM_EMIT("movaps      %[x4], " B0 "(%[bf])") \
+            __ASM_EMIT("movaps      %[x3], " B1 "(%[bf])") \
+            __ASM_EMIT("movaps      %[x2], " B2 "(%[bf])")
+
         void bilinear_transform_x4(dsp::biquad_x4_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count)
         {
             float x1, x2, x3, x4, x5, x6, x7;
@@ -455,45 +487,8 @@ namespace lsp
                 __ASM_EMIT("mulps       %[x1], %[x1]")              // x1 = kf*kf kf*kf kf*kf kf*kf = kf2 kf2 kf2 kf2
 
                 //---------------------------------------------------------------------
-                // Load bottom part of cascade and transpose
                 __ASM_EMIT("1:")
-                __ASM_EMIT("movaps      0x10(%[bc]), %[x2]")        // x2 = b0[0] b1[0] b2[0] ?
-                __ASM_EMIT("movaps      0x30(%[bc]), %[x3]")        // x3 = b0[1] b1[1] b2[1] ?
-                __ASM_EMIT("movaps      0x50(%[bc]), %[x4]")        // x4 = b0[2] b1[2] b2[2] ?
-                __ASM_EMIT("movaps      0x70(%[bc]), %[x5]")        // x5 = b0[3] b1[3] b2[3] ?
-
-                FIL_TRANSPOSE("[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]")
-
-                // x2 = b0[0..3], x4=b1[0..3], x6=b2[0..4]
-                FIL_BILINEAR_X4_BOTTOM("[x0]", "[x1]", "[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]", "[ONE]")
-
-                // Now we need to transpose it back
-                // x3 = N[k]
-                // x4 = fb1[0] fb1[1] fb1[2] fb1[3]
-                // x5 = fb0[0] fb0[1] fb0[2] fb0[3]
-                // Store bottom part of filters
-                __ASM_EMIT("movaps      %[x3], %[N]")
-                __ASM_EMIT("movaps      %[x5], 0x30(%[bf])")
-                __ASM_EMIT("movaps      %[x4], 0x40(%[bf])")
-
-                // Load Top part of cascade and transpose
-                __ASM_EMIT("movaps      0x00(%[bc]), %[x2]")        // x2 = a0[0] a1[0] a2[0] ?
-                __ASM_EMIT("movaps      0x20(%[bc]), %[x3]")        // x3 = a0[1] a1[1] a2[1] ?
-                __ASM_EMIT("movaps      0x40(%[bc]), %[x4]")        // x4 = a0[2] a1[2] a2[2] ?
-                __ASM_EMIT("movaps      0x60(%[bc]), %[x5]")        // x5 = a0[3] a1[3] a2[3] ?
-
-                FIL_TRANSPOSE("[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]")
-
-                // x2 = T0[k] = a0[0..3], x4=a1[0..3], x6=a2[0..4]
-                __ASM_EMIT("movaps      %[N], %[x7]")               // load N
-                FIL_BILINEAR_X4_TOP("[x0]", "[x1]", "[x2]", "[x3]", "[x4]", "[x6]", "[x7]")
-
-                // Now we need to transpose data
-                // x2 = fa3[k], x3 = fa2[k], x4 = fa0[k]
-                // Store top part of filters
-                __ASM_EMIT("movaps      %[x4], 0x00(%[bf])")
-                __ASM_EMIT("movaps      %[x3], 0x10(%[bf])")
-                __ASM_EMIT("movaps      %[x2], 0x20(%[bf])")
+                BILINEAR_TRANSFORM_X4_BLOCK("0x00", "0x00", "0x10", "0x20", "0x30", "0x40")
 
                 // Update pointers and repeat loop
                 __ASM_EMIT("add         $0x80, %[bc]")
@@ -530,66 +525,55 @@ namespace lsp
                 __ASM_EMIT("mulps       %[x1], %[x1]")              // x1 = kf*kf kf*kf kf*kf kf*kf = kf2 kf2 kf2 kf2
 
                 //---------------------------------------------------------------------
-                // x8 block
                 __ASM_EMIT("1:")
-                // Group 1
-                // Load bottom part of cascade and transpose
-                __ASM_EMIT("movaps      0x10(%[bc]), %[x2]")        // x2 = b0[0] b1[0] b2[0] ?
-                __ASM_EMIT("movaps      0x30(%[bc]), %[x3]")        // x3 = b0[1] b1[1] b2[1] ?
-                __ASM_EMIT("movaps      0x50(%[bc]), %[x4]")        // x4 = b0[2] b1[2] b2[2] ?
-                __ASM_EMIT("movaps      0x70(%[bc]), %[x5]")        // x5 = b0[3] b1[3] b2[3] ?
-
-                FIL_TRANSPOSE("[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]")
-                FIL_BILINEAR_X4_BOTTOM("[x0]", "[x1]", "[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]", "[ONE]")
-
-                __ASM_EMIT("movaps      %[x3], %[N]")
-                __ASM_EMIT("movaps      %[x5], 0x60(%[bf])")
-                __ASM_EMIT("movaps      %[x4], 0x80(%[bf])")
-
-                // Load Top part of cascade and transpose
-                __ASM_EMIT("movaps      0x00(%[bc]), %[x2]")        // x2 = a0[0] a1[0] a2[0] ?
-                __ASM_EMIT("movaps      0x20(%[bc]), %[x3]")        // x3 = a0[1] a1[1] a2[1] ?
-                __ASM_EMIT("movaps      0x40(%[bc]), %[x4]")        // x4 = a0[2] a1[2] a2[2] ?
-                __ASM_EMIT("movaps      0x60(%[bc]), %[x5]")        // x5 = a0[3] a1[3] a2[3] ?
-
-                FIL_TRANSPOSE("[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]")
-                __ASM_EMIT("movaps      %[N], %[x7]")               // load N
-                FIL_BILINEAR_X4_TOP("[x0]", "[x1]", "[x2]", "[x3]", "[x4]", "[x6]", "[x7]")
-
-                __ASM_EMIT("movaps      %[x4], 0x00(%[bf])")
-                __ASM_EMIT("movaps      %[x3], 0x20(%[bf])")
-                __ASM_EMIT("movaps      %[x2], 0x40(%[bf])")
-
-                // Group 2
-                // Load bottom part of cascade and transpose
-                __ASM_EMIT("movaps      0x90(%[bc]), %[x2]")        // x2 = b0[0] b1[0] b2[0] ?
-                __ASM_EMIT("movaps      0xb0(%[bc]), %[x3]")        // x3 = b0[1] b1[1] b2[1] ?
-                __ASM_EMIT("movaps      0xd0(%[bc]), %[x4]")        // x4 = b0[2] b1[2] b2[2] ?
-                __ASM_EMIT("movaps      0xf0(%[bc]), %[x5]")        // x5 = b0[3] b1[3] b2[3] ?
-
-                FIL_TRANSPOSE("[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]")
-                FIL_BILINEAR_X4_BOTTOM("[x0]", "[x1]", "[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]", "[ONE]")
-
-                __ASM_EMIT("movaps      %[x3], %[N]")
-                __ASM_EMIT("movaps      %[x5], 0x70(%[bf])")
-                __ASM_EMIT("movaps      %[x4], 0x90(%[bf])")
-
-                __ASM_EMIT("movaps      0x80(%[bc]), %[x2]")        // x2 = a0[0] a1[0] a2[0] ?
-                __ASM_EMIT("movaps      0xa0(%[bc]), %[x3]")        // x3 = a0[1] a1[1] a2[1] ?
-                __ASM_EMIT("movaps      0xc0(%[bc]), %[x4]")        // x4 = a0[2] a1[2] a2[2] ?
-                __ASM_EMIT("movaps      0xe0(%[bc]), %[x5]")        // x5 = a0[3] a1[3] a2[3] ?
-
-                FIL_TRANSPOSE("[x2]", "[x3]", "[x4]", "[x5]", "[x6]", "[x7]")
-                __ASM_EMIT("movaps      %[N], %[x7]")               // load N
-                FIL_BILINEAR_X4_TOP("[x0]", "[x1]", "[x2]", "[x3]", "[x4]", "[x6]", "[x7]")
-
-                __ASM_EMIT("movaps      %[x4], 0x10(%[bf])")
-                __ASM_EMIT("movaps      %[x3], 0x30(%[bf])")
-                __ASM_EMIT("movaps      %[x2], 0x50(%[bf])")
+                BILINEAR_TRANSFORM_X4_BLOCK("0x00", "0x00", "0x20", "0x40", "0x60", "0x80")
+                BILINEAR_TRANSFORM_X4_BLOCK("0x80", "0x10", "0x30", "0x50", "0x70", "0x90")
 
                 // Update pointers and repeat loop
                 __ASM_EMIT("add         $0x100, %[bc]")
                 __ASM_EMIT("add         $0xa0, %[bf]")
+                __ASM_EMIT("dec         %[count]")
+                __ASM_EMIT("jnz         1b")
+
+                __ASM_EMIT("100:")
+                : [x0] "+x" (kf), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
+                  [x4] "=&x" (x4), [x5] "=&x" (x5), [x6] "=&x" (x6), [x7] "=&x" (x7),
+                  [count] "+r" (count),
+                  [bc] "+r" (bc),
+                  [bf] "+r" (bf)
+                : [N] "m" (N),
+                  [ONE] "m" (f_transform_const)
+                : "cc", "memory"
+            );
+        }
+
+        void bilinear_transform_x16(dsp::biquad_x16_t *bf, const dsp::f_cascade_t *bc, float kf, size_t count)
+        {
+            float x1, x2, x3, x4, x5, x6, x7;
+            float N[4] __lsp_aligned16;
+
+            // Same ad bilinear_tranform_x1 but number of cycles is doubled
+            ARCH_X86_ASM
+            (
+                __ASM_EMIT("test        %[count], %[count]")
+                __ASM_EMIT("jz          100f")
+
+                // Initialize
+                __ASM_EMIT("shufps      $0x00, %[x0], %[x0]")       // x0 = kf kf kf kf
+                __ASM_EMIT("movaps      %[x0], %[x1]")              // x1 = kf kf kf kf
+                __ASM_EMIT("mulps       %[x1], %[x1]")              // x1 = kf*kf kf*kf kf*kf kf*kf = kf2 kf2 kf2 kf2
+
+                //---------------------------------------------------------------------
+                // x8 block
+                __ASM_EMIT("1:")
+                BILINEAR_TRANSFORM_X4_BLOCK("0x00", "0x00", "0x40", "0x80", "0xc0", "0x100")
+                BILINEAR_TRANSFORM_X4_BLOCK("0x80", "0x10", "0x50", "0x90", "0xd0", "0x110")
+                BILINEAR_TRANSFORM_X4_BLOCK("0x100", "0x20", "0x60", "0xa0", "0xe0", "0x120")
+                BILINEAR_TRANSFORM_X4_BLOCK("0x180", "0x30", "0x70", "0xb0", "0xf0", "0x130")
+
+                // Update pointers and repeat loop
+                __ASM_EMIT("add         $0x200, %[bc]")
+                __ASM_EMIT("add         $0x140, %[bf]")
                 __ASM_EMIT("dec         %[count]")
                 __ASM_EMIT("jnz         1b")
 
@@ -655,7 +639,7 @@ namespace lsp
                     // Transfer function
                     b           = p[0] - p[2]*0.01f;
                     c           = p[1]*0.1f;
-                    p[3]        = sqrt(b*b + c*c);
+                    p[3]        = sqrtf(b*b + c*c);
 
                     // Calculate parameters
                     k           = p[2];
@@ -669,11 +653,11 @@ namespace lsp
                         // Transformed form is:
                         //   P[z] = k*(1 - (exp(R0*T) + exp(R1*T))*z^-1 + exp((R0+R1)*T)*z^-2)
                         D           = sqrtf(D);
-                        float R0    = td*(-b - D)/a2;
-                        float R1    = td*(-b + D)/a2;
+                        float R0    = expf(td*(-b - D)/a2);
+                        float R1    = expf(td*(-b + D)/a2);
                         p[0]        = k;
-                        p[1]        = -k * (expf(R0) + expf(R1));
-                        p[2]        = k * expf(R0+R1);
+                        p[1]        = -k * (R0 + R1);
+                        p[2]        = k * R0*R1;
                     }
                     else
                     {
@@ -681,11 +665,11 @@ namespace lsp
                         // Transformed form is:
                         //   P[z] = k*(1 - 2*exp(R*T)*cos(K*T)*z^-1 + exp(2*R*T)*z^-2)
                         D           = sqrtf(-D);
-                        float R     = -(td*b) /a2;
+                        float R     = expf(-(td*b)/a2);
                         float K     = D /a2;
                         p[0]        = k;
-                        p[1]        = -2.0 * k * expf(R) * cosf(K*td);
-                        p[2]        = k * expf(R+R);
+                        p[1]        = -2.0f * k * R * cosf(K*td);
+                        p[2]        = k * R * R;
                     }
 
                     // Update pointer
@@ -971,7 +955,7 @@ namespace lsp
                 : "cc", "memory"
             );
         }
-    }
-}
+    } /* namespace x86 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_FILTERS_TRANSFORM_H_ */

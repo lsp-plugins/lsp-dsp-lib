@@ -47,6 +47,7 @@
         #include <private/dsp/arch/x86/avx512/convolution.h>
         #include <private/dsp/arch/x86/avx512/copy.h>
         #include <private/dsp/arch/x86/avx512/dynamics.h>
+        #include <private/dsp/arch/x86/avx512/filters.h>
         #include <private/dsp/arch/x86/avx512/float.h>
         #include <private/dsp/arch/x86/avx512/fft.h>
         #include <private/dsp/arch/x86/avx512/pfft.h>
@@ -406,6 +407,14 @@
                 CEXPORT1(vl, lerp_kvk);
                 CEXPORT1(vl, lerp_kkv);
 
+                CEXPORT1(vl, fcascade_fill_x4);
+                CEXPORT1(vl, fcascade_fill_x8);
+                CEXPORT1(vl, fcascade_fill_x16);
+
+                CEXPORT1(vl, biquad_process_x16);
+                CEXPORT1(vl, dyn_biquad_process_x16);
+                CEXPORT2(vl, bilinear_transform_x16, x64_bilinear_transform_x16);
+                CEXPORT2(vl, biquad_pack_x16, x64_biquad_pack_x16);
             }
         } /* namespace avx2 */
     } /* namespace lsp */

@@ -57,10 +57,7 @@
         #include <private/dsp/arch/aarch64/asimd/dynamics.h>
         #include <private/dsp/arch/aarch64/asimd/fastconv.h>
         #include <private/dsp/arch/aarch64/asimd/fft.h>
-        #include <private/dsp/arch/aarch64/asimd/filters/dynamic.h>
-        #include <private/dsp/arch/aarch64/asimd/filters/static.h>
-        #include <private/dsp/arch/aarch64/asimd/filters/transfer.h>
-        #include <private/dsp/arch/aarch64/asimd/filters/transform.h>
+        #include <private/dsp/arch/aarch64/asimd/filters.h>
         #include <private/dsp/arch/aarch64/asimd/float.h>
         #include <private/dsp/arch/aarch64/asimd/graphics/axis.h>
         #include <private/dsp/arch/aarch64/asimd/graphics/colors.h>
@@ -414,26 +411,24 @@
                 EXPORT1(biquad_process_x2);
                 EXPORT1(biquad_process_x4);
                 EXPORT1(biquad_process_x8);
+                EXPORT1(biquad_process_x16);
 
                 EXPORT1(dyn_biquad_process_x1);
                 EXPORT1(dyn_biquad_process_x2);
                 EXPORT1(dyn_biquad_process_x4);
                 EXPORT1(dyn_biquad_process_x8);
-
-                EXPORT1(filter_transfer_calc_ri);
-                EXPORT1(filter_transfer_apply_ri);
-                EXPORT1(filter_transfer_calc_pc);
-                EXPORT1(filter_transfer_apply_pc);
-
-                EXPORT1(dyn_biquad_process_x1);
-                EXPORT1(dyn_biquad_process_x2);
-                EXPORT1(dyn_biquad_process_x4);
-                EXPORT1(dyn_biquad_process_x8);
+                EXPORT1(dyn_biquad_process_x16);
 
                 EXPORT1(bilinear_transform_x1);
                 EXPORT1(bilinear_transform_x2);
                 EXPORT1(bilinear_transform_x4);
                 EXPORT1(bilinear_transform_x8);
+                EXPORT1(bilinear_transform_x16);
+
+                EXPORT1(filter_transfer_calc_ri);
+                EXPORT1(filter_transfer_apply_ri);
+                EXPORT1(filter_transfer_calc_pc);
+                EXPORT1(filter_transfer_apply_pc);
 
                 EXPORT1(lanczos_resample_2x2);
                 EXPORT1(lanczos_resample_2x3);

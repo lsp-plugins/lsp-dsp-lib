@@ -64,6 +64,15 @@ LSP_DSP_LIB_SYMBOL(void, bilinear_transform_x4, LSP_DSP_LIB_TYPE(biquad_x4_t) *b
  */
 LSP_DSP_LIB_SYMBOL(void, bilinear_transform_x8, LSP_DSP_LIB_TYPE(biquad_x8_t) *bf, const LSP_DSP_LIB_TYPE(f_cascade_t) *bc, float kf, size_t count);
 
+/** Perform bilinear transformation of sixteen filter banks
+ *
+ * @param bf memory-aligned target transformed biquad x16 filters
+ * @param bc memory-aligned source analog bilinear filter cascades matrix
+ * @param kf frequency shift coefficient
+ * @param count number of matrix rows to process
+ */
+LSP_DSP_LIB_SYMBOL(void, bilinear_transform_x16, LSP_DSP_LIB_TYPE(biquad_x16_t) *bf, const LSP_DSP_LIB_TYPE(f_cascade_t) *bc, float kf, size_t count);
+
 //---------------------------------------------------------------------------------------
 // Matched Z transformation of dynamic filters
 //---------------------------------------------------------------------------------------
@@ -110,5 +119,17 @@ LSP_DSP_LIB_SYMBOL(void, matched_transform_x4, LSP_DSP_LIB_TYPE(biquad_x4_t) *bf
  * @param count number of cascades  to process
  */
 LSP_DSP_LIB_SYMBOL(void, matched_transform_x8, LSP_DSP_LIB_TYPE(biquad_x8_t) *bf, LSP_DSP_LIB_TYPE(f_cascade_t) *bc, float kf, float td, size_t count);
+
+/** Perform matched Z transformation of sixteen filter banks,
+ * function modifies contents of the bc memory chunk
+ *
+ * @param bf memory-aligned target transformed biquad x16 filters
+ * @param bc memory-aligned source analog bilinear filter cascades, modified after execution
+ * @param kf frequency shift coefficient (filter frequency)
+ * @param td tranformation coefficient (2 * pi / sample rate)
+ * @param count number of cascades  to process
+ */
+LSP_DSP_LIB_SYMBOL(void, matched_transform_x16, LSP_DSP_LIB_TYPE(biquad_x16_t) *bf, LSP_DSP_LIB_TYPE(f_cascade_t) *bc, float kf, float td, size_t count);
+
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_FILTERS_TRANSFORM_H_ */
