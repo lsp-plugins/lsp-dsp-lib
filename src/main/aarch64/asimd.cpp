@@ -57,10 +57,7 @@
         #include <private/dsp/arch/aarch64/asimd/dynamics.h>
         #include <private/dsp/arch/aarch64/asimd/fastconv.h>
         #include <private/dsp/arch/aarch64/asimd/fft.h>
-        #include <private/dsp/arch/aarch64/asimd/filters/dynamic.h>
-        #include <private/dsp/arch/aarch64/asimd/filters/static.h>
-        #include <private/dsp/arch/aarch64/asimd/filters/transfer.h>
-        #include <private/dsp/arch/aarch64/asimd/filters/transform.h>
+        #include <private/dsp/arch/aarch64/asimd/filters.h>
         #include <private/dsp/arch/aarch64/asimd/float.h>
         #include <private/dsp/arch/aarch64/asimd/graphics/axis.h>
         #include <private/dsp/arch/aarch64/asimd/graphics/colors.h>

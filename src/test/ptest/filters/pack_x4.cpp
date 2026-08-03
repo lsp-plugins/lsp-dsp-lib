@@ -47,20 +47,6 @@ namespace lsp
         }
     )
 
-    IF_ARCH_ARM(
-        namespace neon_d32
-        {
-            void biquad_pack_x4(dsp::biquad_x4_t *dst, const dsp::biquad_x1_t *src);
-        }
-    )
-
-    IF_ARCH_AARCH64(
-        namespace asimd
-        {
-            void biquad_pack_x4(dsp::biquad_x4_t *dst, const dsp::biquad_x1_t *src);
-        }
-    )
-
     typedef void (*biquad_pack_x4_t)(dsp::biquad_x4_t *dst, const dsp::biquad_x1_t *src);
 }
 
