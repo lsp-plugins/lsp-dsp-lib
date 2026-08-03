@@ -22,6 +22,7 @@
 #include <lsp-plug.in/common/types.h>
 #include <lsp-plug.in/dsp/dsp.h>
 #include <lsp-plug.in/common/alloc.h>
+#include <lsp-plug.in/stdlib/string.h>
 #include <lsp-plug.in/test-fw/utest.h>
 #include <lsp-plug.in/test-fw/helpers.h>
 #include <lsp-plug.in/test-fw/FloatBuffer.h>
