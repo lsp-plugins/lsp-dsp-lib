@@ -156,11 +156,11 @@ namespace lsp
                 __ASM_EMIT("fsub            v4.2s, v4.2s, v1.2s")           // v4   = T[0]-T[1]+T[2], B[0]-B[1]+B[2]
 
                 __ASM_EMIT("frecpe          v7.2s, v6.2s")                  // v7   = R, v6 = B
-                __ASM_EMIT("frecps          v8.2s, v7.2s, v6.2s")           // v8   = (2 - R*B)
-                __ASM_EMIT("fmul            v7.2s, v8.2s, v7.2s")           // v7   = B' = B * (2 - R*B)
-                __ASM_EMIT("frecps          v8.2s, v7.2s, v6.2s")           // v8   = (2 - R*B')
-                __ASM_EMIT("fmul            v16.2s, v8.2s, v7.2s")          // v16  = B" = B' * (2 - R*B) = 1/B = ? N
-                __ASM_EMIT("fneg            v7.2s, v7.2s")                  // v16  = ? -N
+                __ASM_EMIT("frecps          v18.2s, v7.2s, v6.2s")          // v18  = (2 - R*B)
+                __ASM_EMIT("fmul            v7.2s, v18.2s, v7.2s")          // v7   = B' = B * (2 - R*B)
+                __ASM_EMIT("frecps          v18.2s, v7.2s, v6.2s")          // v18   = (2 - R*B')
+                __ASM_EMIT("fmul            v16.2s, v18.2s, v7.2s")         // v18  = B" = B' * (2 - R*B) = 1/B = ? N
+                __ASM_EMIT("fneg            v7.2s, v16.2s")                 // v16  = ? -N
                 __ASM_EMIT("mov             v7.s[0], v16.s[1]")             // v7   = N -N
 
                 __ASM_EMIT("fmul            v0.2s, v6.2s, v7.2s")           // v0   = (T[0]+T[1]+T[2])*N, (B[0]+B[1]+B[2])*N = A0, 1
@@ -184,7 +184,7 @@ namespace lsp
                   "v0", "v1", "v2", "v3",
                   "v4", "v5", "v6", "v7",
                   "v16", "v17", "v18", "v19",
-                  "v20", "v21", "v22", "v23"
+                  "v22", "v23"
             );
         }
 
@@ -298,11 +298,11 @@ namespace lsp
                 __ASM_EMIT("fsub            v4.4s, v4.4s, v1.4s")           // v4   = T[0]-T[1]+T[2], B[0]-B[1]+B[2]
 
                 __ASM_EMIT("frecpe          v7.4s, v6.4s")                  // v7   = R, v6 = B
-                __ASM_EMIT("frecps          v8.4s, v7.4s, v6.4s")           // v8   = (2 - R*B)
-                __ASM_EMIT("fmul            v7.4s, v8.4s, v7.4s")           // v7   = B' = B * (2 - R*B)
-                __ASM_EMIT("frecps          v8.4s, v7.4s, v6.4s")           // v8   = (2 - R*B')
-                __ASM_EMIT("fmul            v16.4s, v8.4s, v7.4s")          // v16  = B" = B' * (2 - R*B) = 1/B = ? N
-                __ASM_EMIT("fneg            v7.4s, v7.4s")                  // v7   = ? -N
+                __ASM_EMIT("frecps          v18.4s, v7.4s, v6.4s")          // v18  = (2 - R*B)
+                __ASM_EMIT("fmul            v7.4s, v18.4s, v7.4s")          // v7   = B' = B * (2 - R*B)
+                __ASM_EMIT("frecps          v18.4s, v7.4s, v6.4s")          // v18  = (2 - R*B')
+                __ASM_EMIT("fmul            v16.4s, v18.4s, v7.4s")         // v16  = B" = B' * (2 - R*B) = 1/B = ? N
+                __ASM_EMIT("fneg            v7.4s, v16.4s")                 // v7   = ? -N
                 __ASM_EMIT("trn2            v7.4s, v16.4s, v7.4s")          // v7   = N -N
 
                 __ASM_EMIT("fmul            v0.4s, v6.4s, v7.4s")           // v0   = (T[0]+T[1]+T[2])*N, (B[0]+B[1]+B[2])*N = A0, 1

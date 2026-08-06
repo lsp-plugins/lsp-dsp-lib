@@ -156,7 +156,7 @@ namespace lsp
                 __ASM_EMIT("vmov            q6, q14")               // q6 = kf
                 __ASM_EMIT("vmov            q7, q15")               // q7 = kf2
                 __ASM_EMIT("3:")
-                __ASM_EMIT("vld4.32         {q0-q1}, [%[bc]]!")     // d0 = t[0] b[0] = T[0] B[0], d1 = t[1] b[1], d2 = t[2] b[2], d3 = 0 0
+                __ASM_EMIT("vld4.32         {d0-d3}, [%[bc]]!")     // d0 = t[0] b[0] = T[0] B[0], d1 = t[1] b[1], d2 = t[2] b[2], d3 = 0 0
                 __ASM_EMIT("vmul.f32        d1, d1, d12")           // d1 = t[1]*kf b[1]*kf = T[1] B[1]
                 __ASM_EMIT("vmul.f32        d2, d2, d14")           // d2 = t[2]*kf b[2]*kf = T[2] B[2]
 
@@ -263,12 +263,12 @@ namespace lsp
                 // Register states:
                 // q0  = A00 A01 A02 A03
                 // q1  = A20 A21 A22 A23
-                // q2  = B10 B11 B12 B13
+                // q2  = B20 B21 B22 B23
                 // q3  = A10 A11 A12 A13
-                // q4  = B20 B21 B22 B23
+                // q4  = B10 B11 B12 B13
                 // q5  = 0   0   0   0
                 __ASM_EMIT("vswp            d1, d6")                // q0  = A00 A01 A10 A11, q3 = A02 A03 A12 A13
-                __ASM_EMIT("vswp            d3, d8")                // q1  = A20 A21 B20 B21, q4 = A22 A23 B22 B23
+                __ASM_EMIT("vswp            d3, d8")                // q1  = A20 A21 B10 B11, q4 = A22 A23 B12 B13
                 __ASM_EMIT("vswp            d5, d10")               // q2  = B20 B21 0   0  , q5 = B22 B23 0   0
 
                 __ASM_EMIT("subs            %[count], #2")
@@ -280,7 +280,7 @@ namespace lsp
                 __ASM_EMIT("blt             4f")
 
                 // 1 x2 block
-                __ASM_EMIT("vld4.32         {q0-q1}, [%[bc]]!")     // d0 = t[0] b[0] = T[0] B[0], d1 = t[1] b[1], d2 = t[2] b[2], d3 = 0 0
+                __ASM_EMIT("vld4.32         {d0-d3}, [%[bc]]!")     // d0 = t[0] b[0] = T[0] B[0], d1 = t[1] b[1], d2 = t[2] b[2], d3 = 0 0
                 __ASM_EMIT("vmul.f32        d1, d1, d28")           // d1 = t[1]*kf b[1]*kf = T[1] B[1]
                 __ASM_EMIT("vmul.f32        d2, d2, d30")           // d2 = t[2]*kf b[2]*kf = T[2] B[2]
                 __ASM_EMIT("vld4.32         {q8-q9}, [%[bc]]!")
