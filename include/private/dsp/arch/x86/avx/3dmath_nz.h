@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
- * Created on: 13 авг. 2025 г.
+ * Created on: 7 авг. 2026 г.
  *
  * lsp-dsp-lib is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,15 +19,14 @@
  * along with lsp-dsp-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PRIVATE_DSP_ARCH_X86_AVX_3DMATH_H_
-#define PRIVATE_DSP_ARCH_X86_AVX_3DMATH_H_
+#ifndef PRIVATE_DSP_ARCH_X86_AVX_3DMATH_NZ_H_
+#define PRIVATE_DSP_ARCH_X86_AVX_3DMATH_NZ_H_
 
 #ifndef PRIVATE_DSP_ARCH_X86_AVX_IMPL
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_X86_AVX_IMPL */
 
 #include <private/dsp/arch/x86/avx/3dmath/common.h>
-#include <private/dsp/arch/x86/avx/3dmath/3dmath.h>
+#include <private/dsp/arch/x86/avx/3dmath/3dmath_nz.h>
 
-
-#endif /* PRIVATE_DSP_ARCH_X86_AVX_3DMATH_H_ */
+#endif /* PRIVATE_DSP_ARCH_X86_AVX_3DMATH_NZ_H_ */

@@ -432,70 +432,10 @@
                 CEXPORT1(favx, lerp_kkv);
 
                 // 3D math
-                EXPORT1(init_point_xyz);
-                EXPORT1(init_point);
-                EXPORT1(normalize_point);
-
-                EXPORT1(init_vector_dxyz);
-                EXPORT1(init_vector);
-                EXPORT1(normalize_vector);
-                EXPORT1(normalize_vector2);
-
                 EXPORT1(init_matrix3d);
-                EXPORT1(init_matrix3d_zero);
                 EXPORT1(init_matrix3d_one);
                 EXPORT1(init_matrix3d_identity);
-                EXPORT1(init_matrix3d_translate);
-                EXPORT1(init_matrix3d_scale);
-                EXPORT1(init_matrix3d_rotate_x);
-                EXPORT1(init_matrix3d_rotate_y);
-                EXPORT1(init_matrix3d_rotate_z);
 //                EXPORT1(init_matrix3d_rotate_xyz);
-                EXPORT1(apply_matrix3d_mv2);
-                EXPORT1(apply_matrix3d_mv1);
-                EXPORT1(apply_matrix3d_mp2);
-                EXPORT1(apply_matrix3d_mp1);
-                EXPORT1(apply_matrix3d_mm2);
-                EXPORT1(apply_matrix3d_mm1);
-                EXPORT1(transpose_matrix3d1);
-                EXPORT1(transpose_matrix3d2);
-
-                EXPORT1(calc_area_p3);
-                EXPORT1(calc_area_pv);
-
-                EXPORT1(colocation_x2_v1p2);
-                EXPORT1(colocation_x2_v1pv);
-                EXPORT1(colocation_x3_v1p3);
-                EXPORT1(colocation_x3_v1pv);
-                EXPORT1(colocation_x3_v3p1);
-                EXPORT1(colocation_x3_vvp1);
-
-                EXPORT1(split_triangle_raw);
-                EXPORT1(cull_triangle_raw);
-
-                EXPORT1(longest_edge3d_p3);
-                EXPORT1(longest_edge3d_pv);
-
-                EXPORT1(calc_normal3d_p3);
-                EXPORT1(calc_normal3d_pv);
-                EXPORT1(calc_normal3d_v2);
-                EXPORT1(calc_normal3d_vv);
-
-                EXPORT1(calc_plane_p3);
-                EXPORT1(calc_plane_pv);
-                EXPORT1(calc_plane_v1p2);
-
-                EXPORT1(calc_split_point_p2v1);
-                EXPORT1(calc_split_point_pvv1);
-
-                EXPORT1(check_triplet3d_p3n);
-                EXPORT1(check_triplet3d_pvn);
-                EXPORT1(check_triplet3d_v2n);
-                EXPORT1(check_triplet3d_vvn);
-                EXPORT1(check_triplet3d_vv);
-
-                EXPORT1(check_point3d_on_triangle_p3p);
-                EXPORT1(check_point3d_on_triangle_pvp);
 
                 // FMA3 support?
                 if (f->hwcap[0] & CPU_HWCAP0_FMA3)
@@ -587,38 +527,6 @@
                     CEXPORT2_X64(ffma, dyn_biquad_process_x16, x64_dyn_biquad_process_x16_fma3);
 
                     CEXPORT2(favx, depan_eqpow, depan_eqpow_fma3);
-
-                    // 3D math
-                    CEXPORT2(favx, apply_matrix3d_mm2, apply_matrix3d_mm2_fma3);
-                    CEXPORT2(favx, apply_matrix3d_mm1, apply_matrix3d_mm1_fma3);
-                    CEXPORT2(favx, apply_matrix3d_mp2, apply_matrix3d_mp2_fma3);
-                    CEXPORT2(favx, apply_matrix3d_mp1, apply_matrix3d_mp1_fma3);
-                    CEXPORT2(favx, apply_matrix3d_mv2, apply_matrix3d_mv2_fma3);
-                    CEXPORT2(favx, apply_matrix3d_mv1, apply_matrix3d_mv1_fma3);
-
-                    CEXPORT2(favx, calc_area_p3, calc_area_p3_fma3);
-                    CEXPORT2(favx, calc_area_pv, calc_area_pv_fma3);
-
-                    CEXPORT2(favx, calc_normal3d_p3, calc_normal3d_p3_fma3);
-                    CEXPORT2(favx, calc_normal3d_pv, calc_normal3d_pv_fma3);
-                    CEXPORT2(favx, calc_normal3d_v2, calc_normal3d_v2_fma3);
-                    CEXPORT2(favx, calc_normal3d_vv, calc_normal3d_vv_fma3);
-
-                    CEXPORT2(favx, calc_plane_p3, calc_plane_p3_fma3);
-                    CEXPORT2(favx, calc_plane_pv, calc_plane_pv_fma3);
-                    CEXPORT2(favx, calc_plane_v1p2, calc_plane_v1p2_fma3);
-
-                    CEXPORT2(favx, calc_split_point_p2v1, calc_split_point_p2v1_fma3);
-                    CEXPORT2(favx, calc_split_point_pvv1, calc_split_point_pvv1_fma3);
-
-                    CEXPORT2(favx, check_triplet3d_p3n, check_triplet3d_p3n_fma3);
-                    CEXPORT2(favx, check_triplet3d_pvn, check_triplet3d_pvn_fma3);
-                    CEXPORT2(favx, check_triplet3d_v2n, check_triplet3d_v2n_fma3);
-                    CEXPORT2(favx, check_triplet3d_vvn, check_triplet3d_vvn_fma3);
-                    CEXPORT2(favx, check_triplet3d_vv, check_triplet3d_vv_fma3);
-
-                    CEXPORT2(favx, check_point3d_on_triangle_p3p, check_point3d_on_triangle_p3p_fma3);
-                    CEXPORT2(favx, check_point3d_on_triangle_pvp, check_point3d_on_triangle_pvp_fma3);
 
                     CEXPORT2(favx, pmix_v1, pmix_v1_fma3);
                     CEXPORT2(favx, pmix_v2, lerp_vvv_fma3);
