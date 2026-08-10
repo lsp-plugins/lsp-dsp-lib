@@ -64,7 +64,7 @@ namespace lsp
 
         void x64_biquad_pack_x8(dsp::biquad_x8_t *dst, const dsp::biquad_x1_t *src)
         {
-            ARCH_X86_ASM(
+            ARCH_X86_64_ASM(
                 BIQUAD_PACK_X8_CORE("0x000")
                 __ASM_EMIT("vmovups     %%ymm4, 0x000(%[dst])")
                 __ASM_EMIT("vmovups     %%ymm8, 0x020(%[dst])")
@@ -83,7 +83,7 @@ namespace lsp
 
         void x64_biquad_pack_x16(dsp::biquad_x16_t *dst, const dsp::biquad_x1_t *src)
         {
-            ARCH_X86_ASM(
+            ARCH_X86_64_ASM(
                 BIQUAD_PACK_X8_CORE("0x000")
                 __ASM_EMIT("vmovups     %%ymm4, 0x000(%[dst])")
                 __ASM_EMIT("vmovups     %%ymm8, 0x040(%[dst])")
