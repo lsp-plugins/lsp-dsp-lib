@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -39,7 +39,7 @@ namespace lsp
 }
 
 #define PRIVATE_DSP_ARCH_GENERIC_IMPL
-    #include <private/dsp/arch/generic/features.h>
+    #include <private/dsp/arch/generic/init.h>
 
     #include <private/dsp/arch/generic/bitmap.h>
     #include <private/dsp/arch/generic/context.h>
@@ -62,10 +62,7 @@ namespace lsp
 
     #include <private/dsp/arch/generic/search.h>
 
-    #include <private/dsp/arch/generic/filters/static.h>
-    #include <private/dsp/arch/generic/filters/dynamic.h>
-    #include <private/dsp/arch/generic/filters/transform.h>
-    #include <private/dsp/arch/generic/filters/transfer.h>
+    #include <private/dsp/arch/generic/filters.h>
 
     #include <private/dsp/arch/generic/fft.h>
     #include <private/dsp/arch/generic/fastconv.h>
@@ -289,9 +286,9 @@ namespace lsp
             EXPORT1(lr_pamax3);
 
             EXPORT1(pmix_v1);
-            EXPORT1(pmix_v2);
+            EXPORT2(pmix_v2, lerp_vvv);
             EXPORT1(pmix_k1);
-            EXPORT1(pmix_k2);
+            EXPORT2(pmix_k2, lerp_vvk);
 
             EXPORT1(h_sum);
             EXPORT1(h_sqr_sum);
@@ -421,11 +418,23 @@ namespace lsp
             EXPORT1(biquad_process_x2);
             EXPORT1(biquad_process_x4);
             EXPORT1(biquad_process_x8);
+            EXPORT1(biquad_process_x16);
 
             EXPORT1(dyn_biquad_process_x1);
             EXPORT1(dyn_biquad_process_x2);
             EXPORT1(dyn_biquad_process_x4);
             EXPORT1(dyn_biquad_process_x8);
+            EXPORT1(dyn_biquad_process_x16);
+
+            EXPORT1(biquad_pack_x2);
+            EXPORT1(biquad_pack_x4);
+            EXPORT1(biquad_pack_x8);
+            EXPORT1(biquad_pack_x16);
+
+            EXPORT1(fcascade_fill_x2);
+            EXPORT1(fcascade_fill_x4);
+            EXPORT1(fcascade_fill_x8);
+            EXPORT1(fcascade_fill_x16);
 
             EXPORT1(filter_transfer_calc_ri);
             EXPORT1(filter_transfer_apply_ri);
@@ -436,11 +445,13 @@ namespace lsp
             EXPORT1(bilinear_transform_x2);
             EXPORT1(bilinear_transform_x4);
             EXPORT1(bilinear_transform_x8);
+            EXPORT1(bilinear_transform_x16);
 
             EXPORT1(matched_transform_x1);
             EXPORT1(matched_transform_x2);
             EXPORT1(matched_transform_x4);
             EXPORT1(matched_transform_x8);
+            EXPORT1(matched_transform_x16);
 
             EXPORT1(axis_apply_lin1);
             EXPORT1(axis_apply_log1);
@@ -505,6 +516,14 @@ namespace lsp
             EXPORT1(downsample_4x);
             EXPORT1(downsample_6x);
             EXPORT1(downsample_8x);
+
+            EXPORT1(lerp_vvv);
+            EXPORT1(lerp_vvk);
+            EXPORT1(lerp_vkv);
+            EXPORT1(lerp_vkk);
+            EXPORT1(lerp_kvv);
+            EXPORT1(lerp_kvk);
+            EXPORT1(lerp_kkv);
 
             // 3D math
             EXPORT1(init_point_xyz);

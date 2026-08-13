@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #ifdef ARCH_X86
     #include <private/dsp/exports.h>
@@ -38,7 +39,7 @@
     // Feature detection
     #define PRIVATE_DSP_ARCH_X86_IMPL
         #include <private/dsp/arch/x86/defs.h>
-        #include <private/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/init.h>
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
     #define PRIVATE_DSP_ARCH_X86_AVX512_IMPL
@@ -46,6 +47,7 @@
         #include <private/dsp/arch/x86/avx512/convolution.h>
         #include <private/dsp/arch/x86/avx512/copy.h>
         #include <private/dsp/arch/x86/avx512/dynamics.h>
+        #include <private/dsp/arch/x86/avx512/filters.h>
         #include <private/dsp/arch/x86/avx512/float.h>
         #include <private/dsp/arch/x86/avx512/fft.h>
         #include <private/dsp/arch/x86/avx512/pfft.h>
@@ -85,15 +87,15 @@
                 IF_ARCH_X86_64(CEXPORT1(cond, export))
 
 
-            void dsp_init(const cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
                 // Enable AVX-512 only for CPUs that really support it well
                 const bool favx512  = feature_check(f, FEAT_FAST_AVX512);
                 if (!favx512)
                     return;
 
-                const bool vl = (f->features & (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL)) ==
-                                (CPU_OPTION_AVX512F | CPU_OPTION_AVX512VL);
+                const bool vl = (f->hwcap[0] & (CPU_HWCAP0_AVX512F | CPU_HWCAP0_AVX512VL)) ==
+                                (CPU_HWCAP0_AVX512F | CPU_HWCAP0_AVX512VL);
 
                 CEXPORT1(vl, copy);
                 CEXPORT1(vl, move);
@@ -393,9 +395,26 @@
                 CEXPORT1(vl, clamp_kk2);
 
                 CEXPORT1(vl, pmix_v1);
-                CEXPORT1(vl, pmix_v2);
+                CEXPORT2(vl, pmix_v2, lerp_vvv);
                 CEXPORT1(vl, pmix_k1);
-                CEXPORT1(vl, pmix_k2);
+                CEXPORT2(vl, pmix_k2, lerp_vvk);
+
+                CEXPORT1(vl, lerp_vvv);
+                CEXPORT1(vl, lerp_vvk);
+                CEXPORT1(vl, lerp_vkv);
+                CEXPORT1(vl, lerp_vkk);
+                CEXPORT1(vl, lerp_kvv);
+                CEXPORT1(vl, lerp_kvk);
+                CEXPORT1(vl, lerp_kkv);
+
+                CEXPORT1(vl, fcascade_fill_x4);
+                CEXPORT1(vl, fcascade_fill_x8);
+                CEXPORT1(vl, fcascade_fill_x16);
+
+                CEXPORT1(vl, biquad_process_x16);
+                CEXPORT1(vl, dyn_biquad_process_x16);
+                CEXPORT2(vl, bilinear_transform_x16, x64_bilinear_transform_x16);
+                CEXPORT2(vl, biquad_pack_x16, x64_biquad_pack_x16);
             }
         } /* namespace avx2 */
     } /* namespace lsp */

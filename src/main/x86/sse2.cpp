@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #ifdef ARCH_X86
     #include <private/dsp/exports.h>
@@ -37,7 +38,7 @@
     // Feature detection
     #define PRIVATE_DSP_ARCH_X86_IMPL
         #include <private/dsp/arch/x86/defs.h>
-        #include <private/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/init.h>
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
 
@@ -72,9 +73,9 @@
             }
             #define EXPORT1(function)                   EXPORT2(function, function);
 
-            void dsp_init(const cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
-                if (((f->features) & (CPU_OPTION_SSE | CPU_OPTION_SSE2)) != (CPU_OPTION_SSE | CPU_OPTION_SSE2))
+                if (((f->hwcap[0]) & (CPU_HWCAP0_SSE | CPU_HWCAP0_SSE2)) != (CPU_HWCAP0_SSE | CPU_HWCAP0_SSE2))
                     return;
 
                 EXPORT1(copy_saturated);

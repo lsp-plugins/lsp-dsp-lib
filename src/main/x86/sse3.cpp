@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #ifdef ARCH_X86
     #include <private/dsp/exports.h>
@@ -37,15 +38,13 @@
     // Feature detection
     #define PRIVATE_DSP_ARCH_X86_IMPL
         #include <private/dsp/arch/x86/defs.h>
-        #include <private/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/init.h>
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
     #define PRIVATE_DSP_ARCH_X86_SSE3_IMPL
         #include <private/dsp/arch/x86/sse3/copy.h>
         #include <private/dsp/arch/x86/sse3/graphics.h>
-        #include <private/dsp/arch/x86/sse3/filters/static.h>
-        #include <private/dsp/arch/x86/sse3/filters/dynamic.h>
-        #include <private/dsp/arch/x86/sse3/filters/transform.h>
+        #include <private/dsp/arch/x86/sse3/filters.h>
         #include <private/dsp/arch/x86/sse3/pcomplex.h>
         #include <private/dsp/arch/x86/sse3/3dmath.h>
         #include <private/dsp/arch/x86/sse3/correlation.h>
@@ -67,9 +66,9 @@
             #define EXPORT1(export)                         EXPORT2(export, export)
             #define SUPPORT_X64(function)                   IF_ARCH_X86_64(TEST_EXPORT(sse3::function))
 
-            void dsp_init(const cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
-                if (!(f->features & CPU_OPTION_SSE3))
+                if (!(f->hwcap[0] & CPU_HWCAP0_SSE3))
                     return;
 
                 // Additional xmm registers are available only in 64-bit mode
@@ -93,8 +92,15 @@
                 EXPORT2_X64(pcomplex_corr, x64_pcomplex_corr);
 
                 EXPORT2_X64(biquad_process_x8, x64_biquad_process_x8);
+                EXPORT2_X64(biquad_process_x16, x64_biquad_process_x16);
                 EXPORT2_X64(dyn_biquad_process_x8, x64_dyn_biquad_process_x8);
+                EXPORT2_X64(dyn_biquad_process_x16, x64_dyn_biquad_process_x16);
                 EXPORT2_X64(bilinear_transform_x8, x64_bilinear_transform_x8);
+                EXPORT2_X64(bilinear_transform_x16, x64_bilinear_transform_x16);
+
+                EXPORT2_X64(biquad_pack_x8, x64_biquad_pack_x8);
+                EXPORT2_X64(biquad_pack_x16, x64_biquad_pack_x16);
+
                 EXPORT2_X64(axis_apply_log1, x64_axis_apply_log1);
                 EXPORT2_X64(axis_apply_log2, x64_axis_apply_log2);
                 EXPORT2_X64(pcomplex_mul2, x64_pcomplex_mul2);
@@ -120,7 +126,7 @@
 
                 EXPORT2_X64(corr_incr, x64_corr_incr);
 
-                if (f->features & CPU_OPTION_SSSE3)
+                if (f->hwcap[0] & CPU_HWCAP0_SSSE3)
                 {
                     EXPORT2(split_triangle_raw, split_triangle_raw_ssse3);
                     EXPORT2(cull_triangle_raw, cull_triangle_raw_ssse3);

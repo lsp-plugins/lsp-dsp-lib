@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 8 сент. 2023 г.
@@ -659,7 +659,4 @@ namespace lsp
     } /* namespace avx512 */
 } /* namespace lsp */
 
-
-
-
-#endif /* INCLUDE_PRIVATE_DSP_ARCH_X86_AVX512_FLOAT_H_ */
+#endif /* PRIVATE_DSP_ARCH_X86_AVX512_FLOAT_H_ */

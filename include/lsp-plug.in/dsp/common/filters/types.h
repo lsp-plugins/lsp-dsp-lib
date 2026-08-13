@@ -186,13 +186,9 @@
 */
 
 /**
- * These constants define the offset of filter constants relative to the memory in biquad_t structure,
- * filter alignment and maximum number of memory elements
+ * The optimal alignment of biquad filters
  */
-#define LSP_DSP_BIQUAD_XN_OFF           0x40
-#define LSP_DSP_BIQUAD_XN_SOFF          "0x40"
 #define LSP_DSP_BIQUAD_ALIGN            0x40
-#define LSP_DSP_BIQUAD_D_ITEMS          16
 
 LSP_DSP_LIB_BEGIN_NAMESPACE
 
@@ -213,7 +209,8 @@ typedef struct LSP_DSP_LIB_TYPE(f_cascade_t)
 
 /**
  * Biquad filter bank for 1 digital biquad filter
- * Non-used elements should be filled with zeros
+ * Non-used elements should be filled with zeros,
+ * should be aligned to 4-byte boundary
  */
 typedef struct LSP_DSP_LIB_TYPE(biquad_x1_t)
 {
@@ -223,8 +220,8 @@ typedef struct LSP_DSP_LIB_TYPE(biquad_x1_t)
 } LSP_DSP_LIB_TYPE(biquad_x1_t);
 
 /**
- * Biquad filter bank for 2 digital biquad filters
- * Non-used elements should be filled with zeros
+ * Biquad filter bank for 2 digital biquad filters,
+ * should be aligned to 16-byte boundary
  */
 typedef struct LSP_DSP_LIB_TYPE(biquad_x2_t)
 {
@@ -233,11 +230,12 @@ typedef struct LSP_DSP_LIB_TYPE(biquad_x2_t)
     float   b2[2];
     float   a1[2];
     float   a2[2];
-    float   p[2];           // padding (not used), SHOULD be zero
+    float   p[2];
 } LSP_DSP_LIB_TYPE(biquad_x2_t);
 
 /**
- * Biquad filter bank for 4 digital biquad filters
+ * Biquad filter bank for 4 digital biquad filters,
+ * should be aligned to 16-byte boundary
  */
 typedef struct LSP_DSP_LIB_TYPE(biquad_x4_t)
 {
@@ -249,7 +247,8 @@ typedef struct LSP_DSP_LIB_TYPE(biquad_x4_t)
 } LSP_DSP_LIB_TYPE(biquad_x4_t);
 
 /**
- * Biquad filter bank for 8 digital biquad filters
+ * Biquad filter bank for 8 digital biquad filters,
+ * should be aligned to 32-byte boundary
  */
 typedef struct LSP_DSP_LIB_TYPE(biquad_x8_t)
 {
@@ -261,23 +260,17 @@ typedef struct LSP_DSP_LIB_TYPE(biquad_x8_t)
 } LSP_DSP_LIB_TYPE(biquad_x8_t);
 
 /**
- * This is main filter structure with memory elements
- * It should be aligned at least to 16-byte boundary due to
- * alignment restrictions of some different hardware architectures
- * For best purpose it should be aligned to 64-byte boundary
+ * Biquad filter bank for 16 digital biquad filters,
+ * should be aligned to 64-byte boundary
  */
-typedef struct LSP_DSP_LIB_TYPE(biquad_t)
+typedef struct LSP_DSP_LIB_TYPE(biquad_x16_t)
 {
-    float   d[LSP_DSP_BIQUAD_D_ITEMS];
-    union
-    {
-        LSP_DSP_LIB_TYPE(biquad_x1_t) x1;
-        LSP_DSP_LIB_TYPE(biquad_x2_t) x2;
-        LSP_DSP_LIB_TYPE(biquad_x4_t) x4;
-        LSP_DSP_LIB_TYPE(biquad_x8_t) x8;
-    };
-    float   __pad[8];
-} __lsp_aligned(LSP_DSP_BIQUAD_ALIGN) LSP_DSP_LIB_TYPE(biquad_t);
+    float   b0[16];
+    float   b1[16];
+    float   b2[16];
+    float   a1[16];
+    float   a2[16];
+} LSP_DSP_LIB_TYPE(biquad_x16_t);
 
 #pragma pack(pop)
 

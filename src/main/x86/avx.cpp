@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #ifdef ARCH_X86
     #include <private/dsp/exports.h>
@@ -37,12 +38,13 @@
     // Feature detection
     #define PRIVATE_DSP_ARCH_X86_IMPL
         #include <private/dsp/arch/x86/defs.h>
-        #include <private/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/init.h>
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
     // AVX-specific function implementations
     #define PRIVATE_DSP_ARCH_X86_AVX_IMPL
         #include <private/dsp/arch/x86/avx/xcr.h>
+        #include <private/dsp/arch/x86/avx/export.h>
 
         #include <private/dsp/arch/x86/avx/copy.h>
         #include <private/dsp/arch/x86/avx/float.h>
@@ -62,10 +64,7 @@
         #include <private/dsp/arch/x86/avx/pfft.h>
         #include <private/dsp/arch/x86/avx/fastconv.h>
 
-        #include <private/dsp/arch/x86/avx/filters/static.h>
-        #include <private/dsp/arch/x86/avx/filters/dynamic.h>
-        #include <private/dsp/arch/x86/avx/filters/transform.h>
-        #include <private/dsp/arch/x86/avx/filters/transfer.h>
+        #include <private/dsp/arch/x86/avx/filters.h>
 
         #include <private/dsp/arch/x86/avx/msmatrix.h>
         #include <private/dsp/arch/x86/avx/resampling.h>
@@ -86,49 +85,14 @@
         {
             using namespace x86;
 
-            #define EXPORT2(function, export) \
-            { \
-                dsp::function                       = avx::export; \
-                dsp::LSP_DSP_LIB_MANGLE(function)   = avx::export; \
-                TEST_EXPORT(avx::export); \
-            }
-            #define EXPORT1(function)                       EXPORT2(function, function)
+            void dsp_init_nz(const cpuid_t *f);
 
-            #define EXPORT2_X64(function, export)           IF_ARCH_X86_64(EXPORT2(function, export));
-            #define SUPPORT_X64(function)                   IF_ARCH_X86_64(TEST_EXPORT(avx::function))
-
-            #define CEXPORT2(cond, function, export)    \
-            IF_ARCH_X86( \
-                    TEST_EXPORT(avx::export); \
-                    if (cond) \
-                        dsp::function = avx::export; \
-                );
-
-            #define CEXPORT1(cond, export)    \
-            IF_ARCH_X86( \
-                    TEST_EXPORT(avx::export); \
-                    if (cond) \
-                        dsp::export = avx::export; \
-                );
-
-            #define CEXPORT2_X64(cond, function, export)    \
-                IF_ARCH_X86_64( \
-                        TEST_EXPORT(avx::export); \
-                        if (cond) \
-                            dsp::function = avx::export; \
-                    );
-
-            #define CEXPORT1_X64(cond, export)    \
-                IF_ARCH_X86_64( \
-                        TEST_EXPORT(avx::export); \
-                        if (cond) \
-                            dsp::export = avx::export; \
-                    );
-
-            void dsp_init(const cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
-                if (!(f->features & CPU_OPTION_AVX))
+                if (!(f->hwcap[0] & CPU_HWCAP0_AVX))
                     return;
+
+                lsp_finally { dsp_init_nz(f); };
 
                 // This routine sucks on AMD Bulldozer processor family but is pretty great on Intel
                 // Not tested on AMD Processors above Bulldozer family
@@ -329,20 +293,18 @@
                 CEXPORT1(favx, pcomplex_r2c_rdiv2);
                 CEXPORT1(favx, pcomplex_corr);
 
-                CEXPORT1(favx, biquad_process_x1);
-                CEXPORT1(favx, biquad_process_x2);
-                CEXPORT1(favx, biquad_process_x4);
                 EXPORT2_X64(biquad_process_x8, x64_biquad_process_x8);
-
-                CEXPORT1(favx, dyn_biquad_process_x1);
-                CEXPORT1(favx, dyn_biquad_process_x2);
-                CEXPORT1(favx, dyn_biquad_process_x4);
                 EXPORT2_X64(dyn_biquad_process_x8, x64_dyn_biquad_process_x8);
 
                 CEXPORT1(favx, bilinear_transform_x1);
                 CEXPORT1(favx, bilinear_transform_x2);
                 CEXPORT1(favx, bilinear_transform_x4);
                 CEXPORT2_X64(favx, bilinear_transform_x8, x64_bilinear_transform_x8);
+                CEXPORT2_X64(favx, bilinear_transform_x16, x64_bilinear_transform_x16);
+
+                CEXPORT2_X64(favx, biquad_pack_x8, x64_biquad_pack_x8);
+                CEXPORT2_X64(favx, biquad_pack_x16, x64_biquad_pack_x16);
+                CEXPORT1(favx, biquad_pack_x16);
 
                 CEXPORT1(favx, h_sum);
                 CEXPORT1(favx, h_sqr_sum);
@@ -451,84 +413,32 @@
                 CEXPORT1(favx, normalize1);
                 CEXPORT1(favx, normalize2);
 
-                // 3D math
-                EXPORT1(init_point_xyz);
-                EXPORT1(init_point);
-                EXPORT1(normalize_point);
-
-                EXPORT1(init_vector_dxyz);
-                EXPORT1(init_vector);
-                EXPORT1(normalize_vector);
-                EXPORT1(normalize_vector2);
-
-                EXPORT1(init_matrix3d);
-                EXPORT1(init_matrix3d_zero);
-                EXPORT1(init_matrix3d_one);
-                EXPORT1(init_matrix3d_identity);
-                EXPORT1(init_matrix3d_translate);
-                EXPORT1(init_matrix3d_scale);
-                EXPORT1(init_matrix3d_rotate_x);
-                EXPORT1(init_matrix3d_rotate_y);
-                EXPORT1(init_matrix3d_rotate_z);
-//                EXPORT1(init_matrix3d_rotate_xyz);
-                EXPORT1(apply_matrix3d_mv2);
-                EXPORT1(apply_matrix3d_mv1);
-                EXPORT1(apply_matrix3d_mp2);
-                EXPORT1(apply_matrix3d_mp1);
-                EXPORT1(apply_matrix3d_mm2);
-                EXPORT1(apply_matrix3d_mm1);
-                EXPORT1(transpose_matrix3d1);
-                EXPORT1(transpose_matrix3d2);
-
-                EXPORT1(calc_area_p3);
-                EXPORT1(calc_area_pv);
-
-                EXPORT1(colocation_x2_v1p2);
-                EXPORT1(colocation_x2_v1pv);
-                EXPORT1(colocation_x3_v1p3);
-                EXPORT1(colocation_x3_v1pv);
-                EXPORT1(colocation_x3_v3p1);
-                EXPORT1(colocation_x3_vvp1);
-
-                EXPORT1(split_triangle_raw);
-                EXPORT1(cull_triangle_raw);
-
-                EXPORT1(longest_edge3d_p3);
-                EXPORT1(longest_edge3d_pv);
-
-                EXPORT1(calc_normal3d_p3);
-                EXPORT1(calc_normal3d_pv);
-                EXPORT1(calc_normal3d_v2);
-                EXPORT1(calc_normal3d_vv);
-
-                EXPORT1(calc_plane_p3);
-                EXPORT1(calc_plane_pv);
-                EXPORT1(calc_plane_v1p2);
-
-                EXPORT1(calc_split_point_p2v1);
-                EXPORT1(calc_split_point_pvv1);
-
-                EXPORT1(check_triplet3d_p3n);
-                EXPORT1(check_triplet3d_pvn);
-                EXPORT1(check_triplet3d_v2n);
-                EXPORT1(check_triplet3d_vvn);
-                EXPORT1(check_triplet3d_vv);
-
-                EXPORT1(check_point3d_on_triangle_p3p);
-                EXPORT1(check_point3d_on_triangle_pvp);
-
                 EXPORT1(clamp_vv1);
                 EXPORT1(clamp_vv2);
                 EXPORT1(clamp_kk1);
                 EXPORT1(clamp_kk2);
 
                 EXPORT1(pmix_v1);
-                EXPORT1(pmix_v2);
+                EXPORT2(pmix_v2, lerp_vvv);
                 EXPORT1(pmix_k1);
-                EXPORT1(pmix_k2);
+                EXPORT2(pmix_k2, lerp_vvk);
+
+                CEXPORT1(favx, lerp_vvv);
+                CEXPORT1(favx, lerp_vvk);
+                CEXPORT1(favx, lerp_vkv);
+                CEXPORT1(favx, lerp_vkk);
+                CEXPORT1(favx, lerp_kvv);
+                CEXPORT1(favx, lerp_kvk);
+                CEXPORT1(favx, lerp_kkv);
+
+                // 3D math
+                EXPORT1(init_matrix3d);
+                EXPORT1(init_matrix3d_one);
+                EXPORT1(init_matrix3d_identity);
+//                EXPORT1(init_matrix3d_rotate_xyz);
 
                 // FMA3 support?
-                if (f->features & CPU_OPTION_FMA3)
+                if (f->hwcap[0] & CPU_HWCAP0_FMA3)
                 {
                     // Conditional export, depending on fast AVX implementation
                     CEXPORT2(favx, mod2, mod2_fma3);
@@ -608,59 +518,30 @@
 
                     CEXPORT2(favx, axis_apply_lin1, axis_apply_lin1_fma3);
 
-                    CEXPORT2(favx, biquad_process_x1, biquad_process_x1_fma3);
-                    CEXPORT2(favx, biquad_process_x2, biquad_process_x2_fma3);
-                    CEXPORT2(favx, biquad_process_x4, biquad_process_x4_fma3);
                     CEXPORT2(ffma, biquad_process_x8, biquad_process_x8_fma3);
+                    CEXPORT2(ffma, biquad_process_x16, biquad_process_x16_fma3);
+                    CEXPORT2_X64(ffma, biquad_process_x16, x64_biquad_process_x16_fma3);
 
-                    CEXPORT2(ffma, dyn_biquad_process_x1, dyn_biquad_process_x1_fma3);
-                    CEXPORT2(favx, dyn_biquad_process_x2, dyn_biquad_process_x2_fma3);
-                    CEXPORT2(favx, dyn_biquad_process_x4, dyn_biquad_process_x4_fma3);
                     CEXPORT2(ffma, dyn_biquad_process_x8, dyn_biquad_process_x8_fma3);
+                    CEXPORT2(ffma, dyn_biquad_process_x16, dyn_biquad_process_x16_fma3);
+                    CEXPORT2_X64(ffma, dyn_biquad_process_x16, x64_dyn_biquad_process_x16_fma3);
 
                     CEXPORT2(favx, depan_eqpow, depan_eqpow_fma3);
 
-                    // 3D math
-                    CEXPORT2(favx, apply_matrix3d_mm2, apply_matrix3d_mm2_fma3);
-                    CEXPORT2(favx, apply_matrix3d_mm1, apply_matrix3d_mm1_fma3);
-                    CEXPORT2(favx, apply_matrix3d_mp2, apply_matrix3d_mp2_fma3);
-                    CEXPORT2(favx, apply_matrix3d_mp1, apply_matrix3d_mp1_fma3);
-                    CEXPORT2(favx, apply_matrix3d_mv2, apply_matrix3d_mv2_fma3);
-                    CEXPORT2(favx, apply_matrix3d_mv1, apply_matrix3d_mv1_fma3);
-
-                    CEXPORT2(favx, calc_area_p3, calc_area_p3_fma3);
-                    CEXPORT2(favx, calc_area_pv, calc_area_pv_fma3);
-
-                    CEXPORT2(favx, calc_normal3d_p3, calc_normal3d_p3_fma3);
-                    CEXPORT2(favx, calc_normal3d_pv, calc_normal3d_pv_fma3);
-                    CEXPORT2(favx, calc_normal3d_v2, calc_normal3d_v2_fma3);
-                    CEXPORT2(favx, calc_normal3d_vv, calc_normal3d_vv_fma3);
-
-                    CEXPORT2(favx, calc_plane_p3, calc_plane_p3_fma3);
-                    CEXPORT2(favx, calc_plane_pv, calc_plane_pv_fma3);
-                    CEXPORT2(favx, calc_plane_v1p2, calc_plane_v1p2_fma3);
-
-                    CEXPORT2(favx, calc_split_point_p2v1, calc_split_point_p2v1_fma3);
-                    CEXPORT2(favx, calc_split_point_pvv1, calc_split_point_pvv1_fma3);
-
-                    CEXPORT2(favx, check_triplet3d_p3n, check_triplet3d_p3n_fma3);
-                    CEXPORT2(favx, check_triplet3d_pvn, check_triplet3d_pvn_fma3);
-                    CEXPORT2(favx, check_triplet3d_v2n, check_triplet3d_v2n_fma3);
-                    CEXPORT2(favx, check_triplet3d_vvn, check_triplet3d_vvn_fma3);
-                    CEXPORT2(favx, check_triplet3d_vv, check_triplet3d_vv_fma3);
-
-                    CEXPORT2(favx, check_point3d_on_triangle_p3p, check_point3d_on_triangle_p3p_fma3);
-                    CEXPORT2(favx, check_point3d_on_triangle_pvp, check_point3d_on_triangle_pvp_fma3);
-
                     CEXPORT2(favx, pmix_v1, pmix_v1_fma3);
-                    CEXPORT2(favx, pmix_v2, pmix_v2_fma3);
+                    CEXPORT2(favx, pmix_v2, lerp_vvv_fma3);
                     CEXPORT2(favx, pmix_k1, pmix_k1_fma3);
-                    CEXPORT2(favx, pmix_k2, pmix_k2_fma3);
+                    CEXPORT2(favx, pmix_k2, lerp_vvk_fma3);
+
+                    CEXPORT2(favx, lerp_vvv, lerp_vvv_fma3);
+                    CEXPORT2(favx, lerp_vvk, lerp_vvk_fma3);
+                    CEXPORT2(favx, lerp_vkv, lerp_vkv_fma3);
+                    CEXPORT2(favx, lerp_vkk, lerp_vkk_fma3);
+                    CEXPORT2(favx, lerp_kvv, lerp_kvv_fma3);
+                    CEXPORT2(favx, lerp_kvk, lerp_kvk_fma3);
+                    CEXPORT2(favx, lerp_kkv, lerp_kkv_fma3);
                 }
             }
-
-            #undef EXPORT1
-            #undef EXPORT2
         } /* namespace avx */
     } /* namespace lsp */
 

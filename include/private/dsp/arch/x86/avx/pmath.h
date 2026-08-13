@@ -30,6 +30,7 @@
 #include <private/dsp/arch/x86/avx/pmath/clamp.h>
 #include <private/dsp/arch/x86/avx/pmath/fmop_kx.h>
 #include <private/dsp/arch/x86/avx/pmath/fmop_vv.h>
+#include <private/dsp/arch/x86/avx/pmath/lerp.h>
 #include <private/dsp/arch/x86/avx/pmath/lramp.h>
 #include <private/dsp/arch/x86/avx/pmath/minmax.h>
 #include <private/dsp/arch/x86/avx/pmath/ms_minmax.h>

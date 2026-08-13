@@ -33,6 +33,7 @@
 #include <private/dsp/arch/arm/neon-d32/pmath/fmop_kx.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/fmop_vv.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/lanczos.h>
+#include <private/dsp/arch/arm/neon-d32/pmath/lerp.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/log.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/lramp.h>
 #include <private/dsp/arch/arm/neon-d32/pmath/minmax.h>

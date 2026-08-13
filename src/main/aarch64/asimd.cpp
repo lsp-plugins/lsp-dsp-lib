@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #ifdef ARCH_AARCH64
     #include <private/dsp/exports.h>
@@ -35,7 +36,6 @@
 
     // Include common architectural definitions
     #define PRIVATE_DSP_ARCH_AARCH64_IMPL
-        #include <private/dsp/arch/aarch64/features.h>
         #include <private/dsp/arch/aarch64/fpcr.h>
     #undef PRIVATE_DSP_ARCH_AARCH64_IMPL
 
@@ -57,10 +57,7 @@
         #include <private/dsp/arch/aarch64/asimd/dynamics.h>
         #include <private/dsp/arch/aarch64/asimd/fastconv.h>
         #include <private/dsp/arch/aarch64/asimd/fft.h>
-        #include <private/dsp/arch/aarch64/asimd/filters/dynamic.h>
-        #include <private/dsp/arch/aarch64/asimd/filters/static.h>
-        #include <private/dsp/arch/aarch64/asimd/filters/transfer.h>
-        #include <private/dsp/arch/aarch64/asimd/filters/transform.h>
+        #include <private/dsp/arch/aarch64/asimd/filters.h>
         #include <private/dsp/arch/aarch64/asimd/float.h>
         #include <private/dsp/arch/aarch64/asimd/graphics/axis.h>
         #include <private/dsp/arch/aarch64/asimd/graphics/colors.h>
@@ -115,9 +112,9 @@
                 dsp_finish(ctx);
             }
 
-            void dsp_init(const aarch64::cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
-                if ((f->hwcap & (HWCAP_AARCH64_ASIMD)) != (HWCAP_AARCH64_ASIMD))
+                if ((f->hwcap[0] & (CPU_HWCAP0_ASIMD)) != (CPU_HWCAP0_ASIMD))
                     return;
 
                 // Save previous entry points
@@ -414,26 +411,24 @@
                 EXPORT1(biquad_process_x2);
                 EXPORT1(biquad_process_x4);
                 EXPORT1(biquad_process_x8);
+                EXPORT1(biquad_process_x16);
 
                 EXPORT1(dyn_biquad_process_x1);
                 EXPORT1(dyn_biquad_process_x2);
                 EXPORT1(dyn_biquad_process_x4);
                 EXPORT1(dyn_biquad_process_x8);
-
-                EXPORT1(filter_transfer_calc_ri);
-                EXPORT1(filter_transfer_apply_ri);
-                EXPORT1(filter_transfer_calc_pc);
-                EXPORT1(filter_transfer_apply_pc);
-
-                EXPORT1(dyn_biquad_process_x1);
-                EXPORT1(dyn_biquad_process_x2);
-                EXPORT1(dyn_biquad_process_x4);
-                EXPORT1(dyn_biquad_process_x8);
+                EXPORT1(dyn_biquad_process_x16);
 
                 EXPORT1(bilinear_transform_x1);
                 EXPORT1(bilinear_transform_x2);
                 EXPORT1(bilinear_transform_x4);
                 EXPORT1(bilinear_transform_x8);
+                EXPORT1(bilinear_transform_x16);
+
+                EXPORT1(filter_transfer_calc_ri);
+                EXPORT1(filter_transfer_apply_ri);
+                EXPORT1(filter_transfer_calc_pc);
+                EXPORT1(filter_transfer_apply_pc);
 
                 EXPORT1(lanczos_resample_2x2);
                 EXPORT1(lanczos_resample_2x3);
@@ -513,9 +508,17 @@
                 EXPORT1(clamp_kk2);
 
                 EXPORT1(pmix_v1);
-                EXPORT1(pmix_v2);
+                EXPORT2(pmix_v2, lerp_vvv);
                 EXPORT1(pmix_k1);
-                EXPORT1(pmix_k2);
+                EXPORT2(pmix_k2, lerp_vvk);
+
+                EXPORT1(lerp_vvv);
+                EXPORT1(lerp_vvk);
+                EXPORT1(lerp_vkv);
+                EXPORT1(lerp_vkk);
+                EXPORT1(lerp_kvv);
+                EXPORT1(lerp_kvk);
+                EXPORT1(lerp_kkv);
             }
         } /* namespace asimd */
     } /* namespace lsp */

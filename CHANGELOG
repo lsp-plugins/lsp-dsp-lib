@@ -2,6 +2,19 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.1.0 ===
+* Significant refactoring of static and dynamic filter functions.
+* Added support of 16 biquad filter processing at the same time.
+* Fixed lanczos kernel generation functions to make buildable by MacOS on
+  x86_64 architecture.
+* Added three-operand lerp functions optimized with SSE, AVX, FMA3, AVX-512,
+  NEON and ASIMD.
+* Replaced implementation for mix_v2 and mix_k2 functions with lerp_vvv and
+  lerp_vvk respectively.
+* CPU features detection was moved to the lsp-common-lib library.
+* Updated build scripts.
+* Updated module versions in dependencies.
+
 === 1.0.36 ===
 * Updated build system: ASAN, CROSS_COMPILE, DEBUG, DEVEL, PROFILE, STRICT,
   TEST, TRACE makefile flags replaced with 'asan', 'crosscompile', 'debug',

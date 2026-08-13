@@ -1327,6 +1327,7 @@ namespace lsp
         float check_point3d_on_triangle_pvp(const point3d_t *pv, const point3d_t *p)
         {
             float x0, x1, x2, x3, x4, x5, x6, x7;
+            uint32_t mask;
 
             ARCH_X86_ASM
             (
@@ -1349,25 +1350,26 @@ namespace lsp
                 /* xmm0 = r0 = m0 dot m1 */
                 /* xmm1 = r1 = m1 dot m2 */
                 /* xmm2 = r2 = m2 dot m0 */
+                __ASM_EMIT("unpcklps    %[x1], %[x0]")          /* xmm0 = r0 r1 ? ?  */
+                __ASM_EMIT("movlhps     %[x2], %[x0]")          /* xmm0 = r0 r1 r2 ? */
                 __ASM_EMIT("xorps       %[x4], %[x4]")          /* xmm4 = 0 */
-                __ASM_EMIT("ucomiss     %[x4], %[x0]")          /* r0 <=> 0 */
-                __ASM_EMIT("jb          110f")                  /* r0 < 0   */
-                __ASM_EMIT("mulss       %[x1], %[x0]")          /* xmm0 = r0 * r1 */
-                __ASM_EMIT("ucomiss     %[x4], %[x1]")          /* r1 <=> 0 */
-                __ASM_EMIT("jb          109f")                  /* r1 < 0   */
-                __ASM_EMIT("mulss       %[x2], %[x0]")          /* xmm0 = r0 * r1 * r2 */
-                __ASM_EMIT("ucomiss     %[x4], %[x2]")          /* r2 <=> 0 */
-                __ASM_EMIT("jae         110f")                  /* r2 >= 0   */
-                /* Fail cases */
-                __ASM_EMIT("movaps      %[x2], %[x0]")
+                __ASM_EMIT("cmpps       $6, %[x0], %[x4]")      /* xmm4 = r0 < 0 r1 < 0 r2 < 0 */
+                __ASM_EMIT("movmskps    %[x4], %[mask]")        /* mask = r0 < 0 || r1 < 0 || r2 < 0 */
+                __ASM_EMIT("testl       $0x07, %k[mask]")       /* mask = r0 < 0 || r1 < 0 || r2 < 0 */
+                __ASM_EMIT("jnz         100f")
+                __ASM_EMIT("mulss       %[x1], %[x0]")          /* x0   = r0 * r1 */
+                __ASM_EMIT("mulss       %[x2], %[x0]")          /* x0   = r0 * r1 * r2 */
                 __ASM_EMIT("jmp         110f")
-                __ASM_EMIT("109:")
-                __ASM_EMIT("movaps      %[x1], %[x0]")
+                __ASM_EMIT("100:")
+                __ASM_EMIT("movss       %[NEG], %[x0]")         /* x0   = negative value */
                 /* End */
                 __ASM_EMIT("110:")
                 : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
-                  [x4] "=&x" (x4), [x5] "=&x" (x5), [x6] "=&x" (x6), [x7] "=&x" (x7)
-                : [pv] "r" (pv), [p] "r" (p)
+                  [x4] "=&x" (x4), [x5] "=&x" (x5), [x6] "=&x" (x6), [x7] "=&x" (x7),
+                  [mask] "=&r"(mask)
+                : [pv] "r" (pv), [p] "r" (p),
+                  [NEG] "m" (X_3D_MTOLERANCE)
+                : "cc"
             );
 
             return x0;
@@ -1376,6 +1378,7 @@ namespace lsp
         float check_point3d_on_triangle_p3p(const point3d_t *p1, const point3d_t *p2, const point3d_t *p3, const point3d_t *p)
         {
             float x0, x1, x2, x3, x4, x5, x6, x7;
+            uint32_t mask;
 
             ARCH_X86_ASM
             (
@@ -1398,25 +1401,26 @@ namespace lsp
                 /* xmm0 = r0 = m0 dot m1 */
                 /* xmm1 = r1 = m1 dot m2 */
                 /* xmm2 = r2 = m2 dot m0 */
+                __ASM_EMIT("unpcklps    %[x1], %[x0]")          /* xmm0 = r0 r1 ? ?  */
+                __ASM_EMIT("movlhps     %[x2], %[x0]")          /* xmm0 = r0 r1 r2 ? */
                 __ASM_EMIT("xorps       %[x4], %[x4]")          /* xmm4 = 0 */
-                __ASM_EMIT("ucomiss     %[x4], %[x0]")          /* r0 <=> 0 */
-                __ASM_EMIT("jb          110f")                  /* r0 < 0   */
-                __ASM_EMIT("mulss       %[x1], %[x0]")          /* xmm0 = r0 * r1 */
-                __ASM_EMIT("ucomiss     %[x4], %[x1]")          /* r1 <=> 0 */
-                __ASM_EMIT("jb          109f")                  /* r1 < 0   */
-                __ASM_EMIT("mulss       %[x2], %[x0]")          /* xmm0 = r0 * r1 * r2 */
-                __ASM_EMIT("ucomiss     %[x4], %[x2]")          /* r2 <=> 0 */
-                __ASM_EMIT("jae         110f")                  /* r2 >= 0   */
-                /* Fail cases */
-                __ASM_EMIT("movaps      %[x2], %[x0]")
+                __ASM_EMIT("cmpps       $6, %[x0], %[x4]")      /* xmm4 = r0 < 0 r1 < 0 r2 < 0 */
+                __ASM_EMIT("movmskps    %[x4], %[mask]")        /* mask = r0 < 0 || r1 < 0 || r2 < 0 */
+                __ASM_EMIT("testl       $0x07, %k[mask]")       /* mask = r0 < 0 || r1 < 0 || r2 < 0 */
+                __ASM_EMIT("jnz         100f")
+                __ASM_EMIT("mulss       %[x1], %[x0]")          /* x0   = r0 * r1 */
+                __ASM_EMIT("mulss       %[x2], %[x0]")          /* x0   = r0 * r1 * r2 */
                 __ASM_EMIT("jmp         110f")
-                __ASM_EMIT("109:")
-                __ASM_EMIT("movaps      %[x1], %[x0]")
+                __ASM_EMIT("100:")
+                __ASM_EMIT("movss       %[NEG], %[x0]")         /* x0   = negative value */
                 /* End */
                 __ASM_EMIT("110:")
                 : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
-                  [x4] "=&x" (x4), [x5] "=&x" (x5), [x6] "=&x" (x6), [x7] "=&x" (x7)
-                : [p1] "r" (p1), [p2] "r" (p2), [p3] "r" (p3), [p] "r" (p)
+                  [x4] "=&x" (x4), [x5] "=&x" (x5), [x6] "=&x" (x6), [x7] "=&x" (x7),
+                  [mask] "=&r"(mask)
+                : [p1] "r" (p1), [p2] "r" (p2), [p3] "r" (p3), [p] "r" (p),
+                  [NEG] "m" (X_3D_MTOLERANCE)
+                : "cc"
             );
 
             return x0;

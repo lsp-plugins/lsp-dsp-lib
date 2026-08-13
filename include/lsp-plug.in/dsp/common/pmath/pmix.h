@@ -37,6 +37,8 @@ LSP_DSP_LIB_SYMBOL(void, pmix_v1, float *dst, const float *src, const float *k, 
  * Compute mixed value:
  *   dst[i] = src1[i] + (src2[i] - src1[i]) * k[i];
  *
+ * @note this function has the same implementation to the lerp_vvv function
+ *
  * @param dst destination array
  * @param src1 first source array
  * @param src2 second source array
@@ -59,6 +61,8 @@ LSP_DSP_LIB_SYMBOL(void, pmix_k1, float *dst, const float *src, float k, size_t 
 /**
  * Compute mixed value:
  *   dst[i] = src1[i] + (src2[i] - src1[i]) * k;
+ *
+ * @note this function has the same implementation to the lerp_vvk function
  *
  * @param dst destination array
  * @param src1 first source array

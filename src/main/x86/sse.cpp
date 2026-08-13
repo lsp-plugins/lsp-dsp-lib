@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #ifdef ARCH_X86
     #include <private/dsp/exports.h>
@@ -37,7 +38,7 @@
     // Feature detection
     #define PRIVATE_DSP_ARCH_X86_IMPL
         #include <private/dsp/arch/x86/defs.h>
-        #include <private/dsp/arch/x86/features.h>
+        #include <private/dsp/arch/x86/init.h>
     #undef PRIVATE_DSP_ARCH_X86_IMPL
 
     #define PRIVATE_DSP_ARCH_X86_SSE_IMPL
@@ -69,10 +70,7 @@
         #include <private/dsp/arch/x86/sse/convolution.h>
         #include <private/dsp/arch/x86/sse/correlation.h>
 
-        #include <private/dsp/arch/x86/sse/filters/static.h>
-        #include <private/dsp/arch/x86/sse/filters/dynamic.h>
-        #include <private/dsp/arch/x86/sse/filters/transform.h>
-        #include <private/dsp/arch/x86/sse/filters/transfer.h>
+        #include <private/dsp/arch/x86/sse/filters.h>
 
         #include <private/dsp/arch/x86/sse/3dmath.h>
 
@@ -110,13 +108,13 @@
             }
             #define EXPORT1(function)                   EXPORT2(function, function);
 
-            void dsp_init(const cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
-                if (((f->features) & (CPU_OPTION_SSE | CPU_OPTION_SSE2)) != (CPU_OPTION_SSE | CPU_OPTION_SSE2))
+                if ((f->hwcap[0] & CPU_HWCAP0_SSE) != CPU_HWCAP0_SSE)
                     return;
 
                 // Initialize MXCSR mask
-                if (f->features & CPU_OPTION_FXSAVE)
+                if (f->hwcap[0] & CPU_HWCAP0_FXSAVE)
                     init_mxcsr_mask();
                 else
                     mxcsr_mask  = MXCSR_DEFAULT;
@@ -312,6 +310,14 @@
                 EXPORT1(mix_copy4);
                 EXPORT1(mix_add4);
 
+                EXPORT1(lerp_vvv);
+                EXPORT1(lerp_vvk);
+                EXPORT1(lerp_vkv);
+                EXPORT1(lerp_vkk);
+                EXPORT1(lerp_kvv);
+                EXPORT1(lerp_kvk);
+                EXPORT1(lerp_kkv);
+
                 EXPORT1(depan_lin);
                 EXPORT1(depan_eqpow);
 
@@ -324,9 +330,9 @@
                 EXPORT1(clamp_kk2);
 
                 EXPORT1(pmix_v1);
-                EXPORT1(pmix_v2);
+                EXPORT2(pmix_v2, lerp_vvv);
                 EXPORT1(pmix_k1);
-                EXPORT1(pmix_k2);
+                EXPORT2(pmix_k2, lerp_vvk);
 
                 EXPORT1(direct_fft);
                 EXPORT1(reverse_fft);
@@ -379,15 +385,27 @@
                 EXPORT1(ms_to_left);
                 EXPORT1(ms_to_right);
 
+                EXPORT1(fcascade_fill_x2);
+                EXPORT1(fcascade_fill_x4);
+                EXPORT1(fcascade_fill_x8);
+                EXPORT1(fcascade_fill_x16);
+
                 EXPORT1(biquad_process_x1);
                 EXPORT1(biquad_process_x2);
                 EXPORT1(biquad_process_x4);
                 EXPORT1(biquad_process_x8);
+                EXPORT1(biquad_process_x16);
 
                 EXPORT1(dyn_biquad_process_x1);
                 EXPORT1(dyn_biquad_process_x2);
                 EXPORT1(dyn_biquad_process_x4);
                 EXPORT1(dyn_biquad_process_x8);
+                EXPORT1(dyn_biquad_process_x16);
+
+                EXPORT1(biquad_pack_x2);
+                EXPORT1(biquad_pack_x4);
+                EXPORT1(biquad_pack_x8);
+                EXPORT1(biquad_pack_x16);
 
                 EXPORT1(filter_transfer_calc_ri);
                 EXPORT1(filter_transfer_apply_ri);
@@ -398,6 +416,7 @@
                 EXPORT1(bilinear_transform_x2);
                 EXPORT1(bilinear_transform_x4);
                 EXPORT1(bilinear_transform_x8);
+                EXPORT1(bilinear_transform_x16);
 
                 EXPORT1(fill_rgba);
                 EXPORT1(fill_hsla);

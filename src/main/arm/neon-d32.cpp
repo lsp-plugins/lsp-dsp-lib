@@ -20,6 +20,7 @@
  */
 
 #include <lsp-plug.in/common/types.h>
+#include <lsp-plug.in/common/cpuid.h>
 
 #if defined(ARCH_ARM6) || defined(ARCH_ARM7)
     #include <private/dsp/exports.h>
@@ -34,7 +35,6 @@
     #endif
 
     #define PRIVATE_DSP_ARCH_ARM_IMPL
-        #include <private/dsp/arch/arm/features.h>
         #include <private/dsp/arch/arm/fpscr.h>
     #undef PRIVATE_DSP_ARCH_ARM_IMPL
 
@@ -55,10 +55,7 @@
         #include <private/dsp/arch/arm/neon-d32/dynamics.h>
         #include <private/dsp/arch/arm/neon-d32/fastconv.h>
         #include <private/dsp/arch/arm/neon-d32/fft.h>
-        #include <private/dsp/arch/arm/neon-d32/filters/dynamic.h>
-        #include <private/dsp/arch/arm/neon-d32/filters/static.h>
-        #include <private/dsp/arch/arm/neon-d32/filters/transfer.h>
-        #include <private/dsp/arch/arm/neon-d32/filters/transform.h>
+        #include <private/dsp/arch/arm/neon-d32/filters.h>
         #include <private/dsp/arch/arm/neon-d32/float.h>
         #include <private/dsp/arch/arm/neon-d32/graphics/axis.h>
         #include <private/dsp/arch/arm/neon-d32/graphics/colors.h>
@@ -90,9 +87,9 @@
     {
         namespace neon_d32
         {
-            void dsp_init(const arm::cpu_features_t *f)
+            void dsp_init(const cpuid_t *f)
             {
-                if ((f->hwcap & (HWCAP_ARM_NEON | HWCAP_ARM_VFPD32)) != (HWCAP_ARM_NEON | HWCAP_ARM_VFPD32))
+                if ((f->hwcap[0] & (CPU_HWCAP0_VFPD32 | CPU_HWCAP0_NEON)) != (CPU_HWCAP0_VFPD32 | CPU_HWCAP0_NEON))
                     return;
 
                 EXPORT1(copy);
@@ -406,11 +403,18 @@
                 EXPORT1(biquad_process_x2);
                 EXPORT1(biquad_process_x4);
                 EXPORT1(biquad_process_x8);
+                EXPORT1(biquad_process_x16);
+
+                EXPORT1(biquad_pack_x2);
+//                EXPORT1(biquad_pack_x4);
+//                EXPORT1(biquad_pack_x8);
+//                EXPORT1(biquad_pack_x16);
 
                 EXPORT1(dyn_biquad_process_x1);
                 EXPORT1(dyn_biquad_process_x2);
                 EXPORT1(dyn_biquad_process_x4);
                 EXPORT1(dyn_biquad_process_x8);
+                EXPORT1(dyn_biquad_process_x16);
 
                 EXPORT1(filter_transfer_calc_ri);
                 EXPORT1(filter_transfer_apply_ri);
@@ -421,6 +425,7 @@
                 EXPORT1(bilinear_transform_x2);
                 EXPORT1(bilinear_transform_x4);
                 EXPORT1(bilinear_transform_x8);
+                EXPORT1(bilinear_transform_x16);
 
                 EXPORT1(direct_fft);
                 EXPORT1(reverse_fft);
@@ -469,9 +474,17 @@
                 EXPORT1(clamp_kk2);
 
                 EXPORT1(pmix_v1);
-                EXPORT1(pmix_v2);
+                EXPORT2(pmix_v2, lerp_vvv);
                 EXPORT1(pmix_k1);
-                EXPORT1(pmix_k2);
+                EXPORT2(pmix_k2, lerp_vvk);
+
+                EXPORT1(lerp_vvv);
+                EXPORT1(lerp_vvk);
+                EXPORT1(lerp_vkv);
+                EXPORT1(lerp_vkk);
+                EXPORT1(lerp_kvv);
+                EXPORT1(lerp_kvk);
+                EXPORT1(lerp_kkv);
             }
         } /* namespace neon_d32 */
     } /* namespace lsp */
