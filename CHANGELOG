@@ -13,6 +13,7 @@
   lerp_vvk respectively.
 * CPU features detection was moved to the lsp-common-lib library.
 * Updated build scripts.
+* Updated module versions in dependencies.
 
 === 1.0.36 ===
 * Updated build system: ASAN, CROSS_COMPILE, DEBUG, DEVEL, PROFILE, STRICT,
