@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.1.1 ===
-
+* Updated build scripts.
 
 === 1.1.0 ===
 * Significant refactoring of static and dynamic filter functions.
