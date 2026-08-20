@@ -2,6 +2,10 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.1.1 ===
+* Updated build scripts.
+* Updated module versions in dependencies.
+
 === 1.1.0 ===
 * Significant refactoring of static and dynamic filter functions.
 * Added support of 16 biquad filter processing at the same time.
