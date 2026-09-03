@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -26,6 +26,8 @@
 
 namespace lsp
 {
+    static constexpr size_t INVALID_INDEX   = ~size_t(0);
+
     namespace generic
     {
         void    minmax_index(const float *src, size_t count, size_t *min, size_t *max);
@@ -85,7 +87,8 @@ UTEST_BEGIN("dsp.search", minmax_index)
                 src.randomize_sign();
 
                 // Call functions
-                size_t min_a, max_a, min_b, max_b;
+                size_t min_a = INVALID_INDEX, max_a = INVALID_INDEX;
+                size_t min_b = INVALID_INDEX, max_b = INVALID_INDEX;
                 func1(src, count, &min_a, &max_a);
                 func2(src, count, &min_b, &max_b);
 

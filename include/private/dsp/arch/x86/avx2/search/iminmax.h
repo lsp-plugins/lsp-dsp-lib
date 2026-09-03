@@ -208,6 +208,8 @@ namespace lsp
             __ASM_EMIT("vpxor           %%ymm0, %%ymm0, %%ymm0")    /* imin */ \
             __ASM_EMIT("vpxor           %%ymm2, %%ymm2, %%ymm2")    /* imax */ \
             __ASM_EMIT("test            %[count], %[count]") \
+            __ASM_EMIT64("vmovlps       %%xmm0, (%[min])")          /* sizeof(size_t) == 8 !!! */ \
+            __ASM_EMIT64("vmovlps       %%xmm2, (%[max])")          /* sizeof(size_t) == 8 !!! */ \
             __ASM_EMIT("jz              6f") \
             /* 8x block */ \
             __ASM_EMIT("vbroadcastss    0x00(%[src]), %%ymm1")      /* vmin */ \
@@ -293,13 +295,11 @@ namespace lsp
             __ASM_EMIT("jge             5b") \
             /* end */ \
             __ASM_EMIT("6:") \
-            __ASM_EMIT("movss           %%xmm0, (%[min])") \
-            __ASM_EMIT("movss           %%xmm2, (%[max])")
+            __ASM_EMIT("vmovss          %%xmm0, (%[min])") \
+            __ASM_EMIT("vmovss          %%xmm2, (%[max])")
 
         void minmax_index(const float *src, size_t count, size_t *min, size_t *max)
         {
-            *min = 0;
-            *max = 0;
             ARCH_X86_ASM(
                 IMINMAX2_CORE(SEL_NONE)
                 : [src] "+r" (src), [count] "+r" (count)
@@ -313,8 +313,6 @@ namespace lsp
 
          void abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max)
          {
-             *min = 0;
-             *max = 0;
              ARCH_X86_ASM(
                  IMINMAX2_CORE(SEL_ABS)
                  : [src] "+r" (src), [count] "+r" (count)

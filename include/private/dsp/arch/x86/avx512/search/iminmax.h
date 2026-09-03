@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 29 июл. 2024 г.
@@ -233,6 +233,8 @@ namespace lsp
             __ASM_EMIT("vpxord              %%zmm0, %%zmm0, %%zmm0")    /* imin */ \
             __ASM_EMIT("vpxord              %%zmm2, %%zmm2, %%zmm2")    /* imax */ \
             __ASM_EMIT("test                %[count], %[count]") \
+            __ASM_EMIT64("vmovlps           %%xmm0, (%[min])")          /* sizeof(size_t) == 8 !!! */ \
+            __ASM_EMIT64("vmovlps           %%xmm2, (%[max])")          /* sizeof(size_t) == 8 !!! */ \
             __ASM_EMIT("jz                  8f") \
             /* 16x block */ \
             __ASM_EMIT("vbroadcastss        0x00(%[src]), %%zmm1")      /* vmin */ \

@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.1.2 ===
-
+* Fixes of AVX-512 implementation of functions `minmax_index` and `abs_minmax_index`.
 
 === 1.1.1 ===
 * Updated build scripts.

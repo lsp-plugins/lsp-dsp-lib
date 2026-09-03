@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -462,6 +462,8 @@ namespace lsp
                 __ASM_EMIT("pxor            %%xmm0, %%xmm0")            // x0 = idx_min
                 __ASM_EMIT("pxor            %%xmm1, %%xmm1")            // x1 = idx_max
                 __ASM_EMIT("test            %[count], %[count]")
+                __ASM_EMIT64("movlps        %%xmm0, (%[min])")          // sizeof(size_t) == 8 !!!
+                __ASM_EMIT64("movlps        %%xmm1, (%[max])")          // sizeof(size_t) == 8 !!!
                 __ASM_EMIT("jz              4f")
 
                 __ASM_EMIT("movss           0x00(%[src]), %%xmm2")      // x2   = min
@@ -597,8 +599,6 @@ namespace lsp
                 __ASM_EMIT("4:")
                 __ASM_EMIT("movd            %%xmm0, (%[min])")
                 __ASM_EMIT("movd            %%xmm1, (%[max])")
-                __ASM_EMIT64("movl          $0, 0x04(%[min])")
-                __ASM_EMIT64("movl          $0, 0x04(%[max])")
                 : [src] "+r" (src), [count] "+r" (count)
                 : [min] "r" (min), [max] "r" (max),
                   [IDXS] "r" (indexes),
