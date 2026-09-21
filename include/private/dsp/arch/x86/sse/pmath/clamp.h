@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 27 нояб. 2025 г.
@@ -129,7 +129,7 @@ namespace lsp
                 __ASM_EMIT("xor         %[off], %[off]")
                 // 16x blocks
                 __ASM_EMIT64("sub       $16, %[count]")
-                __ASM_EMIT32("sub       $16, %[count]")
+                __ASM_EMIT32("subl      $16, %[count]")
                 __ASM_EMIT("jb          2f")
                 __ASM_EMIT("1:")
                 __ASM_EMIT("movups      0x00(%[src],%[off]), %%xmm0")       /* xmm0 = x */

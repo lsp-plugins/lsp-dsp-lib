@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -602,8 +602,8 @@ namespace lsp
                 : __IF_32([CC] "m" (complex_div_const), [save] "m" (save))
                   __IF_64([CC] "r" (complex_div_const))
                 : "cc", "memory",
-                  "%xmm0", "%xmm1", "%xmm2", "%xmm4",
-                  "%xmm5", "%xmm6"
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 

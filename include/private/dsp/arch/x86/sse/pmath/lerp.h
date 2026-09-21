@@ -92,9 +92,9 @@ namespace lsp
                 __ASM_EMIT("addps       %%xmm3, %%xmm1")
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("movups      %%xmm1, 0x10(%[dst], %[off])")
-                __ASM_EMIT("add         $0x20, %[off]")
                 __ASM_EMIT32("subl      $8, %[count]")
                 __ASM_EMIT64("sub       $8, %[count]")
+                __ASM_EMIT("add         $0x20, %[off]")
                 // 4x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT32("addl      $4, %[count]")
@@ -107,9 +107,9 @@ namespace lsp
                 __ASM_EMIT("mulps       %%xmm4, %%xmm2")                    // xmm2     = (b-a)*k
                 __ASM_EMIT("addps       %%xmm2, %%xmm0")                    // xmm0     = a + (b-a)*k
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
-                __ASM_EMIT("add         $0x10, %[off]")
                 __ASM_EMIT32("subl      $4, %[count]")
                 __ASM_EMIT64("sub       $4, %[count]")
+                __ASM_EMIT("add         $0x10, %[off]")
                 // 1x blocks
                 __ASM_EMIT("6:")
                 __ASM_EMIT32("addl      $3, %[count]")
@@ -195,8 +195,8 @@ namespace lsp
                 __ASM_EMIT("addps       %%xmm3, %%xmm1")
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("movups      %%xmm1, 0x10(%[dst], %[off])")
-                __ASM_EMIT("add         $0x20, %[off]")
                 __ASM_EMIT("sub         $8, %[count]")
+                __ASM_EMIT("add         $0x20, %[off]")
                 // 4x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add         $4, %[count]")
@@ -207,8 +207,8 @@ namespace lsp
                 __ASM_EMIT("mulps       %%xmm4, %%xmm2")                    // xmm2     = (b-a)*k
                 __ASM_EMIT("addps       %%xmm2, %%xmm0")                    // xmm0     = a + (b-a)*k
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
-                __ASM_EMIT("add         $0x10, %[off]")
                 __ASM_EMIT("sub         $4, %[count]")
+                __ASM_EMIT("add         $0x10, %[off]")
                 // 1x blocks
                 __ASM_EMIT("6:")
                 __ASM_EMIT("add         $3, %[count]")
@@ -276,8 +276,8 @@ namespace lsp
                 __ASM_EMIT("mulps       %%xmm4, %%xmm2")                    // xmm2     = (b-a)*k
                 __ASM_EMIT("addps       %%xmm2, %%xmm0")                    // xmm0     = a + (b-a)*k
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
-                __ASM_EMIT("add         $0x10, %[off]")
                 __ASM_EMIT("sub         $4, %[count]")
+                __ASM_EMIT("add         $0x10, %[off]")
                 // 1x blocks
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add         $3, %[count]")
@@ -363,8 +363,8 @@ namespace lsp
                 __ASM_EMIT("addps       %%xmm3, %%xmm1")
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("movups      %%xmm1, 0x10(%[dst], %[off])")
-                __ASM_EMIT("add         $0x20, %[off]")
                 __ASM_EMIT("sub         $8, %[count]")
+                __ASM_EMIT("add         $0x20, %[off]")
                 // 4x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add         $4, %[count]")
@@ -375,8 +375,8 @@ namespace lsp
                 __ASM_EMIT("mulps       %%xmm7, %%xmm2")                    // xmm2     = (b-a)*k
                 __ASM_EMIT("addps       %%xmm2, %%xmm0")                    // xmm0     = a + (b-a)*k
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
-                __ASM_EMIT("add         $0x10, %[off]")
                 __ASM_EMIT("sub         $4, %[count]")
+                __ASM_EMIT("add         $0x10, %[off]")
                 // 1x blocks
                 __ASM_EMIT("6:")
                 __ASM_EMIT("add         $3, %[count]")
@@ -459,9 +459,8 @@ namespace lsp
                 __ASM_EMIT("addps       %%xmm6, %%xmm1")
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("movups      %%xmm1, 0x10(%[dst], %[off])")
-                __ASM_EMIT("add         $0x20, %[off]")
                 __ASM_EMIT("sub         $8, %[count]")
-                __ASM_EMIT("jae         1b")
+                __ASM_EMIT("add         $0x20, %[off]")
                 // 4x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add         $4, %[count]")
@@ -472,8 +471,8 @@ namespace lsp
                 __ASM_EMIT("mulps       %%xmm4, %%xmm0")                    // xmm0     = (b-a)*k
                 __ASM_EMIT("addps       %%xmm6, %%xmm0")                    // xmm0     = a + (b-a)*k
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
-                __ASM_EMIT("add         $0x10, %[off]")
                 __ASM_EMIT("sub         $4, %[count]")
+                __ASM_EMIT("add         $0x10, %[off]")
                 // 1x blocks
                 __ASM_EMIT("6:")
                 __ASM_EMIT("add         $3, %[count]")
@@ -552,9 +551,8 @@ namespace lsp
                 __ASM_EMIT("addps       %%xmm6, %%xmm1")
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("movups      %%xmm1, 0x10(%[dst], %[off])")
-                __ASM_EMIT("add         $0x20, %[off]")
                 __ASM_EMIT("sub         $8, %[count]")
-                __ASM_EMIT("jae         1b")
+                __ASM_EMIT("add         $0x20, %[off]")
                 // 4x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add         $4, %[count]")
@@ -564,8 +562,8 @@ namespace lsp
                 __ASM_EMIT("mulps       %%xmm7, %%xmm0")                    // xmm0     = (b-a)*k
                 __ASM_EMIT("addps       %%xmm6, %%xmm0")                    // xmm0     = a + (b-a)*k
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
-                __ASM_EMIT("add         $0x10, %[off]")
                 __ASM_EMIT("sub         $4, %[count]")
+                __ASM_EMIT("add         $0x10, %[off]")
                 // 1x blocks
                 __ASM_EMIT("6:")
                 __ASM_EMIT("add         $3, %[count]")
@@ -638,9 +636,8 @@ namespace lsp
                 __ASM_EMIT("addps       %%xmm6, %%xmm1")
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("movups      %%xmm1, 0x10(%[dst], %[off])")
-                __ASM_EMIT("add         $0x20, %[off]")
                 __ASM_EMIT("sub         $8, %[count]")
-                __ASM_EMIT("jae         1b")
+                __ASM_EMIT("add         $0x20, %[off]")
                 // 4x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add         $4, %[count]")
@@ -649,8 +646,8 @@ namespace lsp
                 __ASM_EMIT("mulps       %%xmm7, %%xmm0")                    // xmm0     = (b-a)*k
                 __ASM_EMIT("addps       %%xmm6, %%xmm0")                    // xmm0     = a + (b-a)*k
                 __ASM_EMIT("movups      %%xmm0, 0x00(%[dst], %[off])")
-                __ASM_EMIT("add         $0x10, %[off]")
                 __ASM_EMIT("sub         $4, %[count]")
+                __ASM_EMIT("add         $0x10, %[off]")
                 // 1x blocks
                 __ASM_EMIT("6:")
                 __ASM_EMIT("add         $3, %[count]")

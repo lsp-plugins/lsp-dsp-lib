@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -154,9 +154,9 @@ namespace lsp
                     // Estimate tolerance
                     __ASM_EMIT("movaps      %[x], %[tx]")           // tx = x
                     __ASM_EMIT("subss       %[x], %[xp]")           // xp = xp - x
-                    __ASM_EMIT("mulss       0x20(%[CC]), %[tx]")   // tx = x * TOL
-                    __ASM_EMIT("andps       %[sign], %[x]")         // xp = abs(xp - x)
-                    __ASM_EMIT("andps       %[sign], %[tx]")        // xp = abs(xp - x)
+                    __ASM_EMIT("mulss       0x20(%[CC]), %[tx]")    // tx = x * TOL
+                    __ASM_EMIT("andps       %[sign], %[xp]")        // xp = abs(xp - x)
+                    __ASM_EMIT("andps       %[sign], %[tx]")        // tx = abs(x * TOL)
                     __ASM_EMIT("ucomiss     %[tx], %[xp]")          // abs(xp - x) <> x * TOL
                     __ASM_EMIT("ja          1b")                    // Repeat loop if tolerance is not enough
 
@@ -202,7 +202,7 @@ namespace lsp
         //
         //    return x;
         }
-    }
-}
+    } /* namespace sse */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_SMATH_H_ */
