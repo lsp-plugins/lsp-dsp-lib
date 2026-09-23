@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 23 мая 2023 г.
@@ -658,10 +658,10 @@ namespace lsp
                 __ASM_EMIT("ldmxcsr         %[mxcsr1]")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count),
-                  [tmp] "=&r" (tmp)
-                : [XC] "m" (RGBA_TO_BGRA32),
-                  [mxcsr1] "m" (mxcsr1),
-                  [mxcsr2] "m" (mxcsr2)
+                  [tmp] "=&r" (tmp),
+                  [mxcsr1] "+m" (mxcsr1),
+                  [mxcsr2] "+m" (mxcsr2)
+                : [XC] "m" (RGBA_TO_BGRA32)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

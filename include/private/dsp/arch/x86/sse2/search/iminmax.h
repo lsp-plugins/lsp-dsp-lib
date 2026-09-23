@@ -313,6 +313,8 @@ namespace lsp
                 __ASM_EMIT("pxor            %%xmm0, %%xmm0")            // x0 = idx_min
                 __ASM_EMIT("pxor            %%xmm1, %%xmm1")            // x1 = idx_max
                 __ASM_EMIT("test            %[count], %[count]")
+                __ASM_EMIT64("movd          %%xmm0, 0x04(%[min])")      // sizeof(size_t) == 8 !!!
+                __ASM_EMIT64("movd          %%xmm1, 0x04(%[max])")      // sizeof(size_t) == 8 !!!
                 __ASM_EMIT("jz              4f")
 
                 __ASM_EMIT("movss           0x00(%[src]), %%xmm2")      // x2   = min
@@ -442,15 +444,18 @@ namespace lsp
                 __ASM_EMIT("dec             %[count]")                  // count --
                 __ASM_EMIT("jge             3b")
 
+                // Store result
                 __ASM_EMIT("4:")
                 __ASM_EMIT("movd            %%xmm0, (%[min])")
                 __ASM_EMIT("movd            %%xmm1, (%[max])")
-                __ASM_EMIT64("movl          $0, 0x04(%[min])")
-                __ASM_EMIT64("movl          $0, 0x04(%[max])")
-                : [src] "+r" (src), [count] "+r" (count)
+
+                : [src] "+r" (src), [count] "+r" (count),
+                  [COUNTERS] "+m" (counters)
                 : [min] "r" (min), [max] "r" (max),
-                  [IDXS] "r" (indexes),
-                  [COUNTERS] "m" (counters)
+                  [IDXS] "r" (indexes)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
@@ -462,8 +467,8 @@ namespace lsp
                 __ASM_EMIT("pxor            %%xmm0, %%xmm0")            // x0 = idx_min
                 __ASM_EMIT("pxor            %%xmm1, %%xmm1")            // x1 = idx_max
                 __ASM_EMIT("test            %[count], %[count]")
-                __ASM_EMIT64("movlps        %%xmm0, (%[min])")          // sizeof(size_t) == 8 !!!
-                __ASM_EMIT64("movlps        %%xmm1, (%[max])")          // sizeof(size_t) == 8 !!!
+                __ASM_EMIT64("movd          %%xmm0, 0x04(%[min])")      // sizeof(size_t) == 8 !!!
+                __ASM_EMIT64("movd          %%xmm1, 0x04(%[max])")      // sizeof(size_t) == 8 !!!
                 __ASM_EMIT("jz              4f")
 
                 __ASM_EMIT("movss           0x00(%[src]), %%xmm2")      // x2   = min
@@ -596,14 +601,19 @@ namespace lsp
                 __ASM_EMIT("dec             %[count]")                  // count --
                 __ASM_EMIT("jge             3b")
 
+                // Store result
                 __ASM_EMIT("4:")
                 __ASM_EMIT("movd            %%xmm0, (%[min])")
                 __ASM_EMIT("movd            %%xmm1, (%[max])")
-                : [src] "+r" (src), [count] "+r" (count)
+
+                : [src] "+r" (src), [count] "+r" (count),
+                  [COUNTERS] "+m" (counters)
                 : [min] "r" (min), [max] "r" (max),
                   [IDXS] "r" (indexes),
-                  [X_SIGN] "m" (iminmax_const),
-                  [COUNTERS] "m" (counters)
+                  [X_SIGN] "m" (iminmax_const)
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
 
@@ -611,7 +621,7 @@ namespace lsp
         #undef CMPGEPS
         #undef CMPLTPS
         #undef CMPLEPS
-    }
-}
+    } /* namespace sse2 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE2_SEARCH_IMINMAX_H_ */

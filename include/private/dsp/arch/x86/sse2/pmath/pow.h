@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -465,7 +465,7 @@ namespace lsp
                 __ASM_EMIT("addps           %%xmm1, %%xmm0")                // xmm0 = 2*y*L*log2(E) + R
                 __ASM_EMIT("mulps           %%xmm2, %%xmm0")                // xmm0 = (2*y*L*log2(E) + R)*x
                 // expf(x * logf(x))
-                POW2_CORE_X8
+                POW2_CORE_X4
                 __ASM_EMIT("movups          %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[x]")
                 __ASM_EMIT("add             $0x10, %[dst]")
@@ -496,7 +496,7 @@ namespace lsp
                 __ASM_EMIT("addps           %%xmm1, %%xmm0")                // xmm0 = 2*y*L*log2(E) + R
                 __ASM_EMIT("mulps           %%xmm7, %%xmm0")                // xmm0 = (2*y*L*log2(E) + R)*x
                 // expf(v * logf(x))
-                POW2_CORE_X8
+                POW2_CORE_X4
 
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              10f")
@@ -566,7 +566,7 @@ namespace lsp
                 __ASM_EMIT("addps           %%xmm1, %%xmm0")                // xmm0 = 2*y*L*log2(E) + R
                 __ASM_EMIT("mulps           %%xmm2, %%xmm0")                // xmm0 = (2*y*L*log2(E) + R)*x
                 // expf(x * logf(v))
-                POW2_CORE_X8
+                POW2_CORE_X4
                 __ASM_EMIT("movups          %%xmm0, 0x00(%[dst])")
                 __ASM_EMIT("add             $0x10, %[src]")
                 __ASM_EMIT("add             $0x10, %[dst]")
@@ -597,7 +597,7 @@ namespace lsp
                 __ASM_EMIT("addps           %%xmm1, %%xmm0")                // xmm0 = 2*y*L*log2(E) + R
                 __ASM_EMIT("mulps           %%xmm7, %%xmm0")                // xmm0 = (2*y*L*log2(E) + R)*x
                 // expf(x * logf(v))
-                POW2_CORE_X8
+                POW2_CORE_X4
 
                 __ASM_EMIT("test            $1, %[count]")
                 __ASM_EMIT("jz              10f")
@@ -619,7 +619,7 @@ namespace lsp
                   "%xmm1", "%xmm2", "%xmm3", "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
-    }
-}
+    } /* namespace sse2 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE2_PMATH_POW_H_ */

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 17 авг. 2025 г.
@@ -54,13 +54,13 @@
     __ASM_EMIT("punpcklqdq  %" x4 ", %" x2)      /* xmm2 = a3 b3 c3 d3 */   \
     __ASM_EMIT("punpckhqdq  %" x4 ", %" x3)      /* xmm3 = a4 b4 c4 d4 */
 
-#define MATRIX_LOAD(ptr, x0, x1, x2, x3) \
+#define MAT4_LOAD(ptr, x0, x1, x2, x3) \
     __ASM_EMIT("movups      0x00(%[" ptr "]), %" x0 ) \
     __ASM_EMIT("movups      0x10(%[" ptr "]), %" x1 ) \
     __ASM_EMIT("movups      0x20(%[" ptr "]), %" x2 ) \
     __ASM_EMIT("movups      0x30(%[" ptr "]), %" x3 )
 
-#define MATRIX_STORE(ptr, x0, x1, x2, x3) \
+#define MAT4_STORE(ptr, x0, x1, x2, x3) \
     __ASM_EMIT("movups      %" x0 ", 0x00(%[" ptr "])") \
     __ASM_EMIT("movups      %" x1 ", 0x10(%[" ptr "])") \
     __ASM_EMIT("movups      %" x2 ", 0x20(%[" ptr "])") \
@@ -386,9 +386,9 @@ namespace lsp
         {
             ARCH_X86_ASM
             (
-                MATRIX_LOAD("m", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
+                MAT4_LOAD("m", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
                 MAT4_TRANSPOSE("%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4")
-                MATRIX_STORE("m", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
+                MAT4_STORE("m", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
                 :
                 : [m] "r" (r)
                 : "memory",
@@ -400,9 +400,9 @@ namespace lsp
         {
             ARCH_X86_ASM
             (
-                MATRIX_LOAD("m", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
+                MAT4_LOAD("m", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
                 MAT4_TRANSPOSE("%xmm0", "%xmm1", "%xmm2", "%xmm3", "%xmm4")
-                MATRIX_STORE("r", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
+                MAT4_STORE("r", "%xmm0", "%xmm1", "%xmm2", "%xmm3")
                 :
                 : [r] "r" (r), [m] "r" (m)
                 : "memory",
