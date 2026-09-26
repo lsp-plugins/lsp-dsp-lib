@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -368,7 +368,7 @@ namespace lsp
 
         float calc_min_distance_p3(const point3d_t *sp, const point3d_t *p0, const point3d_t *p1, const point3d_t *p2)
         {
-            float x0, x1, x2, x3, x4;
+            float x0, x1, x2, x3;
 
             ARCH_X86_ASM
             (
@@ -393,8 +393,7 @@ namespace lsp
                 __ASM_EMIT("minss       %[x1], %[x0]")
                 __ASM_EMIT("minss       %[x2], %[x0]")
 
-                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
-                  [x4] "=&x" (x4)
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
                 : [sp] "r" (sp), [p0] "r" (p0), [p1] "r" (p1), [p2] "r" (p2)
                 :
             );
@@ -404,7 +403,7 @@ namespace lsp
 
         float calc_min_distance_pv(const point3d_t *sp, const point3d_t *pv)
         {
-            float x0, x1, x2, x3, x4;
+            float x0, x1, x2, x3;
 
             ARCH_X86_ASM
             (
@@ -429,8 +428,7 @@ namespace lsp
                 __ASM_EMIT("minss       %[x1], %[x0]")
                 __ASM_EMIT("minss       %[x2], %[x0]")
 
-                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3),
-                  [x4] "=&x" (x4)
+                : [x0] "=&x" (x0), [x1] "=&x" (x1), [x2] "=&x" (x2), [x3] "=&x" (x3)
                 : [sp] "r" (sp), [pv] "r" (pv)
                 :
             );

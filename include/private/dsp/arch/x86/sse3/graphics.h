@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -305,7 +305,7 @@ namespace lsp
                   [count] "+r" (count)
                 : [zero] "m" (zero), [norm_x] "m" (norm_x),
                   [ILOG] "r" (LOG_IARGS)
-                :
+                : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
@@ -585,7 +585,7 @@ namespace lsp
                   [count] "+r" (count)
                 : [zero] "m" (zero), [norm_x] "m" (norm_x), [norm_y] "m" (norm_y),
                   [ILOG] "r" (LOG_IARGS)
-                :
+                : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
@@ -737,7 +737,7 @@ namespace lsp
                   "%xmm12", "%xmm13", "%xmm14", "%xmm15"
             );
         }
-    }
-}
+    } /* namespace sse3 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE3_GRAPHICS_H_ */
