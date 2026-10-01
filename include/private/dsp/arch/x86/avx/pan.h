@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 27 нояб. 2024 г.
@@ -136,7 +136,8 @@ namespace lsp
                 : [dst] "r" (dst), [l] "r" (l), [r] "r" (r),
                   [CI] "m" (depan_lin_const_i),
                   [CF] "m" (depan_lin_const_f)
-                : "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm1", "%xmm2", "%xmm3",
                   "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -250,7 +251,8 @@ namespace lsp
                   [dfl] "+Yz" (dfl)
                 : [dst] "r" (dst), [l] "r" (l), [r] "r" (r),
                   [CF] "m" (depan_eqpow_const_f)
-                : "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm1", "%xmm2", "%xmm3",
                   "%xmm6", "%xmm7"
             );
         }
@@ -351,7 +353,8 @@ namespace lsp
                   [dfl] "+Yz" (dfl)
                 : [dst] "r" (dst), [l] "r" (l), [r] "r" (r),
                   [CF] "m" (depan_eqpow_const_f)
-                : "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm1", "%xmm2", "%xmm3",
                   "%xmm6", "%xmm7"
             );
         }
