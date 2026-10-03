@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 27 нояб. 2025 г.
@@ -231,10 +231,9 @@ namespace lsp
                 __ASM_EMIT("vmovups             %%zmm1, 0x040(%[dst],%[off])")
                 __ASM_EMIT("vmovups             %%zmm2, 0x080(%[dst],%[off])")
                 __ASM_EMIT("vmovups             %%zmm3, 0x0c0(%[dst],%[off])")
-                __ASM_EMIT("add                 $0x100, %[off]")
                 __ASM_EMIT64("sub               $64, %[count]")
                 __ASM_EMIT32("subl              $64, %[count]")
-                __ASM_EMIT("jae                 1b")
+                __ASM_EMIT("add                 $0x100, %[off]")
                 // 32x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT64("add               $32, %[count]")
@@ -511,8 +510,6 @@ namespace lsp
 
     } /* namespace avx512 */
 } /* namespace lsp */
-
-
 
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX512_PMATH_CLAMP_H_ */

@@ -512,9 +512,8 @@ namespace lsp
             __ASM_EMIT(OP "         %%zmm2, %%zmm0, %%zmm0")                    /* zmm0 = O = OP(fabsf(m), fabsf(s)) */ \
             IF_MUL("vmulps          %%zmm7, %%zmm0, %%zmm0")                    /* zmm0 = O * 0.5f */ \
             __ASM_EMIT("vmovups     %%zmm0, 0x00(%[" DST "], %[off])") \
-            __ASM_EMIT("add         $0x40, %[off]") \
             __ASM_EMIT("sub         $16, %[count]") \
-            __ASM_EMIT("jae         1b") \
+            __ASM_EMIT("add         $0x40, %[off]") \
             /* 8x block */ \
             __ASM_EMIT("4:") \
             __ASM_EMIT("add         $8, %[count]") \

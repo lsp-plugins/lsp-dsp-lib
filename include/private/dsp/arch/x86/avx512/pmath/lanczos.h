@@ -220,7 +220,7 @@ namespace lsp
             __ASM_EMIT("vandps          0x00 + %[LC], %%zmm12, %%zmm12")            /* zmm12    = fabsf(x1) */ \
             __ASM_EMIT("vdivps          %%zmm13, %%zmm0, %%zmm0")                   /* zmm0     = F = (sinf(x1)*sinf(x2)) / (x1 * x2) */ \
             __ASM_EMIT("vcmpps          $1, 0x40 + %[LC], %%zmm12, %%k1")           /* k1       = [ fabsf(x1) < 1e-4 ] */ \
-            __ASM_EMIT("vcmpps          $5, %%zmm10, %%zmm1, %%k2")                 /* k2       = [ fabsf(x1) >= t ] */ \
+            __ASM_EMIT("vcmpps          $5, %%zmm10, %%zmm12, %%k2")                /* k2       = [ fabsf(x1) >= t ] */ \
             __ASM_EMIT("vmovaps         0x80 + %[LC], %%zmm0 %{%%k1%}")             /* zmm0     = [ fabsf(x1) >= 1e-4 ] ? f : 1.0 */ \
             __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0 %{%%k2%}")           /* zmm0     = [ fabsf(x1) < t ] ? ([ fabsf(x1) >= 1e-4 ] ? f : 1.0) : 0.0 */
 
@@ -338,7 +338,8 @@ namespace lsp
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
                   "%xmm8", "%xmm9", "%xmm10", "%xmm11",
-                  "%xmm12", "%xmm13", "%xmm14", "%xmm15"
+                  "%xmm12", "%xmm13", "%xmm14", "%xmm15",
+                  "%k1", "%k2"
             );
         }
 

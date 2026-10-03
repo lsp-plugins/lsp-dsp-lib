@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 26 окт. 2023 г.
@@ -176,9 +176,9 @@ namespace lsp
             ARCH_X86_ASM
             (
                 FMADDSUB_K3_CORE("dst", "src1", "src2", "vfmadd231")
-                : [off] "=&r" (off), [count] "+r" (count)
-                : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2),
-                  [k] "m" (k)
+                : [off] "=&r" (off), [count] "+r" (count),
+                  [k] "+Yz" (k)
+                : [dst] "r"(dst), [src1] "r" (src1), [src2] "r" (src2)
                 : "cc", "memory",
                            "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -425,9 +425,8 @@ namespace lsp
         __ASM_EMIT("vfnmadd231ps        %%ymm7, %%ymm5, %%ymm3") \
         __ASM_EMIT("vmovups             %%ymm2, 0x00(%[" DST "], %[off])") \
         __ASM_EMIT("vmovups             %%ymm3, 0x20(%[" DST "], %[off])") \
-        __ASM_EMIT("add                 $0x40, %[off]") \
         __ASM_EMIT("sub                 $16, %[count]") \
-        __ASM_EMIT("jae                 1b") \
+        __ASM_EMIT("add                 $0x40, %[off]") \
         __ASM_EMIT("4:") \
         /* x8 block */ \
         __ASM_EMIT("add                 $8, %[count]") \

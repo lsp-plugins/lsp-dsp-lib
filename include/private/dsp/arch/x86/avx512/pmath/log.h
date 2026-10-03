@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 27 окт. 2023 г.
@@ -345,9 +345,9 @@ namespace lsp
                 LOGB_CORE_X32
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%zmm4, 0x40(%[dst])")
+                __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("add             $0x80, %[src]")
                 __ASM_EMIT("add             $0x80, %[dst]")
-                __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("4:")
                 // x16 block
                 __ASM_EMIT("add             $16, %[count]")
@@ -355,9 +355,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%zmm0")
                 LOGB_CORE_X16
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("add             $0x40, %[src]")
                 __ASM_EMIT("add             $0x40, %[dst]")
-                __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("6:")
                 // x8 block
                 __ASM_EMIT("add             $8, %[count]")
@@ -365,9 +365,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 LOGB_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("add             $0x20, %[src]")
                 __ASM_EMIT("add             $0x20, %[dst]")
-                __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("8:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")
@@ -375,9 +375,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
                 LOGB_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("add             $0x10, %[src]")
                 __ASM_EMIT("add             $0x10, %[dst]")
-                __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("10:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
@@ -436,9 +436,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%zmm0")
                 LOGB_CORE_X16
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("add             $0x40, %[src]")
                 __ASM_EMIT("add             $0x40, %[dst]")
-                __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("4:")
                 // x8 block
                 __ASM_EMIT("add             $8, %[count]")
@@ -446,9 +446,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 LOGB_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("add             $0x20, %[src]")
                 __ASM_EMIT("add             $0x20, %[dst]")
-                __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("6:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")
@@ -456,9 +456,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
                 LOGB_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("add             $0x10, %[src]")
                 __ASM_EMIT("add             $0x10, %[dst]")
-                __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("8:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
@@ -522,8 +522,8 @@ namespace lsp
                 LOGB_CORE_X32
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%zmm4, 0x40(%[dst])")
-                __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
+                __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("4:")
                 // x16 block
                 __ASM_EMIT("add             $16, %[count]")
@@ -531,8 +531,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%zmm0")
                 LOGB_CORE_X16
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("6:")
                 // x8 block
                 __ASM_EMIT("add             $8, %[count]")
@@ -540,8 +540,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 LOGB_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("8:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")
@@ -549,8 +549,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
                 LOGB_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("10:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
@@ -611,8 +611,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%zmm0")
                 LOGB_CORE_X16
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("4:")
                 // x8 block
                 __ASM_EMIT("add             $8, %[count]")
@@ -620,8 +620,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 LOGB_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("6:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")
@@ -629,8 +629,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
                 LOGB_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("8:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
@@ -694,9 +694,9 @@ namespace lsp
                 LOGE_CORE_X32
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%zmm4, 0x40(%[dst])")
+                __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("add             $0x80, %[src]")
                 __ASM_EMIT("add             $0x80, %[dst]")
-                __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("4:")
                 // x16 block
                 __ASM_EMIT("add             $16, %[count]")
@@ -704,9 +704,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%zmm0")
                 LOGE_CORE_X16
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("add             $0x40, %[src]")
                 __ASM_EMIT("add             $0x40, %[dst]")
-                __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("6:")
                 // x8 block
                 __ASM_EMIT("add             $8, %[count]")
@@ -714,9 +714,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 LOGE_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("add             $0x20, %[src]")
                 __ASM_EMIT("add             $0x20, %[dst]")
-                __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("8:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")
@@ -724,9 +724,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
                 LOGE_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("add             $0x10, %[src]")
                 __ASM_EMIT("add             $0x10, %[dst]")
-                __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("10:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
@@ -785,9 +785,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%zmm0")
                 LOGE_CORE_X16
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("add             $0x40, %[src]")
                 __ASM_EMIT("add             $0x40, %[dst]")
-                __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("4:")
                 // x8 block
                 __ASM_EMIT("add             $8, %[count]")
@@ -795,9 +795,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 LOGE_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("add             $0x20, %[src]")
                 __ASM_EMIT("add             $0x20, %[dst]")
-                __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("6:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")
@@ -805,9 +805,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
                 LOGE_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("add             $0x10, %[src]")
                 __ASM_EMIT("add             $0x10, %[dst]")
-                __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("8:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
@@ -871,8 +871,8 @@ namespace lsp
                 LOGE_CORE_X32
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%zmm4, 0x40(%[dst])")
-                __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
+                __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("4:")
                 // x16 block
                 __ASM_EMIT("add             $16, %[count]")
@@ -880,8 +880,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%zmm0")
                 LOGE_CORE_X16
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("6:")
                 // x8 block
                 __ASM_EMIT("add             $8, %[count]")
@@ -889,8 +889,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 LOGE_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("8:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")
@@ -898,8 +898,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
                 LOGE_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("10:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
@@ -960,8 +960,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%zmm0")
                 LOGE_CORE_X16
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("4:")
                 // x8 block
                 __ASM_EMIT("add             $8, %[count]")
@@ -969,8 +969,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 LOGE_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("6:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")
@@ -978,8 +978,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
                 LOGE_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("8:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
@@ -1043,9 +1043,9 @@ namespace lsp
                 LOGD_CORE_X32
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%zmm4, 0x40(%[dst])")
+                __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("add             $0x80, %[src]")
                 __ASM_EMIT("add             $0x80, %[dst]")
-                __ASM_EMIT("sub             $32, %[count]")
                 __ASM_EMIT("4:")
                 // x16 block
                 __ASM_EMIT("add             $16, %[count]")
@@ -1053,9 +1053,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%zmm0")
                 LOGD_CORE_X16
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("add             $0x40, %[src]")
                 __ASM_EMIT("add             $0x40, %[dst]")
-                __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("6:")
                 // x8 block
                 __ASM_EMIT("add             $8, %[count]")
@@ -1063,9 +1063,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%ymm0")
                 LOGD_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("add             $0x20, %[src]")
                 __ASM_EMIT("add             $0x20, %[dst]")
-                __ASM_EMIT("sub             $8, %[count]")
                 __ASM_EMIT("8:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")
@@ -1073,9 +1073,9 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[src]), %%xmm0")
                 LOGD_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
+                __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("add             $0x10, %[src]")
                 __ASM_EMIT("add             $0x10, %[dst]")
-                __ASM_EMIT("sub             $4, %[count]")
                 __ASM_EMIT("10:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
@@ -1220,8 +1220,8 @@ namespace lsp
                 LOGD_CORE_X32
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
                 __ASM_EMIT("vmovups         %%zmm4, 0x40(%[dst])")
-                __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("sub             $32, %[count]")
+                __ASM_EMIT("add             $0x80, %[dst]")
                 __ASM_EMIT("4:")
                 // x16 block
                 __ASM_EMIT("add             $16, %[count]")
@@ -1238,9 +1238,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 LOGD_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
-                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("8:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")
@@ -1248,8 +1247,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
                 LOGD_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("10:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")
@@ -1310,8 +1309,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%zmm0")
                 LOGD_CORE_X16
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("sub             $16, %[count]")
+                __ASM_EMIT("add             $0x40, %[dst]")
                 __ASM_EMIT("4:")
                 // x8 block
                 __ASM_EMIT("add             $8, %[count]")
@@ -1319,8 +1318,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%ymm0")
                 LOGD_CORE_X8
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("sub             $8, %[count]")
+                __ASM_EMIT("add             $0x20, %[dst]")
                 __ASM_EMIT("6:")
                 // x4 block
                 __ASM_EMIT("add             $4, %[count]")
@@ -1328,8 +1327,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         0x00(%[dst]), %%xmm0")
                 LOGD_CORE_X4
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst])")
-                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("sub             $4, %[count]")
+                __ASM_EMIT("add             $0x10, %[dst]")
                 __ASM_EMIT("8:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("add             $4, %[count]")

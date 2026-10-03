@@ -75,10 +75,9 @@ namespace lsp
                 __ASM_EMIT("vfnmadd231ps    0x40(%[k], %[off]), %%zmm5, %%zmm1")
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("vmovups         %%zmm1, 0x40(%[dst], %[off])")
-                __ASM_EMIT("add             $0x80, %[off]")
                 __ASM_EMIT32("subl          $32, %[count]")
                 __ASM_EMIT64("sub           $32, %[count]")
-                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("add             $0x80, %[off]")
                 // 16x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT32("addl          $16, %[count]")
@@ -188,8 +187,8 @@ namespace lsp
                 __ASM_EMIT("vfnmadd231ps    %%zmm6, %%zmm4, %%zmm1")
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("vmovups         %%zmm1, 0x40(%[dst], %[off])")
-                __ASM_EMIT("add             $0x80, %[off]")
                 __ASM_EMIT("sub             $32, %[count]")
+                __ASM_EMIT("add             $0x80, %[off]")
                 // 16x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add             $16, %[count]")
@@ -292,8 +291,8 @@ namespace lsp
                 __ASM_EMIT("vfnmadd231ps    0x40(%[k], %[off]), %%zmm4, %%zmm1")
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("vmovups         %%zmm1, 0x40(%[dst], %[off])")
-                __ASM_EMIT("add             $0x80, %[off]")
                 __ASM_EMIT("sub             $32, %[count]")
+                __ASM_EMIT("add             $0x80, %[off]")
                 // 16x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add             $16, %[count]")
@@ -397,8 +396,8 @@ namespace lsp
                 __ASM_EMIT("vfnmadd231ps    %%zmm7, %%zmm4, %%zmm1")
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("vmovups         %%zmm1, 0x40(%[dst], %[off])")
-                __ASM_EMIT("add             $0x80, %[off]")
                 __ASM_EMIT("sub             $32, %[count]")
+                __ASM_EMIT("add             $0x80, %[off]")
                 // 16x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add             $16, %[count]")
@@ -491,8 +490,8 @@ namespace lsp
                 __ASM_EMIT("vfnmadd132ps    0x40(%[k], %[off]), %%zmm6, %%zmm1")
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("vmovups         %%zmm1, 0x40(%[dst], %[off])")
-                __ASM_EMIT("add             $0x80, %[off]")
                 __ASM_EMIT("sub             $32, %[count]")
+                __ASM_EMIT("add             $0x80, %[off]")
                 // 16x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add             $16, %[count]")
@@ -581,8 +580,8 @@ namespace lsp
                 __ASM_EMIT("vfnmadd132ps    %%zmm7, %%zmm6, %%zmm1")
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("vmovups         %%zmm1, 0x40(%[dst], %[off])")
-                __ASM_EMIT("add             $0x80, %[off]")
                 __ASM_EMIT("sub             $32, %[count]")
+                __ASM_EMIT("add             $0x80, %[off]")
                 // 16x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add             $16, %[count]")
@@ -672,8 +671,8 @@ namespace lsp
                 __ASM_EMIT("vfmadd132ps     0x40(%[k], %[off]), %%zmm6, %%zmm1")
                 __ASM_EMIT("vmovups         %%zmm0, 0x00(%[dst], %[off])")
                 __ASM_EMIT("vmovups         %%zmm1, 0x40(%[dst], %[off])")
-                __ASM_EMIT("add             $0x80, %[off]")
                 __ASM_EMIT("sub             $32, %[count]")
+                __ASM_EMIT("add             $0x80, %[off]")
                 // 16x block
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add             $16, %[count]")
