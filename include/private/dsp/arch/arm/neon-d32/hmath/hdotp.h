@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -32,7 +32,7 @@ namespace lsp
     {
         float h_dotp(const float *a, const float *b, size_t count)
         {
-            IF_ARCH_ARM(float result);
+            IF_ARCH_ARM(register float result __asm__("s0"));
             ARCH_ARM_ASM
             (
                 __ASM_EMIT("veor            q0, q0")
@@ -85,7 +85,8 @@ namespace lsp
                   [a] "+r" (a), [b] "+r" (b), [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q1", "q2", "q3", "q4", "q5", "q6", "q7"
+                  "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7"
             );
 
             return result;
@@ -93,7 +94,7 @@ namespace lsp
 
         float h_sqr_dotp(const float *a, const float *b, size_t count)
         {
-            IF_ARCH_ARM(float result);
+            IF_ARCH_ARM(register float result __asm__("s0"));
             ARCH_ARM_ASM
             (
                 __ASM_EMIT("veor            q0, q0")
@@ -160,7 +161,8 @@ namespace lsp
                   [a] "+r" (a), [b] "+r" (b), [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q1", "q2", "q3", "q4", "q5", "q6", "q7"
+                  "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7"
             );
 
             return result;
@@ -168,7 +170,7 @@ namespace lsp
 
         float h_abs_dotp(const float *a, const float *b, size_t count)
         {
-            IF_ARCH_ARM(float result);
+            IF_ARCH_ARM(register float result __asm__("s0"));
             ARCH_ARM_ASM
             (
                 __ASM_EMIT("veor            q0, q0")
@@ -235,12 +237,13 @@ namespace lsp
                   [a] "+r" (a), [b] "+r" (b), [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "q1", "q2", "q3", "q4", "q5", "q6", "q7"
+                  "q1", "q2", "q3",
+                  "q4", "q5", "q6", "q7"
             );
 
             return result;
         }
-    }
-}
+    } /* namespace neon_d32 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_HMATH_HDOTP_H_ */

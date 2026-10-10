@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -26,7 +26,7 @@
 
 namespace lsp
 {
-    static constexpr size_t INVALID_VALUE   = 1e+16f;
+    static constexpr float INVALID_VALUE   = 1e+16f;
 
     namespace generic
     {

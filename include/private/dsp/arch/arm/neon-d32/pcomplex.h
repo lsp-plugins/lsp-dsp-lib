@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -924,7 +924,6 @@ namespace lsp
                 __ASM_EMIT("adds            %[count], #16")
                 __ASM_EMIT("blt             4f")
 
-                __ASM_EMIT("1:")
                 __ASM_EMIT("vld1.32         {q0-q1}, [%[src]]!")        // q0 = r, q1 = r
                 __ASM_EMIT("veor            q7, q7")
                 __ASM_EMIT("vld1.32         {q2-q3}, [%[src]]!")

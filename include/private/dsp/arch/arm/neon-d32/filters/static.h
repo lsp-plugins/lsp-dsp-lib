@@ -392,7 +392,6 @@ namespace lsp
                 __ASM_EMIT("bne         5b")
 
                 // Store memory
-                __ASM_EMIT("6:")
                 __ASM_EMIT("vstm        %[d], {q2-q5}")
                 __ASM_EMIT("8:")
 
@@ -563,7 +562,6 @@ namespace lsp
                 __ASM_EMIT("bne         5b")
 
                 // Store memory
-                __ASM_EMIT("6:")
                 __ASM_EMIT("vst1.32     {q2-q3}, [%[d]], %[stride]")
                 __ASM_EMIT("vst1.32     {q4-q5}, [%[d]]")
 
@@ -705,7 +703,6 @@ namespace lsp
                 __ASM_EMIT("bne         5b")
 
                 // Store memory
-                __ASM_EMIT("6:")
                 __ASM_EMIT("vst1.32     {q2-q3}, [%[d]], %[stride]")
                 __ASM_EMIT("vst1.32     {q4-q5}, [%[d]]")
                 __ASM_EMIT("sub         %[d], %[d], #0x60")

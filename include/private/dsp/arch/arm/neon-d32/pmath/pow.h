@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -35,6 +35,7 @@ namespace lsp
     {
         void powcv2(float *dst, const float *v, float c, size_t count)
         {
+            IF_ARCH_ARM(register float temp_c __asm__("s0") = c);
     //        float C = logf(c);
     //        for (size_t i=0; i<count; ++i)
     //            v[i] = expf(v[i] * C);
@@ -90,7 +91,7 @@ namespace lsp
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (dst), [src] "+r" (v), [count] "+r" (count),
-                  [C] "+t" (c)
+                  [C] "+t" (temp_c)
                 : [L2C] "r" (&LOG2_CONST[0]),
                   [LOGC] "r" (&LOGB_C[0]),
                   [E2C] "r" (&EXP2_CONST[0])
@@ -104,6 +105,7 @@ namespace lsp
 
         void powcv1(float *dst, float c, size_t count)
         {
+            IF_ARCH_ARM(register float temp_c __asm__("s0") = c);
     //        float C = logf(c);
     //        for (size_t i=0; i<count; ++i)
     //            v[i] = expf(v[i] * C);
@@ -160,7 +162,7 @@ namespace lsp
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (dst), [count] "+r" (count),
-                  [C] "+t" (c)
+                  [C] "+t" (temp_c)
                 : [L2C] "r" (&LOG2_CONST[0]),
                   [LOGC] "r" (&LOGB_C[0]),
                   [E2C] "r" (&EXP2_CONST[0])
@@ -174,6 +176,8 @@ namespace lsp
 
         void powvc2(float *dst, const float *c, float v, size_t count)
         {
+            IF_ARCH_ARM(register float temp_v __asm__("s0") = v);
+
     //        for (size_t i=0; i<count; ++i)
     //            dst[i] = expf(v * logf(c[i]));
             ARCH_ARM_ASM(
@@ -231,7 +235,7 @@ namespace lsp
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (dst), [src] "+r" (c), [count] "+r" (count),
-                  [V] "+t" (v)
+                  [V] "+t" (temp_v)
                 : [L2C] "r" (&LOG2_CONST[0]),
                   [LOGC] "r" (&LOGB_C[0]),
                   [E2C] "r" (&EXP2_CONST[0])
@@ -245,6 +249,8 @@ namespace lsp
 
         void powvc1(float *c, float v, size_t count)
         {
+            IF_ARCH_ARM(register float temp_v __asm__("s0") = v);
+
     //        for (size_t i=0; i<count; ++i)
     //            c[i] = expf(v * logf(c[i]));
             ARCH_ARM_ASM(
@@ -303,7 +309,7 @@ namespace lsp
                 __ASM_EMIT("12:")
 
                 : [dst] "+r" (c), [count] "+r" (count),
-                  [V] "+t" (v)
+                  [V] "+t" (temp_v)
                 : [L2C] "r" (&LOG2_CONST[0]),
                   [LOGC] "r" (&LOGB_C[0]),
                   [E2C] "r" (&EXP2_CONST[0])
@@ -461,7 +467,7 @@ namespace lsp
                   "q12", "q13", "q14", "q15"
             );
         }
-    }
-}
+    } /* namespace neon_d32 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_ARM_NEON_D32_PMATH_POW_H_ */

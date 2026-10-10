@@ -271,7 +271,6 @@ namespace lsp
                 __ASM_EMIT("adds        %[count], #8")
                 __ASM_EMIT("blt         4f")
                 __ASM_EMIT("vldm        %[a]!, {q0-q1}")            // q0   = a
-                __ASM_EMIT("vldm        %[k]!, {q4-q5}")            // q4   = k
                 __ASM_EMIT("vsub.f32    q4, q8, q0")                // q4   = b-a
                 __ASM_EMIT("vsub.f32    q5, q8, q1")
                 __ASM_EMIT("vmla.f32    q0, q4, q9")                // q0   = a + (b-a)*k
@@ -283,7 +282,6 @@ namespace lsp
                 __ASM_EMIT("adds        %[count], #4")
                 __ASM_EMIT("blt         6f")
                 __ASM_EMIT("vldm        %[a]!, {q0}")               // q0   = a
-                __ASM_EMIT("vldm        %[k]!, {q4}")               // q4   = k
                 __ASM_EMIT("vsub.f32    q4, q8, q0")                // q4   = b-a
                 __ASM_EMIT("vmla.f32    q0, q4, q9")                // q0   = a + (b-a)*k
                 __ASM_EMIT("sub         %[count], #4")
@@ -294,7 +292,6 @@ namespace lsp
                 __ASM_EMIT("blt         8f")
                 __ASM_EMIT("7:")
                 __ASM_EMIT("vld1.32     {d0[], d1[]}, [%[a]]!")     // q0   = a
-                __ASM_EMIT("vld1.32     {d8[], d9[]}, [%[k]]!")     // q4   = k
                 __ASM_EMIT("vsub.f32    q4, q8, q0")                // q4   = b-a
                 __ASM_EMIT("vmla.f32    q0, q4, q9")                // q0   = a + (b-a)*k
                 __ASM_EMIT("subs        %[count], #1")
@@ -463,7 +460,7 @@ namespace lsp
                 : "cc", "memory",
                   "q0", "q1", "q2", "q3",
                   "q4", "q5", "q6", "q7",
-                  "q8",
+                  "q8", "q9",
                   "q12", "q13", "q14", "q15"
             );
         }
