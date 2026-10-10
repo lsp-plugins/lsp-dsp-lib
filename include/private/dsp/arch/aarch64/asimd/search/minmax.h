@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -619,8 +619,6 @@ namespace lsp
                 __ASM_EMIT("bif         v1.16b, v19.16b, v5.16b")           /* v1   = (fabsf(max) > fabsf(x0)) ? max : x0 */
                 __ASM_EMIT("bit         v2.16b, v7.16b, v4.16b")            /* v2   = (fabsf(min) > fabsf(x0)) ? fabsf(x0) : fabsf(min) */
                 __ASM_EMIT("bif         v3.16b, v7.16b, v5.16b")            /* v3   = (fabsf(max) > fabsf(x0)) ? fabsf(max) : fabsf(x0) */
-                __ASM_EMIT("subs        %[count], %[count], #32")
-                __ASM_EMIT("add         %[src], %[src], #0x80")
                 __ASM_EMIT("sub         %[count], %[count], #16")
                 __ASM_EMIT("add         %[src], %[src], #0x40")
                 /* 8x block */

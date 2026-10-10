@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -298,8 +298,10 @@ namespace lsp
                   [count] "+r" (count)
                 : [kernel] "r" (&lanczos_2x3[0])
                 : "cc", "memory",
-                  "v0", "v1", "v2", "v3", "v4",
-                  "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5",
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23",
                   "v24"
             );
         }
@@ -699,7 +701,7 @@ namespace lsp
                 : [kernel] "r" (&lanczos_3x3[0])
                 : "cc", "memory",
                   "v0", "v1", "v2", "v3",
-                  "v4", "v5",
+                  "v4", "v5", "v6", "v7",
                   "v22", "v23",
                   "v24", "v25", "v26", "v27",
                   "v28", "v29", "v30", "v31"
@@ -955,7 +957,7 @@ namespace lsp
                 : [kernel] "r" (&lanczos_4x2[0])
                 : "cc", "memory",
                   "v0", "v1", "v2", "v3",
-                  "v4", "v5",
+                  "v4", "v5", "v6",
                   "v16", "v17", "v18", "v19",
                   "v24", "v25", "v26", "v27"
             );
@@ -2185,6 +2187,7 @@ namespace lsp
                   "v8", "v9", "v10", "v11",
                   "v12", "v13",
                   "v16", "v17",
+                  "v20", "v21", "v22", "v23",
                   "v24", "v25", "v26", "v27",
                   "v28", "v29", "v30", "v31"
             );
@@ -2684,24 +2687,24 @@ namespace lsp
                 __ASM_EMIT("ldp             q2, q3, [%[src], #0x30]")       // v2  = s2  ?   ?   ?  , v3  = ?   ?   s3  ?
                 __ASM_EMIT("ldp             q4, q5, [%[src], #0x60]")       // v4  = s4  ?   ?   ?  , v5  = ?   ?   s5  ?
                 __ASM_EMIT("ldp             q6, q7, [%[src], #0x90]")       // v6  = s6  ?   ?   ?  , v7  = ?   ?   s7  ?
-                __ASM_EMIT("ldp             q8, q9, [%[src], #0xc0]")       // v0  = s8  ?   ?   ?  , v1  = ?   ?   s9  ?
-                __ASM_EMIT("ldp             q10, q11, [%[src], #0xf0]")     // v2  = s10 ?   ?   ?  , v3  = ?   ?   s11 ?
-                __ASM_EMIT("ldp             q12, q13, [%[src], #0x120]")    // v4  = s12 ?   ?   ?  , v5  = ?   ?   s13 ?
-                __ASM_EMIT("ldp             q14, q15, [%[src], #0x150]")    // v6  = s14 ?   ?   ?  , v7  = ?   ?   s15 ?
+                __ASM_EMIT("ldp             q16, q17, [%[src], #0xc0]")     // v0  = s8  ?   ?   ?  , v1  = ?   ?   s9  ?
+                __ASM_EMIT("ldp             q18, q19, [%[src], #0xf0]")     // v2  = s10 ?   ?   ?  , v3  = ?   ?   s11 ?
+                __ASM_EMIT("ldp             q20, q21, [%[src], #0x120]")    // v4  = s12 ?   ?   ?  , v5  = ?   ?   s13 ?
+                __ASM_EMIT("ldp             q22, q23, [%[src], #0x150]")    // v6  = s14 ?   ?   ?  , v7  = ?   ?   s15 ?
                 __ASM_EMIT("mov             v0.s[1], v1.s[2]")
                 __ASM_EMIT("mov             v2.s[1], v3.s[2]")
                 __ASM_EMIT("mov             v4.s[1], v5.s[2]")
                 __ASM_EMIT("mov             v6.s[1], v7.s[2]")
-                __ASM_EMIT("mov             v8.s[1], v9.s[2]")
-                __ASM_EMIT("mov             v10.s[1], v11.s[2]")
-                __ASM_EMIT("mov             v12.s[1], v13.s[2]")
-                __ASM_EMIT("mov             v14.s[1], v15.s[2]")
+                __ASM_EMIT("mov             v16.s[1], v17.s[2]")
+                __ASM_EMIT("mov             v18.s[1], v19.s[2]")
+                __ASM_EMIT("mov             v20.s[1], v21.s[2]")
+                __ASM_EMIT("mov             v22.s[1], v23.s[2]")
                 __ASM_EMIT("mov             v0.d[1], v2.d[0]")              // v0  = s0  s1  s2  s3
                 __ASM_EMIT("mov             v4.d[1], v6.d[0]")
-                __ASM_EMIT("mov             v8.d[1], v10.d[0]")
-                __ASM_EMIT("mov             v12.d[1], v14.d[0]")
+                __ASM_EMIT("mov             v16.d[1], v18.d[0]")
+                __ASM_EMIT("mov             v20.d[1], v22.d[0]")
                 __ASM_EMIT("stp             q0, q4, [%[dst], #0x00]")
-                __ASM_EMIT("stp             q8, q12, [%[dst], #0x20]")
+                __ASM_EMIT("stp             q16, q20, [%[dst], #0x20]")
                 __ASM_EMIT("subs            %[count], %[count], #16")
                 __ASM_EMIT("add             %[src], %[src], #0x180")
                 __ASM_EMIT("add             %[dst], %[dst], #0x40")
@@ -2755,7 +2758,8 @@ namespace lsp
                 : "cc", "memory",
                   "v0", "v1", "v2", "v3",
                   "v4", "v5", "v6", "v7",
-                  "v8", "v9", "v10", "v11"
+                  "v16", "v17", "v18", "v19",
+                  "v20", "v21", "v22", "v23"
             );
         }
 
@@ -2859,7 +2863,7 @@ namespace lsp
                   "v20", "v21", "v22", "v23"
             );
         }
-    }
-}
+    } /* namespace asimd */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_RESAMPLING_H_ */

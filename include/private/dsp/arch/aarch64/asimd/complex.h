@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -113,7 +113,7 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "v0", "v1",
+                  "v0", "v1", "v2", "v3",
                   "v16", "v17", "v18", "v19",
                   "v20", "v21", "v22", "v23"
             );
@@ -951,7 +951,7 @@ namespace lsp
                   "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23"
             );
         }
-    }
-}
+    } /* namespace asimd */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_COMPLEX_H_ */

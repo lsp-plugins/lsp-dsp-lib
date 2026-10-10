@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -752,7 +752,7 @@ namespace lsp
                 __ASM_EMIT("fdiv        v21.4s, v21.4s, v26.4s")
                 __ASM_EMIT("fdiv        v23.4s, v23.4s, v27.4s")
 
-                __ASM_EMIT("sub         %[dst], %[dst], 0x80")
+                __ASM_EMIT("sub         %[dst], %[dst], #0x80")
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("st2         {v16.4s, v17.4s}, [%[dst]], #0x20")
                 __ASM_EMIT("st2         {v18.4s, v19.4s}, [%[dst]], #0x20")
@@ -778,7 +778,7 @@ namespace lsp
                 __ASM_EMIT("fdiv        v17.4s, v17.4s, v24.4s")                // v17  = -si/(sr*dr + si*di)
                 __ASM_EMIT("fdiv        v19.4s, v19.4s, v25.4s")
 
-                __ASM_EMIT("sub         %[dst], %[dst], 0x40")
+                __ASM_EMIT("sub         %[dst], %[dst], #0x40")
                 __ASM_EMIT("sub         %[count], %[count], #8")
                 __ASM_EMIT("st2         {v16.4s, v17.4s}, [%[dst]], #0x20")
                 __ASM_EMIT("st2         {v18.4s, v19.4s}, [%[dst]], #0x20")
@@ -1018,8 +1018,8 @@ namespace lsp
                 __ASM_EMIT("adds        %[count], %[count], #3")
                 __ASM_EMIT("b.lt        10f")
                 __ASM_EMIT("9:")
-                __ASM_EMIT("ldr         s0, [%[src]], #0x04")
-                __ASM_EMIT("str         s0, [%[dst]], #0x04")
+                __ASM_EMIT("ldr         s16, [%[src]], #0x04")
+                __ASM_EMIT("str         s16, [%[dst]], #0x04")
                 __ASM_EMIT("subs        %[count], %[count], #1")
                 __ASM_EMIT("str         s31, [%[dst]], #0x04")
                 __ASM_EMIT("b.ge        9b")
@@ -1568,7 +1568,7 @@ namespace lsp
                 __ASM_EMIT("fdiv        v23.4s, v23.4s, v27.4s")
 
                 __ASM_EMIT("ld1         {v0.4s-v3.4s}, [%[src]], #0x40")
-                __ASM_EMIT("sub         %[dst], %[dst], 0x80")
+                __ASM_EMIT("sub         %[dst], %[dst], #0x80")
                 __ASM_EMIT("fmul        v16.4s, v16.4s, v0.4s")
                 __ASM_EMIT("fmul        v18.4s, v18.4s, v1.4s")
                 __ASM_EMIT("fmul        v20.4s, v20.4s, v2.4s")
@@ -1601,7 +1601,7 @@ namespace lsp
                 __ASM_EMIT("fdiv        v17.4s, v17.4s, v24.4s")                // v17  = -si/(sr*dr + si*di)
                 __ASM_EMIT("fdiv        v19.4s, v19.4s, v25.4s")
                 __ASM_EMIT("ld1         {v0.4s-v1.4s}, [%[src]], #0x20")
-                __ASM_EMIT("sub         %[dst], %[dst], 0x40")
+                __ASM_EMIT("sub         %[dst], %[dst], #0x40")
                 __ASM_EMIT("fmul        v16.4s, v16.4s, v0.4s")
                 __ASM_EMIT("fmul        v18.4s, v18.4s, v1.4s")
                 __ASM_EMIT("fmul        v17.4s, v17.4s, v0.4s")

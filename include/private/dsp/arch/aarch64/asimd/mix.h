@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -32,6 +32,9 @@ namespace lsp
     {
         void mix2(float *a, const float *b, float k1, float k2, size_t count)
         {
+            IF_ARCH_AARCH64(register float temp_k1 __asm__("s0") = k1);
+            IF_ARCH_AARCH64(register float temp_k2 __asm__("s1") = k2);
+
             ARCH_AARCH64_ASM(
                 __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
                 __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
@@ -102,7 +105,7 @@ namespace lsp
 
                 : [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count),
-                  [k1] "+w" (k1), [k2] "+w" (k2)
+                  [k1] "+w" (temp_k1), [k2] "+w" (temp_k2)
                 :
                 : "cc", "memory",
                   "v2", "v3",
@@ -114,6 +117,9 @@ namespace lsp
 
         void mix_copy2(float *dst, const float *a, const float *b, float k1, float k2, size_t count)
         {
+            IF_ARCH_AARCH64(register float temp_k1 __asm__("s0") = k1);
+            IF_ARCH_AARCH64(register float temp_k2 __asm__("s1") = k2);
+
             ARCH_AARCH64_ASM(
                 __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
                 __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
@@ -188,7 +194,7 @@ namespace lsp
 
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count),
-                  [k1] "+w" (k1), [k2] "+w" (k2)
+                  [k1] "+w" (temp_k1), [k2] "+w" (temp_k2)
                 :
                 : "cc", "memory",
                   "v2", "v3",
@@ -200,6 +206,9 @@ namespace lsp
 
         void mix_add2(float *dst, const float *a, const float *b, float k1, float k2, size_t count)
         {
+            IF_ARCH_AARCH64(register float temp_k1 __asm__("s0") = k1);
+            IF_ARCH_AARCH64(register float temp_k2 __asm__("s1") = k2);
+
             ARCH_AARCH64_ASM(
                 __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
                 __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
@@ -279,7 +288,7 @@ namespace lsp
 
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count),
-                  [k1] "+w" (k1), [k2] "+w" (k2)
+                  [k1] "+w" (temp_k1), [k2] "+w" (temp_k2)
                 :
                 : "cc", "memory",
                   "v2", "v3",
@@ -291,6 +300,10 @@ namespace lsp
 
         void mix3(float *a, const float *b, const float *c, float k1, float k2, float k3, size_t count)
         {
+            IF_ARCH_AARCH64(register float temp_k1 __asm__("s0") = k1);
+            IF_ARCH_AARCH64(register float temp_k2 __asm__("s1") = k2);
+            IF_ARCH_AARCH64(register float temp_k3 __asm__("s2") = k3);
+
             ARCH_AARCH64_ASM(
                 __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
                 __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
@@ -379,7 +392,7 @@ namespace lsp
 
                 : [a] "+r" (a), [b] "+r" (b), [c] "+r" (c),
                   [count] "+r" (count),
-                  [k1] "+w" (k1), [k2] "+w" (k2), [k3] "+w" (k3)
+                  [k1] "+w" (temp_k1), [k2] "+w" (temp_k2), [k3] "+w" (temp_k3)
                 :
                 : "cc", "memory",
                   "v3",
@@ -392,6 +405,10 @@ namespace lsp
 
         void mix_copy3(float *dst, const float *a, const float *b, const float *c, float k1, float k2, float k3, size_t count)
         {
+            IF_ARCH_AARCH64(register float temp_k1 __asm__("s0") = k1);
+            IF_ARCH_AARCH64(register float temp_k2 __asm__("s1") = k2);
+            IF_ARCH_AARCH64(register float temp_k3 __asm__("s2") = k3);
+
             ARCH_AARCH64_ASM(
                 __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
                 __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
@@ -484,7 +501,7 @@ namespace lsp
 
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c),
                   [count] "+r" (count),
-                  [k1] "+w" (k1), [k2] "+w" (k2), [k3] "+w" (k3)
+                  [k1] "+w" (temp_k1), [k2] "+w" (temp_k2), [k3] "+w" (temp_k3)
                 :
                 : "cc", "memory",
                   "v3",
@@ -497,6 +514,10 @@ namespace lsp
 
         void mix_add3(float *dst, const float *a, const float *b, const float *c, float k1, float k2, float k3, size_t count)
         {
+            IF_ARCH_AARCH64(register float temp_k1 __asm__("s0") = k1);
+            IF_ARCH_AARCH64(register float temp_k2 __asm__("s1") = k2);
+            IF_ARCH_AARCH64(register float temp_k3 __asm__("s2") = k3);
+
             ARCH_AARCH64_ASM(
                 __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
                 __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
@@ -594,7 +615,7 @@ namespace lsp
 
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c),
                   [count] "+r" (count),
-                  [k1] "+w" (k1), [k2] "+w" (k2), [k3] "+w" (k3)
+                  [k1] "+w" (temp_k1), [k2] "+w" (temp_k2), [k3] "+w" (temp_k3)
                 :
                 : "cc", "memory",
                   "v3",
@@ -608,6 +629,11 @@ namespace lsp
         void mix4(float *a, const float *b, const float *c, const float *d,
                 float k1, float k2, float k3, float k4, size_t count)
         {
+            IF_ARCH_AARCH64(register float temp_k1 __asm__("s0") = k1);
+            IF_ARCH_AARCH64(register float temp_k2 __asm__("s1") = k2);
+            IF_ARCH_AARCH64(register float temp_k3 __asm__("s2") = k3);
+            IF_ARCH_AARCH64(register float temp_k4 __asm__("s3") = k4);
+
             ARCH_AARCH64_ASM(
                 __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
                 __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
@@ -714,7 +740,7 @@ namespace lsp
 
                 : [a] "+r" (a), [b] "+r" (b), [c] "+r" (c), [d] "+r" (d),
                   [count] "+r" (count),
-                  [k1] "+w" (k1), [k2] "+w" (k2), [k3] "+w" (k3), [k4] "+w" (k4)
+                  [k1] "+w" (temp_k1), [k2] "+w" (temp_k2), [k3] "+w" (temp_k3), [k4] "+w" (temp_k4)
                 :
                 : "cc", "memory",
                   "v4", "v5", "v6", "v7",
@@ -728,6 +754,11 @@ namespace lsp
         void mix_copy4(float *dst, const float *a, const float *b, const float *c, const float *d,
                 float k1, float k2, float k3, float k4, size_t count)
         {
+            IF_ARCH_AARCH64(register float temp_k1 __asm__("s0") = k1);
+            IF_ARCH_AARCH64(register float temp_k2 __asm__("s1") = k2);
+            IF_ARCH_AARCH64(register float temp_k3 __asm__("s2") = k3);
+            IF_ARCH_AARCH64(register float temp_k4 __asm__("s3") = k4);
+
             ARCH_AARCH64_ASM(
                 __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
                 __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
@@ -838,7 +869,7 @@ namespace lsp
 
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c), [d] "+r" (d),
                   [count] "+r" (count),
-                  [k1] "+w" (k1), [k2] "+w" (k2), [k3] "+w" (k3), [k4] "+w" (k4)
+                  [k1] "+w" (temp_k1), [k2] "+w" (temp_k2), [k3] "+w" (temp_k3), [k4] "+w" (temp_k4)
                 :
                 : "cc", "memory",
                   "v4", "v5", "v6", "v7",
@@ -852,6 +883,11 @@ namespace lsp
         void mix_add4(float *dst, const float *a, const float *b, const float *c, const float *d,
                 float k1, float k2, float k3, float k4, size_t count)
         {
+            IF_ARCH_AARCH64(register float temp_k1 __asm__("s0") = k1);
+            IF_ARCH_AARCH64(register float temp_k2 __asm__("s1") = k2);
+            IF_ARCH_AARCH64(register float temp_k3 __asm__("s2") = k3);
+            IF_ARCH_AARCH64(register float temp_k4 __asm__("s3") = k4);
+
             ARCH_AARCH64_ASM(
                 __ASM_EMIT("dup         v28.4s, %[k1].s[0]")
                 __ASM_EMIT("dup         v29.4s, %[k2].s[0]")
@@ -967,7 +1003,7 @@ namespace lsp
 
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c), [d] "+r" (d),
                   [count] "+r" (count),
-                  [k1] "+w" (k1), [k2] "+w" (k2), [k3] "+w" (k3), [k4] "+w" (k4)
+                  [k1] "+w" (temp_k1), [k2] "+w" (temp_k2), [k3] "+w" (temp_k3), [k4] "+w" (temp_k4)
                 :
                 : "cc", "memory",
                   "v4", "v5", "v6", "v7",
@@ -977,7 +1013,7 @@ namespace lsp
                   "v28", "v29", "v30", "v31"
             );
         }
-    }
-}
+    } /* namespace asimd */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_MIX_H_ */

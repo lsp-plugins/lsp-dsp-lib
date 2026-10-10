@@ -662,7 +662,6 @@ namespace lsp
                 __ASM_EMIT("b.lt        6f")
                 __ASM_EMIT("ldp         q16, q17, [%[b]], #0x20")       // v16  = b
                 __ASM_EMIT("mov         v0.16b, v8.16b")                // v0   = a
-                __ASM_EMIT("ldp         q24, q25, [%[k]], #0x20")       // v24  = k
                 __ASM_EMIT("mov         v1.16b, v8.16b")
                 __ASM_EMIT("fsub        v16.4s, v16.4s, v8.4s")         // v16  = b-a
                 __ASM_EMIT("fsub        v17.4s, v17.4s, v8.4s")
