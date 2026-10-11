@@ -97,11 +97,11 @@ namespace lsp
 
         float min(const float *src, size_t count)
         {
-            float res = 0.0f;
+            IF_ARCH_X86(float res);
             ARCH_X86_ASM(
                 MINMAX_CORE("src", "vmin")
                 : [src] "+r" (src), [count] "+r" (count),
-                  [res] "+Yz" (res)
+                  [res] "=Yz" (res)
                 :
                 : "cc",
                   "%xmm1", "%xmm2", "%xmm3"
@@ -112,11 +112,11 @@ namespace lsp
 
         float max(const float *src, size_t count)
         {
-            float res = 0.0f;
+            IF_ARCH_X86(float res);
             ARCH_X86_ASM(
                 MINMAX_CORE("src", "vmax")
                 : [src] "+r" (src), [count] "+r" (count),
-                  [res] "+Yz" (res)
+                  [res] "=Yz" (res)
                 :
                 : "cc",
                   "%xmm1", "%xmm2", "%xmm3"
@@ -208,11 +208,11 @@ namespace lsp
 
         float abs_min(const float *src, size_t count)
         {
-            float res = 0.0f;
+            IF_ARCH_X86(float res);
             ARCH_X86_ASM(
                 AMINMAX_CORE("src", "vmin")
                 : [src] "+r" (src), [count] "+r" (count),
-                  [res] "+Yz" (res)
+                  [res] "=Yz" (res)
                 : [CC] "m" (minmax_const)
                 : "cc",
                   "%xmm1", "%xmm2",
@@ -224,11 +224,11 @@ namespace lsp
 
         float abs_max(const float *src, size_t count)
         {
-            float res = 0.0f;
+            IF_ARCH_X86(float res);
             ARCH_X86_ASM(
                 AMINMAX_CORE("src", "vmax")
                 : [src] "+r" (src), [count] "+r" (count),
-                  [res] "+Yz" (res)
+                  [res] "=Yz" (res)
                 : [CC] "m" (minmax_const)
                 : "cc",
                   "%xmm1", "%xmm2",
@@ -519,7 +519,7 @@ namespace lsp
 
         float sign_min(const float *src, size_t count)
         {
-            float res;
+            IF_ARCH_X86(float res);
             ARCH_X86_ASM(
                 SMINMAX_CORE("$1")
                 : [src] "+r" (src), [count] "+r" (count),
@@ -535,7 +535,7 @@ namespace lsp
 
         float sign_max(const float *src, size_t count)
         {
-            float res;
+            IF_ARCH_X86(float res);
             ARCH_X86_ASM(
                 SMINMAX_CORE("$6")
                 : [src] "+r" (src), [count] "+r" (count),
