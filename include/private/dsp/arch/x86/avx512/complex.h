@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 9 сент. 2023 г.
@@ -82,10 +82,9 @@ namespace lsp
             __ASM_EMIT32("vmovups       %%ymm1, 0x00(%[ptr_im], %[off])") \
             __ASM_EMIT64("vmovups       %%ymm0, 0x00(%[" DST "_re], %[off])") \
             __ASM_EMIT64("vmovups       %%ymm1, 0x00(%[" DST "_im], %[off])") \
-            __ASM_EMIT  ("add           $0x20, %[off]") \
             __ASM_EMIT32("subl          $8, %[count]") \
             __ASM_EMIT64("sub           $8, %[count]") \
-            __ASM_EMIT  ("jae           1b") \
+            __ASM_EMIT  ("add           $0x20, %[off]") \
             __ASM_EMIT  ("4:") \
             /* 4x block */ \
             __ASM_EMIT32("addl          $4, %[count]") \
@@ -109,9 +108,9 @@ namespace lsp
             __ASM_EMIT32("vmovups       %%xmm1, 0x00(%[ptr_im], %[off])") \
             __ASM_EMIT64("vmovups       %%xmm0, 0x00(%[" DST "_re], %[off])") \
             __ASM_EMIT64("vmovups       %%xmm1, 0x00(%[" DST "_im], %[off])") \
-            __ASM_EMIT  ("add           $0x10, %[off]") \
             __ASM_EMIT32("subl          $4, %[count]") \
             __ASM_EMIT64("sub           $4, %[count]") \
+            __ASM_EMIT  ("add           $0x10, %[off]") \
             __ASM_EMIT  ("6:") \
             /* 1x blocks */ \
             __ASM_EMIT32("addl          $3, %[count]") \
@@ -199,10 +198,9 @@ namespace lsp
         __ASM_EMIT  ("vfmadd132ps   %%ymm4, %%ymm2, %%ymm1")                            /* ymm1 = ar*bi + ai*br = i */ \
         __ASM_EMIT  ("vmovups       %%ymm0, 0x00(%[" DST "_re], %[off])") \
         __ASM_EMIT  ("vmovups       %%ymm1, 0x00(%[" DST "_im], %[off])") \
-        __ASM_EMIT  ("add           $0x20, %[off]") \
         __ASM_EMIT32("subl          $8, %[count]") \
         __ASM_EMIT64("sub           $8, %[count]") \
-        __ASM_EMIT  ("jae           1b") \
+        __ASM_EMIT  ("add           $0x20, %[off]") \
         __ASM_EMIT  ("4:") \
         /* 4x block */ \
         __ASM_EMIT32("addl          $4, %[count]") \
@@ -218,9 +216,9 @@ namespace lsp
         __ASM_EMIT  ("vfmadd132ps   %%xmm4, %%xmm2, %%xmm1")                            /* xmm1 = ar*bi + ai*br = i */ \
         __ASM_EMIT  ("vmovups       %%xmm0, 0x00(%[" DST "_re], %[off])") \
         __ASM_EMIT  ("vmovups       %%xmm1, 0x00(%[" DST "_im], %[off])") \
-        __ASM_EMIT  ("add           $0x10, %[off]") \
         __ASM_EMIT32("subl          $4, %[count]") \
         __ASM_EMIT64("sub           $4, %[count]") \
+        __ASM_EMIT  ("add           $0x10, %[off]") \
         __ASM_EMIT  ("6:") \
         /* 1x blocks */ \
         __ASM_EMIT32("addl          $3, %[count]") \
@@ -398,6 +396,8 @@ namespace lsp
         __ASM_EMIT64("sub           $16, %[count]") \
         __ASM_EMIT  ("jb            2f") \
         __ASM_EMIT  ("1:") \
+        __ASM_EMIT32("mov           %[" TR "], %[ptr_re]") \
+        __ASM_EMIT32("mov           %[" TI "], %[ptr_im]") \
         __ASM_EMIT  ("vmovups       0x00(%[" BR "], %[off]), %%zmm2")   /*  zmm2 = br */ \
         __ASM_EMIT  ("vmovups       0x00(%[" BI "], %[off]), %%zmm3")   /*  zmm3 = bi */ \
         __ASM_EMIT32("vmovups       0x00(%[ptr_re], %[off]), %%zmm0")   /*  zmm0 = tr */ \
@@ -417,7 +417,7 @@ namespace lsp
         __ASM_EMIT  ("vmulps        %%zmm7, %%zmm0, %%zmm0")            /*  zmm0 = r/R */ \
         __ASM_EMIT  ("vmulps        %%zmm7, %%zmm1, %%zmm1")            /*  zmm1 = i/R */ \
         __ASM_EMIT32("vmovups       %%zmm0, 0x00(%[ptr_re], %[off])") \
-        __ASM_EMIT32("vmovups       %%zmm1, 0x00(%[ptr_re], %[off])") \
+        __ASM_EMIT32("vmovups       %%zmm1, 0x00(%[ptr_im], %[off])") \
         __ASM_EMIT64("vmovups       %%zmm0, 0x00(%[" DSTR "], %[off])") \
         __ASM_EMIT64("vmovups       %%zmm1, 0x00(%[" DSTI "], %[off])") \
         __ASM_EMIT  ("add           $0x40, %[off]") \
@@ -450,7 +450,7 @@ namespace lsp
         __ASM_EMIT  ("vmulps        %%ymm7, %%ymm0, %%ymm0")            /*  ymm0 = r/R */ \
         __ASM_EMIT  ("vmulps        %%ymm7, %%ymm1, %%ymm1")            /*  ymm1 = i/R */ \
         __ASM_EMIT32("vmovups       %%ymm0, 0x00(%[ptr_re], %[off])") \
-        __ASM_EMIT32("vmovups       %%ymm1, 0x00(%[ptr_re], %[off])") \
+        __ASM_EMIT32("vmovups       %%ymm1, 0x00(%[ptr_im], %[off])") \
         __ASM_EMIT64("vmovups       %%ymm0, 0x00(%[" DSTR "], %[off])") \
         __ASM_EMIT64("vmovups       %%ymm1, 0x00(%[" DSTI "], %[off])") \
         __ASM_EMIT32("subl          $8, %[count]") \
@@ -482,7 +482,7 @@ namespace lsp
         __ASM_EMIT  ("vmulps        %%xmm7, %%xmm0, %%xmm0")            /*  xmm0 = r/R */ \
         __ASM_EMIT  ("vmulps        %%xmm7, %%xmm1, %%xmm1")            /*  xmm1 = i/R */ \
         __ASM_EMIT32("vmovups       %%xmm0, 0x00(%[ptr_re], %[off])") \
-        __ASM_EMIT32("vmovups       %%xmm1, 0x00(%[ptr_re], %[off])") \
+        __ASM_EMIT32("vmovups       %%xmm1, 0x00(%[ptr_im], %[off])") \
         __ASM_EMIT64("vmovups       %%xmm0, 0x00(%[" DSTR "], %[off])") \
         __ASM_EMIT64("vmovups       %%xmm1, 0x00(%[" DSTI "], %[off])") \
         __ASM_EMIT32("subl          $4, %[count]") \
@@ -499,7 +499,7 @@ namespace lsp
         __ASM_EMIT  ("vmovss        0x00(%[" BR "], %[off]), %%xmm2")   /*  xmm2 = br */ \
         __ASM_EMIT  ("vmovss        0x00(%[" BI "], %[off]), %%xmm3")   /*  xmm3 = bi */ \
         __ASM_EMIT32("vmovss        0x00(%[ptr_re], %[off]), %%xmm0")   /*  xmm0 = tr */ \
-        __ASM_EMIT32("vmovss        0x00(%[ptr_re], %[off]), %%xmm1")   /*  xmm1 = ti */ \
+        __ASM_EMIT32("vmovss        0x00(%[ptr_im], %[off]), %%xmm1")   /*  xmm1 = ti */ \
         __ASM_EMIT64("vmovss        0x00(%[" TR "], %[off]), %%xmm0")   /*  xmm0 = tr */ \
         __ASM_EMIT64("vmovss        0x00(%[" TI "], %[off]), %%xmm1")   /*  xmm1 = ti */ \
         __ASM_EMIT32("mov           %[" DSTR "], %[ptr_re]") \
@@ -515,7 +515,7 @@ namespace lsp
         __ASM_EMIT  ("vmulss        %%xmm7, %%xmm0, %%xmm0")            /*  xmm0 = r/R */ \
         __ASM_EMIT  ("vmulss        %%xmm7, %%xmm1, %%xmm1")            /*  xmm1 = i/R */ \
         __ASM_EMIT32("vmovss        %%xmm0, 0x00(%[ptr_re], %[off])") \
-        __ASM_EMIT32("vmovss        %%xmm1, 0x00(%[ptr_re], %[off])") \
+        __ASM_EMIT32("vmovss        %%xmm1, 0x00(%[ptr_im], %[off])") \
         __ASM_EMIT64("vmovss        %%xmm0, 0x00(%[" DSTR "], %[off])") \
         __ASM_EMIT64("vmovss        %%xmm1, 0x00(%[" DSTI "], %[off])") \
         __ASM_EMIT  ("add           $0x04, %[off]") \
@@ -745,10 +745,9 @@ namespace lsp
         __ASM_EMIT  ("vmovups       %%ymm1, 0x20(%[" DST "_re], %[off])") \
         __ASM_EMIT  ("vmovups       %%ymm2, 0x00(%[" DST "_im], %[off])") \
         __ASM_EMIT  ("vmovups       %%ymm3, 0x20(%[" DST "_im], %[off])") \
-        __ASM_EMIT  ("add           $0x40, %[off]") \
         __ASM_EMIT32("subl          $16, %[count]") \
         __ASM_EMIT64("sub           $16, %[count]") \
-        __ASM_EMIT  ("jae           1b") \
+        __ASM_EMIT  ("add           $0x40, %[off]") \
         __ASM_EMIT  ("4:") \
         /* 8x block */ \
         __ASM_EMIT32("addl          $8, %[count]") \

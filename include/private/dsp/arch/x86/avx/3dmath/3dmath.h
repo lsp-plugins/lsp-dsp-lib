@@ -149,7 +149,7 @@ namespace lsp
             M[12]       = 0.0f;
             M[13]       = 0.0f;
             M[14]       = 0.0f;
-            M[15]       = 0.0f;
+            M[15]       = 1.0f;
         }
 
     } /* namespace avx */

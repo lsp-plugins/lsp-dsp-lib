@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 28 окт. 2023 г.
@@ -162,7 +162,8 @@ namespace lsp
                 OP_VV_CORE("dst", "dst", "src", "vadd")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -175,7 +176,8 @@ namespace lsp
                 OP_VV_CORE("dst", "dst", "src", "vsub")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -188,7 +190,8 @@ namespace lsp
                 OP_VV_CORE("dst", "src", "dst", "vsub")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -201,7 +204,8 @@ namespace lsp
                 OP_VV_CORE("dst", "dst", "src", "vmul")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -214,7 +218,8 @@ namespace lsp
                 OP_VV_CORE("dst", "dst", "src", "vdiv")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -227,7 +232,8 @@ namespace lsp
                 OP_VV_CORE("dst", "src", "dst", "vdiv")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -240,7 +246,8 @@ namespace lsp
                 OP_VV_CORE("dst", "src1", "src2", "vadd")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src1] "r" (src1), [src2] "r" (src2)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -253,7 +260,8 @@ namespace lsp
                 OP_VV_CORE("dst", "src1", "src2", "vsub")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src1] "r" (src1), [src2] "r" (src2)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -266,7 +274,8 @@ namespace lsp
                 OP_VV_CORE("dst", "src1", "src2", "vmul")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src1] "r" (src1), [src2] "r" (src2)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -279,7 +288,8 @@ namespace lsp
                 OP_VV_CORE("dst", "src1", "src2", "vdiv")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src1] "r" (src1), [src2] "r" (src2)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -387,7 +397,8 @@ namespace lsp
                 FMOD_VV_CORE("dst", "dst", "src")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5"
             );
         }
@@ -400,7 +411,8 @@ namespace lsp
                 FMOD_VV_CORE("dst", "src", "dst")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5"
             );
         }
@@ -413,7 +425,8 @@ namespace lsp
                 FMOD_VV_CORE("dst", "src1", "src2")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src1] "r" (src1), [src2] "r" (src2)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5"
             );
         }

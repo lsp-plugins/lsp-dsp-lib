@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -540,7 +540,7 @@ namespace lsp
             M[12]       = 0.0f;
             M[13]       = 0.0f;
             M[14]       = 0.0f;
-            M[15]       = 0.0f;
+            M[15]       = 1.0f;
         }
 
         void init_matrix3d_frustum(matrix3d_t *m, float left, float right, float bottom, float top, float znear, float zfar)
@@ -2653,7 +2653,7 @@ namespace lsp
                 v->dw       = 0.0f;
             }
         }
-    }
-}
+    } /* namespace generic */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_3DMATH_H_ */

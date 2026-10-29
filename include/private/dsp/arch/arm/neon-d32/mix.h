@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -32,6 +32,9 @@ namespace lsp
     {
         void mix2(float *a, const float *b, float k1, float k2, size_t count)
         {
+            register float temp_k1 __asm__("s0") = k1;
+            register float temp_k2 __asm__("s1") = k2;
+
             ARCH_ARM_ASM(
                 __ASM_EMIT("vdup.32     q13, %y[k1]")
                 __ASM_EMIT("vdup.32     q15, %y[k2]")
@@ -92,7 +95,7 @@ namespace lsp
                 __ASM_EMIT("8:")
                 : [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count),
-                  [k1] "+t" (k1), [k2] "+t" (k2)
+                  [k1] "+t" (temp_k1), [k2] "+t" (temp_k2)
                 :
                 : "cc", "memory",
                   "q2", "q3",
@@ -104,6 +107,9 @@ namespace lsp
 
         void mix_copy2(float *dst, const float *a, const float *b, float k1, float k2, size_t count)
         {
+            register float temp_k1 __asm__("s0") = k1;
+            register float temp_k2 __asm__("s1") = k2;
+
             ARCH_ARM_ASM(
                 __ASM_EMIT("vdup.32     q13, %y[k1]")
                 __ASM_EMIT("vdup.32     q15, %y[k2]")
@@ -164,7 +170,7 @@ namespace lsp
                 __ASM_EMIT("8:")
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count),
-                  [k1] "+t" (k1), [k2] "+t" (k2)
+                  [k1] "+t" (temp_k1), [k2] "+t" (temp_k2)
                 :
                 : "cc", "memory",
                   "q2", "q3",
@@ -176,6 +182,9 @@ namespace lsp
 
         void mix_add2(float *dst, const float *a, const float *b, float k1, float k2, size_t count)
         {
+            register float temp_k1 __asm__("s0") = k1;
+            register float temp_k2 __asm__("s1") = k2;
+
             ARCH_ARM_ASM(
                 __ASM_EMIT("vdup.32     q13, %y[k1]")
                 __ASM_EMIT("vdup.32     q15, %y[k2]")
@@ -240,7 +249,7 @@ namespace lsp
                 __ASM_EMIT("8:")
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
                   [count] "+r" (count),
-                  [k1] "+t" (k1), [k2] "+t" (k2)
+                  [k1] "+t" (temp_k1), [k2] "+t" (temp_k2)
                 :
                 : "cc", "memory",
                   "q2", "q3",
@@ -252,6 +261,10 @@ namespace lsp
 
         void mix3(float *a, const float *b, const float *c, float k1, float k2, float k3, size_t count)
         {
+            register float temp_k1 __asm__("s0") = k1;
+            register float temp_k2 __asm__("s1") = k2;
+            register float temp_k3 __asm__("s2") = k3;
+
             ARCH_ARM_ASM(
                 __ASM_EMIT("vdup.32     q13, %y[k1]")
                 __ASM_EMIT("vdup.32     q14, %y[k2]")
@@ -323,7 +336,7 @@ namespace lsp
                 __ASM_EMIT("8:")
                 : [a] "+r" (a), [b] "+r" (b), [c] "+r" (c),
                   [count] "+r" (count),
-                  [k1] "+t" (k1), [k2] "+t" (k2), [k3] "+t" (k3)
+                  [k1] "+t" (temp_k1), [k2] "+t" (temp_k2), [k3] "+t" (temp_k3)
                 :
                 : "cc", "memory",
                   "q3",
@@ -335,6 +348,10 @@ namespace lsp
 
         void mix_copy3(float *dst, const float *a, const float *b, const float *c, float k1, float k2, float k3, size_t count)
         {
+            register float temp_k1 __asm__("s0") = k1;
+            register float temp_k2 __asm__("s1") = k2;
+            register float temp_k3 __asm__("s2") = k3;
+
             ARCH_ARM_ASM(
                 __ASM_EMIT("vdup.32     q13, %y[k1]")
                 __ASM_EMIT("vdup.32     q14, %y[k2]")
@@ -406,7 +423,7 @@ namespace lsp
                 __ASM_EMIT("8:")
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c),
                   [count] "+r" (count),
-                  [k1] "+t" (k1), [k2] "+t" (k2), [k3] "+t" (k3)
+                  [k1] "+t" (temp_k1), [k2] "+t" (temp_k2), [k3] "+t" (temp_k3)
                 :
                 : "cc", "memory",
                   "q3",
@@ -418,6 +435,10 @@ namespace lsp
 
         void mix_add3(float *dst, const float *a, const float *b, const float *c, float k1, float k2, float k3, size_t count)
         {
+            register float temp_k1 __asm__("s0") = k1;
+            register float temp_k2 __asm__("s1") = k2;
+            register float temp_k3 __asm__("s2") = k3;
+
             ARCH_ARM_ASM(
                 __ASM_EMIT("vdup.32     q13, %y[k1]")
                 __ASM_EMIT("vdup.32     q14, %y[k2]")
@@ -493,16 +514,23 @@ namespace lsp
                 __ASM_EMIT("8:")
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c),
                   [count] "+r" (count),
-                  [k1] "+t" (k1), [k2] "+t" (k2), [k3] "+t" (k3)
+                  [k1] "+t" (temp_k1), [k2] "+t" (temp_k2), [k3] "+t" (temp_k3)
                 :
                 : "cc", "memory",
-                  "q3", "q4", "q5", "q6", "q7",
-                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+                  "q3",
+                  "q4", "q5", "q6", "q7",
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
             );
         }
 
         void mix4(float *a, const float *b, const float *c, const float *d, float k1, float k2, float k3, float k4, size_t count)
         {
+            register float temp_k1 __asm__("s0") = k1;
+            register float temp_k2 __asm__("s1") = k2;
+            register float temp_k3 __asm__("s2") = k3;
+            register float temp_k4 __asm__("s3") = k4;
+
             ARCH_ARM_ASM(
                 __ASM_EMIT("vdup.32     q12, %y[k1]")
                 __ASM_EMIT("vdup.32     q13, %y[k2]")
@@ -587,7 +615,7 @@ namespace lsp
                 __ASM_EMIT("8:")
                 : [a] "+r" (a), [b] "+r" (b), [c] "+r" (c), [d] "+r" (d),
                   [count] "+r" (count),
-                  [k1] "+t" (k1), [k2] "+t" (k2), [k3] "+t" (k3), [k4] "+t" (k4)
+                  [k1] "+t" (temp_k1), [k2] "+t" (temp_k2), [k3] "+t" (temp_k3), [k4] "+t" (temp_k4)
                 :
                 : "cc", "memory",
                   "q4", "q5", "q6", "q7",
@@ -599,6 +627,11 @@ namespace lsp
         void mix_copy4(float *dst, const float *a, const float *b, const float *c, const float *d,
                 float k1, float k2, float k3, float k4, size_t count)
         {
+            register float temp_k1 __asm__("s0") = k1;
+            register float temp_k2 __asm__("s1") = k2;
+            register float temp_k3 __asm__("s2") = k3;
+            register float temp_k4 __asm__("s3") = k4;
+
             ARCH_ARM_ASM(
                 __ASM_EMIT("vdup.32     q12, %y[k1]")
                 __ASM_EMIT("vdup.32     q13, %y[k2]")
@@ -683,7 +716,7 @@ namespace lsp
                 __ASM_EMIT("8:")
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c), [d] "+r" (d),
                   [count] "+r" (count),
-                  [k1] "+t" (k1), [k2] "+t" (k2), [k3] "+t" (k3), [k4] "+t" (k4)
+                  [k1] "+t" (temp_k1), [k2] "+t" (temp_k2), [k3] "+t" (temp_k3), [k4] "+t" (temp_k4)
                 :
                 : "cc", "memory",
                   "q4", "q5", "q6", "q7",
@@ -695,6 +728,11 @@ namespace lsp
         void mix_add4(float *dst, const float *a, const float *b, const float *c, const float *d,
                 float k1, float k2, float k3, float k4, size_t count)
         {
+            register float temp_k1 __asm__("s0") = k1;
+            register float temp_k2 __asm__("s1") = k2;
+            register float temp_k3 __asm__("s2") = k3;
+            register float temp_k4 __asm__("s3") = k4;
+
             ARCH_ARM_ASM(
                 __ASM_EMIT("vdup.32     q12, %y[k1]")
                 __ASM_EMIT("vdup.32     q13, %y[k2]")
@@ -783,7 +821,7 @@ namespace lsp
                 __ASM_EMIT("8:")
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b), [c] "+r" (c), [d] "+r" (d),
                   [count] "+r" (count),
-                  [k1] "+t" (k1), [k2] "+t" (k2), [k3] "+t" (k3), [k4] "+t" (k4)
+                  [k1] "+t" (temp_k1), [k2] "+t" (temp_k2), [k3] "+t" (temp_k3), [k4] "+t" (temp_k4)
                 :
                 : "cc", "memory",
                   "q4", "q5", "q6", "q7",

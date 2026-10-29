@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -708,7 +708,7 @@ namespace lsp
                 /* end */
                 __ASM_EMIT("4:")
                 __ASM_EMIT("movss       %%xmm0, 0x00(%[min])")
-                __ASM_EMIT("movss       %%xmm1, 0x00(%[max])")
+                __ASM_EMIT("movss       %%xmm2, 0x00(%[max])")
 
                 : [src] "+r" (src), [count] "+r" (count)
                 : [min] "r" (min), [max] "r" (max), [mask] "m" (minmax_const)

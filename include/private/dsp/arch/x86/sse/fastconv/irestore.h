@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -190,7 +190,7 @@ namespace lsp
                     : [tmp] "+r"(tmp), [dst] "+r"(dst), [n] "+r"(n), [k] "+r" (k)
                     : [wk] "r"(wk)
                     : "cc", "memory",
-                      "%xmm0", "%xmm5", "%xmm2", "%xmm3",
+                      "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                       "%xmm4", "%xmm5", "%xmm6", "%xmm7"
                 );
             }
@@ -215,7 +215,7 @@ namespace lsp
                 );
             }
         }
-    }
-}
+    } /* namespace sse */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_FASTCONV_IRESTORE_H_ */

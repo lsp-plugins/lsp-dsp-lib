@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 11 окт. 2020 г.
@@ -72,8 +72,8 @@ namespace lsp
                 __ASM_EMIT("stp         q4, q5, [%[dst], 0x40]")
                 __ASM_EMIT("stp         q6, q7, [%[dst], 0x60]")
                 __ASM_EMIT("subs        %[count], %[count], #32")
-                __ASM_EMIT("add         %[src], %[src], 0x80")
-                __ASM_EMIT("add         %[dst], %[dst], 0x80")
+                __ASM_EMIT("add         %[src], %[src], #0x80")
+                __ASM_EMIT("add         %[dst], %[dst], #0x80")
                 __ASM_EMIT("b.hs        1b")
 
                 // 16x blocks
@@ -93,8 +93,8 @@ namespace lsp
                 __ASM_EMIT("stp         q0, q1, [%[dst], 0x00]")
                 __ASM_EMIT("stp         q2, q3, [%[dst], 0x20]")
                 __ASM_EMIT("sub         %[count], %[count], #16")
-                __ASM_EMIT("add         %[src], %[src], 0x40")
-                __ASM_EMIT("add         %[dst], %[dst], 0x40")
+                __ASM_EMIT("add         %[src], %[src], #0x40")
+                __ASM_EMIT("add         %[dst], %[dst], #0x40")
 
                 // 8x blocks
                 __ASM_EMIT("4:")
@@ -107,8 +107,8 @@ namespace lsp
                 __ASM_EMIT("bit         v1.16b, v9.16b, v17.16b")
                 __ASM_EMIT("stp         q0, q1, [%[dst], 0x00]")
                 __ASM_EMIT("sub         %[count], %[count], #8")
-                __ASM_EMIT("add         %[src], %[src], 0x20")
-                __ASM_EMIT("add         %[dst], %[dst], 0x20")
+                __ASM_EMIT("add         %[src], %[src], #0x20")
+                __ASM_EMIT("add         %[dst], %[dst], #0x20")
 
                 // 4x blocks
                 __ASM_EMIT("6:")
@@ -119,8 +119,8 @@ namespace lsp
                 __ASM_EMIT("bit         v0.16b, v8.16b, v16.16b")   // v0   = B G R A
                 __ASM_EMIT("str         q0, [%[dst], 0x00]")
                 __ASM_EMIT("sub         %[count], %[count], #4")
-                __ASM_EMIT("add         %[src], %[src], 0x10")
-                __ASM_EMIT("add         %[dst], %[dst], 0x10")
+                __ASM_EMIT("add         %[src], %[src], #0x10")
+                __ASM_EMIT("add         %[dst], %[dst], #0x10")
 
                 // 1x blocks
                 __ASM_EMIT("8:")

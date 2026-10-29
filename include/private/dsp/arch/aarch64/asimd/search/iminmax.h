@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -305,6 +305,8 @@ namespace lsp
         __ASM_EMIT("eor         v0.16b, v0.16b, v0.16b")            /* v0       = imin[0..3] */ \
         __ASM_EMIT("eor         v8.16b, v8.16b, v8.16b")            /* v8       = imax[0..3] */ \
         __ASM_EMIT("cmp         %[count], #1") \
+        __ASM_EMIT("st1         {v0.d}[0], [%[" DST1 "]]")          /* sizeof(size_t) == 8 !!! */ \
+        __ASM_EMIT("st1         {v8.d}[0], [%[" DST2 "]]")          /* sizeof(size_t) == 8 !!! */ \
         __ASM_EMIT("b.lo        200f") \
         __ASM_EMIT("ld1r        {v4.4s}, [%[" SRC "]]")             /* v4       = vmin[0..3] */ \
         __ASM_EMIT("ldp         q16, q17, [%[mask], #0x00]")        /* v16, v17 = cind[0..7] */ \
@@ -462,14 +464,12 @@ namespace lsp
         __ASM_EMIT("b.ge        9b") \
         __ASM_EMIT("10:") \
         /* end */ \
-        __ASM_EMIT("200:") \
         __ASM_EMIT("st1         {v0.s}[0], [%[" DST1 "]]") \
-        __ASM_EMIT("st1         {v8.s}[0], [%[" DST2 "]]")
+        __ASM_EMIT("st1         {v8.s}[0], [%[" DST2 "]]") \
+        __ASM_EMIT("200:") \
 
         void minmax_index(const float *src, size_t count, size_t *min, size_t *max)
         {
-            *min    = 0;
-            *max    = 0;
             ARCH_AARCH64_ASM(
                 IOP_MINMAX_CORE("min", "max", "src", "fcmge", "bif", "fcmgt", "bit")
                 : [src] "+r" (src), [count] "+r" (count)
@@ -489,8 +489,6 @@ namespace lsp
 
         void abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max)
         {
-            *min    = 0;
-            *max    = 0;
             ARCH_AARCH64_ASM(
                 IOP_MINMAX_CORE("min", "max", "src", "facge", "bif", "facgt", "bit")
                 : [src] "+r" (src), [count] "+r" (count)
@@ -507,7 +505,7 @@ namespace lsp
                   "v30", "v31"
             );
         }
-    }
-}
+    } /* namespace asimd */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_SEARCH_IMINMAX_H_ */

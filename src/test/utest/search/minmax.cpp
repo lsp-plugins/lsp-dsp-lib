@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -26,6 +26,8 @@
 
 namespace lsp
 {
+    static constexpr float INVALID_VALUE   = 1e+16f;
+
     namespace generic
     {
         float   min(const float *src, size_t count);
@@ -155,7 +157,8 @@ UTEST_BEGIN("dsp.search", minmax)
                 src.randomize_sign();
 
                 // Call functions
-                float min1, min2, max1, max2;
+                float min1 = INVALID_VALUE, min2 = INVALID_VALUE;
+                float max1 = INVALID_VALUE, max2 = INVALID_VALUE;
                 func1(src, count, &min1, &max1);
                 func2(src, count, &min2, &max2);
 

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 8 окт. 2023 г.
@@ -160,8 +160,8 @@ namespace lsp
                 PROCESS_COMP_FULL_X8
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
-                __ASM_EMIT("add             %[src], %[src], 0x20")
-                __ASM_EMIT("add             %[dst], %[dst], 0x20")
+                __ASM_EMIT("add             %[src], %[src], #0x20")
+                __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("b.hs            1b")
                 __ASM_EMIT("2:")
                 // x4 block
@@ -171,8 +171,8 @@ namespace lsp
                 PROCESS_COMP_FULL_X4
                 __ASM_EMIT("sub             %[count], %[count], #4")
                 __ASM_EMIT("str             q0, [%[dst], #0x00]")
-                __ASM_EMIT("add             %[src], %[src], 0x10")
-                __ASM_EMIT("add             %[dst], %[dst], 0x10")
+                __ASM_EMIT("add             %[src], %[src], #0x10")
+                __ASM_EMIT("add             %[dst], %[dst], #0x10")
                 __ASM_EMIT("4:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("adds            %[count], %[count], #4")
@@ -237,8 +237,8 @@ namespace lsp
                 __ASM_EMIT("fmul            v0.4s, v0.4s, v2.4s")
                 __ASM_EMIT("fmul            v1.4s, v1.4s, v3.4s")
                 __ASM_EMIT("stp             q0, q1, [%[dst], #0x00]")
-                __ASM_EMIT("add             %[src], %[src], 0x20")
-                __ASM_EMIT("add             %[dst], %[dst], 0x20")
+                __ASM_EMIT("add             %[src], %[src], #0x20")
+                __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("b.hs            1b")
                 __ASM_EMIT("2:")
                 // x4 block
@@ -250,8 +250,8 @@ namespace lsp
                 __ASM_EMIT("sub             %[count], %[count], #4")
                 __ASM_EMIT("fmul            v0.4s, v0.4s, v2.4s")
                 __ASM_EMIT("str             q0, [%[dst], #0x00]")
-                __ASM_EMIT("add             %[src], %[src], 0x10")
-                __ASM_EMIT("add             %[dst], %[dst], 0x10")
+                __ASM_EMIT("add             %[src], %[src], #0x10")
+                __ASM_EMIT("add             %[dst], %[dst], #0x10")
                 __ASM_EMIT("4:")
                 // Tail: 1x-3x block
                 __ASM_EMIT("adds            %[count], %[count], #4")

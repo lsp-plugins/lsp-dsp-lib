@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -38,6 +38,7 @@ namespace lsp
             size_t items        = size_t(1) << (rank + 1);
             size_t bs           = items;
             size_t n            = bs >> 1;
+            IF_ARCH_I386(size_t tmp);
 
             // Iterate first cycle
             if (n > 4)
@@ -50,18 +51,15 @@ namespace lsp
 
                 ARCH_X86_ASM
                 (
-                    __ASM_EMIT("movaps      0x00(%[ak]), %%xmm6")       /* xmm6 = rA[i] */
-                    __ASM_EMIT("movaps      0x10(%[ak]), %%xmm7")       /* xmm7 = iA[i] */
+                    __ASM_EMIT32("mov       %[AK], %[wk]")
                     __ASM_EMIT("xorps       %%xmm5, %%xmm5")            /* xmm5 = 0 */
-                    :
-                    : [ak] "r"(ak)
-                    :
-                      "%xmm5", "%xmm6", "%xmm7"
-                );
+                    __ASM_EMIT32("movaps    0x00(%[wk]), %%xmm6")       /* xmm6 = rA[i] */
+                    __ASM_EMIT32("movaps    0x10(%[wk]), %%xmm7")       /* xmm7 = iA[i] */
+                    __ASM_EMIT64("movaps    0x00(%[ak]), %%xmm6")       /* xmm6 = rA[i] */
+                    __ASM_EMIT64("movaps    0x10(%[ak]), %%xmm7")       /* xmm7 = iA[i] */
+                    __ASM_EMIT32("mov       %[WK], %[wk]")
 
-                ARCH_X86_ASM
-                (
-        //                    __ASM_EMIT(".align 16")
+                    __ASM_EMIT(".p2align    4")
                     __ASM_EMIT("1:")
 
                     __ASM_EMIT("movups      0x00(%[src]), %%xmm0")      /* xmm0 = s[i] */
@@ -101,7 +99,9 @@ namespace lsp
                     __ASM_EMIT("2:")
 
                     : [a] "+r" (a), [b] "+r" (b), [src] "+r" (src), [k] "+r" (k)
-                    : [wk] "r"(wk)
+                      __IF_32(, [wk] "=&r" (tmp))
+                    : __IF_64([wk] "r" (wk), [ak] "r" (ak))
+                      __IF_32([WK] "m" (wk), [AK] "m" (ak))
                     : "cc", "memory",
                       "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                       "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -140,16 +140,14 @@ namespace lsp
 
                     ARCH_X86_ASM
                     (
-                        __ASM_EMIT("movaps      0x00(%[ak]), %%xmm6")       /* xmm6 = rA[i] */
-                        __ASM_EMIT("movaps      0x10(%[ak]), %%xmm7")       /* xmm7 = iA[i] */
-                        :
-                        : [ak] "r"(ak)
-                        : "%xmm6", "%xmm7"
-                    );
+                        __ASM_EMIT32("mov       %[AK], %[wk]")
+                        __ASM_EMIT32("movaps    0x00(%[wk]), %%xmm6")       /* xmm6 = rA[i] */
+                        __ASM_EMIT32("movaps    0x10(%[wk]), %%xmm7")       /* xmm7 = iA[i] */
+                        __ASM_EMIT64("movaps    0x00(%[ak]), %%xmm6")       /* xmm6 = rA[i] */
+                        __ASM_EMIT64("movaps    0x10(%[ak]), %%xmm7")       /* xmm7 = iA[i] */
+                        __ASM_EMIT32("mov       %[WK], %[wk]")
 
-                    ARCH_X86_ASM
-                    (
-        //                        __ASM_EMIT(".align 16")
+                        __ASM_EMIT(".p2align    4")
                         __ASM_EMIT("1:")
 
                         __ASM_EMIT("movups      0x00(%[a]), %%xmm0")        /* xmm0 = ra[i] */
@@ -199,7 +197,9 @@ namespace lsp
                         __ASM_EMIT("2:")
 
                         : [a] "+r" (a), [b] "+r" (b), [k] "+r" (k)
-                        : [wk] "r"(wk)
+                          __IF_32(, [wk] "=&r" (tmp))
+                        : __IF_64([wk] "r" (wk), [ak] "r" (ak))
+                          __IF_32([WK] "m" (wk), [AK] "m" (ak))
                         : "cc", "memory",
                           "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                           "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -212,7 +212,7 @@ namespace lsp
 
             ARCH_X86_ASM
             (
-        //                __ASM_EMIT(".align 16")
+                __ASM_EMIT(".p2align    4")
                 __ASM_EMIT("1:")
 
                 __ASM_EMIT("movups      0x00(%[dst]), %%xmm0")      /* xmm0 = r0 r1 r2 r3 */
@@ -282,6 +282,7 @@ namespace lsp
             size_t items        = size_t(1) << (rank + 1);
             size_t bs           = items;
             size_t n            = bs >> 1;
+            IF_ARCH_I386(size_t tmp);
 
             // Iterate first cycle
             if (n > 4)
@@ -305,7 +306,15 @@ namespace lsp
 
                 ARCH_X86_ASM
                 (
-        //                    __ASM_EMIT(".align 16")
+                    __ASM_EMIT32("mov       %[AK], %[wk]")
+                    __ASM_EMIT("xorps       %%xmm5, %%xmm5")            /* xmm5 = 0 */
+                    __ASM_EMIT32("movaps    0x00(%[wk]), %%xmm6")       /* xmm6 = rA[i] */
+                    __ASM_EMIT32("movaps    0x10(%[wk]), %%xmm7")       /* xmm7 = iA[i] */
+                    __ASM_EMIT64("movaps    0x00(%[ak]), %%xmm6")       /* xmm6 = rA[i] */
+                    __ASM_EMIT64("movaps    0x10(%[ak]), %%xmm7")       /* xmm7 = iA[i] */
+                    __ASM_EMIT32("mov       %[WK], %[wk]")
+
+                    __ASM_EMIT(".p2align    4")
                     __ASM_EMIT("1:")
 
                     __ASM_EMIT("movups      0x00(%[src]), %%xmm0")      /* xmm0 = s[i] */
@@ -347,7 +356,9 @@ namespace lsp
                     __ASM_EMIT("2:")
 
                     : [a] "+r" (a), [b] "+r" (b), [src] "+r" (src), [k] "+r" (k)
-                    : [wk] "r" (wk)
+                      __IF_32(, [wk] "=&r" (tmp))
+                    : __IF_64([wk] "r" (wk), [ak] "r" (ak))
+                      __IF_32([WK] "m" (wk), [AK] "m" (ak))
                     : "cc", "memory",
                       "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                       "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -386,15 +397,14 @@ namespace lsp
 
                     ARCH_X86_ASM
                     (
-                        __ASM_EMIT("movaps      0x00(%[ak]), %%xmm6")       /* xmm6 = rA[i] */
-                        __ASM_EMIT("movaps      0x10(%[ak]), %%xmm7")       /* xmm7 = iA[i] */
-                        :
-                        : [ak] "r"(ak)
-                        : "%xmm6", "%xmm7"
-                    );
+                        __ASM_EMIT32("mov       %[AK], %[wk]")
+                        __ASM_EMIT32("movaps    0x00(%[wk]), %%xmm6")       /* xmm6 = rA[i] */
+                        __ASM_EMIT32("movaps    0x10(%[wk]), %%xmm7")       /* xmm7 = iA[i] */
+                        __ASM_EMIT64("movaps    0x00(%[ak]), %%xmm6")       /* xmm6 = rA[i] */
+                        __ASM_EMIT64("movaps    0x10(%[ak]), %%xmm7")       /* xmm7 = iA[i] */
+                        __ASM_EMIT32("mov       %[WK], %[wk]")
 
-                    ARCH_X86_ASM
-                    (
+                        __ASM_EMIT(".p2align    4")
                         __ASM_EMIT("1:")
 
                         __ASM_EMIT("movups      0x00(%[a]), %%xmm0")        /* xmm0 = ra[i] */
@@ -444,7 +454,9 @@ namespace lsp
                         __ASM_EMIT("2:")
 
                         : [a] "+r" (a), [b] "+r" (b), [k] "+r" (k)
-                        : [wk] "r"(wk)
+                          __IF_32(, [wk] "=&r" (tmp))
+                        : __IF_64([wk] "r" (wk), [ak] "r" (ak))
+                          __IF_32([WK] "m" (wk), [AK] "m" (ak))
                         : "cc", "memory",
                           "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                           "%xmm4", "%xmm5", "%xmm6", "%xmm7"
@@ -455,7 +467,7 @@ namespace lsp
                 wk     -= 8;
             }
         }
-    }
-}
+    } /* namespace sse */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_FASTCONV_PARSE_H_ */

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2022 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2022 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 9 сент. 2022 г.
@@ -698,7 +698,7 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("beq             10f")
                 __ASM_EMIT("st1             {v0.d}[0], [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x08")
+                __ASM_EMIT("add             %[dst], %[dst], #0x08")
                 __ASM_EMIT("10:")
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("beq             12f")

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -110,7 +110,7 @@ namespace lsp
             __ASM_EMIT("add             $3, %[count]") \
             __ASM_EMIT("jl              6f") \
             __ASM_EMIT("5:") \
-            __ASM_EMIT("movss           0x00(%[src]), %%xmm3") \
+            __ASM_EMIT("vmovss          0x00(%[src]), %%xmm3") \
             __ASM_EMIT(SEL("", "vandps  %%xmm6, %%xmm3, %%xmm3")) \
             __ASM_EMIT("vcmpps          " COND ", %%xmm1, %%xmm3, %%xmm4") \
             __ASM_EMIT("vpblendvb       %%xmm4, %%xmm2, %%xmm0, %%xmm0") \
@@ -208,6 +208,8 @@ namespace lsp
             __ASM_EMIT("vpxor           %%ymm0, %%ymm0, %%ymm0")    /* imin */ \
             __ASM_EMIT("vpxor           %%ymm2, %%ymm2, %%ymm2")    /* imax */ \
             __ASM_EMIT("test            %[count], %[count]") \
+            __ASM_EMIT64("vmovd         %%xmm0, 0x04(%[min])")      /* sizeof(size_t) == 8 !!! */ \
+            __ASM_EMIT64("vmovd         %%xmm2, 0x04(%[max])")      /* sizeof(size_t) == 8 !!! */ \
             __ASM_EMIT("jz              6f") \
             /* 8x block */ \
             __ASM_EMIT("vbroadcastss    0x00(%[src]), %%ymm1")      /* vmin */ \
@@ -279,7 +281,7 @@ namespace lsp
             __ASM_EMIT("add             $3, %[count]") \
             __ASM_EMIT("jl              6f") \
             __ASM_EMIT("5:") \
-            __ASM_EMIT("movss           0x00(%[src]), %%xmm5") \
+            __ASM_EMIT("vmovss          0x00(%[src]), %%xmm5") \
             __ASM_EMIT(SEL("", "vandps  0x60 + %[INCR], %%xmm5, %%xmm5")) \
             __ASM_EMIT("vcmpps          $1, %%xmm1, %%xmm5, %%xmm6") /* cmpltps */ \
             __ASM_EMIT("vcmpps          $6, %%xmm3, %%xmm5, %%xmm7") /* cmpgtps */ \
@@ -293,13 +295,11 @@ namespace lsp
             __ASM_EMIT("jge             5b") \
             /* end */ \
             __ASM_EMIT("6:") \
-            __ASM_EMIT("movss           %%xmm0, (%[min])") \
-            __ASM_EMIT("movss           %%xmm2, (%[max])")
+            __ASM_EMIT("vmovd           %%xmm0, (%[min])") \
+            __ASM_EMIT("vmovd           %%xmm2, (%[max])")
 
         void minmax_index(const float *src, size_t count, size_t *min, size_t *max)
         {
-            *min = 0;
-            *max = 0;
             ARCH_X86_ASM(
                 IMINMAX2_CORE(SEL_NONE)
                 : [src] "+r" (src), [count] "+r" (count)
@@ -313,8 +313,6 @@ namespace lsp
 
          void abs_minmax_index(const float *src, size_t count, size_t *min, size_t *max)
          {
-             *min = 0;
-             *max = 0;
              ARCH_X86_ASM(
                  IMINMAX2_CORE(SEL_ABS)
                  : [src] "+r" (src), [count] "+r" (count)

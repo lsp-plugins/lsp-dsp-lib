@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -792,7 +792,7 @@ namespace lsp
                 __ASM_EMIT("add         $0x20, %[c]")
                 __ASM_EMIT("add         $0x20, %[d]")
                 __ASM_EMIT("add         $0x20, %[dst]")
-                __ASM_EMIT("sub         $8, %[count]")
+                __ASM_EMIT("subl        $8, %[count]")
                 __ASM_EMIT("jae         1b")
                 // 4x block
                 __ASM_EMIT("2:")
@@ -1055,7 +1055,7 @@ namespace lsp
             );
         }
     #endif
-    }
-}
+    } /* namespace sse */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_MIX_H_ */

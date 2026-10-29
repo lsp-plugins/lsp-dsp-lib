@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 19 окт. 2023 г.
@@ -123,7 +123,7 @@ UTEST_BEGIN("dsp.dynamics", uexpander_x1_gain)
                     UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
 
                     // Compare buffers
-                    if (!dst1.equals_absolute(dst2, 2e-4))
+                    if (!dst1.equals_relative(dst2, 2e-4))
                     {
                         src.dump("src ");
                         dst.dump("dst ");
@@ -157,7 +157,7 @@ UTEST_BEGIN("dsp.dynamics", uexpander_x1_gain)
                     UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
 
                     // Compare buffers
-                    if (!dst1.equals_absolute(dst2, 2e-4))
+                    if (!dst1.equals_relative(dst2, 2e-4))
                     {
                         src.dump("src ");
                         dst.dump("dst ");

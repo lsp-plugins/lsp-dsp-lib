@@ -303,7 +303,7 @@ namespace lsp
                 // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm6=d0[4], xmm7=d1[4]
                 __ASM_EMIT("mov                 $1, %[mask]")
                 __ASM_EMIT("vmovaps             %[X_MASK], %%xmm5")
-                __ASM_EMIT("xorps               %%xmm1, %%xmm1")
+                __ASM_EMIT("vxorps              %%xmm1, %%xmm1, %%xmm1")
                 __ASM_EMIT("vmovaps             %%xmm5, %[MASK]")
 
                 // Load delay buffer
@@ -432,7 +432,7 @@ namespace lsp
                 // xmm0=tmp, xmm1={s,s2[4]}, xmm2=p1[4], xmm3=p2[4], xmm5=mask[4], xmm6=d0[4], xmm7=d1[4]
                 __ASM_EMIT("mov                 $1, %[mask]")
                 __ASM_EMIT("vmovaps             %[X_MASK], %%xmm5")
-                __ASM_EMIT("xorps               %%xmm1, %%xmm1")
+                __ASM_EMIT("vxorps              %%xmm1, %%xmm1, %%xmm1")
 
                 // Load delay buffer
                 __ASM_EMIT("vmovaps             0x00(%[d]), %%xmm6")                                // xmm6     = d0

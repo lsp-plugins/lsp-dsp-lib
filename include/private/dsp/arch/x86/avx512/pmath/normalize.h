@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 27 окт. 2023 г.
@@ -501,9 +501,9 @@ namespace lsp
 
                 : [off] "=&r" (off), [count] "+r" (count)
                   __IF_64(, [count2] "=&r" (count2))
+                  __IF_32(, [count2] "=&m" (count2))
                 : [dst] "r" (dst), [src] "r" (src),
                   [MASK] "o" (normalize_const)
-                  __IF_32(, [count2] "m" (count2))
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"

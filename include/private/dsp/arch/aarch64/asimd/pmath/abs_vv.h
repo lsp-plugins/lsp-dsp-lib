@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -50,7 +50,6 @@ namespace lsp
                 __ASM_EMIT("fabs        v5.4s, v5.4s")
                 __ASM_EMIT("fabs        v6.4s, v6.4s")
                 __ASM_EMIT("fabs        v7.4s, v7.4s")
-                __ASM_EMIT("fabs        v8.4s, v8.4s")
                 __ASM_EMIT("stp         q0, q1, [%[dst], #0x00]")
                 __ASM_EMIT("stp         q2, q3, [%[dst], #0x20]")
                 __ASM_EMIT("stp         q4, q5, [%[dst], #0x40]")
@@ -141,7 +140,6 @@ namespace lsp
                 __ASM_EMIT("fabs        v5.4s, v5.4s")
                 __ASM_EMIT("fabs        v6.4s, v6.4s")
                 __ASM_EMIT("fabs        v7.4s, v7.4s")
-                __ASM_EMIT("fabs        v8.4s, v8.4s")
                 __ASM_EMIT("stp         q0, q1, [%[dst], #0x00]")
                 __ASM_EMIT("stp         q2, q3, [%[dst], #0x20]")
                 __ASM_EMIT("stp         q4, q5, [%[dst], #0x40]")

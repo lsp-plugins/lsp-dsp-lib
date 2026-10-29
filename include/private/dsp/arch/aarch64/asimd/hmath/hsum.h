@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -32,7 +32,7 @@ namespace lsp
     {
         float h_sum(const float *src, size_t count)
         {
-            IF_ARCH_AARCH64(float res);
+            IF_ARCH_AARCH64(register float res __asm__("s0"));
             ARCH_AARCH64_ASM
             (
                 __ASM_EMIT("eor         v0.16b, v0.16b, v0.16b")
@@ -112,7 +112,7 @@ namespace lsp
 
         float h_sqr_sum(const float *src, size_t count)
         {
-            IF_ARCH_AARCH64(float res);
+            IF_ARCH_AARCH64(register float res __asm__("s0"));
             ARCH_AARCH64_ASM
             (
                 __ASM_EMIT("eor         v0.16b, v0.16b, v0.16b")
@@ -192,7 +192,7 @@ namespace lsp
 
         float h_abs_sum(const float *src, size_t count)
         {
-            IF_ARCH_AARCH64(float res);
+            IF_ARCH_AARCH64(register float res __asm__("s0"));
             ARCH_AARCH64_ASM
             (
                 __ASM_EMIT("eor         v0.16b, v0.16b, v0.16b")
@@ -283,7 +283,7 @@ namespace lsp
 
             return res;
         }
-    }
-}
+    } /* namespace asimd */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_HMATH_HSUM_H_ */

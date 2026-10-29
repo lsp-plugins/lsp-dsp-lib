@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 24 окт. 2023 г.
@@ -444,7 +444,8 @@ namespace lsp
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst),
                   [SIGN] "m" (abs_vv_const)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -458,7 +459,8 @@ namespace lsp
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src),
                   [SIGN] "m" (abs_vv_const)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }

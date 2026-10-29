@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 10 мар. 2024 г.
@@ -140,7 +140,6 @@ namespace lsp
                 __ASM_EMIT("sqrtss      %%xmm3, %%xmm7")                /* xmm7 = sqrtf(B) */
                 __ASM_EMIT("cmpss       $5, %[CORR_CC], %%xmm3")        /* xmm3 = B >= 1e-10f */
                 __ASM_EMIT("divss       %%xmm7, %%xmm0")                /* xmm2 = T/sqrtf(B) */
-                __ASM_EMIT32("mov       %[dst], %[ptr]")
                 __ASM_EMIT("andps       %%xmm3, %%xmm0")                /* xmm0 = (B >= 1e-10f) ? T/sqrtf(B) : 0 */
                 __ASM_EMIT("add         $0x04, %[a_head]")              /* ++a_head */
                 __ASM_EMIT("add         $0x04, %[b_head]")              /* ++b_head */
@@ -166,7 +165,7 @@ namespace lsp
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",
-                  "%xmm8", "%xmm9", "%xmm9", "%xmm10"
+                  "%xmm8", "%xmm9", "%xmm10", "%xmm11"
             );
         }
 

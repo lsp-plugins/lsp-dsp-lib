@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 1 окт. 2023 г.
@@ -1433,9 +1433,8 @@ namespace lsp
                 __ASM_EMIT("vcmpps          $5, %%ymm7, %%ymm0, %%ymm0")            /* ymm0  = [den >= threshold] */
                 __ASM_EMIT("vandps          %%ymm4, %%ymm0, %%ymm0")                /* ymm0  = (den >= threshold) ? nom / sqrt(den) : 0.0f */
                 __ASM_EMIT("vmovups         %%ymm0, 0x00(%[dst], %[off])")          /* dst[0]  = v0 v1 v2 v3 v4 v5 v6 v7 */
-                __ASM_EMIT("add             $0x20, %[off]")
                 __ASM_EMIT("sub             $8, %[count]")                          /* count -= 8 */
-                __ASM_EMIT("jae             1b")
+                __ASM_EMIT("add             $0x20, %[off]")
                 /* x4 block */
                 __ASM_EMIT("4:")
                 __ASM_EMIT("add             $4, %[count]")                          /* count += 4 */
@@ -1461,8 +1460,8 @@ namespace lsp
                 __ASM_EMIT("vcmpps          $5, %%xmm7, %%xmm0, %%xmm0")            /* xmm0  = [den >= threshold] */
                 __ASM_EMIT("vandps          %%xmm4, %%xmm0, %%xmm0")                /* xmm0  = (den >= threshold) ? nom / sqrt(den) : 0.0f */
                 __ASM_EMIT("vmovups         %%xmm0, 0x00(%[dst], %[off])")          /* dst[0]  = v0 v1 v2 v3 v4 v5 v6 v7 */
-                __ASM_EMIT("add             $0x10, %[off]")
                 __ASM_EMIT("sub             $4, %[count]")                          /* count -= 8 */
+                __ASM_EMIT("add             $0x10, %[off]")
                 /* x1 blocks */
                 __ASM_EMIT("6:")
                 __ASM_EMIT("add             $3, %[count]")                          /* count += 3 */
@@ -1613,7 +1612,8 @@ namespace lsp
                   [MASK] "o" (pcomplex_mod_kmask)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+                  "%k4"
             );
         }
 
@@ -1630,7 +1630,8 @@ namespace lsp
                   [MASK] "o" (pcomplex_mod_kmask)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+                  "%k4"
             );
         }
 

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -183,8 +183,8 @@ namespace lsp
                 // Apply values to axes
                 __ASM_EMIT("movaps      %%xmm5, %%xmm3")                // xmm3 = log(abs(v*zero)), xmm5=log(abs(v*zero))
                 __ASM_EMIT("movss       (%[x]), %%xmm4")                // xmm4 = x
-                __ASM_EMIT("mulps       %%xmm1, %%xmm3")                // xmm3 = log(abs(v*zero)) * norm_x
-                __ASM_EMIT("addps       %%xmm3, %%xmm4")                // xmm4 = x + log(abs(v*zero)) * norm_x
+                __ASM_EMIT("mulss       %%xmm1, %%xmm3")                // xmm3 = log(abs(v*zero)) * norm_x
+                __ASM_EMIT("addss       %%xmm3, %%xmm4")                // xmm4 = x + log(abs(v*zero)) * norm_x
                 __ASM_EMIT("movss       %%xmm4, (%[x])")
                 __ASM_EMIT("add         $0x04, %[x]")
                 __ASM_EMIT("dec         %[count]")
@@ -195,7 +195,8 @@ namespace lsp
                 : [v] "+r" (v), [x] "+r" (x), [count] "+r" (count)
                 : [zero] "m" (zero), [norm_x] "m" (norm_x),
                   [ILOG] "r" (LOG_IARGS)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -337,10 +338,10 @@ namespace lsp
                 __ASM_EMIT("movaps      %%xmm5, %%xmm3")                // xmm3 = log(abs(v*zero)), xmm5=log(abs(v*zero))
                 __ASM_EMIT("movss       (%[x]), %%xmm4")                // xmm4 = x
                 __ASM_EMIT("movss       (%[y]), %%xmm6")                // xmm6 = y
-                __ASM_EMIT("mulps       %%xmm1, %%xmm3")                // xmm3 = log(abs(v*zero)) * norm_x
-                __ASM_EMIT("mulps       %%xmm2, %%xmm5")                // xmm5 = log(abs(v*zero)) * norm_y
-                __ASM_EMIT("addps       %%xmm3, %%xmm4")                // xmm4 = x + log(abs(v*zero)) * norm_x
-                __ASM_EMIT("addps       %%xmm5, %%xmm6")                // xmm6 = y + log(abs(v*zero)) * norm_y
+                __ASM_EMIT("mulss       %%xmm1, %%xmm3")                // xmm3 = log(abs(v*zero)) * norm_x
+                __ASM_EMIT("mulss       %%xmm2, %%xmm5")                // xmm5 = log(abs(v*zero)) * norm_y
+                __ASM_EMIT("addss       %%xmm3, %%xmm4")                // xmm4 = x + log(abs(v*zero)) * norm_x
+                __ASM_EMIT("addss       %%xmm5, %%xmm6")                // xmm6 = y + log(abs(v*zero)) * norm_y
                 __ASM_EMIT("movss       %%xmm4, (%[x])")
                 __ASM_EMIT("movss       %%xmm6, (%[y])")
                 __ASM_EMIT("add         $0x04, %[x]")
@@ -354,11 +355,12 @@ namespace lsp
                   [count] "+r" (count)
                 : [zero] "m" (zero), [norm_x] "m" (norm_x), [norm_y] "m" (norm_y),
                   [ILOG] "r" (LOG_IARGS)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
-    }
-}
+    } /* namespace sse2 */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE2_GRAPHICS_AXIS_H_ */

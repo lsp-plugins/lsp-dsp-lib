@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -111,12 +111,11 @@ namespace lsp
         __ASM_EMIT(OP "         q0, q0, q8")  \
         __ASM_EMIT("vext.32     q8, q0, q0, #1") \
         __ASM_EMIT(OP "         q0, q0, q8") \
-        __ASM_EMIT("vmov        %[res], s0") \
         __ASM_EMIT("12:")
 
         float min(const float *src, size_t count)
         {
-            float res = 0.0f;
+            register float res __asm__("s0") = 0.0f;
             ARCH_ARM_ASM(
                 MINMAX_SEARCH_CORE("vmin.f32", SEL_NONE)
                 : [count] "+r" (count), [src] "+r" (src),
@@ -124,14 +123,15 @@ namespace lsp
                 :
                 : "cc",
                   "q1",
-                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
             );
             return res;
         }
 
         float max(const float *src, size_t count)
         {
-            float res = 0.0f;
+            register float res __asm__("s0") = 0.0f;
             ARCH_ARM_ASM(
                 MINMAX_SEARCH_CORE("vmax.f32", SEL_NONE)
                 : [count] "+r" (count), [src] "+r" (src),
@@ -139,14 +139,15 @@ namespace lsp
                 :
                 : "cc",
                   "q1",
-                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
             );
             return res;
         }
 
         float abs_min(const float *src, size_t count)
         {
-            float res = 0.0f;
+            register float res __asm__("s0") = 0.0f;
             ARCH_ARM_ASM(
                 MINMAX_SEARCH_CORE("vmin.f32", SEL_ABS)
                 : [count] "+r" (count), [src] "+r" (src),
@@ -154,14 +155,15 @@ namespace lsp
                 :
                 : "cc",
                   "q1",
-                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
             );
             return res;
         }
 
         float abs_max(const float *src, size_t count)
         {
-            float res = 0.0f;
+            register float res __asm__("s0") = 0.0f;
             ARCH_ARM_ASM(
                 MINMAX_SEARCH_CORE("vmax.f32", SEL_ABS)
                 : [count] "+r" (count), [src] "+r" (src),
@@ -169,7 +171,8 @@ namespace lsp
                 :
                 : "cc",
                   "q1",
-                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
             );
             return res;
         }
@@ -261,30 +264,34 @@ namespace lsp
 
         float sign_min(const float *src, size_t count)
         {
-            float res = 0.0f;
+            register float res __asm__("s0") = 0.0f;
             ARCH_ARM_ASM(
                 SIGN_SEARCH_CORE("vclt.f32")
                 : [count] "+r" (count), [src] "+r" (src),
                   [res] "+t" (res)
                 :
                 : "cc",
-                  "q1", "q2", "q3", "q4", "q5",
-                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+                  "q1", "q2", "q3",
+                  "q4", "q5",
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
             );
             return res;
         }
 
         float sign_max(const float *src, size_t count)
         {
-            float res = 0.0f;
+            register float res __asm__("s0") = 0.0f;
             ARCH_ARM_ASM(
                 SIGN_SEARCH_CORE("vcgt.f32")
                 : [count] "+r" (count), [src] "+r" (src),
                   [res] "+t" (res)
                 :
                 : "cc",
-                  "q1", "q2", "q3", "q4", "q5",
-                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+                  "q1", "q2", "q3",
+                  "q4", "q5",
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
             );
             return res;
         }
@@ -400,9 +407,10 @@ namespace lsp
                 MINMAX2_SEARCH_CORE(SEL_NONE)
                 : [count] "+r" (count), [src] "+r" (src)
                 : [min] "r" (min), [max] "r" (max)
-                : "cc",
+                : "cc", "memory",
                   "q0", "q1",
-                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
             );
         }
 
@@ -412,9 +420,10 @@ namespace lsp
                 MINMAX2_SEARCH_CORE(SEL_ABS)
                 : [count] "+r" (count), [src] "+r" (src)
                 : [min] "r" (min), [max] "r" (max)
-                : "cc",
+                : "cc", "memory",
                   "q0", "q1",
-                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
             );
         }
 
@@ -538,9 +547,11 @@ namespace lsp
                 __ASM_EMIT("vst1.32     {d2[0]}, [%[max]]")
                 : [count] "+r" (count), [src] "+r" (src)
                 : [min] "r" (min), [max] "r" (max)
-                : "cc",
-                  "q1", "q2", "q3", "q4", "q5",
-                  "q8", "q9", "q10", "q11", "q12", "q13", "q14", "q15"
+                : "cc", "memory",
+                  "q0", "q1", "q2", "q3",
+                  "q4", "q5",
+                  "q8", "q9", "q10", "q11",
+                  "q12", "q13", "q14", "q15"
             );
         }
     } /* namespace neon_d32 */

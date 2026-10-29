@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 11 дек. 2024 г.
@@ -106,7 +106,7 @@ namespace lsp
                   [res] "=Yz" (result)
                 :
                 : "cc", "memory",
-                  "%xmm1"
+                  "%xmm1", "%xmm2"
             );
 
             return result;

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2022 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2022 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 9 сент. 2022 г.
@@ -123,10 +123,10 @@ namespace lsp
                 EFF_HSLA_HUE_CORE
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("st4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x40")
-                __ASM_EMIT("add             %[src], %[src], 0x20")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
+                __ASM_EMIT("add             %[src], %[src], #0x20")
                 __ASM_EMIT("st4             {v4.4s, v5.4s, v6.4s, v7.4s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x40")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("b.hs            1b")
 
                 //-----------------------------------------------------------------
@@ -152,12 +152,12 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #4")
                 __ASM_EMIT("b.eq            10f")
                 __ASM_EMIT("st4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x40")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("10:")
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("b.eq            12f")
                 __ASM_EMIT("st4             {v4.2s, v5.2s, v6.2s, v7.2s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x20")
+                __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("12:")
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("b.eq            14f")
@@ -248,10 +248,10 @@ namespace lsp
                 EFF_HSLA_SAT_CORE
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("st4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x40")
-                __ASM_EMIT("add             %[src], %[src], 0x20")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
+                __ASM_EMIT("add             %[src], %[src], #0x20")
                 __ASM_EMIT("st4             {v4.4s, v5.4s, v6.4s, v7.4s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x40")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("b.hs            1b")
 
                 //-----------------------------------------------------------------
@@ -277,12 +277,12 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #4")
                 __ASM_EMIT("b.eq            10f")
                 __ASM_EMIT("st4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x40")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("10:")
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("b.eq            12f")
                 __ASM_EMIT("st4             {v4.2s, v5.2s, v6.2s, v7.2s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x20")
+                __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("12:")
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("b.eq            14f")
@@ -370,10 +370,10 @@ namespace lsp
                 EFF_HSLA_LIGHT_CORE
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("st4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x40")
-                __ASM_EMIT("add             %[src], %[src], 0x20")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
+                __ASM_EMIT("add             %[src], %[src], #0x20")
                 __ASM_EMIT("st4             {v4.4s, v5.4s, v6.4s, v7.4s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x40")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("b.hs            1b")
 
                 //-----------------------------------------------------------------
@@ -399,12 +399,12 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #4")
                 __ASM_EMIT("b.eq            10f")
                 __ASM_EMIT("st4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x40")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("10:")
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("b.eq            12f")
                 __ASM_EMIT("st4             {v4.2s, v5.2s, v6.2s, v7.2s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x20")
+                __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("12:")
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("b.eq            14f")
@@ -484,10 +484,10 @@ namespace lsp
                 EFF_HSLA_ALPHA_CORE
                 __ASM_EMIT("subs            %[count], %[count], #8")
                 __ASM_EMIT("st4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x40")
-                __ASM_EMIT("add             %[src], %[src], 0x20")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
+                __ASM_EMIT("add             %[src], %[src], #0x20")
                 __ASM_EMIT("st4             {v4.4s, v5.4s, v6.4s, v7.4s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x40")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("b.hs            1b")
 
                 //-----------------------------------------------------------------
@@ -513,12 +513,12 @@ namespace lsp
                 __ASM_EMIT("tst             %[count], #4")
                 __ASM_EMIT("b.eq            10f")
                 __ASM_EMIT("st4             {v0.4s, v1.4s, v2.4s, v3.4s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x40")
+                __ASM_EMIT("add             %[dst], %[dst], #0x40")
                 __ASM_EMIT("10:")
                 __ASM_EMIT("tst             %[count], #2")
                 __ASM_EMIT("b.eq            12f")
                 __ASM_EMIT("st4             {v4.2s, v5.2s, v6.2s, v7.2s}, [%[dst]]")
-                __ASM_EMIT("add             %[dst], %[dst], 0x20")
+                __ASM_EMIT("add             %[dst], %[dst], #0x20")
                 __ASM_EMIT("12:")
                 __ASM_EMIT("tst             %[count], #1")
                 __ASM_EMIT("b.eq            14f")

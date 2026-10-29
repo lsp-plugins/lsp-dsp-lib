@@ -459,14 +459,14 @@ namespace lsp
                 __ASM_EMIT("10:")
 
                 : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count),
-                  [mask] "=&r" (mask)
+                  [mask] "=&r" (mask),
+                  [X_F] "+m" (X_F),
+                  [X_DST] "+m" (X_DST),
+                  [X_COUNT] "+m" (X_COUNT)
                 : [f] "r" (f), [d] "r" (d),
                   [X_MASK] "m" (biquad_mask_const),
                   [MASK0] "m" (MASK0),
-                  [MASK1] "m" (MASK1),
-                  [X_F] "m" (X_F),
-                  [X_DST] "m" (X_DST),
-                  [X_COUNT] "m" (X_COUNT)
+                  [MASK1] "m" (MASK1)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7",

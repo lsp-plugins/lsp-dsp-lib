@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2023 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2023 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 20 сент. 2023 г.
@@ -165,7 +165,8 @@ namespace lsp
                 SQR_CORE("dst", "dst")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -178,7 +179,8 @@ namespace lsp
                 SQR_CORE("dst", "src")
                 : [off] "=&r" (off), [count] "+r" (count)
                 : [dst] "r" (dst), [src] "r" (src)
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                : "cc", "memory",
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }

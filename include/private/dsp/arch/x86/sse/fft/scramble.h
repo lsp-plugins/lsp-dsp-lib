@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -81,7 +81,7 @@ namespace lsp
                 __ASM_EMIT("shufps      $0xdd, %%xmm6, %%xmm3")     /* xmm3 = i1 i3 i5 i7 */
 
                 __ASM_EMIT("movaps      %%xmm0, %%xmm4")            /* xmm4 = r0 r2 r4 r6 */
-                __ASM_EMIT("movaps      %%xmm2, %%xmm6")            /* xmm5 = i0 i2 i4 i6 */
+                __ASM_EMIT("movaps      %%xmm2, %%xmm6")            /* xmm6 = i0 i2 i4 i6 */
                 __ASM_EMIT("addps       %%xmm1, %%xmm0")            /* xmm0 = r0+r1 r2+r3 r4+r5 r6+r7 = r0' r2' r4' r6' */
                 __ASM_EMIT("addps       %%xmm3, %%xmm2")            /* xmm2 = i0+i1 i2+i3 i4+i5 i6+i7 = i0' i2' i4' i6' */
                 __ASM_EMIT("subps       %%xmm1, %%xmm4")            /* xmm4 = r0-r1 r2-r3 r4-r5 r6-r7 = r1' r3' r5' r7' */
@@ -96,7 +96,7 @@ namespace lsp
                 __ASM_EMIT("shufps      $0x88, %%xmm6, %%xmm2")     /* xmm2 = i0' i4' i1' i5' */
 
                 __ASM_EMIT("movaps      %%xmm0, %%xmm4")            /* xmm4 = r0' r4' r1' r5' */
-                __ASM_EMIT("movaps      %%xmm2, %%xmm6")            /* xmm5 = i0' i4' i1' i5' */
+                __ASM_EMIT("movaps      %%xmm2, %%xmm6")            /* xmm6 = i0' i4' i1' i5' */
                 __ASM_EMIT("addps       %%xmm1, %%xmm0")            /* xmm0 = r0'+r2' r4'+r6' r1'+i3' r5'+i7' = r0" r4" r1" r5" */
                 __ASM_EMIT("addps       %%xmm3, %%xmm2")            /* xmm2 = i0'+i2' i4'+i6' i1'+r3' i5'+r7' = i0" i4" i3" i7" */
                 __ASM_EMIT("subps       %%xmm1, %%xmm4")            /* xmm4 = r0'-r2' r4'-r6' r1'-i3' r5'-i7' = r2" r6" r3" r7" */
@@ -128,7 +128,8 @@ namespace lsp
                 : [dst_re] "+r"(dst_re), [dst_im] "+r"(dst_im), [items] "+r"(items)
                 :
                 : "cc", "memory",
-                  "%xmm0", "%xmm1", "%xmm2"
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm6"
             );
         }
 
@@ -236,8 +237,8 @@ namespace lsp
                     : [dst_re] "+r" (dst_re), [dst_im] "+r"(dst_im), [index] "+r"(index)
                     : [src_re] "r"(src_re), [src_im] "r"(src_im), [regs] __ASM_ARG_RO(regs)
                     : "cc", "memory",
-                        "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-                        "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+                      "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                      "%xmm4", "%xmm5", "%xmm6", "%xmm7"
                 );
             }
         }
@@ -296,7 +297,7 @@ namespace lsp
                 __ASM_EMIT("shufps      $0xdd, %%xmm6, %%xmm3")     /* xmm3 = i1 i3 i5 i7 */
 
                 __ASM_EMIT("movaps      %%xmm0, %%xmm4")            /* xmm4 = r0 r2 r4 r6 */
-                __ASM_EMIT("movaps      %%xmm2, %%xmm6")            /* xmm5 = i0 i2 i4 i6 */
+                __ASM_EMIT("movaps      %%xmm2, %%xmm6")            /* xmm6 = i0 i2 i4 i6 */
                 __ASM_EMIT("addps       %%xmm1, %%xmm0")            /* xmm0 = r0+r1 r2+r3 r4+r5 r6+r7 = r0' r2' r4' r6' */
                 __ASM_EMIT("addps       %%xmm3, %%xmm2")            /* xmm2 = i0+i1 i2+i3 i4+i5 i6+i7 = i0' i2' i4' i6' */
                 __ASM_EMIT("subps       %%xmm1, %%xmm4")            /* xmm4 = r0-r1 r2-r3 r4-r5 r6-r7 = r1' r3' r5' r7' */
@@ -311,7 +312,7 @@ namespace lsp
                 __ASM_EMIT("shufps      $0x88, %%xmm6, %%xmm2")     /* xmm2 = i0' i4' i1' i5' */
 
                 __ASM_EMIT("movaps      %%xmm0, %%xmm4")            /* xmm4 = r0' r4' r1' r5' */
-                __ASM_EMIT("movaps      %%xmm2, %%xmm6")            /* xmm5 = i0' i4' i1' i5' */
+                __ASM_EMIT("movaps      %%xmm2, %%xmm6")            /* xmm6 = i0' i4' i1' i5' */
                 __ASM_EMIT("addps       %%xmm1, %%xmm0")            /* xmm0 = r0'+r2' r4'+r6' r1'+i3' r5'+i7' = r0" r4" r3" r7" */
                 __ASM_EMIT("addps       %%xmm3, %%xmm2")            /* xmm2 = i0'+i2' i4'+i6' i1'+i3' i5'+i7' = i0" i4" i1" i5" */
                 __ASM_EMIT("subps       %%xmm1, %%xmm4")            /* xmm4 = r0'-r2' r4'-r6' r1'-i3' r5'-i7' = r2" r6" r1" r5" */
@@ -343,7 +344,8 @@ namespace lsp
                 : [dst_re] "+r"(dst_re), [dst_im] "+r"(dst_im), [items] "+r"(items)
                 :
                 : "cc", "memory",
-                  "%xmm0", "%xmm1", "%xmm2"
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3",
+                  "%xmm4", "%xmm6"
             );
         }
 
@@ -456,8 +458,9 @@ namespace lsp
                 );
             }
         }
-    }
-}
+
+    } /* namespace sse */
+} /* namespace lsp */
 
 #undef FFT_SCRAMBLE_SELF_DIRECT_NAME
 #undef FFT_SCRAMBLE_SELF_REVERSE_NAME

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -43,7 +43,7 @@ namespace lsp
                 /* x8 blocks */ \
                 __ASM_EMIT32("subl              $8, %[np]") \
                 __ASM_EMIT64("sub               $8, %[np]") \
-                __ASM_EMIT64("jb                2f") \
+                __ASM_EMIT("jb                  2f") \
                 __ASM_EMIT("1:") \
                 __ASM_EMIT("vmovups             0x00(%[src]), %%ymm0")              /* ymm0 = a_re = re */ \
                 __ASM_EMIT("vmulps              %%ymm0, %%ymm7, %%ymm3")            /* ymm3 = x_im * re */ \
@@ -70,7 +70,8 @@ namespace lsp
                 : [dst] "+r" (dst), [src] "+r" (src), \
                   [off] "=&r" (off), [np] __ASM_ARG_RW(np) \
                 : [ak] "r" (ak), [wk] "r" (wk) \
-                : "%xmm0", "%xmm1", "%xmm2", "%xmm3", \
+                : "cc", "memory", \
+                  "%xmm0", "%xmm1", "%xmm2", "%xmm3", \
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7" \
             )
 
@@ -194,12 +195,12 @@ namespace lsp
 
         static inline void fastconv_direct_prepare_fma3(float *dst, const float *src, const float *ak, const float *wk, size_t np)
         {
-            FASTCONV_DIRECT_PREPARE_BODY(FMA_OFF);
+            FASTCONV_DIRECT_PREPARE_BODY(FMA_ON);
         }
 
         static inline void fastconv_reverse_prepare_fma3(float *dst, size_t nb)
         {
-            FASTCONV_REVERSE_PREPARE_BODY(FMA_OFF);
+            FASTCONV_REVERSE_PREPARE_BODY(FMA_ON);
         }
 
         static inline void fastconv_direct_unpack(float *dst, const float *src)
@@ -211,7 +212,8 @@ namespace lsp
                 __ASM_EMIT("vmovups         %%ymm1, 0x20(%[dst])")
                 :
                 : [dst] "r" (dst), [src] "r" (src)
-                : "%xmm0", "%xmm1"
+                : "memory",
+                  "%xmm0", "%xmm1"
             );
         }
 
@@ -298,7 +300,7 @@ namespace lsp
     #undef FASTCONV_REVERSE_PREPARE_BODY
     #undef FMA_OFF
     #undef FMA_ON
-    }
-}
+    } /* namespace avx */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX_FASTCONV_PREPARE_H_ */

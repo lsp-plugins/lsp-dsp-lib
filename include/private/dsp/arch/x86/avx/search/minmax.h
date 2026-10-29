@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2024 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2024 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -97,11 +97,11 @@ namespace lsp
 
         float min(const float *src, size_t count)
         {
-            float res = 0.0f;
+            IF_ARCH_X86(float res);
             ARCH_X86_ASM(
                 MINMAX_CORE("src", "vmin")
                 : [src] "+r" (src), [count] "+r" (count),
-                  [res] "+Yz" (res)
+                  [res] "=Yz" (res)
                 :
                 : "cc",
                   "%xmm1", "%xmm2", "%xmm3"
@@ -112,11 +112,11 @@ namespace lsp
 
         float max(const float *src, size_t count)
         {
-            float res = 0.0f;
+            IF_ARCH_X86(float res);
             ARCH_X86_ASM(
                 MINMAX_CORE("src", "vmax")
                 : [src] "+r" (src), [count] "+r" (count),
-                  [res] "+Yz" (res)
+                  [res] "=Yz" (res)
                 :
                 : "cc",
                   "%xmm1", "%xmm2", "%xmm3"
@@ -208,11 +208,11 @@ namespace lsp
 
         float abs_min(const float *src, size_t count)
         {
-            float res = 0.0f;
+            IF_ARCH_X86(float res);
             ARCH_X86_ASM(
                 AMINMAX_CORE("src", "vmin")
                 : [src] "+r" (src), [count] "+r" (count),
-                  [res] "+Yz" (res)
+                  [res] "=Yz" (res)
                 : [CC] "m" (minmax_const)
                 : "cc",
                   "%xmm1", "%xmm2",
@@ -224,11 +224,11 @@ namespace lsp
 
         float abs_max(const float *src, size_t count)
         {
-            float res = 0.0f;
+            IF_ARCH_X86(float res);
             ARCH_X86_ASM(
                 AMINMAX_CORE("src", "vmax")
                 : [src] "+r" (src), [count] "+r" (count),
-                  [res] "+Yz" (res)
+                  [res] "=Yz" (res)
                 : [CC] "m" (minmax_const)
                 : "cc",
                   "%xmm1", "%xmm2",
@@ -433,7 +433,7 @@ namespace lsp
                 : [min] "r" (min), [max] "r" (max),
                   [CC] "m" (minmax_const)
                 : "cc", "memory",
-                  "%xmm0", "%xmm1",
+                  "%xmm0", "%xmm1", "%xmm2",
                   "%xmm4", "%xmm5", "%xmm6", "%xmm7"
             );
         }
@@ -519,7 +519,7 @@ namespace lsp
 
         float sign_min(const float *src, size_t count)
         {
-            float res;
+            IF_ARCH_X86(float res);
             ARCH_X86_ASM(
                 SMINMAX_CORE("$1")
                 : [src] "+r" (src), [count] "+r" (count),
@@ -535,7 +535,7 @@ namespace lsp
 
         float sign_max(const float *src, size_t count)
         {
-            float res;
+            IF_ARCH_X86(float res);
             ARCH_X86_ASM(
                 SMINMAX_CORE("$6")
                 : [src] "+r" (src), [count] "+r" (count),
@@ -648,7 +648,7 @@ namespace lsp
                 /* end */
                 __ASM_EMIT("6:")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[min])")
-                __ASM_EMIT("vmovss          %%xmm1, 0x00(%[max])")
+                __ASM_EMIT("vmovss          %%xmm2, 0x00(%[max])")
                 : [src] "+r" (src), [count] "+r" (count)
                 : [min] "r" (min), [max] "r" (max),
                   [CC] "m" (minmax_const)

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -84,9 +84,7 @@ namespace lsp
         __ASM_EMIT("adds        %[count], %[count], #8") /* 16 - 8 */ \
         __ASM_EMIT("b.lt        6f") \
         __ASM_EMIT("ldp         q0, q1, [%[" SEL(DST, SRC) "], #0x00]") \
-        __ASM_EMIT("ldp         q2, q3, [%[" SEL(DST, SRC) "], #0x20]") \
         __ASM_EMIT("ldp         q16, q17, [%[" SEL(SRC, DST) "], #0x00]") \
-        __ASM_EMIT("ldp         q18, q19, [%[" SEL(SRC, DST) "], #0x20]") \
         __ASM_EMIT(OP "         v0.4s, v0.4s, v16.4s") \
         __ASM_EMIT(OP "         v1.4s, v1.4s, v17.4s") \
         __ASM_EMIT("stp         q0, q1, [%[" DST "], #0x00]") \
@@ -725,7 +723,7 @@ namespace lsp
 
     #undef OP_SDSEL
     #undef OP_SRSEL
-    }
-}
+    } /* namespace asimd */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_PMATH_OP_VV_H_ */

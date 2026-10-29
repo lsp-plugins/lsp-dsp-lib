@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -35,7 +35,7 @@ namespace lsp
             ARCH_AARCH64_ASM
             (
                 __ASM_EMIT("cmp         %[dst], %[src]")
-                __ASM_EMIT("b.eq        2000f")
+                __ASM_EMIT("b.eq        14f")
                 __ASM_EMIT("subs        %[count], %[count], #16")
                 __ASM_EMIT("b.lt        8f")
 
@@ -86,7 +86,7 @@ namespace lsp
 
                 /* 64x block */
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds        %[count], %[count], 64") // 128 - 64
+                __ASM_EMIT("adds        %[count], %[count], #64") // 128 - 64
                 __ASM_EMIT("b.lt        4f")
 
                 __ASM_EMIT("ldp         q0, q1, [%[src], #0x000]")
@@ -113,7 +113,7 @@ namespace lsp
 
                 /* 32x block */
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds        %[count], %[count], 32") // 64-32
+                __ASM_EMIT("adds        %[count], %[count], #32") // 64-32
                 __ASM_EMIT("b.lt        6f")
 
                 __ASM_EMIT("ldp         q0, q1, [%[src], #0x000]")
@@ -182,7 +182,8 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7"
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7"
             );
         }
 
@@ -246,7 +247,7 @@ namespace lsp
 
                 /* 64x block */
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds        %[count], %[count], 64") // 128 - 64
+                __ASM_EMIT("adds        %[count], %[count], #64") // 128 - 64
                 __ASM_EMIT("b.lt        4f")
 
                 __ASM_EMIT("ldp         q0, q1, [%[src], #0x000]")
@@ -273,7 +274,7 @@ namespace lsp
 
                 /* 32x block */
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds        %[count], %[count], 32") // 64-32
+                __ASM_EMIT("adds        %[count], %[count], #32") // 64-32
                 __ASM_EMIT("b.lt        6f")
 
                 __ASM_EMIT("ldp         q0, q1, [%[src], #0x000]")
@@ -394,7 +395,7 @@ namespace lsp
 
                 /* 64x block */
                 __ASM_EMIT("2:")
-                __ASM_EMIT("adds        %[count], %[count], 64") // 128 - 64
+                __ASM_EMIT("adds        %[count], %[count], #64") // 128 - 64
                 __ASM_EMIT("b.lt        4f")
 
                 __ASM_EMIT("sub         %[src], %[src], #0x100")
@@ -420,7 +421,7 @@ namespace lsp
 
                 /* 32x block */
                 __ASM_EMIT("4:")
-                __ASM_EMIT("adds        %[count], %[count], 32") // 64-32
+                __ASM_EMIT("adds        %[count], %[count], #32") // 64-32
                 __ASM_EMIT("b.lt        6f")
 
                 __ASM_EMIT("sub         %[src], %[src], #0x080")
@@ -487,7 +488,8 @@ namespace lsp
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
-                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7"
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7"
             );
         }
 
@@ -528,7 +530,7 @@ namespace lsp
         \
         /* 64x block */ \
         __ASM_EMIT("2:") \
-        __ASM_EMIT("adds        %[count], %[count], 64") /* 128 - 64 */ \
+        __ASM_EMIT("adds        %[count], %[count], #64") /* 128 - 64 */ \
         __ASM_EMIT("b.lt        4f") \
         \
         __ASM_EMIT("stp         q0, q1, [%[" DST "], #0x000]") \
@@ -545,7 +547,7 @@ namespace lsp
         \
         /* 32x block */ \
         __ASM_EMIT("4:") \
-        __ASM_EMIT("adds        %[count], %[count], 32") /* 64-32 */ \
+        __ASM_EMIT("adds        %[count], %[count], #32") /* 64-32 */ \
         __ASM_EMIT("b.lt        6f") \
         \
         __ASM_EMIT("stp         q0, q1, [%[" DST "], #0x000]") \
@@ -862,10 +864,11 @@ namespace lsp
                   [count] "+r" (count)
                 : [DATA] "r" (fill_minus_one_data)
                 : "cc", "memory",
-                  "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7"
+                  "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7"
             );
         }
-    }
-}
+    } /* namespace asimd */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_AARCH64_ASIMD_COPY_H_ */

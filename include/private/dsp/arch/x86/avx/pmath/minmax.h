@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -68,8 +68,8 @@ namespace lsp
             __ASM_EMIT(OP "         0x20(%[" B "], %[off]), %%ymm1, %%ymm1") \
             __ASM_EMIT("vmovups     %%ymm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("vmovups     %%ymm1, 0x20(%[" DST "], %[off])") \
-            __ASM_EMIT("add         $0x40, %[off]") \
             __ASM_EMIT("sub         $16, %[count]") \
+            __ASM_EMIT("add         $0x40, %[off]") \
             /* 8x block */ \
             __ASM_EMIT("4:") \
             __ASM_EMIT("add         $8, %[count]") \
@@ -80,8 +80,8 @@ namespace lsp
             __ASM_EMIT(OP "         0x10(%[" B "], %[off]), %%xmm1, %%xmm1") \
             __ASM_EMIT("vmovups     %%xmm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("vmovups     %%xmm1, 0x10(%[" DST "], %[off])") \
-            __ASM_EMIT("add         $0x20, %[off]") \
             __ASM_EMIT("sub         $8, %[count]") \
+            __ASM_EMIT("add         $0x20, %[off]") \
             /* 4x block */ \
             __ASM_EMIT("6:") \
             __ASM_EMIT("add         $4, %[count]") \
@@ -89,8 +89,8 @@ namespace lsp
             __ASM_EMIT("vmovups     0x00(%[" A "], %[off]), %%xmm0") \
             __ASM_EMIT(OP "         0x00(%[" B "], %[off]), %%xmm0, %%xmm0") \
             __ASM_EMIT("vmovups     %%xmm0, 0x00(%[" DST "], %[off])") \
-            __ASM_EMIT("add         $0x10, %[off]") \
             __ASM_EMIT("sub         $4, %[count]") \
+            __ASM_EMIT("add         $0x10, %[off]") \
             /* 1x blocks */ \
             __ASM_EMIT("8:") \
             __ASM_EMIT("add         $3, %[count]") \
@@ -192,8 +192,8 @@ namespace lsp
             __ASM_EMIT("vcmpps      " CMP ", %%xmm3, %%xmm2, %%xmm2") \
             __ASM_EMIT("vblendvps   %%xmm2, %%xmm0, %%xmm1, %%xmm0") \
             __ASM_EMIT("vmovups     %%xmm0, 0x00(%[" DST "], %[off])") \
-            __ASM_EMIT("add         $0x10, %[off]") \
             __ASM_EMIT("sub         $4, %[count]") \
+            __ASM_EMIT("add         $0x10, %[off]") \
             /* 1x blocks */ \
             __ASM_EMIT("4:") \
             __ASM_EMIT("add         $3, %[count]") \
@@ -308,8 +308,8 @@ namespace lsp
             __ASM_EMIT(OP "         %%ymm4, %%ymm1, %%ymm1") \
             __ASM_EMIT("vmovups     %%ymm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("vmovups     %%ymm1, 0x20(%[" DST "], %[off])") \
-            __ASM_EMIT("add         $0x40, %[off]") \
             __ASM_EMIT("sub         $16, %[count]") \
+            __ASM_EMIT("add         $0x40, %[off]") \
             /* 8x block */ \
             __ASM_EMIT("4:") \
             __ASM_EMIT("add         $8, %[count]") \
@@ -322,8 +322,8 @@ namespace lsp
             __ASM_EMIT(OP "         %%xmm4, %%xmm1, %%xmm1") \
             __ASM_EMIT("vmovups     %%xmm0, 0x00(%[" DST "], %[off])") \
             __ASM_EMIT("vmovups     %%xmm1, 0x10(%[" DST "], %[off])") \
-            __ASM_EMIT("add         $0x20, %[off]") \
             __ASM_EMIT("sub         $8, %[count]") \
+            __ASM_EMIT("add         $0x20, %[off]") \
             /* 4x block */ \
             __ASM_EMIT("6:") \
             __ASM_EMIT("add         $4, %[count]") \
@@ -332,8 +332,8 @@ namespace lsp
             __ASM_EMIT("vandps      0x00(%[" B "], %[off]), %%xmm7, %%xmm3") \
             __ASM_EMIT(OP "         %%xmm3, %%xmm0, %%xmm0") \
             __ASM_EMIT("vmovups     %%xmm0, 0x00(%[" DST "], %[off])") \
-            __ASM_EMIT("add         $0x10, %[off]") \
             __ASM_EMIT("sub         $4, %[count]") \
+            __ASM_EMIT("add         $0x10, %[off]") \
             /* 1x blocks */ \
             __ASM_EMIT("8:") \
             __ASM_EMIT("add         $3, %[count]") \
@@ -411,8 +411,8 @@ namespace lsp
         }
 
         #undef ABS_MINMAX_CORE
-    }
-}
+    } /* namespace avx */
+} /* namespace lsp */
 
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX_PMATH_MINMAX_H_ */

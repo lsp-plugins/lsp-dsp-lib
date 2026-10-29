@@ -1091,7 +1091,7 @@ namespace lsp
                     : [dst] "r" (tgt), \
                       [src] "r" (pv) \
                     : "cc", "memory", \
-                      "%xmm0", "%xmm1" \
+                      "%xmm0", "%xmm1", "%xmm2" \
                 );
 
             #define STR_SPLIT_1P(off0, off1, koff, store) \
@@ -1437,7 +1437,7 @@ namespace lsp
                     : [dst] "r" (tgt), \
                       [src] "r" (pv) \
                     : "cc", "memory", \
-                      "%xmm0", "%xmm1" \
+                      "%xmm0", "%xmm1", "%xmm2" \
                 );
 
             #define STR_SPLIT_1P(off0, off1, koff, store) \

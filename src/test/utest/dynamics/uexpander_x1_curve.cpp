@@ -123,7 +123,7 @@ UTEST_BEGIN("dsp.dynamics", uexpander_x1_curve)
                     UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
 
                     // Compare buffers
-                    if (!dst1.equals_absolute(dst2, 2e-4))
+                    if (!dst1.equals_relative(dst2, 2e-4))
                     {
                         src.dump("src ");
                         dst.dump("dst ");
@@ -157,7 +157,7 @@ UTEST_BEGIN("dsp.dynamics", uexpander_x1_curve)
                     UTEST_ASSERT_MSG(dst2.valid(), "Destination buffer 2 corrupted");
 
                     // Compare buffers
-                    if (!dst1.equals_absolute(dst2, 2e-4))
+                    if (!dst1.equals_relative(dst2, 2e-4))
                     {
                         src.dump("src ");
                         dst.dump("dst ");

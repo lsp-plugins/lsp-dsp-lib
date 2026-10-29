@@ -550,7 +550,8 @@ namespace lsp
                   [MASK] "o" (FFT_REPACK_MASKS)
                 : "cc", "memory",
                   "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-                  "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+                  "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+                  "%k4", "%k5"
             );
         }
 
@@ -669,7 +670,8 @@ namespace lsp
                       [MASK] "o" (FFT_REPACK_MASKS)
                     : "cc", "memory",
                       "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-                      "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+                      "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+                      "%k4", "%k5"
                 );
             }
         }
@@ -789,7 +791,8 @@ namespace lsp
                       [MASK] "o" (FFT_REPACK_MASKS)
                     : "cc", "memory",
                       "%xmm0", "%xmm1", "%xmm2", "%xmm3",
-                      "%xmm4", "%xmm5", "%xmm6", "%xmm7"
+                      "%xmm4", "%xmm5", "%xmm6", "%xmm7",
+                      "%k4", "%k5"
                 );
             }
         }
