@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.1.3 ===
+
+
 === 1.1.2 ===
 * Fixes of AVX-512 implementation of functions `minmax_index` and `abs_minmax_index`.
 * Fixed out of bounds read for some series of parallel mathematic operations.
