@@ -690,8 +690,6 @@ namespace lsp
                 __ASM_EMIT("fcmgt       v5.4s, v3.4s, v7.4s")               /* v5   = [fabsf(max) > fabsf(max candidates)] */
                 __ASM_EMIT("bit         v0.16b, v16.16b, v4.16b")           /* v0   = (fabsf(min) > fabsf(min candidates)) ? min candidates : min */
                 __ASM_EMIT("bif         v1.16b, v17.16b, v5.16b")           /* v1   = (fabsf(max) > fabsf(max candidates)) ? max : max candidates */
-                __ASM_EMIT("bit         v2.16b, v6.16b, v4.16b")            /* v2   = (fabsf(min) > fabsf(min candidates)) ? fabsf(min candidates) : fabsf(min) */
-                __ASM_EMIT("bif         v3.16b, v7.16b, v5.16b")            /* v3   = (fabsf(max) > fabsf(max candidates)) ? fabsf(max) : fabsf(max candidates) */
                 __ASM_EMIT("12:")
                 /* store */
                 __ASM_EMIT("st1         {v0.s}[0], [%[min]]")
