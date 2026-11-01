@@ -411,8 +411,6 @@ namespace lsp
         __ASM_EMIT(OP "         v1.16b, v19.16b, v5.16b")           /* v1   = (fabsf(res1) <=> fabsf(x1)) ? res1 : x1 */ \
         __ASM_EMIT(OP "         v2.16b, v6.16b, v4.16b")            /* v2   = (fabsf(res0) <=> fabsf(x0)) ? fabsf(res0) : fabsf(x0) */ \
         __ASM_EMIT(OP "         v3.16b, v7.16b, v5.16b")            /* v3   = (fabsf(res1) <=> fabsf(x1)) ? fabsf(res1) : fabsf(x1) */ \
-        __ASM_EMIT("subs        %[count], %[count], #32") \
-        __ASM_EMIT("add         %[src], %[src], #0x80") \
         __ASM_EMIT("sub         %[count], %[count], #16") \
         __ASM_EMIT("add         %[src], %[src], #0x40") \
         /* 8x block */ \
@@ -511,7 +509,7 @@ namespace lsp
         {
             ARCH_AARCH64_ASM(
                 __ASM_EMIT("eor         v0.16b, v0.16b, v0.16b")
-                __ASM_EMIT("eor         v2.16b, v1.16b, v1.16b")
+                __ASM_EMIT("eor         v1.16b, v1.16b, v1.16b")
                 __ASM_EMIT("cmp         %[count], #0")
                 __ASM_EMIT("b.ls        12f")
                 __ASM_EMIT("ld1r        {v0.4s}, [%[src]]")                 /* v0   = min */
@@ -674,20 +672,24 @@ namespace lsp
                 __ASM_EMIT("b.ge        9b")
                 /* end */
                 __ASM_EMIT("10:")
-                __ASM_EMIT("ext         v16.16b, v0.16b, v0.16b, #8")       /* v16  = x0 */
-                __ASM_EMIT("ext         v6.16b, v2.16b, v2.16b, #8")        /* v6   = fabsf(x0) */
-                __ASM_EMIT("fcmgt       v4.4s, v2.4s, v6.4s")               /* v4   = [fabsf(min) > fabsf(x0)] */
-                __ASM_EMIT("fcmgt       v5.4s, v3.4s, v6.4s")               /* v5   = [fabsf(max) > fabsf(x0)] */
-                __ASM_EMIT("bit         v0.16b, v16.16b, v4.16b")           /* v0   = (fabsf(min) > fabsf(x0)) ? x0 : min */
-                __ASM_EMIT("bif         v1.16b, v16.16b, v5.16b")           /* v1   = (fabsf(max) > fabsf(x0)) ? max : x0 */
-                __ASM_EMIT("bit         v2.16b, v6.16b, v4.16b")            /* v2   = (fabsf(min) > fabsf(x0)) ? fabsf(x0) : fabsf(min) */
-                __ASM_EMIT("bif         v3.16b, v6.16b, v5.16b")            /* v3   = (fabsf(max) > fabsf(x0)) ? fabsf(max) : fabsf(x0) */
-                __ASM_EMIT("ext         v16.16b, v0.16b, v0.16b, #4")       /* v16  = x0 */
-                __ASM_EMIT("ext         v6.16b, v2.16b, v2.16b, #4")        /* v6   = fabsf(x0) */
-                __ASM_EMIT("fcmgt       v4.4s, v2.4s, v6.4s")               /* v4   = [fabsf(min) > fabsf(x0)] */
-                __ASM_EMIT("fcmgt       v5.4s, v3.4s, v6.4s")               /* v5   = [fabsf(max) > fabsf(x0)] */
-                __ASM_EMIT("bit         v0.16b, v16.16b, v4.16b")           /* v0   = (fabsf(min) > fabsf(x0)) ? x0 : min */
-                __ASM_EMIT("bif         v1.16b, v16.16b, v5.16b")           /* v1   = (fabsf(max) > fabsf(x0)) ? max : x0 */
+                __ASM_EMIT("ext         v16.16b, v0.16b, v0.16b, #8")       /* v16  = min candidates */
+                __ASM_EMIT("ext         v6.16b, v2.16b, v2.16b, #8")        /* v6   = fabsf(min candidates) */
+                __ASM_EMIT("ext         v17.16b, v1.16b, v1.16b, #8")       /* v17  = max candidates */
+                __ASM_EMIT("ext         v7.16b, v3.16b, v3.16b, #8")        /* v7   = fabsf(max candidates) */
+                __ASM_EMIT("fcmgt       v4.4s, v2.4s, v6.4s")               /* v4   = [fabsf(min) > fabsf(min candidates)] */
+                __ASM_EMIT("fcmgt       v5.4s, v3.4s, v7.4s")               /* v5   = [fabsf(max) > fabsf(max candidates)] */
+                __ASM_EMIT("bit         v0.16b, v16.16b, v4.16b")           /* v0   = (fabsf(min) > fabsf(min candidates)) ? min candidates : min */
+                __ASM_EMIT("bif         v1.16b, v17.16b, v5.16b")           /* v1   = (fabsf(max) > fabsf(max candidates)) ? max : max candidates */
+                __ASM_EMIT("bit         v2.16b, v6.16b, v4.16b")            /* v2   = (fabsf(min) > fabsf(min candidates)) ? fabsf(min candidates) : fabsf(min) */
+                __ASM_EMIT("bif         v3.16b, v7.16b, v5.16b")            /* v3   = (fabsf(max) > fabsf(max candidates)) ? fabsf(max) : fabsf(max candidates) */
+                __ASM_EMIT("ext         v16.16b, v0.16b, v0.16b, #4")       /* v16  = min candidates */
+                __ASM_EMIT("ext         v6.16b, v2.16b, v2.16b, #4")        /* v6   = fabsf(min candidates) */
+                __ASM_EMIT("ext         v17.16b, v1.16b, v1.16b, #4")       /* v17  = max candidates */
+                __ASM_EMIT("ext         v7.16b, v3.16b, v3.16b, #4")        /* v7   = fabsf(max candidates) */
+                __ASM_EMIT("fcmgt       v4.4s, v2.4s, v6.4s")               /* v4   = [fabsf(min) > fabsf(min candidates)] */
+                __ASM_EMIT("fcmgt       v5.4s, v3.4s, v7.4s")               /* v5   = [fabsf(max) > fabsf(max candidates)] */
+                __ASM_EMIT("bit         v0.16b, v16.16b, v4.16b")           /* v0   = (fabsf(min) > fabsf(min candidates)) ? min candidates : min */
+                __ASM_EMIT("bif         v1.16b, v17.16b, v5.16b")           /* v1   = (fabsf(max) > fabsf(max candidates)) ? max : max candidates */
                 __ASM_EMIT("12:")
                 /* store */
                 __ASM_EMIT("st1         {v0.s}[0], [%[min]]")
@@ -696,6 +698,7 @@ namespace lsp
                 : [min] "r" (min), [max] "r" (max)
                 : "cc", "memory",
                   "v0", "v1", "v2", "v3",
+                  "v4", "v5", "v6", "v7",
                   "v16", "v17", "v18", "v19",
                   "v20", "v21", "v22", "v23"
             );

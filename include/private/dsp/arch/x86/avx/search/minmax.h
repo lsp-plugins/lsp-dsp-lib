@@ -555,7 +555,7 @@ namespace lsp
         {
             ARCH_X86_ASM(
                 __ASM_EMIT("vxorps          %%ymm0, %%ymm0, %%ymm0")
-                __ASM_EMIT("vxorps          %%ymm1, %%ymm1, %%ymm1")
+                __ASM_EMIT("vxorps          %%ymm2, %%ymm2, %%ymm2")
                 __ASM_EMIT("test            %[count], %[count]")
                 __ASM_EMIT("jz              6f")
                 __ASM_EMIT("vmovaps         %[CC], %%ymm7")                     /* ymm7 = mask */

@@ -511,22 +511,26 @@ namespace lsp
                 __ASM_EMIT("vbif        q3, q12, q5")               /* q13 = [abs(max) > abs(x0) ] ? abs(max) : abs(x0) */ \
                 __ASM_EMIT("sub         %[count], #4") \
                 __ASM_EMIT("6:") \
-                __ASM_EMIT("vext.32     q8, q0, q0, #2")            /* q8 = x0 */ \
-                __ASM_EMIT("vext.32     q12, q2, q2, #2")           /* q12 = abs(x0) */  \
-                __ASM_EMIT("vclt.f32    q4, q2, q12")               /* q4 = [abs(min) < abs(x0) ] */ \
-                __ASM_EMIT("vcgt.f32    q5, q3, q12")               /* q4 = [abs(max) > abs(x0) ] */ \
-                __ASM_EMIT("vbif        q0, q8, q4")                /* q0 = [abs(min) < abs(x0) ] ? min : x0 */ \
-                __ASM_EMIT("vbif        q1, q8, q5")                /* q1 = [abs(max) > abs(x0) ] ? res : x0 */ \
-                __ASM_EMIT("vbif        q2, q12, q4")               /* q12 = [abs(min) < abs(x0) ] ? abs(min) : abs(x0) */ \
-                __ASM_EMIT("vbif        q3, q12, q5")               /* q13 = [abs(max) > abs(x0) ] ? abs(max) : abs(x0) */ \
-                __ASM_EMIT("vext.32     q8, q0, q0, #1")            /* q8 = x0 */ \
-                __ASM_EMIT("vext.32     q12, q2, q2, #1")           /* q12 = abs(x0) */  \
-                __ASM_EMIT("vclt.f32    q4, q2, q12")               /* q4 = [abs(min) < abs(x0) ] */ \
-                __ASM_EMIT("vcgt.f32    q5, q3, q12")               /* q4 = [abs(max) > abs(x0) ] */ \
-                __ASM_EMIT("vbif        q0, q8, q4")                /* q0 = [abs(min) < abs(x0) ] ? min : x0 */ \
-                __ASM_EMIT("vbif        q1, q8, q5")                /* q1 = [abs(max) > abs(x0) ] ? res : x0 */ \
-                __ASM_EMIT("vbif        q2, q12, q4")               /* q12 = [abs(min) < abs(x0) ] ? abs(min) : abs(x0) */ \
-                __ASM_EMIT("vbif        q3, q12, q5")               /* q13 = [abs(max) > abs(x0) ] ? abs(max) : abs(x0) */ \
+                __ASM_EMIT("vext.32     q8, q0, q0, #2")            /* q8   = min candidates */ \
+                __ASM_EMIT("vext.32     q12, q2, q2, #2")           /* q12  = abs(min candidates) */  \
+                __ASM_EMIT("vext.32     q9, q1, q1, #2")            /* q9   = max candidates */ \
+                __ASM_EMIT("vext.32     q13, q3, q3, #2")           /* q13  = abs(max candidates) */  \
+                __ASM_EMIT("vclt.f32    q4, q2, q12")               /* q4   = [abs(min) < abs(min candidate) ] */ \
+                __ASM_EMIT("vcgt.f32    q5, q3, q13")               /* q5   = [abs(max) > abs(max candidate) ] */ \
+                __ASM_EMIT("vbif        q0, q8, q4")                /* q0   = [abs(min) < abs(min candidate) ] ? min : min candidate */ \
+                __ASM_EMIT("vbif        q1, q9, q5")                /* q1   = [abs(max) > abs(max candidate) ] ? max : max candidate */ \
+                __ASM_EMIT("vbif        q2, q12, q4")               /* q2   = [abs(min) < abs(min candidate) ] ? abs(min) : abs(min candidate) */ \
+                __ASM_EMIT("vbif        q3, q13, q5")               /* q3   = [abs(max) > abs(max) ] ? abs(max) : abs(max candidate) */ \
+                __ASM_EMIT("vext.32     q8, q0, q0, #1")            /* q8   = min candidates */ \
+                __ASM_EMIT("vext.32     q12, q2, q2, #1")           /* q12  = abs(min candidates) */  \
+                __ASM_EMIT("vext.32     q9, q1, q1, #1")            /* q9   = max candidates */ \
+                __ASM_EMIT("vext.32     q13, q3, q3, #1")           /* q13  = abs(max candidates) */  \
+                __ASM_EMIT("vclt.f32    q4, q2, q12")               /* q4   = [abs(min) < abs(min candidate) ] */ \
+                __ASM_EMIT("vcgt.f32    q5, q3, q13")               /* q5   = [abs(max) > abs(max candidate) ] */ \
+                __ASM_EMIT("vbif        q0, q8, q4")                /* q0   = [abs(min) < abs(min candidate) ] ? min : min candidate */ \
+                __ASM_EMIT("vbif        q1, q9, q5")                /* q1   = [abs(max) > abs(max candidate) ] ? max : max candidate */ \
+                __ASM_EMIT("vbif        q2, q12, q4")               /* q2   = [abs(min) < abs(min candidate) ] ? abs(min) : abs(min candidate) */ \
+                __ASM_EMIT("vbif        q3, q13, q5")               /* q3   = [abs(max) > abs(max) ] ? abs(max) : abs(max candidate) */ \
                 /* x1 block */ \
                 __ASM_EMIT("adds        %[count], #3") \
                 __ASM_EMIT("blt         8f") \
