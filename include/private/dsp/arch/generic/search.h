@@ -197,7 +197,7 @@ namespace lsp
                     vmin        = vtmp;
                     amin        = atmp;
                 }
-                if (vtmp > amax)
+                if (atmp > amax)
                 {
                     vmax        = vtmp;
                     amax        = atmp;
