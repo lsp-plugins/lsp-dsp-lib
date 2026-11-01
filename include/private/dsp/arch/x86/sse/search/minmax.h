@@ -588,8 +588,9 @@ namespace lsp
             ARCH_X86_ASM
             (
                 /* Prepare */ \
-                __ASM_EMIT("xorps       %%xmm0, %%xmm0")
                 __ASM_EMIT("test        %[count], %[count]")
+                __ASM_EMIT("xorps       %%xmm0, %%xmm0")
+                __ASM_EMIT("xorps       %%xmm2, %%xmm2")
                 __ASM_EMIT("jz          4f")
                 __ASM_EMIT("movss       0x00(%[src]), %%xmm0")          /* xmm0 = min ? ? ? */
                 __ASM_EMIT("shufps      $0x00, %%xmm0, %%xmm0")         /* xmm0 = min */

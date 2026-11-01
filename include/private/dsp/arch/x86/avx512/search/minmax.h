@@ -629,7 +629,7 @@ namespace lsp
         {
             ARCH_X86_ASM(
                 __ASM_EMIT("vxorps          %%zmm0, %%zmm0, %%zmm0")
-                __ASM_EMIT("vxorps          %%zmm1, %%zmm1, %%zmm1")
+                __ASM_EMIT("vxorps          %%zmm2, %%zmm2, %%zmm2")
                 __ASM_EMIT("test            %[count], %[count]")
                 __ASM_EMIT("jz              8f")
                 __ASM_EMIT("vmovaps         %[CC], %%zmm7")                     /* zmm7 = mask */
@@ -745,7 +745,7 @@ namespace lsp
                 /* end */
                 __ASM_EMIT("8:")
                 __ASM_EMIT("vmovss          %%xmm0, 0x00(%[min])")
-                __ASM_EMIT("vmovss          %%xmm1, 0x00(%[max])")
+                __ASM_EMIT("vmovss          %%xmm2, 0x00(%[max])")
                 : [src] "+r" (src), [count] "+r" (count)
                 : [min] "r" (min), [max] "r" (max),
                   [CC] "m" (minmax_const)
