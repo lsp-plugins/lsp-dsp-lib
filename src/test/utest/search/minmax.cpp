@@ -165,7 +165,7 @@ UTEST_BEGIN("dsp.search", minmax)
                 UTEST_ASSERT_MSG(src.valid(), "Source buffer corrupted");
 
                 // Compare buffers
-                if ((!float_equals_relative(min1, min2, 1e-5)) && (!float_equals_relative(max1, max2, 1e-5)))
+                if ((!float_equals_relative(min1, min2, 1e-5)) || (!float_equals_relative(max1, max2, 1e-5)))
                 {
                     src.dump("src1");
                     UTEST_FAIL_MSG("Result of function 1 (%f, %f) differs result of function 2 (%f, %f)", min1, max1, min2, max2);

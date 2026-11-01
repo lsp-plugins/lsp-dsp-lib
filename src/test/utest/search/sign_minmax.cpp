@@ -75,7 +75,8 @@ UTEST_BEGIN("dsp.search", sign_minmax)
             return;
 
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                32, 64, 65, 100, 768, 999, 1023, 1024, 1025)
+                16, 17, 18, 19, 20, 24, 28, 31, 48, 50, 63, 32, 64, 65, 100, 768,
+                999, 1023, 1024, 1025)
         {
             for (size_t mask=0; mask <= 0x01; ++mask)
             {
@@ -92,7 +93,7 @@ UTEST_BEGIN("dsp.search", sign_minmax)
                 UTEST_ASSERT_MSG(src.valid(), "Source buffer corrupted");
 
                 // Compare buffers
-                if ((!float_equals_relative(min1, min2, 1e-5)) && (!float_equals_relative(max1, max2, 1e-5)))
+                if ((!float_equals_relative(min1, min2, 1e-5)) || (!float_equals_relative(max1, max2, 1e-5)))
                 {
                     src.dump("src1");
                     UTEST_FAIL_MSG("Result of function 1 (%f, %f) differs result of function 2 (%f, %f)", min1, max1, min2, max2);
