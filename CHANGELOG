@@ -4,6 +4,7 @@
 
 === 1.1.3 ===
 * Fixed bugs in implementations of sign_minmax function (contributed by David Geldreich).
+* Updated build scripts.
 
 === 1.1.2 ===
 * Fixes of AVX-512 implementation of functions `minmax_index` and `abs_minmax_index`.

@@ -22,6 +22,7 @@
 # Command-line flag to silence nested $(MAKE).
 ifneq ($(VERBOSE),1)
 .SILENT:
+MAKEFLAGS += --no-print-directory
 endif
 
 # Location
@@ -78,10 +79,13 @@ prune: clean
 	echo "Prune OK"
 
 # Configuration-related targets
-.PHONY: config help chkconfig
+.PHONY: config info help
 
 config:
 	$(MAKE) -f "$(BASEDIR)/make/configure.mk" $(@) VERBOSE="$(VERBOSE)" CONFIG="$(CONFIG)" -$(MAKEFLAGS)
+
+info:
+	$(MAKE) -f "$(BASEDIR)/make/configure.mk" info VERBOSE="$(VERBOSE)" CONFIG="$(CONFIG)" -$(MAKEFLAGS)
 
 # Release-related targets
 .PHONY: distsrc
