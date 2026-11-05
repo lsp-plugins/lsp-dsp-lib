@@ -81,11 +81,8 @@ prune: clean
 # Configuration-related targets
 .PHONY: config info help
 
-config:
+config info:
 	$(MAKE) -f "$(BASEDIR)/make/configure.mk" $(@) VERBOSE="$(VERBOSE)" CONFIG="$(CONFIG)" -$(MAKEFLAGS)
-
-info:
-	$(MAKE) -f "$(BASEDIR)/make/configure.mk" info VERBOSE="$(VERBOSE)" CONFIG="$(CONFIG)" -$(MAKEFLAGS)
 
 # Release-related targets
 .PHONY: distsrc
