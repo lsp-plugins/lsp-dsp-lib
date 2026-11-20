@@ -26,5 +26,6 @@
 
 #include <lsp-plug.in/dsp/common/hmath/hdotp.h>
 #include <lsp-plug.in/dsp/common/hmath/hsum.h>
+#include <lsp-plug.in/dsp/common/hmath/msum.h>
 
 #endif /* LSP_PLUG_IN_DSP_COMMON_HMATH_H_ */

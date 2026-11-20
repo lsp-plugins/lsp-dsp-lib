@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -26,51 +26,8 @@
     #error "This header should not be included directly"
 #endif /* PRIVATE_DSP_ARCH_GENERIC_IMPL */
 
-namespace lsp
-{
-    namespace generic
-    {
-        float scalar_mul(const float *a, const float *b, size_t count)
-        {
-            float result = 0;
-            while (count--)
-                result += *(a++) * *(b++);
-            return result;
-        }
-
-        float h_sum(const float *src, size_t count)
-        {
-            float result    = 0.0f;
-            while (count--)
-                result         += *(src++);
-            return result;
-        }
-
-        float h_sqr_sum(const float *src, size_t count)
-        {
-            float result    = 0.0f;
-            while (count--)
-            {
-                float tmp       = *(src++);
-                result         += tmp * tmp;
-            }
-            return result;
-        }
-
-        float h_abs_sum(const float *src, size_t count)
-        {
-            float result    = 0.0f;
-            while (count--)
-            {
-                float tmp       = *(src++);
-                if (tmp < 0.0f)
-                    result         -= tmp;
-                else
-                    result         += tmp;
-            }
-            return result;
-        }
-    }
-}
+#include <private/dsp/arch/generic/hmath/hdotp.h>
+#include <private/dsp/arch/generic/hmath/hsum.h>
+#include <private/dsp/arch/generic/hmath/msum.h>
 
 #endif /* PRIVATE_DSP_ARCH_GENERIC_HMATH_H_ */

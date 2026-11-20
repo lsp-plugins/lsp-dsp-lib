@@ -57,8 +57,7 @@ namespace lsp
 
     #include <private/dsp/arch/generic/pmath.h>
 
-    #include <private/dsp/arch/generic/hmath/hsum.h>
-    #include <private/dsp/arch/generic/hmath/hdotp.h>
+    #include <private/dsp/arch/generic/hmath.h>
 
     #include <private/dsp/arch/generic/search.h>
 
@@ -296,6 +295,10 @@ namespace lsp
             EXPORT1(h_dotp);
             EXPORT1(h_sqr_dotp);
             EXPORT1(h_abs_dotp);
+
+            EXPORT1(moving_avg);
+            EXPORT1(moving_mean_sqr);
+            EXPORT1(moving_rms);
 
             EXPORT1(fmadd_k3);
             EXPORT1(fmsub_k3);

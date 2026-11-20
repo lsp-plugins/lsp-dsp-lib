@@ -4,6 +4,8 @@
 
 === 1.1.3 ===
 * Fixed bugs in implementations of sign_minmax function (contributed by David Geldreich).
+* Introduced moving_avg, moving_mean_sqr and moving_rms functions for computing moving
+  mean values.
 * Updated build scripts.
 
 === 1.1.2 ===

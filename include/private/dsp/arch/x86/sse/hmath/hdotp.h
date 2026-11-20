@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-dsp-lib
  * Created on: 31 мар. 2020 г.
@@ -42,7 +42,7 @@ namespace lsp
                 __ASM_EMIT("xor         %[off], %[off]")
                 __ASM_EMIT("xorps       %%xmm1, %%xmm1")
                 __ASM_EMIT("sub         $12, %[count]")
-                __ASM_EMIT("jl          2f")
+                __ASM_EMIT("jb          2f")
 
                 /* x12 Blocks */
                 __ASM_EMIT("1:")
@@ -129,7 +129,7 @@ namespace lsp
                 __ASM_EMIT("xor         %[off], %[off]")
                 __ASM_EMIT("xorps       %%xmm1, %%xmm1")
                 __ASM_EMIT("sub         $12, %[count]")
-                __ASM_EMIT("jl          2f")
+                __ASM_EMIT("jb          2f")
 
                 /* x12 Blocks */
                 __ASM_EMIT("1:")
@@ -239,7 +239,7 @@ namespace lsp
                 __ASM_EMIT("movaps      %[SIGN], %%xmm2")
                 __ASM_EMIT("sub         $8, %[count]")
                 __ASM_EMIT("movaps      %%xmm2, %%xmm3")
-                __ASM_EMIT("jl          2f")
+                __ASM_EMIT("jb          2f")
 
                 /* x8 Block */
                 __ASM_EMIT("1:")
@@ -304,7 +304,7 @@ namespace lsp
 
             return result;
         }
-    }
-}
+    } /* namespace sse */
+} /* namespace lsp */
 
 #endif /* PRIVATE_DSP_ARCH_X86_SSE_HMATH_HDOTP_H_ */
