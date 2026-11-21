@@ -400,6 +400,7 @@ namespace lsp
             ARCH_X86_ASM
             (
                 __ASM_EMIT("xor             %[off], %[off]")                        // offset   = 0
+                __ASM_EMIT("vxorps          %%xmm7, %%xmm7, %%xmm7")                // xmm7     = 0
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("vbroadcastss    %[value], %%ymm0")                      // ymm0     = v v v v v v v v
                 __ASM_EMIT("vbroadcastss    %[m], %%ymm1")                          // ymm1     = m m m m m m m m
@@ -438,6 +439,8 @@ namespace lsp
                 __ASM_EMIT("vaddps          %%ymm0, %%ymm3, %%ymm0")                // ymm0     = v8 v9 v10 v11 v12 v13 v14 v15
                 __ASM_EMIT("vmulps          %%ymm1, %%ymm2, %%ymm2")                // ymm2     = v0*m v1*m v2*m v3*m v4*m v5*m v6*m v7*m
                 __ASM_EMIT("vmulps          %%ymm1, %%ymm0, %%ymm3")                // ymm3     = v8*m v9*m v10*m v11*m v12*m v13*m v14*m v15*m
+                __ASM_EMIT("vmaxps          %%ymm7, %%ymm2, %%ymm2")
+                __ASM_EMIT("vmaxps          %%ymm7, %%ymm3, %%ymm3")
                 __ASM_EMIT("vsqrtps         %%ymm2, %%ymm2")
                 __ASM_EMIT("vsqrtps         %%ymm3, %%ymm3")
                 __ASM_EMIT("vmovups         %%ymm2, 0x00(%[dst], %[off])")
@@ -466,6 +469,7 @@ namespace lsp
                 __ASM_EMIT("vaddps          %%ymm2, %%ymm0, %%ymm0")                // ymm0     = v0 v1 v2 v3 v4 v5 v6 v7
                 __ASM_EMIT("vmulps          %%ymm0, %%ymm1, %%ymm2")                // ymm2     = v0*m v1*m v2*m v3*m v4*m v5*m v6*m v7*m
                 __ASM_EMIT("vperm2f128      $0x11, %%ymm0, %%ymm0, %%ymm0")         // ymm0     = v4 v5 v6 v7 v4 v5 v6 v7
+                __ASM_EMIT("vmaxps          %%ymm7, %%ymm2, %%ymm2")
                 __ASM_EMIT("vsqrtps         %%ymm2, %%ymm2")
                 __ASM_EMIT("vpermilps       $0xff, %%ymm0, %%ymm0")                 // ymm0     = v7 v7 v7 v7 v7 v7 v7 v7
                 __ASM_EMIT("vmovups         %%ymm2, 0x00(%[dst], %[off])")
@@ -486,6 +490,7 @@ namespace lsp
                 __ASM_EMIT("vaddps          %%xmm4, %%xmm2, %%xmm2")                // xmm2     = s0 s1 s2 s3 = d0 d0+d1 d0+d1+d2 d0+d1+d2+d3
                 __ASM_EMIT("vaddps          %%xmm2, %%xmm0, %%xmm0")                // xmm0     = v0 v1 v2 v3
                 __ASM_EMIT("vmulps          %%xmm0, %%xmm1, %%xmm2")                // xmm2     = v0*m v1*m v2*m v3*m
+                __ASM_EMIT("vmaxps          %%xmm7, %%xmm2, %%xmm2")
                 __ASM_EMIT("vsqrtps         %%xmm2, %%xmm2")
                 __ASM_EMIT("vshufps         $0xff, %%xmm0, %%xmm0, %%xmm0")         // xmm0     = v3 v3 v3 v3
                 __ASM_EMIT("vmovups         %%xmm2, 0x00(%[dst], %[off])")
@@ -504,6 +509,7 @@ namespace lsp
                 __ASM_EMIT("vsubss          %%xmm4, %%xmm2, %%xmm2")                // xmm2     = d
                 __ASM_EMIT("vaddss          %%xmm2, %%xmm0, %%xmm0")                // xmm0     = s = value + b - a
                 __ASM_EMIT("vmulss          %%xmm0, %%xmm1, %%xmm2")                // xmm2     = s * avg
+                __ASM_EMIT("vmaxss          %%xmm7, %%xmm2, %%xmm2")
                 __ASM_EMIT("vsqrtss         %%xmm2, %%xmm2, %%xmm2")
                 __ASM_EMIT("vmovss          %%xmm2, 0x00(%[dst], %[off])")
                 __ASM_EMIT("add             $0x04, %[off]")
@@ -517,7 +523,7 @@ namespace lsp
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b)
                 : "cc", "memory",
                   "%xmm2", "%xmm3",
-                  "%xmm4", "%xmm5"
+                  "%xmm4", "%xmm5", "%xmm7"
             );
 
             return value;
@@ -532,6 +538,7 @@ namespace lsp
             ARCH_X86_ASM
             (
                 __ASM_EMIT("xor             %[off], %[off]")                        // offset   = 0
+                __ASM_EMIT("vxorps          %%xmm7, %%xmm7, %%xmm7")                // xmm7     = 0
                 __ASM_EMIT("sub             $16, %[count]")
                 __ASM_EMIT("vbroadcastss    %[value], %%ymm0")                      // ymm0     = v v v v v v v v
                 __ASM_EMIT("vbroadcastss    %[m], %%ymm1")                          // ymm1     = m m m m m m m m
@@ -568,6 +575,8 @@ namespace lsp
                 __ASM_EMIT("vaddps          %%ymm0, %%ymm3, %%ymm0")                // ymm0     = v8 v9 v10 v11 v12 v13 v14 v15
                 __ASM_EMIT("vmulps          %%ymm1, %%ymm2, %%ymm2")                // ymm2     = v0*m v1*m v2*m v3*m v4*m v5*m v6*m v7*m
                 __ASM_EMIT("vmulps          %%ymm1, %%ymm0, %%ymm3")                // ymm3     = v8*m v9*m v10*m v11*m v12*m v13*m v14*m v15*m
+                __ASM_EMIT("vmaxps          %%ymm7, %%ymm2, %%ymm2")
+                __ASM_EMIT("vmaxps          %%ymm7, %%ymm3, %%ymm3")
                 __ASM_EMIT("vsqrtps         %%ymm2, %%ymm2")
                 __ASM_EMIT("vsqrtps         %%ymm3, %%ymm3")
                 __ASM_EMIT("vmovups         %%ymm2, 0x00(%[dst], %[off])")
@@ -595,6 +604,7 @@ namespace lsp
                 __ASM_EMIT("vaddps          %%ymm2, %%ymm0, %%ymm0")                // ymm0     = v0 v1 v2 v3 v4 v5 v6 v7
                 __ASM_EMIT("vmulps          %%ymm0, %%ymm1, %%ymm2")                // ymm2     = v0*m v1*m v2*m v3*m v4*m v5*m v6*m v7*m
                 __ASM_EMIT("vperm2f128      $0x11, %%ymm0, %%ymm0, %%ymm0")         // ymm0     = v4 v5 v6 v7 v4 v5 v6 v7
+                __ASM_EMIT("vmaxps          %%ymm7, %%ymm2, %%ymm2")
                 __ASM_EMIT("vsqrtps         %%ymm2, %%ymm2")
                 __ASM_EMIT("vpermilps       $0xff, %%ymm0, %%ymm0")                 // ymm0     = v7 v7 v7 v7 v7 v7 v7 v7
                 __ASM_EMIT("vmovups         %%ymm2, 0x00(%[dst], %[off])")
@@ -614,6 +624,7 @@ namespace lsp
                 __ASM_EMIT("vaddps          %%xmm4, %%xmm2, %%xmm2")                // xmm2     = s0 s1 s2 s3 = d0 d0+d1 d0+d1+d2 d0+d1+d2+d3
                 __ASM_EMIT("vaddps          %%xmm2, %%xmm0, %%xmm0")                // xmm0     = v0 v1 v2 v3
                 __ASM_EMIT("vmulps          %%xmm0, %%xmm1, %%xmm2")                // xmm2     = v0*m v1*m v2*m v3*m
+                __ASM_EMIT("vmaxps          %%xmm7, %%xmm2, %%xmm2")
                 __ASM_EMIT("vsqrtps         %%xmm2, %%xmm2")
                 __ASM_EMIT("vshufps         $0xff, %%xmm0, %%xmm0, %%xmm0")         // xmm0     = v3 v3 v3 v3
                 __ASM_EMIT("vmovups         %%xmm2, 0x00(%[dst], %[off])")
@@ -631,6 +642,7 @@ namespace lsp
                 __ASM_EMIT("vfnmadd231ss    %%xmm4, %%xmm4, %%xmm2")                // xmm2     = d
                 __ASM_EMIT("vaddss          %%xmm2, %%xmm0, %%xmm0")                // xmm0     = s = value + b - a
                 __ASM_EMIT("vmulss          %%xmm0, %%xmm1, %%xmm2")                // xmm2     = s * avg
+                __ASM_EMIT("vmaxss          %%xmm7, %%xmm2, %%xmm2")
                 __ASM_EMIT("vsqrtss         %%xmm2, %%xmm2, %%xmm2")
                 __ASM_EMIT("vmovss          %%xmm2, 0x00(%[dst], %[off])")
                 __ASM_EMIT("add             $0x04, %[off]")
@@ -644,7 +656,7 @@ namespace lsp
                 : [dst] "r" (dst), [a] "r" (a), [b] "r" (b)
                 : "cc", "memory",
                   "%xmm2", "%xmm3",
-                  "%xmm4", "%xmm5"
+                  "%xmm4", "%xmm5", "%xmm7"
             );
 
             return value;
