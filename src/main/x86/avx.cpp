@@ -314,7 +314,9 @@
                 CEXPORT1(favx, h_abs_dotp);
 
                 CEXPORT1(favx, moving_avg);
+                CEXPORT1(favx, moving_pavg);
                 CEXPORT1(favx, moving_mean_sqr);
+                CEXPORT1(favx, moving_mean_psqr);
                 CEXPORT1(favx, moving_rms);
 
                 CEXPORT1(favx, mix2);
@@ -545,6 +547,7 @@
                     CEXPORT2(favx, lerp_kkv, lerp_kkv_fma3);
 
                     CEXPORT2(ffma, moving_mean_sqr, moving_mean_sqr_fma3);
+                    CEXPORT2(ffma, moving_mean_sqr, moving_mean_psqr_fma3);
                     CEXPORT2(ffma, moving_rms, moving_rms_fma3);
                 }
             }

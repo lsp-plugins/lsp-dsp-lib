@@ -153,7 +153,9 @@ namespace lsp
             CEXPORT1(favx, fmrmod_k4);
 
             CEXPORT1(favx, moving_avg);
+            CEXPORT1(favx, moving_pavg);
             CEXPORT1(favx, moving_mean_sqr);
+            CEXPORT1(favx, moving_mean_psqr);
             CEXPORT1(favx, moving_rms);
 
             CEXPORT2(favx, exp1, exp1);
@@ -273,6 +275,7 @@ namespace lsp
                 CEXPORT2(favx, logd2, logd2_fma3);
 
                 CEXPORT2(favx, moving_mean_sqr, moving_mean_sqr_fma3);
+                CEXPORT2(favx, moving_mean_psqr, moving_mean_psqr_fma3);
                 CEXPORT2(favx, moving_rms, moving_rms_fma3);
 
                 CEXPORT2_X64(favx, logb1, x64_logb1_fma3);
