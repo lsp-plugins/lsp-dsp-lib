@@ -25,8 +25,9 @@
 #include <lsp-plug.in/dsp/common/types.h>
 
 /** Calculate moving average:
- *   value  = value + b[i] - a[i];
- *   dst[i] = value * avg;
+ *    for each sample with index i:
+ *      value  = value + b[i] - a[i];
+ *      dst[i] = value * avg;
  *
  * @param dst destination to store elements of the moving sum
  * @param a the tail of the moving sum (values to subtract)
@@ -34,13 +35,14 @@
  * @param value current accumulator value of the moving sum
  * @param avg averaging coefficient
  * @param count number of elements to process
- * @return the new accumulator value of the moving sum (equals to last processed element)
+ * @return the new accumulator value of the moving sum
  */
 LSP_DSP_LIB_SYMBOL(float, moving_avg, float *dst, const float *a, const float *b, float value, float avg, size_t count);
 
 /** Calculate moving mean square:
- *   value  = value + b[i]*b[i] - a[i]*a[i];
- *   dst[i] = value * avg;
+ *    for each sample with index i:
+ *      value  = value + b[i]*b[i] - a[i]*a[i];
+ *      dst[i] = value * avg;
  *
  * @param dst destination to store elements of the moving sum
  * @param a the tail of the moving sum (values to subtract)
@@ -48,13 +50,14 @@ LSP_DSP_LIB_SYMBOL(float, moving_avg, float *dst, const float *a, const float *b
  * @param value current accumulator value of the moving sum
  * @param avg averaging coefficient
  * @param count number of elements to process
- * @return the new accumulator value of the moving sum (equals to last processed element)
+ * @return the new accumulator value of the mean square
  */
 LSP_DSP_LIB_SYMBOL(float, moving_mean_sqr, float *dst, const float *a, const float *b, float value, float avg, size_t count);
 
 /** Calculate moving root mean square:
- *   value  = value + b[i]*b[i] - a[i]*a[i];
- *   dst[i] = sqrtf(max(value * avg, 0.0f));
+ *    for each sample with index i:
+ *      value  = value + b[i]*b[i] - a[i]*a[i];
+ *      dst[i] = sqrtf(max(value * avg, 0.0f));
  *
  * Because moving sum can introduce some rounding errors, safe square root form is used to avoid NaNs.
  *
@@ -64,7 +67,7 @@ LSP_DSP_LIB_SYMBOL(float, moving_mean_sqr, float *dst, const float *a, const flo
  * @param value current accumulator value of the moving sum
  * @param avg averaging coefficient
  * @param count number of elements to process
- * @return the new accumulator value of the moving sum (equals to last processed element)
+ * @return the new accumulator value of the moving rms
  */
 LSP_DSP_LIB_SYMBOL(float, moving_rms, float *dst, const float *a, const float *b, float value, float avg, size_t count);
 
