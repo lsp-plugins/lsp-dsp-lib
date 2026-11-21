@@ -45,6 +45,7 @@
         #include <private/dsp/arch/x86/avx2/dynamics.h>
 
         #include <private/dsp/arch/x86/avx2/float.h>
+        #include <private/dsp/arch/x86/avx2/hmath.h>
         #include <private/dsp/arch/x86/avx2/pmath.h>
 
         #include <private/dsp/arch/x86/avx2/fft/normalize.h>
@@ -150,6 +151,10 @@ namespace lsp
             CEXPORT1(favx, fmrdiv_k4);
             CEXPORT1(favx, fmmod_k4);
             CEXPORT1(favx, fmrmod_k4);
+
+            CEXPORT1(favx, moving_avg);
+            CEXPORT1(favx, moving_mean_sqr);
+            CEXPORT1(favx, moving_rms);
 
             CEXPORT2(favx, exp1, exp1);
             CEXPORT2(favx, exp2, exp2);
@@ -266,6 +271,9 @@ namespace lsp
                 CEXPORT2(favx, loge2, loge2_fma3);
                 CEXPORT2(favx, logd1, logd1_fma3);
                 CEXPORT2(favx, logd2, logd2_fma3);
+
+                CEXPORT2(favx, moving_mean_sqr, moving_mean_sqr_fma3);
+                CEXPORT2(favx, moving_rms, moving_rms_fma3);
 
                 CEXPORT2_X64(favx, logb1, x64_logb1_fma3);
                 CEXPORT2_X64(favx, logb2, x64_logb2_fma3);
