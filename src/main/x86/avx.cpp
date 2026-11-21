@@ -53,8 +53,7 @@
 
         #include <private/dsp/arch/x86/avx/pmath.h>
 
-        #include <private/dsp/arch/x86/avx/hmath/hsum.h>
-        #include <private/dsp/arch/x86/avx/hmath/hdotp.h>
+        #include <private/dsp/arch/x86/avx/hmath.h>
 
         #include <private/dsp/arch/x86/avx/mix.h>
         #include <private/dsp/arch/x86/avx/pan.h>
@@ -314,6 +313,10 @@
                 CEXPORT1(favx, h_sqr_dotp);
                 CEXPORT1(favx, h_abs_dotp);
 
+                CEXPORT1(favx, moving_avg);
+                CEXPORT1(favx, moving_mean_sqr);
+                CEXPORT1(favx, moving_rms);
+
                 CEXPORT1(favx, mix2);
                 CEXPORT1(favx, mix_copy2);
                 CEXPORT1(favx, mix_add2);
@@ -540,6 +543,9 @@
                     CEXPORT2(favx, lerp_kvv, lerp_kvv_fma3);
                     CEXPORT2(favx, lerp_kvk, lerp_kvk_fma3);
                     CEXPORT2(favx, lerp_kkv, lerp_kkv_fma3);
+
+                    CEXPORT2(ffma, moving_mean_sqr, moving_mean_sqr_fma3);
+                    CEXPORT2(ffma, moving_rms, moving_rms_fma3);
                 }
             }
         } /* namespace avx */

@@ -39,6 +39,12 @@ namespace lsp
         {
             float moving_rms(float *dst, const float *a, const float *b, float value, float avg, size_t count);
         }
+
+        namespace avx
+        {
+            float moving_rms(float *dst, const float *a, const float *b, float value, float avg, size_t count);
+            float moving_rms_fma3(float *dst, const float *a, const float *b, float value, float avg, size_t count);
+        }
     )
 
     typedef float (* moving_rms_t)(float *dst, const float *a, const float *b, float value, float avg, size_t count);
@@ -80,6 +86,8 @@ PTEST_BEGIN("dsp.hmath", moving_rms, 2, 10000)
 
             CALL(generic::moving_rms);
             IF_ARCH_X86(CALL(sse::moving_rms));
+            IF_ARCH_X86(CALL(avx::moving_rms));
+            IF_ARCH_X86(CALL(avx::moving_rms_fma3));
             PTEST_SEPARATOR;
         }
 

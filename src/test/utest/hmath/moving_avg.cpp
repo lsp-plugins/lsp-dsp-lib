@@ -40,6 +40,11 @@ namespace lsp
         {
             float moving_avg(float *dst, const float *a, const float *b, float value, float avg, size_t count);
         }
+
+        namespace avx
+        {
+            float moving_avg(float *dst, const float *a, const float *b, float value, float avg, size_t count);
+        }
     )
 
     typedef float (* moving_avg_t)(float *dst, const float *a, const float *b, float value, float avg, size_t count);
@@ -56,7 +61,7 @@ UTEST_BEGIN("dsp.hmath", moving_avg)
             return;
 
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                32, 63, 64, 65, 100, 768, 999, 0x1fff)
+                16, 32, 63, 64, 65, 100, 768, 999, 0x1fff)
         {
             for (size_t mask=0; mask <= 0x07; ++mask)
             {
@@ -115,6 +120,7 @@ UTEST_BEGIN("dsp.hmath", moving_avg)
             call(#func, align, generic::moving_avg, func);
 
         IF_ARCH_X86(CALL(sse::moving_avg, 16));
+        IF_ARCH_X86(CALL(avx::moving_avg, 32));
     }
 UTEST_END
 

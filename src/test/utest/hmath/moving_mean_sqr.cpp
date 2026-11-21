@@ -40,6 +40,12 @@ namespace lsp
         {
             float moving_mean_sqr(float *dst, const float *a, const float *b, float value, float avg, size_t count);
         }
+
+        namespace avx
+        {
+            float moving_mean_sqr(float *dst, const float *a, const float *b, float value, float avg, size_t count);
+            float moving_mean_sqr_fma3(float *dst, const float *a, const float *b, float value, float avg, size_t count);
+        }
     )
 
     typedef float (* moving_mean_sqr_t)(float *dst, const float *a, const float *b, float value, float avg, size_t count);
@@ -56,7 +62,7 @@ UTEST_BEGIN("dsp.hmath", moving_mean_sqr)
             return;
 
         UTEST_FOREACH(count, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                32, 63, 64, 65, 100, 768, 999, 0x1fff)
+                16, 32, 63, 64, 65, 100, 768, 999, 0x1fff)
         {
             for (size_t mask=0; mask <= 0x07; ++mask)
             {
@@ -115,6 +121,8 @@ UTEST_BEGIN("dsp.hmath", moving_mean_sqr)
             call(#func, align, generic::moving_mean_sqr, func);
 
         IF_ARCH_X86(CALL(sse::moving_mean_sqr, 16));
+        IF_ARCH_X86(CALL(avx::moving_mean_sqr, 32));
+        IF_ARCH_X86(CALL(avx::moving_mean_sqr_fma3, 32));
     }
 UTEST_END
 
