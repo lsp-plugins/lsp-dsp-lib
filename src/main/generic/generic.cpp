@@ -297,7 +297,9 @@ namespace lsp
             EXPORT1(h_abs_dotp);
 
             EXPORT1(moving_avg);
+            EXPORT1(moving_pavg);
             EXPORT1(moving_mean_sqr);
+            EXPORT1(moving_mean_psqr);
             EXPORT1(moving_rms);
 
             EXPORT1(fmadd_k3);

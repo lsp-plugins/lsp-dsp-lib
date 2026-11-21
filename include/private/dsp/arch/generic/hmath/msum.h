@@ -40,6 +40,16 @@ namespace lsp
             return value;
         }
 
+        float moving_pavg(float *dst, const float *a, const float *b, float value, float avg, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                value      += b[i] - a[i];
+                dst[i]      = lsp_max(value * avg, 0.0f);
+            }
+            return value;
+        }
+
         float moving_mean_sqr(float *dst, const float *a, const float *b, float value, float avg, size_t count)
         {
             for (size_t i=0; i<count; ++i)
@@ -48,6 +58,18 @@ namespace lsp
                 const float xa  = a[i];
                 value          += xb*xb - xa*xa;
                 dst[i]          = value * avg;
+            }
+            return value;
+        }
+
+        float moving_mean_psqr(float *dst, const float *a, const float *b, float value, float avg, size_t count)
+        {
+            for (size_t i=0; i<count; ++i)
+            {
+                const float xb  = b[i];
+                const float xa  = a[i];
+                value          += xb*xb - xa*xa;
+                dst[i]          = lsp_max(value * avg, 0.0f);
             }
             return value;
         }

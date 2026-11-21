@@ -39,6 +39,21 @@
  */
 LSP_DSP_LIB_SYMBOL(float, moving_avg, float *dst, const float *a, const float *b, float value, float avg, size_t count);
 
+/** Calculate moving non-negative average:
+ *    for each sample with index i:
+ *      value  = value + b[i] - a[i];
+ *      dst[i] = max(value * avg, 0.0f);
+ *
+ * @param dst destination to store elements of the moving sum
+ * @param a the tail of the moving sum (values to subtract)
+ * @param b the head of the moving sum (values to add)
+ * @param value current accumulator value of the moving sum
+ * @param avg averaging coefficient
+ * @param count number of elements to process
+ * @return the new accumulator value of the moving sum
+ */
+LSP_DSP_LIB_SYMBOL(float, moving_pavg, float *dst, const float *a, const float *b, float value, float avg, size_t count);
+
 /** Calculate moving mean square:
  *    for each sample with index i:
  *      value  = value + b[i]*b[i] - a[i]*a[i];
@@ -53,6 +68,21 @@ LSP_DSP_LIB_SYMBOL(float, moving_avg, float *dst, const float *a, const float *b
  * @return the new accumulator value of the mean square
  */
 LSP_DSP_LIB_SYMBOL(float, moving_mean_sqr, float *dst, const float *a, const float *b, float value, float avg, size_t count);
+
+/** Calculate moving non-negative mean square:
+ *    for each sample with index i:
+ *      value  = value + b[i]*b[i] - a[i]*a[i];
+ *      dst[i] = max(value * avg, 0.0f);
+ *
+ * @param dst destination to store elements of the moving sum
+ * @param a the tail of the moving sum (values to subtract)
+ * @param b the head of the moving sum (values to add)
+ * @param value current accumulator value of the moving sum
+ * @param avg averaging coefficient
+ * @param count number of elements to process
+ * @return the new accumulator value of the mean square
+ */
+LSP_DSP_LIB_SYMBOL(float, moving_mean_psqr, float *dst, const float *a, const float *b, float value, float avg, size_t count);
 
 /** Calculate moving root mean square:
  *    for each sample with index i:
