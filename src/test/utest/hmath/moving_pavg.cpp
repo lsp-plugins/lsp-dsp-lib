@@ -50,6 +50,11 @@ namespace lsp
         {
             float moving_pavg(float *dst, const float *a, const float *b, float value, float avg, size_t count);
         }
+
+        namespace avx512
+        {
+            float moving_pavg(float *dst, const float *a, const float *b, float value, float avg, size_t count);
+        }
     )
 
     typedef float (* moving_pavg_t)(float *dst, const float *a, const float *b, float value, float avg, size_t count);
@@ -127,6 +132,7 @@ UTEST_BEGIN("dsp.hmath", moving_pavg)
         IF_ARCH_X86(CALL(sse::moving_pavg, 16));
         IF_ARCH_X86(CALL(avx::moving_pavg, 32));
         IF_ARCH_X86(CALL(avx2::moving_pavg, 32));
+        IF_ARCH_X86(CALL(avx512::moving_pavg, 64));
     }
 UTEST_END
 

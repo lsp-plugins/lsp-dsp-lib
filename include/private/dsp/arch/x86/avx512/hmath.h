@@ -29,6 +29,7 @@
 
 #include <private/dsp/arch/x86/avx512/hmath/hdotp.h>
 #include <private/dsp/arch/x86/avx512/hmath/hsum.h>
+#include <private/dsp/arch/x86/avx512/hmath/msum.h>
 
 
 #endif /* PRIVATE_DSP_ARCH_X86_AVX512_HMATH_H_ */

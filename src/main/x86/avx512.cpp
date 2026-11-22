@@ -382,6 +382,12 @@
                 CEXPORT1(vl, h_sqr_dotp);
                 CEXPORT1(vl, h_abs_dotp);
 
+                CEXPORT1(vl, moving_avg);
+                CEXPORT1(vl, moving_pavg);
+                CEXPORT1(vl, moving_mean_sqr);
+                CEXPORT1(vl, moving_mean_psqr);
+                CEXPORT1(vl, moving_rms);
+
                 CEXPORT1(vl, direct_fft);
                 CEXPORT1(vl, reverse_fft);
                 CEXPORT1(vl, packed_direct_fft);

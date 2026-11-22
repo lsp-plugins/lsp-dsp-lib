@@ -49,6 +49,11 @@ namespace lsp
         {
             float moving_avg(float *dst, const float *a, const float *b, float value, float avg, size_t count);
         }
+
+        namespace avx512
+        {
+            float moving_avg(float *dst, const float *a, const float *b, float value, float avg, size_t count);
+        }
     )
 
     typedef float (* moving_avg_t)(float *dst, const float *a, const float *b, float value, float avg, size_t count);
@@ -92,6 +97,7 @@ PTEST_BEGIN("dsp.hmath", moving_avg, 2, 10000)
             IF_ARCH_X86(CALL(sse::moving_avg));
             IF_ARCH_X86(CALL(avx::moving_avg));
             IF_ARCH_X86(CALL(avx2::moving_avg));
+            IF_ARCH_X86(CALL(avx512::moving_avg));
             PTEST_SEPARATOR;
         }
 
