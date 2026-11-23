@@ -61,8 +61,7 @@
         #include <private/dsp/arch/arm/neon-d32/graphics/colors.h>
         #include <private/dsp/arch/arm/neon-d32/graphics/effects.h>
         #include <private/dsp/arch/arm/neon-d32/graphics/pixelfmt.h>
-        #include <private/dsp/arch/arm/neon-d32/hmath/hdotp.h>
-        #include <private/dsp/arch/arm/neon-d32/hmath/hsum.h>
+        #include <private/dsp/arch/arm/neon-d32/hmath.h>
         #include <private/dsp/arch/arm/neon-d32/interpolation/linear.h>
         #include <private/dsp/arch/arm/neon-d32/mix.h>
         #include <private/dsp/arch/arm/neon-d32/pan.h>
@@ -340,6 +339,12 @@
                 EXPORT1(h_dotp);
                 EXPORT1(h_abs_dotp);
                 EXPORT1(h_sqr_dotp);
+
+                EXPORT1(moving_avg);
+                EXPORT1(moving_pavg);
+                EXPORT1(moving_mean_sqr);
+                EXPORT1(moving_mean_psqr);
+                EXPORT1(moving_rms);
 
                 EXPORT1(saturate);
                 EXPORT1(copy_saturated);
