@@ -63,8 +63,7 @@
         #include <private/dsp/arch/aarch64/asimd/graphics/colors.h>
         #include <private/dsp/arch/aarch64/asimd/graphics/effects.h>
         #include <private/dsp/arch/aarch64/asimd/graphics/pixelfmt.h>
-        #include <private/dsp/arch/aarch64/asimd/hmath/hsum.h>
-        #include <private/dsp/arch/aarch64/asimd/hmath/hdotp.h>
+        #include <private/dsp/arch/aarch64/asimd/hmath.h>
         #include <private/dsp/arch/aarch64/asimd/interpolation/linear.h>
         #include <private/dsp/arch/aarch64/asimd/mix.h>
         #include <private/dsp/arch/aarch64/asimd/pan.h>
@@ -296,6 +295,12 @@
                 EXPORT1(h_dotp);
                 EXPORT1(h_abs_dotp);
                 EXPORT1(h_sqr_dotp);
+
+                EXPORT1(moving_avg);
+                EXPORT1(moving_pavg);
+                EXPORT1(moving_mean_sqr);
+                EXPORT1(moving_mean_psqr);
+                EXPORT1(moving_rms);
 
                 EXPORT1(logb1);
                 EXPORT1(logb2);

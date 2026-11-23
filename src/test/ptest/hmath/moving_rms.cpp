@@ -65,6 +65,13 @@ namespace lsp
         }
     )
 
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            float moving_rms(float *dst, const float *a, const float *b, float value, float avg, size_t count);
+        }
+    )
+
     typedef float (* moving_rms_t)(float *dst, const float *a, const float *b, float value, float avg, size_t count);
 }
 
@@ -110,6 +117,7 @@ PTEST_BEGIN("dsp.hmath", moving_rms, 2, 10000)
             IF_ARCH_X86(CALL(avx2::moving_rms_fma3));
             IF_ARCH_X86(CALL(avx512::moving_rms));
             IF_ARCH_ARM(CALL(neon_d32::moving_rms));
+            IF_ARCH_AARCH64(CALL(asimd::moving_rms));
             PTEST_SEPARATOR;
         }
 

@@ -66,6 +66,13 @@ namespace lsp
         }
     )
 
+    IF_ARCH_AARCH64(
+        namespace asimd
+        {
+            float moving_mean_psqr(float *dst, const float *a, const float *b, float value, float avg, size_t count);
+        }
+    )
+
     typedef float (* moving_mean_psqr_t)(float *dst, const float *a, const float *b, float value, float avg, size_t count);
 }
 
@@ -145,6 +152,7 @@ UTEST_BEGIN("dsp.hmath", moving_mean_psqr)
         IF_ARCH_X86(CALL(avx2::moving_mean_psqr_fma3, 32));
         IF_ARCH_X86(CALL(avx512::moving_mean_psqr, 64));
         IF_ARCH_ARM(CALL(neon_d32::moving_mean_psqr, 16));
+        IF_ARCH_AARCH64(CALL(asimd::moving_mean_psqr, 16));
     }
 UTEST_END
 
