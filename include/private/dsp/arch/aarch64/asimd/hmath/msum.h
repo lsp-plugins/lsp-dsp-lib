@@ -34,7 +34,7 @@ namespace lsp
         float moving_avg(float *dst, const float *a, const float *b, float value, float avg, size_t count)
         {
             IF_ARCH_AARCH64(
-                register float result __asm__("s0");
+                register float result __asm__("s0") = value;
                 register float m __asm__("s1") = avg;
             );
             ARCH_AARCH64_ASM
@@ -154,7 +154,7 @@ namespace lsp
                 __ASM_EMIT("8:")
 
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
-                  [value] "+w" (value), [m] "+w" (m),
+                  [result] "+w" (result), [m] "+w" (m),
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
@@ -169,7 +169,7 @@ namespace lsp
         float moving_pavg(float *dst, const float *a, const float *b, float value, float avg, size_t count)
         {
             IF_ARCH_AARCH64(
-                register float result __asm__("s0");
+                register float result __asm__("s0") = value;
                 register float m __asm__("s1") = avg;
             );
             ARCH_AARCH64_ASM
@@ -297,7 +297,7 @@ namespace lsp
                 __ASM_EMIT("8:")
 
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
-                  [value] "+w" (value), [m] "+w" (m),
+                  [result] "+w" (result), [m] "+w" (m),
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
@@ -312,7 +312,7 @@ namespace lsp
         float moving_mean_sqr(float *dst, const float *a, const float *b, float value, float avg, size_t count)
         {
             IF_ARCH_AARCH64(
-                register float result __asm__("s0");
+                register float result __asm__("s0") = value;
                 register float m __asm__("s1") = avg;
             );
             ARCH_AARCH64_ASM
@@ -440,7 +440,7 @@ namespace lsp
                 __ASM_EMIT("8:")
 
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
-                  [value] "+w" (value), [m] "+w" (m),
+                  [result] "+w" (result), [m] "+w" (m),
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
@@ -455,7 +455,7 @@ namespace lsp
         float moving_mean_psqr(float *dst, const float *a, const float *b, float value, float avg, size_t count)
         {
             IF_ARCH_AARCH64(
-                register float result __asm__("s0");
+                register float result __asm__("s0") = value;
                 register float m __asm__("s1") = avg;
             );
             ARCH_AARCH64_ASM
@@ -591,7 +591,7 @@ namespace lsp
                 __ASM_EMIT("8:")
 
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
-                  [value] "+w" (value), [m] "+w" (m),
+                  [result] "+w" (result), [m] "+w" (m),
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
@@ -606,7 +606,7 @@ namespace lsp
         float moving_rms(float *dst, const float *a, const float *b, float value, float avg, size_t count)
         {
             IF_ARCH_AARCH64(
-                register float result __asm__("s0");
+                register float result __asm__("s0") = value;
                 register float m __asm__("s1") = avg;
             );
             ARCH_AARCH64_ASM
@@ -750,7 +750,7 @@ namespace lsp
                 __ASM_EMIT("8:")
 
                 : [dst] "+r" (dst), [a] "+r" (a), [b] "+r" (b),
-                  [value] "+w" (value), [m] "+w" (m),
+                  [result] "+w" (result), [m] "+w" (m),
                   [count] "+r" (count)
                 :
                 : "cc", "memory",
